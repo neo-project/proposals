@@ -1,0 +1,23 @@
+==NEO Enhancement Proposals==
+
+NEO Enhancement Proposals (NEPs) describe standards for the NEO platform, including core protocol specifications, client APIs, and contract standards.
+
+==Contributing==
+
+First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your NEP to it. There is a [[nep-X.mediawiki|template NEP here]]. Then submit a [https://github.com/neo-project/proposals/pulls Pull Request] to this repository.
+
+==Table of Contents==
+
+{| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
+!<nowiki>#</nowiki>
+!Title
+!Author
+!Type
+!Status
+|-
+| [[nep-1.mediawiki|1]]
+| NEP Purpose and Guidelines
+| Erik Zhang
+| Meta
+| Active
+|}
