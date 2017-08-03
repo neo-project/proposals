@@ -37,31 +37,31 @@ Vetting an idea publicly before going as far as writing an NEP is meant to save 
 
 Once the champion has asked the NEO community whether an idea has any chance of acceptance a draft NEP should be presented as a pull request. This gives the author a chance to continuously edit the draft NEP for proper formatting and quality. This also allows for further public comment and the author of the NEP to address concerns about the proposal.
 
-If the NEP collaborators approve, the NEP editor will assign the NEP a number, label it as Standards Track, Informational, or Meta, give it status ¡°Draft¡±, and add it to the git repository. The NEP editor will not unreasonably deny an NEP. Reasons for denying NEP status include duplication of effort, being technically unsound, not providing proper motivation or addressing backwards compatibility, or not in keeping with the NEO philosophy.
+If the NEP collaborators approve, the NEP editor will assign the NEP a number, label it as Standards Track, Informational, or Meta, give it status "Draft", and add it to the git repository. The NEP editor will not unreasonably deny an NEP. Reasons for denying NEP status include duplication of effort, being technically unsound, not providing proper motivation or addressing backwards compatibility, or not in keeping with the NEO philosophy.
 
 Standards Track NEPs consist of three parts, a design document, implementation, and finally if warranted an update to the formal specification. The NEP should be reviewed and accepted before an implementation is begun, unless an implementation will aid people in studying the NEP. Standards Track NEPs must include an implementation -- in the form of code, a patch, or a URL to same -- before it can be considered Final.
 
 For an NEP to be accepted it must meet certain minimum criteria. It must be a clear and complete description of the proposed enhancement. The enhancement must represent a net improvement. The proposed implementation, if applicable, must be solid and must not complicate the protocol unduly.
 
-Once a NEP has been accepted, the implementations must be completed. When the implementation is complete and accepted by the community, the status will be changed to "Final". 
+Once a NEP has been accepted, the implementations must be completed. When the implementation is complete and accepted by the community, the status will be changed to "Final".
 
-A NEP can also be assigned status "Deferred". The NEP author or editor can assign the NEP this status when no progress is being made on the NEP. Once a NEP is deferred, the NEP editor can re-assign it to draft status. 
+A NEP can also be assigned status "Deferred". The NEP author or editor can assign the NEP this status when no progress is being made on the NEP. Once a NEP is deferred, the NEP editor can re-assign it to draft status.
 
-A NEP can also be "Rejected". Perhaps after all is said and done it was not a good idea. It is still important to have a record of this fact. 
+A NEP can also be "Rejected". Perhaps after all is said and done it was not a good idea. It is still important to have a record of this fact.
 
 NEPs can also be superseded by a different NEP, rendering the original obsolete.
 
-The possible paths of the status of NEPs are as follows: 
+The possible paths of the status of NEPs are as follows:
 
 [[Image:nep-1/process.png|NEP Process]]
 
-Some Informational and Meta NEPs may also have a status of "Active" if they are never meant to be completed. E.g. NEP 1 (this NEP). 
+Some Informational and Meta NEPs may also have a status of "Active" if they are never meant to be completed. E.g. NEP 1 (this NEP).
 
 ==What belongs in a successful NEP?==
 
 Each NEP should have the following parts:
 
-*Preamble -- RFC 822 style headers containing meta-data about the NEP, including the NEP number, a short descriptive title (limited to a maximum of 44 characters), the names, and optionally the contact info for each author, etc.
+*Preamble -- [https://tools.ietf.org/html/rfc822 RFC 822] style headers containing meta-data about the NEP, including the NEP number, a short descriptive title (limited to a maximum of 44 characters), the names, and optionally the contact info for each author, etc.
 
 *Abstract -- a short (~200 words) description of the technical issue being addressed.
 
@@ -79,11 +79,11 @@ Each NEP should have the following parts:
 
 ==NEP Formats and Templates==
 
-NEPs should be written in mediawiki or markdown format. Image files should be included in a subdirectory for that NEP.
+NEPs should be written in [https://www.mediawiki.org/wiki/Help:Contents mediawiki] or [https://help.github.com/articles/basic-writing-and-formatting-syntax/ markdown] format. Image files should be included in a subdirectory for that NEP.
 
 ===NEP Header Preamble===
 
-Each NEP must begin with an RFC 822 style header preamble. The headers must appear in the following order. Headers marked with "*" are optional and are described below. All other headers are required.
+Each NEP must begin with an [https://tools.ietf.org/html/rfc822 RFC 822] style header preamble. The headers must appear in the following order. Headers marked with "*" are optional and are described below. All other headers are required.
 
 <pre>
   NEP: <NEP number>(this is determined by the NEP editor)
