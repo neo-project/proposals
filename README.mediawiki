@@ -21,11 +21,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Meta
 | Active
 |-
-| 2
+| [[nep-2.mediawiki|2]]
 | Passphrase-protected private key
 | Erik Zhang
 | Standard
-| Stub
+| Draft
 |-
 | 3
 | Wallet Standard
