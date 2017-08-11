@@ -134,7 +134,7 @@ namespace NEO_NEP_5
             //If the transaction is valid, proceed.
             //如果交易有效，继续
             if (nOriginatorValue >= 0 &&
-                 amount >= 0)
+                amount >= 0)
             {
                 Storage.Put(Storage.CurrentContext, originator, IntToBytes(nOriginatorValue));
                 Storage.Put(Storage.CurrentContext, to, IntToBytes(nTargetValue));
