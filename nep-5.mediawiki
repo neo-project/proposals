@@ -24,15 +24,15 @@ the contract invoker's public key.  Reference: https://github.com/neo-project/do
 ===Event: deploy===
 "deploy" is used to release the tokens into the contract.  It evaluates the invoker's public key against the admin key prior to release all tokens to the admin.
 
-<code>private static bool Deploy(byte[] originator, BigInteger supply)</code>
-Invoke: <code>byte[] originator, "6465706c6f79" , byte[] supply</code>
+* '''private static bool Deploy(byte[] originator, BigInteger supply)'''
+* Invoke: <code>byte[] originator, "6465706c6f79" , byte[] supply</code>
 
 
 ===Event: totalSupply===
 "totalSupply" returns the total token supply deployed in the system.
 
-'''private static BigInteger totalSupply()'''
-Invoke: <code>byte[] originator, "746f74616c537570706c79"</code>
+* '''private static BigInteger totalSupply()'''
+* Invoke: <code>byte[] originator, "746f74616c537570706c79"</code>
 
 
 ===Event: name===
