@@ -31,63 +31,63 @@ Invoke: <code>byte[] originator, "6465706c6f79" , byte[] supply</code>
 ===Event: totalSupply===
 "totalSupply" returns the total token supply deployed in the system.
 
-<code>private static BigInteger totalSupply()</code>
+'''private static BigInteger totalSupply()'''
 Invoke: <code>byte[] originator, "746f74616c537570706c79"</code>
 
 
 ===Event: name===
 "name" returns the token name.
 
-* <code>private static string name()</code>
+* '''private static string name()'''
 * Invoke: <code>byte[] originator, "6e616d65"</code>
 
 
 ===Event: symbol===
 "symbol" returns the token symbol.
 
-* <code>private static string symbol()</code>
+* '''private static string symbol()'''
 * Invoke: <code>byte[] originator, "73796d626f6c"</code>
 
 
 ===Event: decimals===
 "decimals" returns the number of decimals used by the token.
 
-* <code>private static BigInteger decimals()</code>
+* '''private static BigInteger decimals()'''
 * Invoke: <code>byte[] originator, "646563696d616c73"</code>
 
 
 ===Event: balanceOf===
 "balanceOf" returns the token balance of the '''account'''.
 
-* <code> private static BigInteger balanceOf(byte[] account)</code>
+* '''private static BigInteger balanceOf(byte[] account)'''
 * Invoke: <code>byte[] originator, "62616c616e63654f66", byte[] account</code>
 
 
 ===Event: transfer===
 "transfer" will transfer an '''amount''' of tokens from the '''originator''' account to the '''to''' account.
 
-* <code>private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)</code>
+* '''private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)'''
 * Invoke: <code>byte[] originator, "7472616e73666572", byte[] to, byte[] amount</code>
 
 
 ===Event: transferFrom===
 "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
 
-* <code>private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
+* '''private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)'''
 * Invoke: <code>byte[] originator, "7472616e7366657246726f6d", byte[] from, byte[] to, byte[] amount </code>
 
 
 ===Event: approve===
 "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
 
-* <code>private static bool Approve(byte[] originator, byte[] to, byte[] amount)</code>
+* '''private static bool Approve(byte[] originator, byte[] to, byte[] amount)'''
 * Invoke: <code>byte[] originator, "617070726f7665", byte[] to, byte[] amount</code>
 
 
 ===Event: allowance===
 "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
 
-* <code>private static BigInteger Allowance(byte[] from, byte[] to)</code>
+* '''private static BigInteger Allowance(byte[] from, byte[] to)'''
 * Invoke: <code>byte[] originator, "616c6c6f77616e6365", byte[] from, byte[] to</code>
 
 
