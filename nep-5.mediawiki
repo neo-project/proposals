@@ -1,7 +1,7 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, Erik Zhang <erik@neo.org>, Alan Fong <
+  Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, Erik Zhang <erik@neo.org>, Alan Fong <anfn@umich.edu>
   Type: Standard
   Status: Draft
   Created: 2017-08-10
@@ -21,6 +21,10 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 In the Event definitions below, we provide both the definitions of the functions as they are defined in the contract as well
 as the invoke parameters.  Note that we have provided the hex string for the event as the second input.  The first input is
 the contract invoker's public key.  Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md 
+
+[[nep-5/NEP5Template.md|Template]]
+
+
 ===Event: deploy===
 "deploy" is used to release the tokens into the contract.  It evaluates the invoker's public key against the admin key prior to release all tokens to the admin.
 

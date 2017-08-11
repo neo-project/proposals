@@ -41,7 +41,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
-| Erik Zhang, Da Hongfei, lllwvlvwlll
+| lllwvlvwlll, Erik Zhang, Alan Fong
 | Standard
 | Stub
 |-
