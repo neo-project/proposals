@@ -19,73 +19,45 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 
 
 In the Event definitions below, we provide both the definitions of the functions as they are defined in the contract as well
-as the invoke parameters.  Note that we have provided the hex string for the event as the second input.  The first input is
-the contract invoker's public key.  Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md 
+as the invoke parameters.  Note that we have provided the hex string for the event as the first input.  
+Transactional events (indicated below) require the contract invoker's public key as the first Event input.  Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md 
 
 [[nep-5/NEP5Template.md|Template]]
-
-
-===Event: deploy===
-"deploy" is used to release the tokens into the contract.  It evaluates the invoker's public key against the admin key prior to release all tokens to the admin.
-
-* '''private static bool Deploy(byte[] originator, BigInteger supply)'''
-* Invoke: <code>byte[] originator, "6465706c6f79" , byte[] supply</code>
 
 
 ===Event: totalSupply===
 "totalSupply" returns the total token supply deployed in the system.
 
 * '''private static BigInteger totalSupply()'''
-* Invoke: <code>byte[] originator, "746f74616c537570706c79"</code>
+* Invoke: <code>"746f74616c537570706c79"</code>
 
 
 ===Event: name===
 "name" returns the token name.
 
 * '''private static string name()'''
-* Invoke: <code>byte[] originator, "6e616d65"</code>
+* Invoke: <code>"6e616d65"</code>
 
 
 ===Event: symbol===
 "symbol" returns the token symbol.
 
 * '''private static string symbol()'''
-* Invoke: <code>byte[] originator, "73796d626f6c"</code>
+* Invoke: <code>"73796d626f6c"</code>
 
 
 ===Event: decimals===
 "decimals" returns the number of decimals used by the token.
 
 * '''private static BigInteger decimals()'''
-* Invoke: <code>byte[] originator, "646563696d616c73"</code>
+* Invoke: <code>"646563696d616c73"</code>
 
 
 ===Event: balanceOf===
 "balanceOf" returns the token balance of the '''account'''.
 
 * '''private static BigInteger balanceOf(byte[] account)'''
-* Invoke: <code>byte[] originator, "62616c616e63654f66", byte[] account</code>
-
-
-===Event: transfer===
-"transfer" will transfer an '''amount''' of tokens from the '''originator''' account to the '''to''' account.
-
-* '''private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)'''
-* Invoke: <code>byte[] originator, "7472616e73666572", byte[] to, byte[] amount</code>
-
-
-===Event: transferFrom===
-"transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
-
-* '''private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)'''
-* Invoke: <code>byte[] originator, "7472616e7366657246726f6d", byte[] from, byte[] to, byte[] amount </code>
-
-
-===Event: approve===
-"approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
-
-* '''private static bool Approve(byte[] originator, byte[] to, byte[] amount)'''
-* Invoke: <code>byte[] originator, "617070726f7665", byte[] to, byte[] amount</code>
+* Invoke: <code>"62616c616e63654f66", byte[] account</code>
 
 
 ===Event: allowance===
@@ -93,6 +65,27 @@ the contract invoker's public key.  Reference: https://github.com/neo-project/do
 
 * '''private static BigInteger Allowance(byte[] from, byte[] to)'''
 * Invoke: <code>byte[] originator, "616c6c6f77616e6365", byte[] from, byte[] to</code>
+
+
+===Event: transfer===
+"transfer" will transfer an '''amount''' of tokens from the '''originator''' account to the '''to''' account.
+
+* '''private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)'''
+* Invoke: <code>"7472616e73666572", byte[] originator, byte[] to, byte[] amount</code>
+
+
+===Event: transferFrom===
+"transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
+
+* '''private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)'''
+* Invoke: <code>"7472616e7366657246726f6d", byte[] originator, byte[] from, byte[] to, byte[] amount </code>
+
+
+===Event: approve===
+"approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
+
+* '''private static bool Approve(byte[] originator, byte[] to, byte[] amount)'''
+* Invoke: <code>"617070726f7665", byte[] originator, byte[] to, byte[] amount</code>
 
 
 ==Rationale==

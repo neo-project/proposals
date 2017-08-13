@@ -20,10 +20,6 @@ namespace NEO_NEP_5
         ///   参数：050505
         ///   返回值：05
         /// </summary>
-        /// <param name="originator">
-        ///   The transaction initiator's public key.
-        ///   合约调用者的公钥
-        /// </param>
         /// <param name="Event">
         ///   The NEP5 Event being invoked.
         ///   所调用的 NEP5 方法
@@ -33,18 +29,13 @@ namespace NEO_NEP_5
         ///   NEP5 方法的参数
         /// </param>
 
-        public static object Main(byte[] originator, string Event, params object[] args)
+        public static object Main(string Event, params object[] args)
         {
            BigInteger supply = 1000000;
            string name = "Name";
            string symbol = "NME";
            BigInteger decimals = 1;
            
-           //Verify that the originator is honest.
-           //确认交易者诚实
-           if (!Runtime.CheckWitness(originator)) return false;
-
-           if (Event == "deploy") return Deploy(originator, supply);
 
            if (Event == "totalSupply") return supply;
  
@@ -54,49 +45,22 @@ namespace NEO_NEP_5
 
            if (Event == "decimals") return decimals;
            
-           if (Event == "balanceOf") return Storage.Get(Storage.CurrentContext, byte [] args[0]);
+           if (Event == "balanceOf") return Storage.Get(Storage.CurrentContext, byte [] args[1]);
+
+           if (Event == "allowance") return Allowance(args[1], args[2]);
+
+
+           //Verify that the originator is honest.
+           //确认交易者诚实
+           if (!Runtime.CheckWitness(byte[] args[0]) ) return false;
             
-           if (Event == "transfer") return Transfer(originator, byte[] args[0], BytesToInt(byte[] args[1]) );
+           if (Event == "transfer") return Transfer(byte[] args[0], byte[] args[1], BytesToInt(byte[] args[2]) );
            
-           if (Event == "transferFrom") return TransferFrom(originator, byte[] args[0], byte[] args[1], BytesToInt(byte[] args[2]) );
+           if (Event == "transferFrom") return TransferFrom(byte[] args[0], byte[] args[1], byte[] args[2], BytesToInt(byte[] args[3]) );
 
-           if (Event == "approve") return Approve(originator, byte[] args[0], byte[] args[1]);
-
-           if (Event == "allowance") return Allowance(args[0], args[1]);
+           if (Event == "approve") return Approve(byte[] args[0], byte[] args[1], byte[] args[2] );
 
            return false;
-        }
-
-        
-        /// <summary>
-        ///   Deploys the tokens to the admin account.
-        ///   部署以及发行资产给管理员账户
-        /// </summary>
-        /// <param name="originator">
-        ///   The contract invoker.
-        ///   合约交易者的公钥
-        /// </param>
-        /// <param name="supply">
-        ///   The supply of tokens to deploy.
-        ///   资产数量
-        /// </param>
-        /// <returns>
-        ///   Transaction Successful?
-        ///   交易是否成功，布尔值
-        /// </returns>
-        private static bool Deploy(byte[] originator, BigInteger supply)
-        {
-            //Define the admin public key in byte format
-            //这里填入管理员的公钥
-            // Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md
-            var adminKey = new byte[] {};
-
-            if (originator != adminKey) return false;
-            
-            //Deploy the tokens to the admin.
-            //部署以及发行资产给管理员账户
-            Storage.Put(Storage.CurrentContext, originator, IntToBytes(supply));
-            return true;
         }
 
 
@@ -138,7 +102,6 @@ namespace NEO_NEP_5
             {
                 Storage.Put(Storage.CurrentContext, originator, IntToBytes(nOriginatorValue));
                 Storage.Put(Storage.CurrentContext, to, IntToBytes(nTargetValue));
-                Transferred(originator, to, amount);
                 return true;
             }
             return false;
@@ -240,12 +203,6 @@ namespace NEO_NEP_5
         }
 
        
-        private static void Transferred(byte[] originator, byte[] to, BigInteger amount)
-        {
-            Runtime.Log("Transfer Event");
-        }        
-
-
         private static byte[] IntToBytes(BigInteger value)
         {
             byte[] buffer = value.ToByteArray();
