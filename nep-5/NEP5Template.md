@@ -180,7 +180,7 @@ namespace NEO_NEP_5
             //如果交易有效，继续
             if (allValInt >= amount)
             {   
-                if (transfer(from, to, amount))
+                if (Transfer(from, to, amount))
                 {
                     Storage.Put(Storage.CurrentContext, from.Concat(originator), IntToBytes(allValInt - amount));
                     return true;
