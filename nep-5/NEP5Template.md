@@ -14,17 +14,17 @@ namespace NEO_NEP_5
         ///   Please read the comments for instructions 
         ///   on fields that need to be populated.
         /// 
-        ///   Parameter List: 050505
+        ///   Parameter List: 0505
         ///   Return List: 05
         ///
-        ///   参数：050505
+        ///   参数：0505
         ///   返回值：05
         /// </summary>
         /// <param name="Event">
         ///   The NEP5 Event being invoked.
         ///   所调用的 NEP5 方法
         /// </param>
-        /// <param name="args0">
+        /// <param name="args">
         ///   Optional input parameters used by the NEP5 functions.
         ///   NEP5 方法的参数
         /// </param>
