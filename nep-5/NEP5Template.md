@@ -138,7 +138,7 @@ namespace NEO_NEP_5
             {
                 Storage.Put(Storage.CurrentContext, originator, IntToBytes(nOriginatorValue));
                 Storage.Put(Storage.CurrentContext, to, IntToBytes(nTargetValue));
-                transferred(originator, to, amount);
+                Transferred(originator, to, amount);
                 return true;
             }
             return false;
