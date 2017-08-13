@@ -64,24 +64,25 @@ Transactional events (indicated below) require the contract invoker's public key
 "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
 
 * '''private static BigInteger Allowance(byte[] from, byte[] to)'''
-* Invoke: <code>byte[] originator, "616c6c6f77616e6365", byte[] from, byte[] to</code>
+* Invoke: <code>"616c6c6f77616e6365", byte[] from, byte[] to</code>
 
 
-===Event: transfer===
+
+===Event (Authenticated): transfer===
 "transfer" will transfer an '''amount''' of tokens from the '''originator''' account to the '''to''' account.
 
 * '''private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)'''
 * Invoke: <code>"7472616e73666572", byte[] originator, byte[] to, byte[] amount</code>
 
 
-===Event: transferFrom===
+===Event: transferFrom (Authenticated)===
 "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
 
 * '''private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)'''
 * Invoke: <code>"7472616e7366657246726f6d", byte[] originator, byte[] from, byte[] to, byte[] amount </code>
 
 
-===Event: approve===
+===Event: approve (Authenticated)===
 "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
 
 * '''private static bool Approve(byte[] originator, byte[] to, byte[] amount)'''
