@@ -218,7 +218,7 @@ namespace NEO_NEP_5
                 return;
             }
             Runtime.Notify("Transaction Unsuccessful", "");
-            
+            return;
        
        
         private static byte[] IntToBytes(BigInteger value)
