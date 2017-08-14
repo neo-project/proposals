@@ -21,9 +21,9 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well
 as the invoke parameters.  Note that we have provided the hex string for the event as the first input.  
 
-Transactional events (Authenticated) require the contract invoker's public key as the first method input.  Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md 
+Transactional events (Authenticated) require the contract invoker's public key as the first method input.  [[https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md|Reference]] 
 
-This standard defines to Two method types:
+This standard defines two method types:
 * '''(Required)''' : methods that are present on all NEP5 tokens.
 * '''(Optional)''' : methods that are optionally implemented on NEP5 tokens.  These event types are not required for standard interfacing.  All optional events must be enabled if choosing to use them.
 
@@ -99,7 +99,7 @@ This standard defines to Two method types:
 
 ===Events===
 
-====Event: Notify Originator====
+====Event: NotifyOriginator====
 Notifies the contract invoker that an authenticated method has either succeeded or failed.
 
 * '''private static void NotifyOriginator(bool success)'''
