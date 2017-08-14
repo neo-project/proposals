@@ -18,79 +18,79 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 ==Specification==
 
 
-In the Event definitions below, we provide both the definitions of the functions as they are defined in the contract as well
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well
 as the invoke parameters.  Note that we have provided the hex string for the event as the first input.  
 
-Transactional events (Authenticated) require the contract invoker's public key as the first Event input.  Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md 
+Transactional events (Authenticated) require the contract invoker's public key as the first method input.  Reference: https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md 
 
-This standard defines to Two Event types:
-* '''(Required)''' : Events that are present on all NEP5 tokens.
-* '''(Optional)''' : Events that are optionally implemented on NEP5 tokens.  These event types are not required for standard interfacing.  All optional events must be enabled if choosing to use them.
+This standard defines to Two method types:
+* '''(Required)''' : methods that are present on all NEP5 tokens.
+* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens.  These event types are not required for standard interfacing.  All optional events must be enabled if choosing to use them.
 
 [[nep-5/NEP5Template.md|Template]]
 
 
-===Required Events===
+===Required Methods===
 
-====Event: totalSupply====
+====Method: totalSupply====
 "totalSupply" returns the total token supply deployed in the system.
 
 * '''private static BigInteger totalSupply()'''
 * Invoke: <code>"746f74616c537570706c79"</code>
 
 
-====Event: name====
+====Method: name====
 "name" returns the token name.
 
 * '''private static string name()'''
 * Invoke: <code>"6e616d65"</code>
 
 
-====Event: symbol====
+====Method: symbol====
 "symbol" returns the token symbol.
 
 * '''private static string symbol()'''
 * Invoke: <code>"73796d626f6c"</code>
 
 
-====Event: decimals====
+====Method: decimals====
 "decimals" returns the number of decimals used by the token.
 
 * '''private static BigInteger decimals()'''
 * Invoke: <code>"646563696d616c73"</code>
 
 
-====Event: balanceOf====
+====Method: balanceOf====
 "balanceOf" returns the token balance of the '''account'''.
 
 * '''private static BigInteger balanceOf(byte[] account)'''
 * Invoke: <code>"62616c616e63654f66", byte[] account</code>
 
 
-====Event (Authenticated): transfer====
+====Method (Authenticated): transfer====
 "transfer" will transfer an '''amount''' of tokens from the '''originator''' account to the '''to''' account.
 
 * '''private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)'''
 * Invoke: <code>"7472616e73666572", byte[] originator, byte[] to, byte[] amount</code>
 
 
-===Optional Events===
+===Optional Methods:===
 
-====Event: allowance====
+====Method: allowance====
 "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
 
 * '''private static BigInteger Allowance(byte[] from, byte[] to)'''
 * Invoke: <code>"616c6c6f77616e6365", byte[] from, byte[] to</code>
 
 
-====Event (Authenticated): transferFrom====
+====Method (Authenticated): transferFrom====
 "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
 
 * '''private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)'''
 * Invoke: <code>"7472616e7366657246726f6d", byte[] originator, byte[] from, byte[] to, byte[] amount </code>
 
 
-====Event (Authenticated): approve====
+====Method (Authenticated): approve====
 "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
 
 * '''private static bool Approve(byte[] originator, byte[] to, byte[] amount)'''
