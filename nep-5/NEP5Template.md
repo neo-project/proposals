@@ -20,8 +20,8 @@ namespace NEO_NEP_5
         ///   参数：0505
         ///   返回值：05
         /// </summary>
-        /// <param name="Event">
-        ///   The NEP5 Event being invoked.
+        /// <param name="Method">
+        ///   The NEP5 Method being invoked.
         ///   所调用的 NEP5 方法
         /// </param>
         /// <param name="args">
@@ -29,7 +29,7 @@ namespace NEO_NEP_5
         ///   NEP5 方法的参数
         /// </param>
 
-        public static object Main(string Event, params object[] args)
+        public static object Main(string method, params object[] args)
         {
            BigInteger supply = 1000000;
            string name = "Name";
@@ -37,28 +37,28 @@ namespace NEO_NEP_5
            BigInteger decimals = 1;
            
 
-           if (Event == "totalSupply") return supply;
+           if (method == "totalSupply") return supply;
  
-           if (Event == "name") return name;
+           if (method == "name") return name;
  
-           if (Event == "symbol") return symbol;
+           if (method == "symbol") return symbol;
 
-           if (Event == "decimals") return decimals;
+           if (method == "decimals") return decimals;
            
-           if (Event == "balanceOf") return Storage.Get(Storage.CurrentContext, byte [] args[1]);
+           if (method == "balanceOf") return Storage.Get(Storage.CurrentContext, byte [] args[1]);
 
-           //if (Event == "allowance") return Allowance(args[1], args[2]);
+           //if (method == "allowance") return Allowance(args[1], args[2]);
 
 
            //Verify that the originator is honest.
            //确认交易者诚实
            if (!Runtime.CheckWitness(byte[] args[0]) ) return false;
             
-           if (Event == "transfer") return Transfer(byte[] args[0], byte[] args[1], BytesToInt(byte[] args[2]) );
+           if (method == "transfer") return Transfer(byte[] args[0], byte[] args[1], BytesToInt(byte[] args[2]) );
            
-           //if (Event == "transferFrom") return TransferFrom(byte[] args[0], byte[] args[1], byte[] args[2], BytesToInt(byte[] args[3]) );
+           //if (method == "transferFrom") return TransferFrom(byte[] args[0], byte[] args[1], byte[] args[2], BytesToInt(byte[] args[3]) );
 
-           //if (Event == "approve") return Approve(byte[] args[0], byte[] args[1], byte[] args[2] );
+           //if (method == "approve") return Approve(byte[] args[0], byte[] args[1], byte[] args[2] );
 
            return false;
         }
@@ -102,8 +102,10 @@ namespace NEO_NEP_5
             {
                 Storage.Put(Storage.CurrentContext, originator, IntToBytes(nOriginatorValue));
                 Storage.Put(Storage.CurrentContext, to, IntToBytes(nTargetValue));
+                NotifyOriginator(true)
                 return true;
             }
+            NotifyOriginator(false);
             return false;
         }
 
@@ -177,6 +179,7 @@ namespace NEO_NEP_5
         private static bool Approve(byte[] originator, byte[] to, byte[] amount)
         {
             Storage.Put(Storage.CurrentContext, originator.Concat(to), amount);
+            NotifyOriginator(true)
             return true;
         }
        
@@ -202,6 +205,21 @@ namespace NEO_NEP_5
             return BytesToInt(Storage.Get(Storage.CurrentContext, from.Concat(to)));
         }
 
+        
+        /// <summary>
+        ///   Notifies the user of success/failure on authenticated methods.
+        /// </summary>
+        /// <param name="success">
+        ///   A boolean indicating whether the transaction was a success. 
+        /// </param>
+        private static void NotifyOriginator(bool success){
+            if (success){
+                Runtime.Notify("Transcation Successful", Blockchain.GetHeight()); 
+                return;
+            }
+            Runtime.Notify("Transaction Unsuccessful", "");
+            
+       
        
         private static byte[] IntToBytes(BigInteger value)
         {
