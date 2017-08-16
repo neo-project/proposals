@@ -25,7 +25,7 @@ Transactional events (Authenticated) require the contract invoker's public key a
 
 This standard defines two method types:
 * '''(Required)''' : methods that are present on all NEP5 tokens.
-* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens.  These event types are not required for standard interfacing.  All optional events must be enabled if choosing to use them.
+* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens.  These event types are not required for standard interfacing, and most tokens should not use them.  All optional events must be enabled if choosing to use them. 
 
 [[nep-5/NEP5Template.md|Template]]
 
