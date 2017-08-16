@@ -1,4 +1,3 @@
-```csharp
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
 using System.Numerics;
@@ -20,7 +19,7 @@ namespace NEO_NEP_5
         ///   参数：0505
         ///   返回值：05
         /// </summary>
-        /// <param name="Method">
+        /// <param name="method">
         ///   The NEP5 Method being invoked.
         ///   所调用的 NEP5 方法
         /// </param>
@@ -45,20 +44,20 @@ namespace NEO_NEP_5
 
            if (method == "decimals") return decimals;
            
-           if (method == "balanceOf") return Storage.Get(Storage.CurrentContext, byte [] args[1]);
+           if (method == "balanceOf") return Storage.Get(Storage.CurrentContext, (byte[]) args[1]);
 
            //if (method == "allowance") return Allowance(args[1], args[2]);
 
 
            //Verify that the originator is honest.
            //确认交易者诚实
-           if (!Runtime.CheckWitness(byte[] args[0]) ) return false;
+           if (!Runtime.CheckWitness((byte[]) args[0])) return false;
             
-           if (method == "transfer") return Transfer(byte[] args[0], byte[] args[1], BytesToInt(byte[] args[2]) );
+           if (method == "transfer") return Transfer((byte[]) args[0], (byte[]) args[1], BytesToInt((byte[]) args[2]));
            
-           //if (method == "transferFrom") return TransferFrom(byte[] args[0], byte[] args[1], byte[] args[2], BytesToInt(byte[] args[3]) );
+           //if (method == "transferFrom") return TransferFrom((byte[]) args[0], (byte[]) args[1], (byte[]) args[2], BytesToInt((byte[]) args[3]));
 
-           //if (method == "approve") return Approve(byte[] args[0], byte[] args[1], byte[] args[2] );
+           //if (method == "approve") return Approve((byte[]) args[0], (byte[]) args[1], (byte[]) args[2]);
 
            return false;
         }
@@ -102,10 +101,9 @@ namespace NEO_NEP_5
             {
                 Storage.Put(Storage.CurrentContext, originator, IntToBytes(nOriginatorValue));
                 Storage.Put(Storage.CurrentContext, to, IntToBytes(nTargetValue));
-                NotifyOriginator(true)
+                Runtime.Notify("Transfer Successful", originator, to, amount, Blockchain.GetHeight()); 
                 return true;
             }
-            NotifyOriginator(false);
             return false;
         }
 
@@ -179,7 +177,7 @@ namespace NEO_NEP_5
         private static bool Approve(byte[] originator, byte[] to, byte[] amount)
         {
             Storage.Put(Storage.CurrentContext, originator.Concat(to), amount);
-            NotifyOriginator(true)
+            Runtime.Notify("Approval Successful", originator, to , amount, Blockchain.GetHeight()); 
             return true;
         }
        
@@ -204,22 +202,7 @@ namespace NEO_NEP_5
         {
             return BytesToInt(Storage.Get(Storage.CurrentContext, from.Concat(to)));
         }
-
         
-        /// <summary>
-        ///   Notifies the user of success/failure on authenticated methods.
-        /// </summary>
-        /// <param name="success">
-        ///   A boolean indicating whether the transaction was a success. 
-        /// </param>
-        private static void NotifyOriginator(bool success){
-            if (success){
-                Runtime.Notify("Transcation Successful", Blockchain.GetHeight()); 
-                return;
-            }
-            Runtime.Notify("Transaction Unsuccessful", "");
-            return;
-       
        
         private static byte[] IntToBytes(BigInteger value)
         {
@@ -233,8 +216,6 @@ namespace NEO_NEP_5
             var buffer = new BigInteger(array);
             return buffer;
         }
-
         
     }
 }
-```
