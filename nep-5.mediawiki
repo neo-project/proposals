@@ -97,14 +97,6 @@ This standard defines two method types:
 * Invoke: <code>"617070726f7665", byte[] originator, byte[] to, byte[] amount</code>
 
 
-===Events===
-
-====Event: NotifyOriginator====
-Notifies the contract invoker that an authenticated method has either succeeded or failed.
-
-* '''private static void NotifyOriginator(bool success)'''
-
-
 ==Rationale==
 
 
