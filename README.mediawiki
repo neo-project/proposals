@@ -21,11 +21,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Meta
 | Active
 |-
-| 2
+| [https://github.com/neo-project/proposals/pull/2 2]
 | Passphrase-protected private key
-| 
+| Erik Zhang
 | Standard
-| Stub
+| Accepted
 |-
 | 3
 | Wallet Standard
