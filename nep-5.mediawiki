@@ -1,7 +1,7 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, Erik Zhang <erik@neo.org>, Alan Fong <anfn@umich.edu>
+  Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
   Type: Standard
   Status: Draft
   Created: 2017-08-10
@@ -17,89 +17,81 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 
 ==Specification==
 
-
-In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well
-as the invoke parameters.  Note that we have provided the hex string for the event as the first input.  
-
-Transactional events (Authenticated) require the contract invoker's public key as the first method input.  [[https://github.com/neo-project/docs/blob/master/en-us/sc/tutorial/Lock2.md|Reference]] 
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
 
 This standard defines two method types:
+
 * '''(Required)''' : methods that are present on all NEP5 tokens.
-* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens.  These event types are not required for standard interfacing, and most tokens should not use them.  All optional events must be enabled if choosing to use them. 
 
-[[nep-5/NEP5Template.md|Template]]
+* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens. These method types are not required for standard interfacing, and most tokens should not use them. All optional methods must be enabled if choosing to use them.
 
+===Methods===
 
-===Required Methods===
+====totalSupply====
 
-====Method: totalSupply====
-"totalSupply" returns the total token supply deployed in the system.
+* Syntax: <code>public static BigInteger totalSupply()</code>
 
-* '''private static BigInteger totalSupply()'''
-* Invoke: <code>"746f74616c537570706c79"</code>
+* Remarks: "totalSupply" returns the total token supply deployed in the system.
 
+====name====
 
-====Method: name====
-"name" returns the token name.
+* Syntax: <code>public static string name()</code>
 
-* '''private static string name()'''
-* Invoke: <code>"6e616d65"</code>
+* Remarks: "name" returns the token name.
 
 
-====Method: symbol====
-"symbol" returns the token symbol.
+====symbol====
 
-* '''private static string symbol()'''
-* Invoke: <code>"73796d626f6c"</code>
+* Syntax: <code>public static string symbol()</code>
 
+* Remarks: "symbol" returns the token symbol.
 
-====Method: decimals====
-"decimals" returns the number of decimals used by the token.
+====decimals====
 
-* '''private static BigInteger decimals()'''
-* Invoke: <code>"646563696d616c73"</code>
+* Syntax: <code>public static byte decimals()</code>
 
+* Remarks: "decimals" returns the number of decimals used by the token.
 
-====Method: balanceOf====
-"balanceOf" returns the token balance of the '''account'''.
+====balanceOf====
 
-* '''private static BigInteger balanceOf(byte[] account)'''
-* Invoke: <code>"62616c616e63654f66", byte[] account</code>
+* Syntax: <code>public static BigInteger balanceOf(byte[] account)</code>
 
+* Remarks: "balanceOf" returns the token balance of the '''account'''.
 
-====Method (Authenticated): transfer====
-"transfer" will transfer an '''amount''' of tokens from the '''originator''' account to the '''to''' account.
+====transfer====
 
-* '''private static bool Transfer(byte[] originator, byte[] to, BigInteger amount)'''
-* Invoke: <code>"7472616e73666572", byte[] originator, byte[] to, byte[] amount</code>
+* Syntax: <code>public static bool transfer(byte[] from, byte[] to, BigInteger amount)</code>
 
+* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
 
-===Optional Methods:===
+====allowance ''(optional)''====
 
-====Method: allowance====
-"allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
+* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
 
-* '''private static BigInteger Allowance(byte[] from, byte[] to)'''
-* Invoke: <code>"616c6c6f77616e6365", byte[] from, byte[] to</code>
+* Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
 
+====transferFrom ''(optional)''====
 
-====Method (Authenticated): transferFrom====
-"transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
+* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
 
-* '''private static bool TransferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)'''
-* Invoke: <code>"7472616e7366657246726f6d", byte[] originator, byte[] from, byte[] to, byte[] amount </code>
+* Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
 
+====approve ''(optional)''====
 
-====Method (Authenticated): approve====
-"approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
+* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
 
-* '''private static bool Approve(byte[] originator, byte[] to, byte[] amount)'''
-* Invoke: <code>"617070726f7665", byte[] originator, byte[] to, byte[] amount</code>
+* Remarks: "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
 
+===Events===
 
-==Rationale==
+====transfer====
 
+* Syntax: <code>public static event Action<byte[], byte[], BigInteger> transfer</code>
+
+* Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
 
 ==Implementation==
 
-Verified on testnet.
+*Woolong: https://github.com/lllwvlvwlll/Woolong
+
+*ICO Template: https://github.com/tanZiWen/neo_ico_template

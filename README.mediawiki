@@ -41,9 +41,9 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
-| lllwvlvwlll, Erik Zhang, Alan Fong
+| lllwvlvwlll, luodanwg, tanyuan, Alan Fong
 | Standard
-| Stub
+| Draft
 |-
 | 6
 | Superconductive Exchange
