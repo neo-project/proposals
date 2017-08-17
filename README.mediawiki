@@ -23,103 +23,103 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | 2
 | Passphrase-protected private key
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 3
 | Wallet Standard
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 4
 | URI Scheme
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 5
 | Token Standard
-| Erik Zhang, Da Hongfei
+| 
 | Standard
 | Stub
 |-
 | 6
 | Superconductive Exchange
-| Erik Zhang, Da Hongfei
+| 
 | Standard
 | Stub
 |-
 | 7
 | Dynamic Sharding
-| Erik Zhang, Da Hongfei
+| 
 | Standard
 | Stub
 |-
 | 8
 | Compact Block Relay
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 9
 | Peer Authentication
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 10
 | Aggregate Signature
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 11
 | SM2 Cryptography
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 12
 | Homomorphic Encryption
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 13
 | Zero-knowledge proof
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 14
 | Stealth Addresses
-| Erik Zhang
+| 
 | Standard
 | Stub
 |-
 | 15
 | NeoID
-| Erik Zhang, Da Hongfei
+| 
 | Standard
 | Stub
 |-
 | 16
 | NeoFS
-| Erik Zhang, Da Hongfei
+| 
 | Standard
 | Stub
 |-
 | 17
 | NeoX
-| Erik Zhang, Da Hongfei
+| 
 | Standard
 | Stub
 |-
 | 18
 | NeoQS
-| Erik Zhang
+| 
 | Standard
 | Stub
 |}
