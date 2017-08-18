@@ -45,79 +45,79 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| 6
+| 
 | Superconductive Exchange
 | 
 | Standard
 | Stub
 |-
-| 7
+| 
 | Dynamic Sharding
 | 
 | Standard
 | Stub
 |-
-| 8
+| 
 | Compact Block Relay
 | 
 | Standard
 | Stub
 |-
-| 9
+| 
 | Peer Authentication
 | 
 | Standard
 | Stub
 |-
-| 10
+| 
 | Aggregate Signature
 | 
 | Standard
 | Stub
 |-
-| 11
+| 
 | SM2 Cryptography
 | 
 | Standard
 | Stub
 |-
-| 12
+| 
 | Homomorphic Encryption
 | 
 | Standard
 | Stub
 |-
-| 13
+| 
 | Zero-knowledge proof
 | 
 | Standard
 | Stub
 |-
-| 14
+| 
 | Stealth Addresses
 | 
 | Standard
 | Stub
 |-
-| 15
+| 
 | NeoID
 | 
 | Standard
 | Stub
 |-
-| 16
+| 
 | NeoFS
 | 
 | Standard
 | Stub
 |-
-| 17
+| 
 | NeoX
 | 
 | Standard
 | Stub
 |-
-| 18
+| 
 | NeoQS
 | 
 | Standard
