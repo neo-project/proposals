@@ -94,4 +94,4 @@ This standard defines two method types:
 
 *Woolong: https://github.com/lllwvlvwlll/Woolong
 
-*ICO Template: https://github.com/tanZiWen/neo_ico_template
+*ICO Template: https://github.com/neo-project/examples/tree/master/ICO_Template
