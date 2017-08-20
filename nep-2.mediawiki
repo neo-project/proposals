@@ -114,3 +114,7 @@ Test 2:
 *Encrypted: 6PYN6mjwYfjPUuYT3Exajvx25UddFVLpCw4bMsmtLdnKwZ9t1Mi3CfKe8S
 *Unencrypted (WIF): KwYgW8gcxj1JWJXhPSu4Fqwzfhp5Yfi42mdYmMa4XqK7NJxXUSK7
 *Unencrypted (hex): 09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE
+
+==Implementation==
+
+*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Wallets/KeyPair.cs#L75
