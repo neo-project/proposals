@@ -45,4 +45,4 @@ TODO
 
 ==Implementation==
 
-TODO
+https://github.com/lerider/Simulation-of-Consensus-Nodes-Assignment
