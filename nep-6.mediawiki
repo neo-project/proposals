@@ -1,0 +1,49 @@
+<pre>
+  NEP: 6
+  Title: Simulation of Consensus Nodes Assignment
+  Author: Malcolm Lerider
+  Type: Informational
+  Status: Draft
+  Created: 2017-08-21
+  Requires (*optional):
+  Replaces (*optional):
+</pre>
+
+==Abstract==
+
+We want to avoid malicious consortiums to gain majority as consensus nodes. There may be attack vectors to affect assignment of consensus nodes if the number of total consensus nodes is decided dynamically.
+
+==Motivation==
+
+NEO uses novel consensus technology and cannot rely on the mistakes of others to prevent all possible attack vectors. A simulation can find attack vectors and allow NEO project to safeguard before full decentralization.
+
+==Specification==
+
+To investigate:
+
+    1. If total number of consensus nodes is decided after voting, is there a risk for smaller consortiums to gain majority consensus nodes if NEO consortium spread out on too few nominees?
+
+    2. If total number of consensus nodes is decided before voting, or uses an algorithm unrelated to voting, would that make it easier for NEO consortium to guarantee that they have 2/3 of consensus nodes?
+
+    3. If the answer on question 2 is yes, would that reduce number of iterations needed to reach consensus and speed up the block generation?
+
+    4. If the answer on question 2 and 3 is yes, would it be an advantage or disadvantage to have an algorithm that decides number of votes that would guarantee a seat as consensus node?
+    If for example 150 000 votes guarantees a seat, then major NEO holders know how to split their votes to prevent malicious consortiums from gaining majority.
+
+
+==Rationale==
+
+https://www.reddit.com/r/Antshares/comments/6nemjr/in_response_to_neo_vs_eth_security_dbft/
+
+
+==Backwards Compatibility==
+
+N/A
+
+==Test Cases==
+
+TODO
+
+==Implementation==
+
+TODO
