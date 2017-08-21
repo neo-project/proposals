@@ -14,8 +14,8 @@ public class ConsensusNodesSimulation {
 	static float totalVotingShares = neoConsortiumHoldings + economicConsortiumHoldings;
 	static int numberOfConsensusNodes = 0;
 	static int percentaceMultiplier = 10000;
-	static int weightLowIndex = (int) (0.25 * percentaceMultiplier);
-	static int weightHighIndex = (int) (0.75 * percentaceMultiplier);
+	static int weightLowIndex = (int) (0.25 * percentageMultiplier);
+	static int weightHighIndex = (int) (0.75 * percentageMultiplier);
 
 	static File saveFile = new File("C:\\Users\\<<user>>\\Desktop\\simulation_N40_E20.csv");
 	static FileWriter fw;
@@ -57,12 +57,12 @@ public class ConsensusNodesSimulation {
 	private static ArrayList<Nominee> calculateVoteResult(int neoNominees, int economicNominees) {
 		// Set number of votes for each nominee and count votes in ballot
 		ArrayList<Nominee> voteResult = new ArrayList<>();
-		float[] votesInBallot = new float[percentaceMultiplier];
+		float[] votesInBallot = new float[percentageMultiplier];
 		int arrayIndex = 0;
 		for (int i = 0; i < neoNominees; i++) {
 			voteResult.add(new Nominee(true, neoConsortiumHoldings / totalVotingShares, false));
 			// Split per percentage and put in array to be sorted
-			int percentage = (int)(percentaceMultiplier * ( (neoConsortiumHoldings /  (float) neoNominees) /  totalVotingShares ));
+			int percentage = (int)(percentageMultiplier * ( (neoConsortiumHoldings /  (float) neoNominees) /  totalVotingShares ));
 			for (int j = 0; j < percentage; j++){
 				votesInBallot[arrayIndex] = neoNominees;
 				arrayIndex++;
@@ -71,7 +71,7 @@ public class ConsensusNodesSimulation {
 		for (int i = 0; i < economicNominees; i++) {
 			voteResult.add(new Nominee(false, economicConsortiumHoldings/ totalVotingShares, false));
 			// Split per percentage and put in array to be sorted
-			int percentage = (int)(percentaceMultiplier * ( (economicConsortiumHoldings / (float) economicNominees) /  totalVotingShares ));
+			int percentage = (int)(percentageMultiplier * ( (economicConsortiumHoldings / (float) economicNominees) /  totalVotingShares ));
 			for (int j = 0; j < percentage; j++){
 				votesInBallot[arrayIndex] = economicNominees;
 				arrayIndex++;
