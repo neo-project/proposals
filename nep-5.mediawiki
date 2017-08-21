@@ -13,7 +13,7 @@ The NEP-5 Proposal outlines a token standard for the NEO blockchain that will pr
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract deployment and invocation will become increasingly important.  Without a standard interaction method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts.  Tokenized contracts present themselves as a prime example of this need because their basic operating mechanism is the same.  A standard method for interacting with these tokens relieves the entire ecosystem from maintaining a definition for basic operations that a required by every Smart Contract that employs a token.
+As the NEO blockchain scales, Smart Contract deployment and invocation will become increasingly important.  Without a standard interaction method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts.  Tokenized contracts present themselves as a prime example of this need because their basic operating mechanism is the same.  A standard method for interacting with these tokens relieves the entire ecosystem from maintaining a definition for basic operations that are required by every Smart Contract that employs a token.
 
 ==Specification==
 
