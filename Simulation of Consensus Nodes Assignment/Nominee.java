@@ -19,8 +19,8 @@ public class Nominee {
 	public boolean isNEO() {
 		return NEO;
 	}
-	public void setNEO(boolean nEO) {
-		NEO = nEO;
+	public void setNEO(boolean neo) {
+		this.NEO = neo;
 	}
 	public float getVotes() {
 		return votes;
