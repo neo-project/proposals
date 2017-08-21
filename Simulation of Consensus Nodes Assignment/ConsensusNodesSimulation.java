@@ -13,7 +13,7 @@ public class ConsensusNodesSimulation {
 	static float economicConsortiumHoldings = 0.2f; // Economic holdings
 	static float totalVotingShares = neoConsortiumHoldings + economicConsortiumHoldings;
 	static int numberOfConsensusNodes = 0;
-	static int percentaceMultiplier = 10000;
+	static int percentageMultiplier = 10000;
 	static int weightLowIndex = (int) (0.25 * percentageMultiplier);
 	static int weightHighIndex = (int) (0.75 * percentageMultiplier);
 
