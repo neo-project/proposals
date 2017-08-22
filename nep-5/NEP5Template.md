@@ -14,7 +14,7 @@ namespace NEO_NEP_5
         ///   Please read the comments for instructions 
         ///   on fields that need to be populated.
         /// 
-        ///   Parameter List: 0505
+        ///   Parameter List: 05
         ///   Return List: 05
         ///
         ///   参数：0505
