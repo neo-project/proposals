@@ -25,6 +25,8 @@ This standard defines two method types:
 
 * '''(Optional)''' : methods that are optionally implemented on NEP5 tokens. These method types are not required for standard interfacing, and most tokens should not use them. All optional methods must be enabled if choosing to use them.
 
+[[nep-5/NEP5Template.md|Template]]
+
 ===Methods===
 
 ====totalSupply====
