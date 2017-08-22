@@ -45,7 +45,7 @@ namespace NEO_NEP_5
 
            if (method == "decimals") return decimals;
            
-           if (method == "balanceOf") return Storage.Get(Storage.CurrentContext, (byte[]) args[1]);
+           if (method == "balanceOf") return BytesToInt(Storage.Get(Storage.CurrentContext, (byte[]) args[1]));
 
            //if (method == "allowance") return Allowance(args[1], args[2]);
 
