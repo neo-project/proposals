@@ -27,23 +27,29 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| 3
-| Wallet Standard
-| 
-| Standard
-| Stub
-|-
-| 4
-| URI Scheme
-| 
-| Standard
-| Stub
-|-
 | [https://github.com/neo-project/proposals/pull/4 5]
 | Token Standard
 | lllwvlvwlll, luodanwg, tanyuan, Alan Fong
 | Standard
 | Accepted
+|-
+| 
+| NeoContract ABI
+| 
+| Standard
+| Stub
+|-
+| 
+| Wallet Standard
+| 
+| Standard
+| Stub
+|-
+| 
+| URI Scheme
+| 
+| Standard
+| Stub
 |-
 | 
 | Superconductive Exchange
