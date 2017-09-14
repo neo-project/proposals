@@ -14,11 +14,11 @@ This NEP describes a wallet standard that allows the wallet files to be shared b
 
 ==Motivation==
 
-Currently, different client programs generate different wallet files. They have different file formats, different ways of storing, and different ways of encrypting. It is difficult for users to migrate between different client programs because the wallet files are not in the same format. Although migration can be achieved by exporting the private key, it is cumbersome for wallets with multiple private keys. We need an universal wallet standard format that allows users to migrate across all platforms safely and easily without having to change the wallet file or export the private keys.
+Currently, different client programs generate different wallet files. They have different file formats, different ways of storing, and different ways of encrypting. It is difficult for users to migrate between different client programs because the wallet files are not in the same format. Although migration can be achieved by exporting the private key, it is cumbersome for wallets with multiple private keys. We need an universal wallet format that allows users to migrate across all platforms safely and easily without having to change the wallet file or export the private keys.
 
 ==Rationale==
 
-The wallet standard should consider both security and cross-platform. For security, we require the implementations to use the NEP-2 mechanism to encrypt or decrypt the private keys. For Cross-platform, we use the JSON format to describe the wallet files, so that the contents of the wallet files can be easily recognized on each platform.
+The wallet standard should consider both security and cross-platform compatibility. For security, we require the implementations to use the NEP-2 mechanism to encrypt or decrypt the private keys. For cross-platform, we use the JSON format to describe the wallet files, so that the contents of the wallet files can be easily recognized on each platform.
 
 ==Specification==
 
