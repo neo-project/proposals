@@ -26,7 +26,7 @@ Set transaction fee to 1 (satoshi).
 
 Each transaction should act as a “claim gas” transaction.  
 
-The transaction fee should be subtracted from the claimed gas.  
+The transaction fee should be subtracted after gas is claimed.  
 
 The remainder of claimed gas should be returned to the sender.  
 
