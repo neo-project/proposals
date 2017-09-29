@@ -18,7 +18,7 @@ This NEP suggests a solution where the end user only need to hold 1 NEO in his o
 
 ==Motivation==
 
-The current solution to provide free transactions and the initial 10 GAS for Smart Contracts for free is aimed to allow mass adoption of NEO and seamless experience for the end user. This does however open up for abuse in the form of DDoS attacks and bloat the blockchain by allowing free storage in split files. The easiest way to prevent such situations is to introduce a transaction fee. However, introducing a transaction fee will be negative for user experience; the user need to acquire tokens for every single data exchange with a Smart Contract. The common end user cannot be expected to have knowledge to acquire such token. Moreover, it is an extra obstacle in automation of transfers.  
+The current solution to provide free transactions and the initial 10 GAS for Smart Contracts for free is aimed to allow mass adoption of NEO and seamless experience for the end user. This does however open up for abuse in the form of DDoS attacks. The easiest way to prevent such situations is to introduce a transaction fee. However, introducing a transaction fee will be negative for user experience; the user need to acquire tokens for every single data exchange with a Smart Contract. The common end user cannot be expected to have knowledge to acquire such token. Moreover, it is an extra obstacle in automation of transfers.  
 
 ==Specification==
 
