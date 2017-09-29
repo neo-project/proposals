@@ -22,7 +22,7 @@ The current solution to provide free transactions and the initial 10 GAS for Sma
 
 ==Specification==
 
-Set transaction fee to 1 (satoshi).  
+Set transaction fee to 8 (satoshi).  
 
 Each transaction should act as a “claim gas” transaction.  
 
