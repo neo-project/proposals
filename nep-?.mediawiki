@@ -30,6 +30,15 @@ The transaction fee should be subtracted after gas is claimed.
 
 The remainder of claimed gas should be returned to the sender.  
 
+1)
+If the transaction has NEO the claim is made automatic every transaction, with 8 satoshi fee for each NEO.  
+
+2)  
+If the transaction has GAS just charge 8 satoshi.  
+
+3)  
+Contract execution is still 10 GAS free.  
+
 
 
 ==Rationale==
