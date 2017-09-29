@@ -1,0 +1,53 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Free transactions
+  Author: Malcolm Lerider, 
+  Type: Standard
+  Status: Draft
+  Created: 2017-09-29
+</pre>
+
+==Abstract==
+
+NEO is being built for Smart Economy and mass adoption. The pillars are Digital Assets, Smart Contracts, and Digital Identity.  
+
+Majority of blockchain platforms that provide Smart Contract functionality rely on transaction fee to ensure the integrity of the network. One part of this is to prevent DDoS attacks. With NEO’s vision of mass adoption, this transaction fee is an obstacle for the end user. The end user should not have to acquire a specific digital token for every single data exchange with a Smart Contract.  
+
+This NEP suggests a solution where the end user only need to hold 1 NEO in his or her address to be able to send free transactions.  
+
+
+==Motivation==
+
+The current solution to provide free transactions and the initial 10 GAS for Smart Contracts for free is aimed to allow mass adoption of NEO and seamless experience for the end user. This does however open up for abuse in the form of DDoS attacks and bloat the blockchain by allowing free storage in split files. The easiest way to prevent such situations is to introduce a transaction fee. However, introducing a transaction fee will be negative for user experience; the user need to acquire tokens for every single data exchange with a Smart Contract. The common end user cannot be expected to have knowledge to acquire such token. Moreover, it is an extra obstacle in automation of transfers.  
+
+==Specification==
+
+Set transaction fee to 1 (satoshi).  
+
+Each transaction should act as a “claim gas” transaction.  
+
+The transaction fee should be subtracted from the claimed gas.  
+
+The remainder of claimed gas should be returned to the sender.  
+
+
+
+==Rationale==
+
+By applying this suggested solution, an address only need to hold 1 NEO in order to send transactions. From user perspective, the transaction will be experienced as free of charge.  
+
+This solution also allows to easily throttle transactions if ever needed. If the volume of transactions ever become a problem, then the transaction fee can be increased with one of the following consequences:  
+
+1. User will be able to send transactions less often.  
+
+2. User will need more NEO in the address to keep sending the same volume of transactions.  
+
+
+==Backwards Compatibility==
+
+
+==Test Cases==
+
+
+==Implementation==
+
