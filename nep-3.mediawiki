@@ -127,7 +127,7 @@ ParameterType enum has the following values:
 | A string which is encoded in UTF-8.
 |-
 | Array
-| An array of objects.
+| An array of objects. The type of elements can be any value of ParameterType.
 |-
 | InteropInterface
 | An interface which is returned by interop services.
@@ -135,3 +135,26 @@ ParameterType enum has the following values:
 | Void
 | Void means that the function has no return value. This value cannot be the type of a parameter.
 |}
+
+===EntryPoint===
+
+It is strongly recommended that each contract have the following entry point function:
+
+<pre>
+{
+  "name": "main",
+  "parameters": [
+    {
+      "name": "operation",
+      "type": "String"
+    },
+    {
+      "name": "args",
+      "type": "Array"
+    }
+  ],
+  "returntype": "ByteArray"
+}
+</pre>
+
+In this way, the caller can easily access the functions through the entry point, specifying the name of the function to invoke with the first parameter, and specifying the parameters of the function with the second argument.
