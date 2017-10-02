@@ -1,7 +1,7 @@
 <pre>
   NEP: <to be assigned>
   Title: Free transactions
-  Author: Malcolm Lerider, Ethan Fast, ...
+  Author: Ethan Fast, ... Malcolm Lerider
   Type: Standard
   Status: Draft
   Created: 2017-09-29
