@@ -55,9 +55,7 @@ To keep the size of the encrypted key down, no initialization vectors (IVs) are 
 
 **4 bytes: SHA256(SHA256(expected_neo_address))[0...3], used both for typo checking and as salt
 
-**16 bytes: An AES-encrypted key material record (encryptedhalf1)
-
-**16 bytes: An AES-encrypted key material record (encryptedhalf2)
+**32 bytes: An AES-encrypted key material record
 
 *Range in base58check encoding (prefix 6PY):
 
@@ -75,13 +73,11 @@ To keep the size of the encrypted key down, no initialization vectors (IVs) are 
 
 #*Let's split the resulting 64 bytes in half, and call them derivedhalf1 and derivedhalf2.
 
-#Do AES256Encrypt(block = privkey[0...15] xor derivedhalf1[0...15], key = derivedhalf2), call the 16-byte result encryptedhalf1
-
-#Do AES256Encrypt(block = privkey[16...31] xor derivedhalf1[16...31], key = derivedhalf2), call the 16-byte result encryptedhalf2
+#Do AES256Encrypt(block = privkey xor derivedhalf1, key = derivedhalf2), call the result encryptedKey
 
 The encrypted private key is the Base58Check-encoded concatenation of the following, which totals 39 bytes without Base58 checksum:
 
-*0x01 0x42 + flagbyte + salt + encryptedhalf1 + encryptedhalf2
+*0x01 0x42 + flagbyte + salt + encryptedKey
 
 ===Decryption steps===
 
@@ -89,9 +85,9 @@ The encrypted private key is the Base58Check-encoded concatenation of the follow
 
 #Derive derivedhalf1 and derivedhalf2 by passing the passphrase and addresshash into scrypt function.
 
-#Decrypt encryptedhalf1 and encryptedhalf2 using AES256Decrypt, merge them to form the encrypted private key.
+#Decrypt encryptedKey using AES256Decrypt to form the plaintext private key.
 
-#Convert that private key into a NEO address.
+#Convert that plaintext private key into a NEO address.
 
 #Hash the NEO address, and verify that addresshash from the encrypted private key record matches the hash. If not, report that the passphrase entry was incorrect.
 
