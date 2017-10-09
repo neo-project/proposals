@@ -1,0 +1,122 @@
+<pre>
+  NEP: 2
+  Title: Passphrase-protected private key
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Final
+  Created: 2017-8-7
+</pre>
+
+==Abstract==
+
+A method is proposed for encrypting and encoding a passphrase-protected private key record in the form of a 58-character Base58Check-encoded printable string. Encrypted private key records are intended for use on paper wallets. Each record string contains all the information needed to reconstitute the private key except for a passphrase, and the methodology uses salting and scrypt to resist brute-force attacks.
+
+==Motivation==
+
+Password and passphrase-protected private keys enable new practical use cases for sending assets from person to person. Someone wanting to send assets through postal mail could send a password-protected paper wallet and give the recipient the passphrase over the phone or e-mail, making the transfer safe from interception of either channel. A user of paper wallets could carry funded encrypted private keys while leaving a copy at home as an element of protection against accidental loss or theft. A user of paper wallets who leaves assets in a bank vault or safety deposit box could keep the password at home or share it with trusted associates as protection against someone at the bank gaining access to the paper wallets and spending from them. The foreseeable and unforeseeable use cases for password-protected private keys are numerous.
+
+On the other hand, a standardized passphrase-protected private key format makes it possible to share private keys from different wallet clients.
+
+==Rationale==
+
+'''''User story:''' As a NEO user who uses paper wallets, I would like the ability to add encryption, so that my NEO paper storage can be two factor: something I have plus something I know.''
+
+'''''User story:''' As a NEO user who would like to pay a person or a company with a private key, I do not want to worry that any part of the communication path may result in the interception of the key and theft of my funds. I would prefer to offer an encrypted private key, and then follow it up with the password using a different communication channel (e.g. a phone call or SMS).
+
+==Specification==
+
+This proposal makes use of the following functions and definitions:
+
+*'''AES256Encrypt, AES256Decrypt''', the simple form of the well-known AES block cipher without consideration for initialization vectors or block chaining. Each of these functions takes a 256-bit key and 16 bytes of input, and deterministically yields 16 bytes of output.
+
+*'''SHA256''', a well-known hashing algorithm that takes an arbitrary number of bytes as input and deterministically yields a 32-byte hash.
+
+*'''scrypt''', a well-known key derivation algorithm. It takes the following parameters: (string) password, (string) salt, (int) n, (int) r, (int) p, (int) length, and deterministically yields an array of bytes whose length is equal to the length parameter.
+
+*'''Base58Check''', a method for encoding arrays of bytes using 58 alphanumeric characters commonly used in the NEO ecosystem.
+
+===Prefix===
+
+It is proposed that the resulting Base58Check-encoded string start with a '6'. The number '6' is intended to represent, from the perspective of the user, "a private key that needs something else to be usable" - an umbrella definition that could be understood in the future to include keys participating in multisig transactions, and was chosen with deference to the existing prefix '5' most commonly observed in Wallet Import Format which denotes an unencrypted private key.
+
+It is proposed that the second character ought to give a hint as to what is needed as a second factor, and for an encrypted key requiring a passphrase, the uppercase letter P is proposed.
+
+To keep the size of the encrypted key down, no initialization vectors (IVs) are used in the AES encryption. Rather, suitable values for IV-like use are derived using scrypt from the passphrase and from using a 32-bit hash of the resulting NEO address as salt.
+
+===Proposed specification===
+
+*Object identifier prefix: 0x0142. These are constant bytes that appear at the beginning of the Base58Check-encoded record, and their presence causes the resulting string to have a predictable prefix.
+
+*How the user sees it: 58 characters always starting with '6P'
+
+*Count of payload bytes (beyond prefix): 37
+
+**1 byte (flagbyte): always be 0xE0
+
+**4 bytes: SHA256(SHA256(expected_neo_address))[0...3], used both for typo checking and as salt
+
+**16 bytes: An AES-encrypted key material record (encryptedhalf1)
+
+**16 bytes: An AES-encrypted key material record (encryptedhalf2)
+
+*Range in base58check encoding (prefix 6PY):
+
+**Minimum value: 6PYJxKpVnkXUsnZAfD2B5ZsZafJYNp4ezQQeCjs39494qUUXLnXijLx6LG (based on 01 42 E0 plus thirty-six 00's)
+
+**Maximum value: 6PYXg5tGnLYdXDRZiAqXbeYxwDoTBNthbi3d61mqBxPpwZQezJTvQHsCnk (based on 01 42 E0 plus thirty-six FF's)
+
+===Encryption steps===
+
+#Compute the NEO address (ASCII), and take the first four bytes of SHA256(SHA256()) of it. Let's call this "addresshash".
+
+#Derive a key from the passphrase using scrypt
+
+#*Parameters: passphrase is the passphrase itself encoded in UTF-8 and normalized using Unicode Normalization Form C (NFC). salt is addresshash from the earlier step, n=16384, r=8, p=8, length=64
+
+#*Let's split the resulting 64 bytes in half, and call them derivedhalf1 and derivedhalf2.
+
+#Do AES256Encrypt(block = privkey[0...15] xor derivedhalf1[0...15], key = derivedhalf2), call the 16-byte result encryptedhalf1
+
+#Do AES256Encrypt(block = privkey[16...31] xor derivedhalf1[16...31], key = derivedhalf2), call the 16-byte result encryptedhalf2
+
+The encrypted private key is the Base58Check-encoded concatenation of the following, which totals 39 bytes without Base58 checksum:
+
+*0x01 0x42 + flagbyte + salt + encryptedhalf1 + encryptedhalf2
+
+===Decryption steps===
+
+#Collect encrypted private key and passphrase from user.
+
+#Derive derivedhalf1 and derivedhalf2 by passing the passphrase and addresshash into scrypt function.
+
+#Decrypt encryptedhalf1 and encryptedhalf2 using AES256Decrypt, merge them to form the encrypted private key.
+
+#Convert that private key into a NEO address.
+
+#Hash the NEO address, and verify that addresshash from the encrypted private key record matches the hash. If not, report that the passphrase entry was incorrect.
+
+==Backwards Compatibility==
+
+Backwards compatibility is minimally applicable since this is a new standard that at most extends Wallet Import Format. It is assumed that an entry point for private key data may also accept existing formats of private keys (such as hexadecimal and Wallet Import Format); this draft uses a key format that cannot be mistaken for any existing one and preserves auto-detection capabilities.
+
+==Test vectors==
+
+Test 1:
+
+*Passphrase: TestingOneTwoThree
+*Encrypted: 6PYVPVe1fQznphjbUxXP9KZJqPMVnVwCx5s5pr5axRJ8uHkMtZg97eT5kL
+*Unencrypted (WIF): L44B5gGEpqEDRS9vVPz7QT35jcBG2r3CZwSwQ4fCewXAhAhqGVpP
+*Unencrypted (hex): CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5
+
+Test 2:
+
+*Passphrase: Satoshi
+*Encrypted: 6PYN6mjwYfjPUuYT3Exajvx25UddFVLpCw4bMsmtLdnKwZ9t1Mi3CfKe8S
+*Unencrypted (WIF): KwYgW8gcxj1JWJXhPSu4Fqwzfhp5Yfi42mdYmMa4XqK7NJxXUSK7
+*Unencrypted (hex): 09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE
+
+==Implementation==
+
+*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Wallets/KeyPair.cs#L75
+
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/nep2.js
