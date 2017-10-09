@@ -33,11 +33,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/4 5]
+| [[nep-5.mediawiki|5]]
 | Token Standard
 | lllwvlvwlll, luodanwg, tanyuan, Alan Fong
 | Standard
-| Accepted
+| Final
 |-
 | 
 | Wallet Standard
