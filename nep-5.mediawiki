@@ -3,7 +3,7 @@
   Title: Token Standard
   Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
   Type: Standard
-  Status: Draft
+  Status: Final
   Created: 2017-08-10
 </pre>
 
