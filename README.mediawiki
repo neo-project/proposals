@@ -21,11 +21,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Meta
 | Active
 |-
-| [https://github.com/neo-project/proposals/pull/2 2]
+| [[nep-2.mediawiki|2]]
 | Passphrase-protected private key
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [https://github.com/neo-project/proposals/pull/12 3]
 | NeoContract ABI
