@@ -157,4 +157,4 @@ It is strongly recommended that each contract have the following entry point fun
 }
 </pre>
 
-In this way, the caller can easily access the functions through the entry point, specifying the name of the function to invoke with the first parameter, and specifying the parameters of the function with the second argument.
+In this way, the caller can easily access the functions through the entry point, specifying the name of the function to be invoked with the first parameter, and specifying the parameters of the function with the second parameter.
