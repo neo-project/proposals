@@ -1,0 +1,80 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Prevent voting attacks
+  Author: Malcolm Lerider <malcolm@neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2017-10-17
+</pre>
+
+==Abstract==
+
+This NEP prevents an undesirable scenario that can occur after voting for consensus nodes opens, where a minority consortium formed by social consensus can vote to influence the number of total consensus nodes to be significantly higher than what the majority of NEO holders desire. Using this strategy, a minority consortium with economic motive to collect transaction fees can gain majority control among consensus nodes, even if the majority of NEO holders desire zero or close to zero transaction fee.  
+
+The suggested solution is to always count 1 NEO as 1 vote. Voting will be linked to address. If an address vote for multiple candidates, then the total NEO votes in that address will be distributed equally among the selected candidates instead of giving each candidate one vote. Fractional votes are thus allowed. As example, owning one NEO and voting for two candidates will result in each candidate receiving 0.5 votes.  
+
+Moreover, it is suggested that number of total consensus nodes is a variable not affected by votes in a ballot.   
+
+
+==Motivation==
+
+By allowing one NEO to vote for multiple consensus nodes, it opens for attacks by collecting a large amount of NEO, then nominating a large amount of consensus nodes and have them all vote for each other to secure >2/3 of bookkeeper nodes (see simulation results). While it would be expensive for one individual with malicious intentions to perform such an attack, there are economic incentives for consortiums to form and control the consensus nodes (to receive transaction fees). When NEO Council decentralizes the consensus nodes, a minority consortium will be able to form by social agreement, for example a private chat group, and agree to all vote for each other. Since number of total consensus nodes is decided by an algorithm based on number of votes in each ballot, the optimal game strategy for a consortium with economic gain as motive would be to spread out on as many candidates as possible, and then have all candidates vote for each other. This would allow the consortium with economic motive to increase the weighted average of votes in ballots, resulting in a higher number of total consensus nodes. Since a vote for multiple candidates is counted as a full vote to each candidate, this consortium will all vote for each other without any penalty or risk involved.  
+
+Consensus nodes are assigned in order by total number of votes. However, since the minority consortium affected the weighted average of votes in each ballot, the total number of consensus nodes may be vastly higher than the majority NEO holders expected. Using this strategy, the minority consortium can gain the majority of consensus nodes and thus also control the network.  
+
+The added complexity with this voting system is that the game strategy for a single individual who desire to become a consensus node is aligned with the game strategy for a minority consortium that desires to gain majority control. The single individual will have a larger chance of “making it in” as a consensus node if he splits his votes across many random candidates, increasing the weighted average and result in more consensus nodes. This will benefit the minority consortium mentioned above.  
+
+
+==Specification==
+
+1. Limit 1 NEO to 1 vote: voting for n candidates give each candidate 1/n votes.  
+
+2. Remove calculation of number of total consensus nodes as an algorithm of weighted average of votes in each ballot.  
+
+
+==Rationale for specification 1==
+
+By limiting 1 NEO to 1 vote, the minor consortium will need to sacrifice voting power if they want to get more candidates. This has three benefits:  
+
+1. The optimal strategy for the single individual that desires to become a consensus node will now change; his best chance is to vote only for himself, which in turn will be a disadvantage for consortiums (see point 2).  
+
+
+2. NEO holders that want more consensus nodes will need to gamble on splitting up their votes. If they split up, then they will risk that other NEO holders that only vote for themselves will get more votes and assigned as consensus node instead.  
+
+3. Economic consortiums built on social agreement between a high number of minor holders is less effective since voting power is split and not counted multiple times.   
+
+
+==Rationale for specification 2==
+
+While Specification 1 will significantly increase the network integrity and prevent abuse of voting algorithm to attain non-intended amount of power, it still leaves open a window of undesired risk.  
+
+Limiting 1 NEO to 1 vote will prevent consortiums from forming and de-align the strategy of an individual candidate from the strategy of a consortium. However, one or a few large NEO holders with significant trust could still abuse the same strategy to spread out on multiple consensus nodes to gain majority control (see simulation results).  
+
+To secure that consensus nodes represent the interest of majority NEO, there must not be any way to abuse the voting system for personal benefit. Deciding the total number of consensus nodes based on number of votes in each ballot opens leaves a window where one large minority NEO holder could gain majority of consensus nodes, although expensively.  
+
+To completely avoid that situation, this NEP suggests removing calculation of number of total consensus nodes as an algorithm of weighted average of votes in each ballot.  
+
+Implementing only specification 2 is not sufficient. This would lead to a scenario where the largest consortium will control 100% of the consensus nodes. Both specification 1 and 2 should be implemented.  
+
+
+==Backwards Compatibility==
+
+Floating point errors and how these may affect votes should be considered.  
+
+
+==Test Cases==
+
+See attached folders:  
+
+1 NEO Multiple votes - code  
+
+1 NEO Multiple votes - results  
+
+1 NEO 1 vote – code  
+
+1 NEO 1 vote – results  
+
+
+==Implementation==
+
+Not started.
