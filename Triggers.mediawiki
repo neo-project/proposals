@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-Trigger is a mechanism for triggering execution for smart contracts. This NEP defines 4 kinds of triggers, they are <code>Verification</code>, <code>VerificationR</code>, <code>Application</code> and <code>ApplicationR</code>.
+Trigger is a mechanism for triggering execution for smart contracts. This NEP defines four different kinds of triggers, they are <code>Verification</code>, <code>VerificationR</code>, <code>Application</code> and <code>ApplicationR</code>.
 
 ==Motivation==
 
@@ -17,7 +17,7 @@ A blockchain that provides smart contract system should provide multiple trigger
 
 ==Rationale==
 
-Currently, we have two kinds of triggers in NeoContract: <code>Verification</code> and <code>Application</code>. These two triggers make smart contracts to be able to verify the transactions and modify the states of the blockchain.
+Currently, we have two kinds of triggers in NeoContract: <code>Verification</code> and <code>Application</code>. These two triggers make smart contracts able to verify the transactions and modify the states of the blockchain.
 
 But there is no way for smart contracts to refuse a transfer, or to modify the states of the blockchain while accepting a transfer. We need two new triggers to do it: <code>VerificationR</code> and <code>ApplicationR</code>.
 
@@ -27,7 +27,7 @@ We define 4 kinds of triggers: <code>Verification</code>, <code>VerificationR</c
 
 ===Verification===
 
-This trigger indicates that the contract is being invoked as a verification function. The verification function can accept multiple parameters, and should return a boolean value that indicates the validity of the transaction or block.
+The <code>Verification</code> trigger indicates that the contract is being invoked as a verification function. The verification function can accept multiple parameters, and should return a boolean value that indicates the validity of the transaction or block.
 
 The verification function should have the following entry point:
 
@@ -39,7 +39,7 @@ The verification function can be invoked by setting the <code>Witness</code> fie
 
 ===VerificationR===
 
-This trigger indicates that the contract is being invoked as a verification function because it is specified as a target of an output of the transaction. The verification function can accept no parameter, and should return a boolean value that indicates the validity of the transaction.
+The <code>VerificationR</code> trigger indicates that the contract is being invoked as a verification function because it is specified as a target of an output of the transaction. The verification function accepts no parameter, and should return a boolean value that indicates the validity of the transaction.
 
 The verification function should have the following entry point:
 
@@ -51,7 +51,7 @@ The verification function will be invoked automatically when a contract is recei
 
 ===Application===
 
-This trigger indicates that the contract is being invoked as an application function. The application function can accept multiple parameters, change the states of the blockchain, and return any type of value.
+The <code>Application</code> trigger indicates that the contract is being invoked as an application function. The application function can accept multiple parameters, change the states of the blockchain, and return any type of value.
 
 The application function can have any form of entry point, but we recommend that all application functions should have the following entry point:
 
@@ -63,7 +63,7 @@ The application function can be invoked by creating an <code>InvocationTransacti
 
 ===ApplicationR===
 
-This trigger indicates that the contract is being invoked as an application function because it is specified as a target of an output of the transaction. The application function can accept no parameter, change the states of the blockchain, and return any type of value.
+The <code>ApplicationR</code> trigger indicates that the contract is being invoked as an application function because it is specified as a target of an output of the transaction. The application function accepts no parameter, change the states of the blockchain, and return any type of value.
 
 The application function should have the following entry point:
 
