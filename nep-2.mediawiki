@@ -3,7 +3,11 @@
   Title: Passphrase-protected private key
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
+<<<<<<< HEAD
   Status: Accepted
+=======
+  Status: Final
+>>>>>>> fb19052d7b9a7c1b10efd0bee7c2ebe10e26baa7
   Created: 2017-8-7
 </pre>
 
@@ -118,3 +122,5 @@ Test 2:
 ==Implementation==
 
 *neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Wallets/KeyPair.cs#L75
+
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/nep2.js
