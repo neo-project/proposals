@@ -89,9 +89,9 @@ The encrypted private key is the Base58Check-encoded concatenation of the follow
 
 #Derive derivedhalf1 and derivedhalf2 by passing the passphrase and addresshash into scrypt function.
 
-#Decrypt encryptedhalf1 and encryptedhalf2 using AES256Decrypt, merge them to form the encrypted private key.
+#Decrypt encryptedhalf1 and encryptedhalf2 using AES256Decrypt, merge the two parts and XOR the result with derivedhalf1 to form the plaintext private key.
 
-#Convert that private key into a NEO address.
+#Convert that plaintext private key into a NEO address.
 
 #Hash the NEO address, and verify that addresshash from the encrypted private key record matches the hash. If not, report that the passphrase entry was incorrect.
 
