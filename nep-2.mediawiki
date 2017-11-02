@@ -71,7 +71,7 @@ To keep the size of the encrypted key down, no initialization vectors (IVs) are 
 
 #Derive a key from the passphrase using scrypt
 
-#*Parameters: passphrase is the passphrase itself encoded in UTF-8 and normalized using Unicode Normalization Form C (NFC). salt is addresshash from the earlier step, n=16384, r=8, p=8, length=64
+#*Parameters: passphrase is the passphrase itself encoded in UTF-8 and normalized using Unicode Normalization Form C (NFC). Salt is the addresshash from the earlier step, n=16384, r=8, p=8, length=64
 
 #*Let's split the resulting 64 bytes in half, and call them derivedhalf1 and derivedhalf2.
 
@@ -81,7 +81,7 @@ To keep the size of the encrypted key down, no initialization vectors (IVs) are 
 
 The encrypted private key is the Base58Check-encoded concatenation of the following, which totals 39 bytes without Base58 checksum:
 
-*0x01 0x42 + flagbyte + salt + encryptedhalf1 + encryptedhalf2
+*0x01 0x42 + flagbyte + addresshash + encryptedhalf1 + encryptedhalf2
 
 ===Decryption steps===
 
@@ -89,9 +89,9 @@ The encrypted private key is the Base58Check-encoded concatenation of the follow
 
 #Derive derivedhalf1 and derivedhalf2 by passing the passphrase and addresshash into scrypt function.
 
-#Decrypt encryptedhalf1 and encryptedhalf2 using AES256Decrypt, merge them to form the encrypted private key.
+#Decrypt encryptedhalf1 and encryptedhalf2 using AES256Decrypt, merge the two parts and XOR the result with derivedhalf1 to form the plaintext private key.
 
-#Convert that private key into a NEO address.
+#Convert that plaintext private key into a NEO address.
 
 #Hash the NEO address, and verify that addresshash from the encrypted private key record matches the hash. If not, report that the passphrase entry was incorrect.
 
