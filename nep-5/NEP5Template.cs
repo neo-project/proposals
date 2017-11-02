@@ -1,4 +1,3 @@
-```csharp
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
 using System.Numerics;
@@ -219,4 +218,3 @@ namespace NEO_NEP_5
         
     }
 }
-```
