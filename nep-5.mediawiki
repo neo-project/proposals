@@ -92,6 +92,6 @@ This standard defines two method types:
 
 ==Implementation==
 
-*[C#](nep-5/NEP5Template.cs)
+*[[nep-5/NEP5Template.cs|C#]]
 
-*[Python](nep-5/NEP5Template.py)
+*[[nep-5/NEP5Template.py|Python]]
