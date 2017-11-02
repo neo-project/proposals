@@ -47,7 +47,7 @@ namespace NEO_NEP_5
            
            if (Event == "balanceOf") return Storage.Get(Storage.CurrentContext, byte [] args[1]);
 
-           //if (Event == "allowance") return Allowance(args[1], args[2]);
+           if (Event == "allowance") return Allowance(args[1], args[2]);
 
 
            //Verify that the originator is honest.
@@ -56,9 +56,9 @@ namespace NEO_NEP_5
             
            if (Event == "transfer") return Transfer(byte[] args[0], byte[] args[1], BytesToInt(byte[] args[2]) );
            
-           //if (Event == "transferFrom") return TransferFrom(byte[] args[0], byte[] args[1], byte[] args[2], BytesToInt(byte[] args[3]) );
+           if (Event == "transferFrom") return TransferFrom(byte[] args[0], byte[] args[1], byte[] args[2], BytesToInt(byte[] args[3]) );
 
-           //if (Event == "approve") return Approve(byte[] args[0], byte[] args[1], byte[] args[2] );
+           if (Event == "approve") return Approve(byte[] args[0], byte[] args[1], byte[] args[2] );
 
            return false;
         }
