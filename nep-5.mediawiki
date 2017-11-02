@@ -92,6 +92,6 @@ This standard defines two method types:
 
 ==Implementation==
 
-*Woolong: https://github.com/lllwvlvwlll/Woolong
+*[C#](nep-5/NEP5Template.cs)
 
-*ICO Template: https://github.com/neo-project/examples/tree/master/ICO_Template
+*[Python](nep-5/NEP5Template.py)
