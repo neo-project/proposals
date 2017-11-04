@@ -84,15 +84,6 @@ In the method definitions below, we provide both the definitions of the function
 
 * Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
 
-==Remark 1 - Inter-Contract Transactions==
-Inter-Contract transactions are the responsibility of the application executing the transaction event.
-This is possible by executing a conditional invokes in the same transaction using the allowance and transferFrom methods to first allow Contract2 to operate on behalf of the token owner:
-
-    APPCALL Contract1(allowance)
-    THROWIFNOT
-    APPCALL Contract2(Interface with transferFrom on Contract1)
-
-
 ==Implementation==
 
 * [[nep-5/NEP5Template.cs|C#]]
@@ -100,3 +91,11 @@ This is possible by executing a conditional invokes in the same transaction usin
 * [[nep-5/NEP5Template.py|Python]]
 ** Deploy is included for testing purposes and is not a standard method
 ** Script Hash: '''eb9c48ac1a5b9254cc101c70c78ebfce22cdd241'''
+
+==Remark 1: Inter-Contract Transactions==
+Inter-Contract transactions are the responsibility of the application executing the transaction event.
+This is possible by executing a conditional invokes in the same transaction using the allowance and transferFrom methods to first allow Contract2 to operate on behalf of the token owner:
+
+    APPCALL Contract1(allowance)
+    THROWIFNOT
+    APPCALL Contract2(Interface with transferFrom on Contract1)
