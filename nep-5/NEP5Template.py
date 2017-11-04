@@ -7,9 +7,6 @@ NEP5 Token
 
 This file, when compiled to .avm format, would comply with the current NEP5 token standard on the NEO blockchain
 
-The script hash for this contract on testnet is:
-``eb9c48ac1a5b9254cc101c70c78ebfce22cdd241``
-
 Token standard is available in proposal form here:
 `NEP5 Token Standard Proposal <https://github.com/neo-project/proposals/blob/master/nep-5.mediawiki>`_
 
@@ -27,9 +24,8 @@ Below is the current implementation in Python
 
 """
 
-from boa.blockchain.vm.Neo.Runtime import Log
+from boa.blockchain.vm.Neo.Runtime import Log,GetTrigger,CheckWitness
 from boa.blockchain.vm.Neo.Action import RegisterAction
-from boa.blockchain.vm.Neo.Runtime import GetTrigger, CheckWitness
 from boa.blockchain.vm.Neo.TriggerType import Application, Verification
 from boa.blockchain.vm.Neo.Storage import GetContext, Get, Put, Delete
 from boa.code.builtins import concat
@@ -44,23 +40,23 @@ TOKEN_NAME = 'NEP5 Standard'
 SYMBOL = 'NEP5'
 # Symbol of the Token
 
-OWNER = b'\xaf\x12\xa8h{\x14\x94\x8b\xc4\xa0\x08\x12\x8aU\nci[\xc1\xa5'
+OWNER = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 # Script hash of the contract owner
 
 DECIMALS = 8
 # Number of decimal places
 
-TOTAL_SUPPLY = 500000000000000
-# Total supply of tokens
+TOTAL_SUPPLY = 123456789
+# Total Supply of tokens in the system
 
 
 # -------------------------------------------
 # Events
 # -------------------------------------------
 
-OnTransfer = RegisterAction('transfer', 'from', 'to', 'amount')
+DispatchTransferEvent = RegisterAction('transfer', 'from', 'to', 'amount')
 
-OnApprove = RegisterAction('approval', 'owner', 'spender', 'value')
+DispatchApproveEvent = RegisterAction('approval', 'owner', 'spender', 'value')
 
 
 def Main(operation, args):
@@ -69,10 +65,8 @@ def Main(operation, args):
 
     :param operation: the operation to be performed ( eg `balanceOf`, `transfer`, etc)
     :type operation: str
-
-    :param args: an optional list of arguments
+    :param args: a list of arguments ( which may be empty, but not absent )
     :type args: list
-
     :return: indicating the successful execution of the smart contract
     :rtype: bool
     """
@@ -158,11 +152,6 @@ def Main(operation, args):
                 return amount
             return False
 
-        # The following method is not a part of the NEP5 Standard
-        # But is used to 'mint' the original tokens
-        elif operation == 'deploy':
-            result = Deploy()
-            return result
 
         result = 'unknown operation'
 
@@ -177,10 +166,8 @@ def DoTransfer(t_from, t_to, amount):
 
     :param t_from: the address to transfer from
     :type t_from: bytearray
-
     :param t_to: the address to transfer to
     :type t_to: bytearray
-
     :param amount: the amount of NEP5 tokens to transfer
     :type amount: int
 
@@ -223,7 +210,7 @@ def DoTransfer(t_from, t_to, amount):
 
     Put(context, t_to, to_total)
 
-    OnTransfer(t_from, t_to, amount)
+    DispatchTransferEvent(t_from, t_to, amount)
 
     return True
 
@@ -234,10 +221,8 @@ def DoTransferFrom(t_from, t_to, amount):
 
     :param t_from: the address to transfer from
     :type t_from: bytearray
-
     :param t_to: the address to transfer to
     :type t_to: bytearray
-
     :param amount: the amount of NEP5 tokens to transfer
     :type amount: int
 
@@ -279,7 +264,7 @@ def DoTransferFrom(t_from, t_to, amount):
     Log("transfer complete")
 
     # dispatch transfer event
-    OnTransfer(t_from, t_to, amount)
+    DispatchTransferEvent(t_from, t_to, amount)
 
     return True
 
@@ -291,13 +276,11 @@ def DoApprove(t_owner, t_spender, amount):
     ( the spender ) to spend an amount
 
     :param t_owner: Owner of tokens
-    :type bytearray
-
+    :type t_owner: bytearray
     :param t_spender: Requestor of tokens
-    :type bytearray
-
+    :type t_spender: bytearray
     :param amount: Amount requested to be spent by Requestor on behalf of owner
-    :type bytearray
+    :type amount: bytearray
 
     :return: success of the operation
     :rtype: bool
@@ -328,7 +311,7 @@ def DoApprove(t_owner, t_spender, amount):
 
         Log("Approved")
 
-        OnApprove(t_owner, t_spender, amount)
+        DispatchApproveEvent(t_owner, t_spender, amount)
 
         return True
 
@@ -341,10 +324,9 @@ def GetAllowance(t_owner, t_spender):
     from the owners' account.
 
     :param t_owner: Owner of tokens
-    :type bytearray
-
+    :type t_owner: bytearray
     :param t_spender: Requestor of tokens
-    :type bytearray
+    :type t_spender: bytearray
 
     :return: Amount allowed to be spent by Requestor on behalf of owner
     :rtype: int
@@ -358,6 +340,7 @@ def GetAllowance(t_owner, t_spender):
     amount = Get(context, allowance_key)
 
     return amount
+
 
 
 def BalanceOf(account):
@@ -377,30 +360,3 @@ def BalanceOf(account):
 
     return balance
 
-
-def Deploy():
-    """
-    This is used to distribute the initial tokens to the owner
-
-    :return: whether the deploy was successful
-    :rtype: bool
-
-    """
-
-    if not CheckWitness(OWNER):
-        Log("Must be owner to deploy")
-        return False
-
-    context = GetContext()
-    has_deployed = Get(context, 'initialized')
-
-    if has_deployed == 0:
-
-        # do deploy logic
-        Put(context, 'initialized', 1)
-        Put(context, OWNER, TOTAL_SUPPLY)
-
-        return True
-
-    Log('Could not deploy')
-    return False
