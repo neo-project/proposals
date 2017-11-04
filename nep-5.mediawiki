@@ -1,7 +1,7 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
+  Author: lllwvlvwlll <tyler@cityofzion.io>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <afong@cityofzion.io>
   Type: Standard
   Status: Final
   Created: 2017-08-10
@@ -83,6 +83,15 @@ In the method definitions below, we provide both the definitions of the function
 * Syntax: <code>public static event Action<byte[], byte[], BigInteger> transfer</code>
 
 * Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
+
+==Remark 1 - Inter-Contract Transactions==
+Inter-Contract transactions are the responsibility of the application executing the transaction event.
+This is possible by executing a conditional invokes in the same transaction using the allowance and transferFrom methods to first allow Contract2 to operate on behalf of the token owner:
+
+    APPCALL Contract1(allowance)
+    THROWIFNOT
+    APPCALL Contract2(Interface with transferFrom on Contract1)
+
 
 ==Implementation==
 
