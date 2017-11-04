@@ -89,5 +89,5 @@ In the method definitions below, we provide both the definitions of the function
 * [[nep-5/NEP5Template.cs|C#]]
 
 * [[nep-5/NEP5Template.py|Python]]
-  * Deploy is included for testing purposes and is not a standard method
-  * Script Hash: '''eb9c48ac1a5b9254cc101c70c78ebfce22cdd241'''
+:: Deploy is included for testing purposes and is not a standard method
+:: Script Hash: '''eb9c48ac1a5b9254cc101c70c78ebfce22cdd241'''
