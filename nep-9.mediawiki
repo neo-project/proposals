@@ -1,0 +1,71 @@
+<pre>
+  NEP: 9
+  Title: Dynamic Contract Invocation
+  Author: localhuman
+  Type: Standard
+  Status: Draft
+  Created: 2017-11-06
+</pre>
+
+==Abstract==
+
+The NEP-9 Proposal outlines a mechanism whereby a Smart Contract is provided the ability to invoke other Smart Contracts not known until runtime, rather than being limited to invoking only Smart Contracts that are defined at compile time. In order to retain the ability for Smart Contracts to interface with a future Dynamic Sharding process, included is a proposed specification to be used in the creation of Smart Contracts to denote whether a Smart Contract needs the Dynamic Contract Invocation feature or not.  
+
+==Motivation==
+
+The motivation for this NEP is to give Smart Contract authors the ability to interface with Smart Contracts that are not known at compile time.  An example would be a Smart Contract which operates a decentralized exchange of NEP-5 tokens. At present, if a Smart Contract such as this needed to interface with a new token, the Smart Contract would need to be updated on the blockchain. Given the ability to determine at runtime the Smart Contracts it wants to interface, this example would be easier to develop and maintain, and ultimately more powerful.
+
+An important drawback in giving a Smart Contract the ability to call other Smart Contracts that are defined at runtime is that the execution of the contract is no longer deterministic in its access of stored data.  Due to this drawback there would be no possible design of a system which could predict which regions of storage will be needed during the execution of the contract, and the proposed Dynamic Sharding functionality could not be implemented.
+
+To overcome this drawback, this proposal seeks to add a specification to each Smart Contract when it is created on the Blockchain to denote whether it will need the Dynamic Contract Invocation feature or not.  This specification will allow all existing contracts and the majority of future contracts to be executed in a storage context that is deterministic and thus eligible for Dynamic Sharding, while also providing Smart Contracts the ability to execute in a non-deterministic manner.  
+
+
+==Specification==
+
+In order for Smart Contracts to denote whether they have the ability to dynamically invoke other Smart Contracts, this NEP advises to add the following property to `neo.Core.ContractState` object, which would default to `false`.
+
+<code>public bool HasDynamicInvoke</code>
+
+The `HasDynamicInvoke` property would be serialized at the end of the current serialization routine shown below, included with a new calculation of a `ContractState` size:
+
+<pre>
+        public override int Size => base.Size + Script.GetVarSize() + ParameterList.GetVarSize() + sizeof (ContractParameterType) + sizeof(bool) + Name.GetVarSize() + CodeVersion.GetVarSize() + Author.GetVarSize() + Email.GetVarSize() + Description.GetVarSize() + sizeof(bool);
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            base.Serialize(writer);
+            writer.WriteVarBytes(Script);
+            writer.WriteVarBytes(ParameterList.Cast<byte>().ToArray());
+            writer.Write((byte)ReturnType);
+            writer.Write(HasStorage);
+            writer.WriteVarString(Name);
+            writer.WriteVarString(CodeVersion);
+            writer.WriteVarString(Author);
+            writer.WriteVarString(Email);
+            writer.WriteVarString(Description);
+            writer.WriteBool(HasDynamicInvoke);
+        }
+</pre>
+
+
+
+
+The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current NEO platforms.
+
+==Rationale==
+
+The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
+
+The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
+
+==Backwards Compatibility==
+
+This NEP would introduce a new set of functionality that would not be available to existing Smart Contracts.
+
+==Test Cases==
+
+Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
+
+==Implementation==
+
+The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
