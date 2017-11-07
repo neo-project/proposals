@@ -57,7 +57,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Stub
 |-
-| [[nep-9.mediawiki[9]]
+| [[nep-9.mediawiki|9]]
 | Dynamic Contract Invocation
 |
 | Standard
