@@ -1,0 +1,161 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Dynamic Contract Invocation
+  Author: localhuman
+  Type: Standard
+  Status: Draft
+  Created: 2017-11-06
+</pre>
+
+==Abstract==
+
+This NEP Proposal outlines a mechanism whereby a Smart Contract is provided the ability to invoke other Smart Contracts not known until runtime, rather than being limited to invoking only Smart Contracts that are defined at compile time. In order to retain the ability for Smart Contracts to interface with a future Dynamic Sharding process, included is a proposed specification to be used in the creation of Smart Contracts to denote whether a Smart Contract needs the Dynamic Contract Invocation feature or not.
+
+==Motivation==
+
+The motivation for this NEP is to give Smart Contract authors the ability to interface with Smart Contracts that are not known at compile time.  An example would be a Smart Contract which operates a decentralized exchange of NEP-5 tokens. At present, if a Smart Contract such as this needed to interface with a new token, the Smart Contract would need to be updated on the blockchain. Given the ability to determine at runtime the Smart Contracts it wants to interface, this example would be easier to develop and maintain, and ultimately more powerful.
+
+An important drawback in giving a Smart Contract the ability to call other Smart Contracts that are defined at runtime is that the execution of the contract is no longer deterministic in its access of stored data.  Due to this drawback there would be no possible design of a system which could predict which regions of storage will be needed during the execution of the contract, and the proposed Dynamic Sharding functionality could not be implemented.
+
+To overcome this drawback, this proposal seeks to add a specification to each Smart Contract when it is created on the Blockchain to denote whether it will need the Dynamic Contract Invocation feature or not.  This specification will allow all existing contracts and the majority of future contracts to be executed in a storage context that is deterministic and thus eligible for Dynamic Sharding, while also providing Smart Contracts the ability to execute in a non-deterministic manner.  
+
+
+==Specification==
+
+This proposal specifies changes in 3 general areas of the Neo project:
+
+# neo
+# neo-vm
+# neo-compiler
+
+The changes listed below do not attempt to be exhaustive, but rather give a general overview of important changes needed in each library.
+
+===neo===
+
+In order for Smart Contracts to denote whether they have the ability to dynamically invoke other Smart Contracts, this NEP advises to add the following property to `neo.Core.ContractState` object, which would default to `false`.
+
+<pre>
+        public bool HasDynamicInvoke
+</pre>
+
+In order to keep the implentation interoperable with the current Neo protocol, The `HasDynamicInvoke` property would be serialized as a byte flag along with the current `HasStorage` property:
+
+<pre>
+
+    [Flags]
+    public enum ContractPropertyState : byte
+    {
+        NoProperty = 0,
+        HasStorage = 1 << 0,
+        HasDynamicInvoke = 1 << 2,
+    }
+
+
+
+    public class ContractState : StateBase, ICloneable<ContractState>
+    {
+
+        ...
+
+        public ContractPropertyState ContractProperties;
+
+        public bool HasStorage => ContractProperties.HasFlag(ContractPropertyState.HasStorage)
+
+        public bool HasDynamicInvoke => ContractProperties.HasFlag(ContractPropertyState.HasDynamicInvoke)
+
+        ...
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            base.Serialize(writer);
+            writer.WriteVarBytes(Script);
+            writer.WriteVarBytes(ParameterList.Cast<byte>().ToArray());
+            writer.Write((byte)ReturnType);
+            writer.Write(ContractProperties);   // currently is writer.Write(HasStorage)
+            writer.WriteVarString(Name);
+            writer.WriteVarString(CodeVersion);
+            writer.WriteVarString(Author);
+            writer.WriteVarString(Email);
+            writer.WriteVarString(Description);
+        }
+</pre>
+
+
+===neo-vm===
+
+This specification proposes that a new OpCode be added to the Neo Virtual Machine to denote the usage of a ''dynamic'' `AppCall` versus a ''static'' one.
+
+<pre>
+        DYNAMICCALL = 0xFA
+</pre>
+
+The execution of the <code>DYNAMICCALL</code> OpCode in `neo.VM.ExecutionEngine.ExecuteOp` method will also differ from the execution of the current <code>APPCALL</code> and <code>TAILCALL</code> OpCodes in the following way:
+
+<pre>
+                case OpCode.APPCALL:
+                case OpCode.TAILCALL:
+                case OpCode.DYNAMICCALL:
+                    {
+                        if (table == null)
+                        {
+                            State |= VMState.FAULT;
+                            return;
+                        }
+
+                        byte[] script_hash = null;
+
+                        if ( opcode == OpCode.DYNAMICCALL ) {
+
+                            script_hash = EvaluationStack.Pop().GetByteArray();
+
+                        } else {
+
+                            script_hash = context.OpReader.ReadBytes(20);
+                        }
+
+                        byte[] script = table.GetScript(script_hash);
+                        if (script == null)
+                        {
+                            State |= VMState.FAULT;
+                            return;
+                        }
+                        if (opcode == OpCode.TAILCALL || opcode == OpCode.DYNAMICCALL)
+                            InvocationStack.Pop().Dispose();
+                        LoadScript(script);
+                    }
+                    break;
+</pre>
+
+
+===neo-compiler===
+
+A sample method to be used in order to convert a method call to a <code>DYNAMICCALL</code> could look like the following:
+
+<pre>
+            else if (calltype == CallType.DYNAMICCALL)
+            {
+                _ConvertPush(callhash, null, to)
+                _Convert1by1(VM.OpCode.DYNAMICCALL, null, to);
+
+            }
+</pre>
+
+
+
+==Rationale==
+
+The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
+
+The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
+
+==Backwards Compatibility==
+
+This NEP would introduce a new set of functionality that would not be available to existing Smart Contracts. All existing Smart Contracts would have the
+
+==Test Cases==
+
+Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
+
+==Implementation==
+
+The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
