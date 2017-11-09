@@ -172,7 +172,7 @@ namespace Neo.SmartContract
 
 Dynamic sharding is not impossible with dynamic SC calls (Ethereum has proposed many solutions [X]), and sharding would have still been challenging without them. Just because we know the compuatation call graph in advance, that does not mean we would be able to successfully shard resources into perfect, non-overlapping subsets. Likely, communication between shards would still need to be implemented, as in the Ethereum proposals.
 
-With this in mind, it may be possible to implement dynamic app calls without adding any meta-data to the Smart Contract about whether it needs dynamic calls or not, given the idea that both could be executed and scaled in the same manner.  
+With this in mind, it may be possible to implement dynamic app calls without adding any meta-data to the Smart Contract about whether it needs dynamic calls or not, given the idea that both could be executed and scaled in the same manner.
 
 Even if in the case, however, that a system could be implemented to allow for both dynamic SC calls and dynamic sharding, this proposal argues that storing the <code>HasDynamicInvoke</code> property would most likely be useful in that implementation.
 
