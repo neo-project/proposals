@@ -1,7 +1,7 @@
 <pre>
   NEP: <to be assigned>
   Title: Dynamic Contract Invocation
-  Author: localhuman
+  Author: localhuman, unignorant
   Type: Standard
   Status: Draft
   Created: 2017-11-06
@@ -22,18 +22,18 @@ To overcome the scalability drawback, this proposal adds a specification to each
 
 ==Specification==
 
-This proposal specifies changes in 3 general areas of the Neo project:
+This proposal outlines changes in 3 general areas of the Neo project, and provides a sample for how this change could be used in a SC:
 
-- neo
-- neo-vm
-- neo-compiler
-- sample smart contract
+* neo
+* neo-vm
+* neo-compiler
+* sample smart contract
 
 The changes listed below do not attempt to be exhaustive, but rather give a general overview of important changes needed in each library.
 
 ====neo====
 
-In order for Smart Contracts to denote whether they have the ability to dynamically invoke other Smart Contracts, this NEP advises to add the following property to <code>neo.Core.ContractState</code> object, which would default to <code>false</code>.
+In order for a SC to denote whether it has the ability to dynamically invoke other SCs, this NEP advises to add the following property to <code>neo.Core.ContractState</code> object, which would default to <code>false</code>.
 
 <pre>
         public bool HasDynamicInvoke
