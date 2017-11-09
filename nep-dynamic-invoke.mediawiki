@@ -16,7 +16,7 @@ This NEP Proposal outlines a mechanism whereby a Smart Contract is provided the 
 The motivation for this NEP is to give smart contract (SC) authors the ability to interface with SCs that are not known at compile time. For example, a SC that operates a decentralized exchange of NEP-5 tokens might call the <code>transferFrom</code> method of a token SC determined at runtime. At present, such a SC would need to hard-code all supported NEP-5 token addresses and be re-published whenever a new token is added. Many other popular smart contracts on Ethereum require this feature [X, Y, Z, W]. Given the ability to determine at runtime the SC it wants to interface, these examples would be much easier to develop and maintain.
 
 It is important to note that adding dynamic SC calls to NEO affects scalability. With dynamic SC calls, we no longer know in advance what other SCs will be called, and so what subset of VM state must be available for execution to succeed. This makes dynamic sharding more difficult to implement. 
-  
+
 To overcome the scalability drawback, this proposal adds a specification to each SC when it is created on the blockchain to denote whether it will need the dynamic calling feature or not. This specification will allow all existing contracts and the majority of future contracts to be executed in a storage context that is known in advance and thus more amenable to dynamic sharding, while also making SCs much more powerful and expressive.  
 
 
