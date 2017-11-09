@@ -59,7 +59,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-dynamic-invoke.mediawiki|''x'']]
 | Dynamic Contract Invocation
-| localhuman
+| localhuman, unignorant
 | Standard
 | Draft
 |-
