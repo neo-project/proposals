@@ -13,21 +13,21 @@ This NEP Proposal outlines a mechanism whereby a Smart Contract is provided the 
 
 ==Motivation==
 
-The motivation for this NEP is to give smart contract (SC) authors the ability to interface with SCs that are not known at compile time. For example, a SC that operates a decentralized exchange of NEP-5 tokens might call the <code>transferFrom</code> method of a token SC determined at runtime. At present, such a SC would need to hard-code all supported NEP-5 token addresses and be re-published whenever a new token is added. Many SCs on Ethereum require this feature, including any that adhere to the [https://github.com/ethereum/EIPs/issues/223 ERC223 token standard]. Given the ability to determine at runtime the SC it wants to interface with, functionality resembling this would be much easier to develop and maintain.
+The motivation for this NEP is to give smart contract (SC) authors the ability to interface with SCs that are not known at compile time. For example, a SC that operates a decentralized exchange of NEP-5 tokens might call the <code>transferFrom</code> method of a token SC determined at runtime. At present, such a SC would need to hard-code all supported NEP-5 token addresses and be re-published whenever a new token is added. Many SCs on Ethereum require this feature, including any that adhere to the [https://github.com/ethereum/EIPs/issues/223 ERC223 token standard]. By giving SC authors the ability to specify at runtime an SC to interface with, functionality resembling that contained in more advanced Ethereum contracts would be much easier to develop and maintain.
 
-It is important to note that adding dynamic SC calls to NEO affects scalability. With dynamic SC calls, we no longer know in advance what other SCs will be called, and so what subset of VM state must be available for execution to succeed. This makes dynamic sharding more difficult to implement. 
+It is important to note that adding dynamic SC calls to NEO affects scalability. With dynamic SC calls, we no longer know in advance which other SCs will be called, and consequently the subset of VM state which must be available for execution to succeed. This makes dynamic sharding more difficult to implement. 
 
 To overcome the scalability drawback, this proposal adds a specification to each SC when it is created on the blockchain to denote whether it will need the dynamic calling feature or not. This specification will allow all existing contracts and the majority of future contracts to be executed in a storage context that is known in advance and thus more amenable to dynamic sharding, while also making SCs much more powerful and expressive.  
 
 
 ==Specification==
 
-This proposal outlines changes in 3 general areas of the Neo project, and provides a sample for how this change could be used in a SC:
+This proposal outlines changes in three general areas of the Neo project, and provides a sample for how this change could be used in a SC:
 
 * neo
 * neo-vm
 * neo-compiler
-* sample smart contract
+* sample Smart Contract
 
 The changes listed below do not attempt to be exhaustive, but rather give a general overview of important changes needed in each library.
 
@@ -50,7 +50,6 @@ In order to keep the implentation interoperable with the current Neo protocol, T
         HasStorage = 1 << 0,
         HasDynamicInvoke = 1 << 1,
     }
-
 
 
     public class ContractState : StateBase, ICloneable<ContractState>
@@ -84,7 +83,7 @@ In order to keep the implentation interoperable with the current Neo protocol, T
 
 ====neo-vm====
 
-This specification proposes that a new OpCode be added to the Neo Virtual Machine to denote the usage of a ''dynamic'' <code>AppCall</code> versus a ''static'' one.
+This specification proposes adding a new OpCode to the Neo Virtual Machine to denote the usage of a ''dynamic'' <code>AppCall</code> versus a ''static'' one.
 
 <pre>
         DYNAMICCALL = 0xFA
@@ -105,9 +104,16 @@ The execution of the <code>DYNAMICCALL</code> OpCode in <code>neo.VM.ExecutionEn
 
                         byte[] script_hash = null;
 
-                        if ( opcode == OpCode.DYNAMICCALL ) {
+                        if ( opcode == OpCode.DYNAMICCALL ) 
+                        {
 
                             script_hash = EvaluationStack.Pop().GetByteArray();
+                            
+                            if ( script_hash.Length != 20 ) 
+                            {
+                              State |= VMState.FAULT
+                              return;
+                            }
 
                         } else {
 
@@ -170,18 +176,18 @@ namespace Neo.SmartContract
 
 ==Rationale==
 
-Dynamic sharding is not impossible with dynamic SC calls (Ethereum has [https://github.com/ethereum/wiki/wiki/Sharding-FAQ#how-can-we-facilitate-cross-shard-communication proposed many solutions]), and sharding would still be challenging without them. Just because we know the compuatation call graph in advance, that does not mean we would be able to successfully shard resources into perfect, non-overlapping subsets. Likely, communication between shards would still need to be implemented, as in the Ethereum proposals.
+Dynamic sharding is not impossible with dynamic SC calls (Ethereum has [https://github.com/ethereum/wiki/wiki/Sharding-FAQ#how-can-we-facilitate-cross-shard-communication proposed many solutions]), though it would add to an already difficult task. Just because we know the compuatation call graph in advance does not mean we would be able to successfully shard resources into perfect, non-overlapping subsets. Communication between shards would still likely need to be implemented, as in the Ethereum proposals.
 
-With this in mind, it may be possible to implement dynamic app calls without adding any meta-data to the Smart Contract about whether it needs dynamic calls or not, given the idea that both could be executed and scaled in the same manner.
+With this in mind, it may be possible to implement dynamic app calls without adding any meta-data to the SC about whether it needs dynamic calls or not, given the idea that both could be executed and scaled in the same manner.
 
-Even if in the case, however, that a system could be implemented to allow for both dynamic SC calls and dynamic sharding, this proposal argues that storing the <code>HasDynamicInvoke</code> property would most likely be useful in that implementation.
+Even in the case, however, that a system could be implemented to allow for both dynamic SC calls and dynamic sharding, this proposal argues that storing the <code>HasDynamicInvoke</code> property would most likely be useful in that implementation.
 
 Storing this property would also allow the system to charge a different fee for publishing contracts with the <code>HasDynamicInvoke</code> property.
 
 
 ==Backwards Compatibility==
 
-This NEP would introduce a new set of functionality that would not be available to existing Smart Contracts without affecting existing Smart Contracts.  By utilizing the existing byte being used to indicate whether a Smart Contract needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it if necessary without affecting the network protocol.
+This NEP would introduce a new set of functionality that would not be available to existing SC without affecting existing Smart Contracts.  By utilizing the existing byte being used to indicate whether a SC needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it if necessary without affecting the network protocol.
 
 ==Test Cases==
 
