@@ -150,6 +150,8 @@ A sample method to be used in order to convert a method call to a <code>DYNAMICC
 
 ====sample smart contract====
 
+Below is a sample SC demonstrating a simple usage of the proposed functionality.
+
 <pre>
 
 using Neo.SmartContract.Framework.Services.Neo;
