@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This NEP Proposal outlines a mechanism whereby a Smart Contract is provided the ability to invoke other Smart Contracts not known until runtime, rather than being limited to invoking only Smart Contracts that are defined at compile time. In order to retain the ability for Smart Contracts to interface with a future Dynamic Sharding process, included is a proposed specification to be used in the creation of Smart Contracts to denote whether a Smart Contract needs the Dynamic Contract Invocation feature or not.
+This NEP Proposal outlines a mechanism whereby a Smart Contract is provided the ability to invoke other Smart Contracts not known until runtime, rather than being limited to invoking only Smart Contracts that are defined at compile time. In order to retain the ability for Smart Contracts to interface with a future Dynamic Sharding process, included is a proposed specification to be used in the creation of Smart Contracts to denote whether a Smart Contract needs the Dynamic Contract Invocation feature or not. 
 
 ==Motivation==
 
@@ -19,6 +19,7 @@ It is important to note that adding dynamic SC calls to NEO affects scalability.
 
 To overcome the scalability drawback, this proposal adds a specification to each SC when it is created on the blockchain to denote whether it will need the dynamic calling feature or not. This specification will allow all existing contracts and the majority of future contracts to be executed in a storage context that is known in advance and thus more amenable to dynamic sharding, while also making SCs much more powerful and expressive.  
 
+In order to take into account for the scalability drawback of the dynamic calling feature, this NEP advises an updated fee structure for SC that request this feature.  A sample implementation of the updated fee structure is included below.
 
 ==Specification==
 
@@ -79,6 +80,45 @@ In order to keep the implentation interoperable with the current Neo protocol, T
             writer.WriteVarString(Description);
         }
 </pre>
+
+The following changes in <code>neo.SmartContract.ApplicationEngine</code> would be used to charge a different Gas fee for execution of SCs with <code>HasDynamicInvoke</code> as <code>true</code>.  The fees listed below are placeholders, and most likely require further consideration.
+
+<pre>
+        protected virtual long GetPrice()
+        {
+            // lines omitted
+            ...
+                
+                case OpCode.APPCALL:
+                case OpCode.TAILCALL:
+                    return 10;
+                case OpCode.DYNAMICCALL:
+                    return 100;
+
+
+        
+        protected virtual long GetPriceForSysCall()
+        {
+           // lines omitted
+           ...
+
+                case "Neo.Contract.Create":
+                case "Neo.Contract.Migrate":
+                case "AntShares.Contract.Create":
+                case "AntShares.Contract.Migrate":
+                    
+                    long fee = 500L;
+                    ContractState contract = PeekContractState() // this would need to be implemented
+                
+                    if( contract.HasDynamicInvoke ) 
+                    {
+                      fee = 1000L;
+                    }
+                
+                    return fee * 100000000L / ratio;
+      
+</pre>
+
 
 
 ====neo-vm====
