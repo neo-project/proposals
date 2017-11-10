@@ -182,12 +182,12 @@ With this in mind, it may be possible to implement dynamic app calls without add
 
 Even in the case, however, that a system could be implemented to allow for both dynamic SC calls and dynamic sharding, this proposal argues that storing the <code>HasDynamicInvoke</code> property would most likely be useful in that implementation.
 
-Storing this property would also allow the system to charge a different fee for publishing contracts with the <code>HasDynamicInvoke</code> property.
+Storing this property would also allow the system to charge a different fee for publishing SCs with the <code>HasDynamicInvoke</code> property.
 
 
 ==Backwards Compatibility==
 
-This NEP would introduce a new set of functionality that would not be available to existing SC without affecting existing Smart Contracts.  By utilizing the existing byte being used to indicate whether a SC needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it if necessary without affecting the network protocol.
+This NEP would introduce a new set of functionality that would not be available to existing SC without affecting existing SCs.  By utilizing the existing byte being used to indicate whether a SC needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it if necessary without affecting the network protocol.
 
 ==Test Cases==
 
