@@ -187,7 +187,7 @@ Storing this property would also allow the system to charge a different fee for 
 
 ==Backwards Compatibility==
 
-This NEP would introduce a new set of functionality without affecting existing SCs.  By utilizing the existing byte being used to indicate whether a SC needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it if necessary without affecting the network protocol.
+This NEP would introduce a new set of functionality without affecting existing SCs.  By utilizing the existing byte being used to indicate whether a SC needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it, if necessary, without affecting the network protocol.
 
 ==Test Cases==
 
