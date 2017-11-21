@@ -3,7 +3,7 @@
   Title: Dynamic Contract Invocation
   Author: localhuman, unignorant
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2017-11-06
 </pre>
 
@@ -81,21 +81,9 @@ In order to keep the implentation interoperable with the current Neo protocol, T
         }
 </pre>
 
-The following changes in <code>neo.SmartContract.ApplicationEngine</code> would be used to charge a different Gas fee for execution of SCs with <code>HasDynamicInvoke</code> as <code>true</code>.  The fees listed below are placeholders, and most likely require further consideration.
+The following changes in <code>neo.SmartContract.ApplicationEngine</code> would be used to charge a different Gas fee for the creation of SCs.  The price of creating a SC with no additional functionality would be lowered, while the price for those which have the <code>HasDynamicInvoke</code> or <code>HasStorage</code> properties as <code>true</code> would incur additional costs.  
 
 <pre>
-        protected virtual long GetPrice()
-        {
-            // lines omitted
-            ...
-                
-                case OpCode.APPCALL:
-                case OpCode.TAILCALL:
-                    return 10;
-                case OpCode.DYNAMICCALL:
-                    return 100;
-
-
         
         protected virtual long GetPriceForSysCall()
         {
@@ -107,12 +95,17 @@ The following changes in <code>neo.SmartContract.ApplicationEngine</code> would 
                 case "AntShares.Contract.Create":
                 case "AntShares.Contract.Migrate":
                     
-                    long fee = 500L;
+                    long fee = 100L;
                     ContractState contract = PeekContractState() // this would need to be implemented
+                    
+                    if( contract.HasStorage ) 
+                    {
+                      fee += 400L
+                    }
                 
                     if( contract.HasDynamicInvoke ) 
                     {
-                      fee = 1000L;
+                      fee += 500L;
                     }
                 
                     return fee * 100000000L / ratio;
