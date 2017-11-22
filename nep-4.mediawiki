@@ -1,5 +1,5 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 4
   Title: Dynamic Contract Invocation
   Author: localhuman, unignorant
   Type: Standard
