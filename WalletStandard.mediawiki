@@ -29,6 +29,7 @@ A wallet file in JSON format has the following basic structure:
 <pre>
 {
   "name": "MyWallet",
+  "version": "1.0",
   "scrypt": {},
   "accounts": [],
   "extra": null
@@ -37,11 +38,13 @@ A wallet file in JSON format has the following basic structure:
 
 <code>name</code> is a label that the user has made to the wallet file.
 
+<code>version</code> is currently fixed at <code>1.0</code> and will be used for functional upgrades in the future.
+
 <code>scrypt</code> is a ScryptParameters object which describe the parameters of SCrypt algorithm used for encrypting and decrypting the private keys in the wallet.
 
 <code>accounts</code> is an array of Account objects which describe the details of each account in the wallet.
 
-<code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>;
+<code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>.
 
 ===ScryptParameters===
 
@@ -89,7 +92,7 @@ Account object has the following structure:
 
 <code>contract</code> is a Contract object which describes the details of the contract.
 
-<code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>;
+<code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>.
 
 ===Contract===
 
