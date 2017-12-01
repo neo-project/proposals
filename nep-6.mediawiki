@@ -90,7 +90,7 @@ Account object has the following structure:
 
 <code>key</code> is the private key of the account in the NEP-2 format. This field can be <code>null</code> (for watch-only address or non-standard address).
 
-<code>contract</code> is a Contract object which describes the details of the contract.
+<code>contract</code> is a Contract object which describes the details of the contract. This field can be <code>null</code> (for watch-only address).
 
 <code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>.
 
