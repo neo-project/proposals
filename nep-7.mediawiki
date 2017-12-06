@@ -9,15 +9,51 @@
 
 ==Abstract==
 
-A short (~200 words) description of the technical issue being addressed.
+This NEP describes a URI standard for transfer of NEO native assets, as well as smart contracts deployed on chain.  
 
 ==Motivation==
 
-The motivation is critical for NEPs that want to change the NEO protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the NEP solves. NEP submissions without sufficient motivation may be rejected outright.
+Currently, there is no standard URI for NEO clients to consume. Bitcoin implements a URI standard so that clicking links or scanning QR codes can easily implement a bitcoin payment. Similarly the transfer of native assets on the NEO chain should be just as simple.
+
+However since NEO also implements NEP-5 tokens, as well as generic smart contracts. Transfer of NEP-5 tokens should be equally easy to perform. Lastly, generic smart contracts should be able to be invoked on scanning of QR or clicking of a link. This allows wallet developers to consume the URI in an easy way
 
 ==Specification==
 
-The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current NEO platforms.
+===Native Asset Transfer===
+
+A Native asset transfer would have the following URI. It describes the reciever address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
+
+```NEO:<address>[?assetID=<assetID>][?attributes=<attributes>]```
+
+Examples
+
+Begin transaction to specified address
+
+```NEO:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W ```
+
+Begin transaction of unspecified amount of NEO
+
+```NEO:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?assetID= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b```
+
+Begin transaction to specified address of 1 NEO
+
+``` NEO:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?assetID= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0```
+
+Begin transaction to specified address of 1 NEO with description "Hello"
+
+``` NEO:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?assetID= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0&attributes=9048656c6c6f```
+
+This should be sufficient to facilitate transfer of native NEO assets safely.
+
+===Unsecured Contract URI===
+```NEO:<address>[?data]```
+
+
+==Rationale==
+
+The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. For this reason we will split up the URI's related to smart contract invocation, into two categories. Secure URI and Unsecure URI.
+
+
 
 ==Rationale==
 
