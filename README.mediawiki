@@ -45,11 +45,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/13 6]
+| [[nep-6.mediawiki|6]]
 | Wallet Standard
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | 
 | URI Scheme

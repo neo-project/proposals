@@ -3,7 +3,7 @@
   Title: Wallet Standard
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2017-09-14
   Requires: 2, 3
 </pre>
@@ -118,4 +118,5 @@ All old-format wallets should be able to be converted to this new JSON format ea
 
 ==Implementation==
 
-*neon-js: https://github.com/CityOfZion/neon-js/blob/feature/nep-wallet/src/wallet/Wallet.js
+*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Implementations/Wallets/NEP6/NEP6Wallet.cs
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/feature/nep-wallet/src/wallet/Wallet.js
