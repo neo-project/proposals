@@ -21,11 +21,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Meta
 | Active
 |-
-| [https://github.com/neo-project/proposals/pull/2 2]
+| [[nep-2.mediawiki|2]]
 | Passphrase-protected private key
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [https://github.com/neo-project/proposals/pull/12 3]
 | NeoContract ABI
@@ -33,17 +33,23 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/4 5]
-| Token Standard
-| lllwvlvwlll, luodanwg, tanyuan, Alan Fong
+| [https://github.com/neo-project/proposals/pull/19 4]
+| Dynamic Contract Invocation
+| localhuman, unignorant
 | Standard
 | Accepted
 |-
-| 
-| Wallet Standard
-| 
+| [[nep-5.mediawiki|5]]
+| Token Standard
+| lllwvlvwlll, luodanwg, tanyuan, Alan Fong
 | Standard
-| Stub
+| Final
+|-
+| [https://github.com/neo-project/proposals/pull/13 6]
+| Wallet Standard
+| Erik Zhang
+| Standard
+| Accepted
 |-
 | 
 | URI Scheme
