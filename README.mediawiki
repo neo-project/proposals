@@ -37,7 +37,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Dynamic Contract Invocation
 | localhuman, unignorant
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
@@ -62,12 +62,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | 
 | Standard
 | Stub
-|-
-| [[nep-dynamic-invoke.mediawiki|''x'']]
-| Dynamic Contract Invocation
-| localhuman, unignorant
-| Standard
-| Draft
 |-
 |
 | Dynamic Sharding
