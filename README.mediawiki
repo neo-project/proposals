@@ -57,13 +57,13 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Stub
 |-
-|
+| 
 | Superconductive Exchange
 | 
 | Standard
 | Stub
 |-
-|
+| 
 | Dynamic Sharding
 | 
 | Standard
