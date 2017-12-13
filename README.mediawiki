@@ -33,11 +33,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/19 4]
+| [[nep-4.mediawiki|4]]
 | Dynamic Contract Invocation
 | localhuman, unignorant
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
