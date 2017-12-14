@@ -23,56 +23,70 @@ But there is no way for smart contracts to refuse a transfer, or to modify the s
 
 ==Specification==
 
-We define 4 kinds of triggers: <code>Verification</code>, <code>VerificationR</code>, <code>Application</code> and <code>ApplicationR</code>.
+We define four kinds of triggers: <code>Verification</code>, <code>VerificationR</code>, <code>Application</code> and <code>ApplicationR</code>.
 
 ===Verification===
 
 The <code>Verification</code> trigger indicates that the contract is being invoked as a verification function. The verification function can accept multiple parameters, and should return a boolean value that indicates the validity of the transaction or block.
 
-The verification function should have the following entry point:
+The entry point of the contract will be invoked if the contract is triggered by <code>Verification</code>:
 
 <code>
-public bool Verify(...)
+main(...);
 </code>
 
-The verification function can be invoked by setting the <code>Witness</code> field of transaction or block.
+The entry point of the contract must be able to handle this type of invocation.
 
 ===VerificationR===
 
 The <code>VerificationR</code> trigger indicates that the contract is being invoked as a verification function because it is specified as a target of an output of the transaction. The verification function accepts no parameter, and should return a boolean value that indicates the validity of the transaction.
 
-The verification function should have the following entry point:
+The entry point of the contract will be invoked if the contract is triggered by <code>VerificationR</code>:
 
 <code>
-public bool Verify()
+main("receiving", new object[0]);
 </code>
 
-The verification function will be invoked automatically when a contract is receiving assets from a transfer.
+The `receiving` function should have the following signature:
+
+<code>
+public bool receiving()
+</code>
+
+The `receiving` function will be invoked automatically when a contract is receiving assets from a transfer.
 
 ===Application===
 
 The <code>Application</code> trigger indicates that the contract is being invoked as an application function. The application function can accept multiple parameters, change the states of the blockchain, and return any type of value.
 
-The application function can have any form of entry point, but we recommend that all application functions should have the following entry point:
+The contract can have any form of entry point, but we recommend that all contracts should have the following entry point:
 
 <code>
-public byte[] Main(string operation, params object[] args)
+public byte[] main(string operation, params object[] args)
 </code>
 
-The application function can be invoked by creating an <code>InvocationTransaction</code>.
+The functions can be invoked by creating an <code>InvocationTransaction</code>.
 
 ===ApplicationR===
 
-The <code>ApplicationR</code> trigger indicates that the contract is being invoked as an application function because it is specified as a target of an output of the transaction. The application function accepts no parameter, change the states of the blockchain, and return any type of value.
+The <code>ApplicationR</code> trigger indicates that the '''default''' function `received` of the contract is being invoked because it is specified as a target of an output of the transaction. The `received` function accepts no parameter, changes the states of the blockchain, and returns any type of value.
 
-The application function should have the following entry point:
+The entry point of the contract will be invoked if the contract is triggered by <code>ApplicationR</code>:
 
 <code>
-public byte[] Main()
+main("received", new object[0]);
 </code>
 
-The application function will be invoked automatically when a contract is receiving assets from a transfer.
+The `received` function should have the following signature:
+
+<code>
+public byte[] received()
+</code>
+
+The `received` function will be invoked automatically when a contract is receiving assets from a transfer.
 
 ==Backwards Compatibility==
+
+Any old contract that didn't implement the `receiving` and `received` function will lead to a `FAULT` VM state when triggered by `VerificationR` or `ApplicationR`. So any transfers to old contracts will be rejected and no state will be changed.
 
 ==Implementation==
