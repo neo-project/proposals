@@ -47,13 +47,13 @@ The entry point of the contract will be invoked if the contract is triggered by 
 main("receiving", new object[0]);
 </code>
 
-The `receiving` function should have the following signature:
+The <code>receiving</code> function should have the following signature:
 
 <code>
 public bool receiving()
 </code>
 
-The `receiving` function will be invoked automatically when a contract is receiving assets from a transfer.
+The <code>receiving</code> function will be invoked automatically when a contract is receiving assets from a transfer.
 
 ===Application===
 
@@ -69,7 +69,7 @@ The functions can be invoked by creating an <code>InvocationTransaction</code>.
 
 ===ApplicationR===
 
-The <code>ApplicationR</code> trigger indicates that the '''default''' function `received` of the contract is being invoked because it is specified as a target of an output of the transaction. The `received` function accepts no parameter, changes the states of the blockchain, and returns any type of value.
+The <code>ApplicationR</code> trigger indicates that the '''default''' function <code>received</code> of the contract is being invoked because it is specified as a target of an output of the transaction. The <code>received</code> function accepts no parameter, changes the states of the blockchain, and returns any type of value.
 
 The entry point of the contract will be invoked if the contract is triggered by <code>ApplicationR</code>:
 
@@ -77,16 +77,16 @@ The entry point of the contract will be invoked if the contract is triggered by 
 main("received", new object[0]);
 </code>
 
-The `received` function should have the following signature:
+The <code>received</code> function should have the following signature:
 
 <code>
 public byte[] received()
 </code>
 
-The `received` function will be invoked automatically when a contract is receiving assets from a transfer.
+The <code>received</code> function will be invoked automatically when a contract is receiving assets from a transfer.
 
 ==Backwards Compatibility==
 
-Any old contract that didn't implement the `receiving` and `received` function will lead to a `FAULT` VM state when triggered by `VerificationR` or `ApplicationR`. So any transfers to old contracts will be rejected and no state will be changed.
+Any old contract that didn't implement the <code>receiving</code> and <code>received</code> function will lead to a <code>FAULT</code> VM state when triggered by <code>VerificationR</code> or <code>ApplicationR</code>. So any transfers to old contracts will be rejected and no state will be changed.
 
 ==Implementation==
