@@ -23,7 +23,7 @@ However since NEO also implements NEP-5 tokens, as well as generic smart contrac
 
 A Native asset transfer would have the following URI. It describes the reciever address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
 
-<code>NEO:[address]?assetID=[assetID]?attributes=[key=value]?amount=[amount]</code>
+<code>NEO:<address>[?assetID=<assetID>][?attributes=<key>=<value>][?amount=<amount>]</code>
 
 ==== Available transaction attribute keys====
 {| class="wikitable"
@@ -104,15 +104,15 @@ This should be sufficient to facilitate transfer of native NEO assets safely.
 ===NEP-5 Tokens===
 A NEP-5 Token would have the following URI. 
 
-<code>NEP5:[tokenScriptHash]?method=[methodName][?account=[NEOAddress]][?from=[NEOAddress]][?to=[NEOAddress]][?amount=[amount]]</code>
+<code>NEO:<address>?token=<tokenScriptHash>&method=<methodName>[?from=<NEOAddress>][?to=<NEOAddress>][?amount=<amount>]</code>
 
 ====Examples====
 Getting balance of Account = AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe RPX Token Script Hash = 0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9
 
-<code>NEP5:0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9?method=balanceOf</code>
+<code>NEO:AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe?method=balanceOf&token=0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9</code>
 
 Transfer 100 RPX Token to=AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe
-<code>NEP5:0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9?method=transfer&to=AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe&amount=100</code>
+<code>NEO:AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe?method=transfer&token=0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9&amount=100</code>
 
 
 
