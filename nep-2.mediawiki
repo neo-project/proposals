@@ -1,5 +1,5 @@
 <pre>
-  NEP: 
+  NEP: 2
   Title: Passphrase-protected private key
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
