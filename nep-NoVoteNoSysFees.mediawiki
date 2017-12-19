@@ -11,7 +11,7 @@
 
 This NEP suggests an encouragement for NEO holders to vote for consensus nodes. 
 
-GAS distribution is divided into two parts: 1. Generation of new GAS by NEO tokens and 2. Recycled system fees. In the current implementation, NEO holders will automatically receive both these distributions as unclaimed GAS. This NEP suggests that only generation of new GAS should be automatically distributed to NEO. To be eligible to receive recycled system fees, the address holding the NEO must have voted for consensus nodes. How the address has voted does not affect how much of the recycled system fees they get; it is distributied proportionally to all NEO that are held in an address that has voted.
+GAS distribution is divided into two parts: 1. Generation of new GAS by NEO tokens and 2. Recycled system fees. In the current implementation, NEO holders will automatically receive both these distributions as unclaimed GAS. This NEP suggests that only generation of new GAS should be automatically distributed to NEO. To be eligible to receive recycled system fees, the address holding the NEO must have voted for consensus nodes. How the address has voted does not affect how much of the recycled system fees they get; it is distributed proportionally to all NEO that are held in an address that has voted.
 
 ==Motivation==
 
