@@ -1,13 +1,9 @@
 <pre>
-  NEP: 2
+  NEP: 
   Title: Passphrase-protected private key
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-<<<<<<< HEAD
   Status: Accepted
-=======
-  Status: Final
->>>>>>> fb19052d7b9a7c1b10efd0bee7c2ebe10e26baa7
   Created: 2017-8-7
 </pre>
 
