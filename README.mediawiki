@@ -27,11 +27,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/12 3]
+| [[nep-3.mediawiki|3]]
 | NeoContract ABI
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-4.mediawiki|4]]
 | Dynamic Contract Invocation

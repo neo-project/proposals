@@ -3,7 +3,7 @@
   Title: NeoContract ABI
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2017-09-13
 </pre>
 
