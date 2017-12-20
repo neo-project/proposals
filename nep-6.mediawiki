@@ -108,7 +108,7 @@ Contract object has the following structure:
 
 <code>script</code> is the script code of the contract. This field can be <code>null</code> if the contract has been deployed to the blockchain.
 
-<code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the contract function. For more information about Parameter object, see the descriptions in [https://github.com/neo-project/proposals/pull/12 NEP-3: NeoContract ABI].
+<code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the contract function. For more information about Parameter object, see the descriptions in [[nep-3.mediawiki|NEP-3: NeoContract ABI]].
 
 <code>deployed</code> indicates whether the contract has been deployed to the blockchain.
 
