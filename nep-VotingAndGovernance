@@ -1,0 +1,36 @@
+<pre>
+  NEP: 
+  Title: Voting and Governance
+  Author: Erik Zhang <erik@neo.org>, Malcolm Lerider <malcolm@neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2017-12-26
+</pre>
+
+==Abstract==
+
+The NEP-8 Proposal outlines a stabilization of the current voting algorithm to ensure a controlled decentralization process while preventing “voting attacks” to abuse assignment of consensus nodes.
+
+==Motivation==
+
+In the current implementation, vote counting and assignment of consensus nodes is done on each and every block. This results in extra computation and opens up for different scenarios where an attacker can quickly affect the number of total consensus nodes and thus gain unproportional influence over the network. Furthermore, it introduces uncertainty from both NEO holders and consensus nodes since nodes can be replaced at any moment.
+
+==Specification==
+
+Following changes to voting and governance are suggested:
+1. Set voting for consensus nodes to once every 500 000 blocks (~3 months).
+2. Number of consensus nodes will be floored to nearest 3f+1 .
+3. Upper limit for number of consensus nodes is set to 100.
+4. Re-voting can be triggered earlier, at any time, if 2f+1 number of consensus nodes agree.
+5. 1 NEO will equal 1 vote. 1 NEO voting for two candidates will result in each candidate receiving 0.5 votes.
+
+==Rationale==
+
+1. Setting a specific time for voting will save computational resources and will remove uncertainty among NEO holders and consensus nodes. It will also prevent sudden and unexpected creation of nominees and potential voting abuse.	The dBFT algorithm will only get increased fault tolerance by every third node added as consensus node. Therefore, it is suggested that number of total consensus nodes are floored to the nearest n=3f+1, e.g. 7, 10, 13, 16, 19, and so on.
+2. There are certain edge cases where a voting attack, although expensive, is possible by nominating several hundreds of nominees and cross-vote to impact number of total consensus nodes. 
+3. Setting upper limit to 100 consensus nodes will prevent such scenarios. 100 nodes fulfill the requirement on n=3f+1.
+4. Consensus nodes may decide to shut down on purpose. Such shutdown will reduce the fault tolerance by one up until next election. In the lower ranges of total number of consensus nodes (e.g. 7 – 21), a reduction of 1 in fault tolerance will have a significant impact on network stability. For this reason, consensus nodes shall be able to trigger a re-election if 2f+1 number of consensus nodes agree.
+5. In the current algorithm, 1 NEO voting for two candidates will give each candidate 1 vote each. This has two disadvantages; major consortium can “lock in” all consensus nodes, and minor consortiums can spread out on a large number of nominees to gain unproportional amount of consensus nodes. Limiting 1 NEO to 1 vote will resolve both these issues.
+
+==Implementation==
+
