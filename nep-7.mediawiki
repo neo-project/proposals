@@ -1,10 +1,10 @@
 <pre>
-  NEP: 7
+  NEP: 7.0
   Title: URI Scheme
   Author: Andrei <terentiev.andrei@gmail.com>, Apisit <apisit.toompakdee@gmail.com>
   Type: Standard
   Status: Draft
-  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
+  Created: 2018-01-15
 </pre>
 
 ==Abstract==
@@ -105,10 +105,13 @@ This should be sufficient to facilitate transfer of native NEO assets safely.
 
 The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. For this reason we will propose generic smart contract URI's in a subsequent NEP.
 
-The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
-
 ==Implementation==
 Reference Implementation (GoLang)
 
 [https://play.golang.org/p/USCC87orRMS]
+
+==Reference==
+The below discussion has many relevant talking points relevant to the security implications of smart contract URI's.
+
+[https://github.com/ethereum/EIPs/issues/67]
 
