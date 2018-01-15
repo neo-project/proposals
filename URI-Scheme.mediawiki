@@ -21,7 +21,7 @@ In the future this URI scheme should enable generic smart contract invocation. T
 
 ===Native Asset Transfer URI===
 
-A Native asset transfer would have the following URI. It describes the reciever address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
+A native asset transfer would have the following URI. It describes the receiver address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
 
 <code>NEO:<address>[?assetID=<assetID>][?amount=<amount>][?attributes=<key>=<value>]</code>
 
@@ -98,6 +98,10 @@ Begin transaction to specified address of 1 NEO
 Begin transaction to specified address of 1 NEO with transaction attribute Remark = "Hello"
 
 <code>NEO:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0&attributes=0xf0=9048656c6c6f</code>
+
+Begin transaction to specified address of 0.1 GAS. Put public key in `OxO2` attribute field to allow sender to encrypt using ECDH. Transaction attribute Description = "Hello"
+<code>NEO:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?assetID= 602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7&amount=0.1&attributes=0x02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4,0x90=9048656c6c6f</code>
+
 
 This should be sufficient to facilitate transfer of native NEO assets safely.
 
