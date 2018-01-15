@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This NEP describes a URI standard for transfer of NEO native assets, as well as smart contracts deployed on chain.  
+This NEP describes a URI standard for transfer of NEO native assets.  
 
 ==Motivation==
 
@@ -101,36 +101,14 @@ Begin transaction to specified address of 1 NEO with transaction attribute Remar
 
 This should be sufficient to facilitate transfer of native NEO assets safely.
 
-===NEP-5 Tokens===
-A NEP-5 Token would have the following URI. 
-
-<code>NEO:<address>?token=<tokenScriptHash>&method=<methodName>[?from=<NEOAddress>][?to=<NEOAddress>][?amount=<amount>]</code>
-
-====Examples====
-Getting balance of Account = AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe RPX Token Script Hash = 0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9
-
-<code>NEO:AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe?method=balanceOf&token=0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9</code>
-
-Transfer 100 RPX Token to=AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe
-<code>NEO:AJShjraX4iMJjwVt8WYYzZyGvDMxw6Xfbe?method=transfer&token=0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9&amount=100</code>
-
-
-
 ==Rationale==
 
-The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. For this reason we will split up the URI's related to smart contract invocation, into two categories. Secure URI and Unsecure URI.
-
-
-
-==Rationale==
-
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
+The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. For this reason we will propose generic smart contract URI's in a subsequent NEP.
 
 The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
 
-==Test Cases==
-
-Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
-
 ==Implementation==
-Reference Implementation Link (GoLang)
+Reference Implementation (GoLang)
+
+[https://play.golang.org/p/USCC87orRMS]
+
