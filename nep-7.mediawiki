@@ -23,7 +23,7 @@ In the future this URI scheme should enable generic smart contract invocation. T
 
 A Native asset transfer would have the following URI. It describes the reciever address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
 
-<code>NEO:<address>[?assetID=<assetID>][?attributes=<key>=<value>][?amount=<amount>]</code>
+<code>NEO:<address>[?assetID=<assetID>][?amount=<amount>][?attributes=<key>=<value>]</code>
 
 ==== Available transaction attribute keys====
 {| class="wikitable"
