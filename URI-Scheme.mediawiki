@@ -1,5 +1,5 @@
 <pre>
-  NEP: 7.0
+  NEP: <to be assigned>
   Title: URI Scheme
   Author: Andrei <terentiev.andrei@gmail.com>, Apisit <apisit.toompakdee@gmail.com>
   Type: Standard
