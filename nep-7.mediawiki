@@ -15,11 +15,11 @@ This NEP describes a URI standard for transfer of NEO native assets, as well as 
 
 Currently, there is no standard URI for NEO clients to consume. Bitcoin implements a URI standard so that clicking links or scanning QR codes can easily implement a bitcoin payment. Similarly the transfer of native assets on the NEO chain should be just as simple.
 
-However since NEO also implements NEP-5 tokens, as well as generic smart contracts. Transfer of NEP-5 tokens should be equally easy to perform. Lastly, generic smart contracts should be able to be invoked on scanning of QR or clicking of a link. This allows wallet developers to consume the URI in an easy way
+In the future this URI scheme should enable generic smart contract invocation. This would allow for transfer of NEP-5 tokens, but these extensions should be added on once the more basic URI standards are agreed upon
 
 ==Specification==
 
-===Native Asset Transfer===
+===Native Asset Transfer URI===
 
 A Native asset transfer would have the following URI. It describes the reciever address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
 
@@ -128,14 +128,9 @@ The rationale fleshes out the specification by describing what motivated the des
 
 The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
 
-==Backwards Compatibility==
-
-All NEPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The NEP must explain how the author proposes to deal with these incompatibilities. NEP submissions without a sufficient backwards compatibility treatise may be rejected outright.
-
 ==Test Cases==
 
 Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
 
 ==Implementation==
-
-The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
+Reference Implementation Link (GoLang)
