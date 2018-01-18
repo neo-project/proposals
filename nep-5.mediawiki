@@ -1,7 +1,7 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: lllwvlvwlll <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
+  Author: lllwvlvwlll <tyler@cityofzion.io>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <afong@cityofzion.io>
   Type: Standard
   Status: Final
   Created: 2017-08-10
@@ -18,12 +18,6 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 ==Specification==
 
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
-
-This standard defines two method types:
-
-* '''(Required)''' : methods that are present on all NEP5 tokens.
-
-* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens. These method types are not required for standard interfacing, and most tokens should not use them. All optional methods must be enabled if choosing to use them.
 
 ===Methods===
 
@@ -64,19 +58,19 @@ This standard defines two method types:
 
 * Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
 
-====allowance ''(optional)''====
+====allowance====
 
 * Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
 
 * Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
 
-====transferFrom ''(optional)''====
+====transferFrom====
 
 * Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
 
 * Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
 
-====approve ''(optional)''====
+====approve====
 
 * Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
 
@@ -92,6 +86,8 @@ This standard defines two method types:
 
 ==Implementation==
 
-*Woolong: https://github.com/lllwvlvwlll/Woolong
+* [[nep-5/NEP5Template.cs|C#]]
 
-*ICO Template: https://github.com/neo-project/examples/tree/master/ICO_Template
+* [[nep-5/NEP5Template.py|Python]]
+** Deploy is included for testing purposes and is not a standard method
+** Script Hash: '''eb9c48ac1a5b9254cc101c70c78ebfce22cdd241'''
