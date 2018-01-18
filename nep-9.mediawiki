@@ -1,9 +1,9 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 9
   Title: URI Scheme
   Author: Andrei <terentiev.andrei@gmail.com>, Apisit <apisit.toompakdee@gmail.com>
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2018-01-15
 </pre>
 
