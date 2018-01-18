@@ -21,50 +21,71 @@ In the future this URI scheme should enable generic smart contract invocation. T
 
 ===Native Asset Transfer URI===
 
-A native asset transfer would have the following URI. It describes the receiver address, assetID, and additional attributes that will be sent with the transaction. The attributes are presented in raw hex data.
+A native asset transfer would have the following URI. It describes the receiver address, assetID, and additional attributes that will be sent with the transaction. 
 
-<code>NEO:<address>[?assetID=<assetID>][?amount=<amount>][?attributes=<key>=<value>]</code>
+'''URI scheme: <code>neo</code>'''
 
-==== Available transaction attribute keys====
+<code>neo:<address>[?assetID=<assetID>][?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
+
+==== URI Keys====
 {| class="wikitable"
-! Value
-! Name
+! Key
+! Description
+! Required
+|-
+| address
+| Valid NEO Address
+| ✓
+|-
+| assetID
+| ID of an asset being sent.
+| -
+|-
+| amount
+| amount of asset being sent. e.g 1.0
+| -
+|}
+
+==== Available URI keys map to NEO transaction attribute keys ====
+{| class="wikitable"
+! URI Key
+! NEO Transaction attribute
 ! Description
 |-
+| contractHash
 | 0x00
-| ContractHash
 | Hash value of contract 
 |-
-| 0x02-0x03
-|	ECDH02-ECDH03
+| ecdh02, ecdh03
+|	0x02,0x03
 |	Public key for ECDH key exchange
 |-
-| 0x20 
-|	Script
+| script 
+|	0x20
 |	Additional validation of transactions
 |-
-| 0x30
-|	Vote
+| vote
+|	0x30
 | For voting
 |-
-| 0x80
-| CertUrl 
+| certUrl
+| 0x80 
 |	Url address of certificate 
 |-
+| descriptionUrl
 | 0x81
-| DescriptionUrl
 |	Url address of description 
 |-
+| description
 | 0x90
-| Description
 | Brief description 
 |-
-| 0xa1-0xaf 
-|	Hash1-Hash15
+| hash1,hash2,...,hash15
+|	0xa1,0xa2,...,0xaf
 |	Used to store custom hash values
 |-
-| 0xf0-0xff
-|	Remark-Remark15
+| remark,remark2,...,remark15
+|	0xf0,0xf1,...,0xff
 |	Remarks
 |}
 
@@ -84,24 +105,24 @@ A native asset transfer would have the following URI. It describes the receiver 
 
 Begin transaction to specified address
 
-<code>NEO:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb</code>
 
 
 Begin transaction of unspecified amount of NEO
 
-<code>NEO:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID=c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID=c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b</code>
 
 Begin transaction to specified address of 1 NEO
 
-<code>NEO:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID=c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID=c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0</code>
 
-Begin transaction to specified address of 1 NEO with transaction attribute Remark = "Hello"
+Begin transaction to specified address of 1 NEO with transaction attribute description = "Hello"
 
-<code>NEO:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0&attributes=0xf0=9048656c6c6f</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?assetID= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0&description=Hello</code>
 
-Begin transaction to specified address of 0.1 GAS. Put public key in `OxO2` attribute field to allow sender to encrypt using ECDH. Transaction attribute Description = "Hello"
+Begin transaction to specified address of 0.1 GAS. Put public key in ecdh02 attribute field to allow sender to encrypt using ECDH. Transaction attribute description = "Hello"
 
-<code>NEO:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?assetID= 602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7&amount=0.1&attributes=0x02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4,0x90=9048656c6c6f</code>
+<code>neo:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?assetID= 602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7&amount=0.1&ecdh02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4&description=Hello</code>
 
 
 This should be sufficient to facilitate transfer of native NEO assets safely.
