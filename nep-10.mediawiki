@@ -1,0 +1,80 @@
+<pre>
+  NEP: 10
+  Title: Pricing Structure
+  Author: Ivan Poon <ravenxce@gmail.com>
+  Type: Informational
+  Status: Draft
+  Created: 2018-01-30
+</pre>
+
+==Abstract==
+
+This NEP describes an improvement to the current GAS pricing scheme for invoking transactions on the NEO blockchain.
+
+==Motivation==
+
+Currently, due to how <code>Storage.Put</code> operations are [https://github.com/neo-project/neo/blob/48128f1a4a3c8a0b7c4f260145d0098d4dd5ea5d/neo/SmartContract/ApplicationEngine.cs#L395 calculated], 
+there is a minimum of 1 GAS charged regardless of how small the stored payload is.
+This makes it unfeasible to run any sort of smart contract with more than basic functionality, as GAS cost quickly accumulates
+when multiple simple payloads are persisted to storage.
+
+For example, a basic 2-way transfer where NEP-5 assets are transferred from one user to two others (e.g. to an intended target + to a facilitator as fees) already costs at least 4 GAS. (1 GAS per user for updating each balance, plus 1 GAS for updating the item that originally represented this transfer request)
+
+This makes it impossible for a client to wrap more than two of such invocations within a single transaction without exceeding the 10 GAS free cap and paying an unrealistic amount of GAS <code>(3 * 4 = 12 > 10)</code>.
+
+There is also an underlying factor which causes such quirks, which stems from:
+i) the current fiat valuation of GAS, and
+ii) the current pricing structure, where invocations that consume less below a certain <code>gas_free</code> amount (10 GAS currently) is subsidized completely. 
+This causes a situation where invocations are either free, or immediately become unreasonably expensive after the <code>gas_free</code> cutoff. This is not feasible in the long run, as most users don't get charged fairly for using nodes' resources, and on the other hand, users become heavily constrained when trying to execute complex contracts.
+
+This proposal seeks to solve the above issues in a way that is fair for all participants of the NEO ecosystem.
+
+==Specification==
+
+This NEP seeks to address the outstanding issues in two ways:
+* Improving the overall gas cost structure
+* Tweaking individual operation costs to be more in line with actual costs (including externalities) to the nodes
+
+===Overall Cost Structure===
+
+The following cost structure changes should be made:
+* Remove the subsidized GAS amount, <code>gas_free</code> entirely
+* Reduce GAS cost by a factor of 100 by increasing <code>ratio</code> to <code>10000000</code> (or dynamically through consensus)
+
+===Individual Op Costs===
+
+====Storage.Put====
+
+Calculate gas cost by per byte instead of per 1024 bytes, and adding a <code>100</code> constant as a charge on the CPU cost similar to <code>Storage.Get</code>.
+
+==Rationale==
+
+===Overall Structure===
+
+Currently, GAS is meant to be a utility token, but is completely useless due all transactions trying to be under the free GAS limit.
+
+There are two viable solutions here:
+* Lower the <code>gas_free</code> to the amount required for a <code>OpCode.PUSHBYTES33 + OpCode.CHECKSIG + OpCode.PUSHBYTES64</code> such that standard transfers are still free
+* Remove <code>gas_free</code> completely
+
+The latter solution is preferred, for two major reasons. Firstly, It reduce DOS attack surface, where a rogue contract can permit bots to repeatedly invoke useless transactions under the <code>gas_free</code> limit, which will also have to be replayed across all nodes for consensus. Secondly, we are currently at a state of utilization where we can examine and understand how the economics of GAS work, such that we can simply price the <code>ratio</code> appropriately, rather than using <code>gas_free</code> which primarily serves as a safety net to ensure that there is network utilization initally. The GAS <code>ratio</code> can also be derived through a consensus mechanism dynamically such that adjustments do not require a code update. 
+
+===Individual Costs===
+
+====Storage.Put====
+
+Pricing by per byte will make the GAS price reflect the actual used costs more fairly. It will also make storage size optimizations within a KB actually worthwhile.
+
+The minimum cost for this operation will then be similar to the <code>Storage.Get</code> cost for small payloads, while the pricing per KB for larger payloads will essentially be the same as before.
+
+==Backwards Compatibility==
+
+This NEP is not backward compatible with previous versions as nodes will not be able to reach consensus on the <code>gas_consumed</code>.
+
+==Test Cases==
+
+Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
+
+==Implementation==
+
+The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
