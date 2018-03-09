@@ -65,8 +65,7 @@ This is the first message sended, and is checked for continue or disconnect the 
  This correspond to the size of the VersionPayload
 
 * Version Payload - b bytes
-
-Current version payload have Services, we propose to add SSL as service (0x02), for change the TCP to SSLStream
+ Current version payload have Services, we propose to add SSL as service (0x02), for change the TCP to SSLStream
 
 ===Message Protocol===
 
@@ -84,21 +83,20 @@ Once this check is made, the communication flow begins as defined below.
  +--------------------------------------+ +---------+
 
 * Message Flags - 1 byte
-  
-  The availables MessageFlags are:
+ The availables MessageFlags are:
   
   - None= 0x00,
   - Compressed = 0x01
   - Urgent = 0x02
 
 * Message Command - 1 byte
-  Message Command
+ Message Command
   
 * Message CRC - 2 bytes
-  Message Checksum
+ Message Checksum
 
 * Payload Size - 4 bytes
-  Payload size
+ Payload size
 
 * Payload - X bytes
-  Payload
+ Payload
