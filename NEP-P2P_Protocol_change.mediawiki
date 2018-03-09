@@ -36,18 +36,30 @@ TODO
 The current header includes 4 bytes of magic numbers in all messages. 
 The proposal is to change this header to 20 bytes only during the initial negotiation of the communication.
 
-```
  +----------------------------+       +--------------------------------------------------+
  |    Protocol negotiation    |  ...  |                 Message Protocol                 |  
  +----------------------------+       +--------------------------------------------------+
  +------+ +---------+ +-------+       +-------+ +---------+ +-----+ +--------+ +---------+
  | UUID | | Version | | Flags |  ...  | Flags | | Command | | CRC | | Length | | Payload |
  +------+ +---------+ +-------+       +-------+ +---------+ +-----+ +--------+ +---------+
-```
+
 
 ===Protocol negotiation (20 bytes)===
 
 This is the first message sended, and is checked for continue or disconnect the client.
+
+
+ +----------------------------+
+ |    Protocol negotiation    |
+ +----------------------------+
+ +------+ +---------+ +-------+
+ | UUID | | Version | | Flags |
+ +------+ +---------+ +-------+
+ | 16 b | |    2b   | |  2b   |
+ +------+ +---------+ +-------+
+ |          20 bytes          |
+ +----------------------------+
+
 
 * UUID - 16 bytes
  We think that is better to be unique id that 4 bytes as currently doing
@@ -62,7 +74,18 @@ This is the first message sended, and is checked for continue or disconnect the 
 
 Once this check is made, the communication flow begins as defined below.
 
-[8 bytes fixed] [ Payload x bytes]
+
+ +--------------------------------------------------+
+ |                 Message Protocol                 |  
+ +--------------------------------------------------+
+ +-------+ +---------+ +-----+ +--------+ +---------+
+ | Flags | | Command | | CRC | | Length | | Payload |
+ +-------+ +---------+ +-----+ +--------+ +---------+
+ |  1b   | |    1b   | | 2b  | |   4b   | |         |
+ +-------+ +---------+ +-----+ +--------+ | n bytes |
+ |                   8b                 | |         |
+ +--------------------------------------+ +---------+
+
 
 * Message Flags - 1 byte
   The current MessageFlags are
