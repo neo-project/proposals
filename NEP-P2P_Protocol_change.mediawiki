@@ -36,68 +36,69 @@ TODO
 The current header includes 4 bytes of magic numbers in all messages. 
 The proposal is to change this header to 20 bytes only during the initial negotiation of the communication.
 
- +----------------------------+       +--------------------------------------------------+
- |    Protocol negotiation    |  ...  |                 Message Protocol                 |  
- +----------------------------+       +--------------------------------------------------+
- +------+ +---------+ +-------+       +-------+ +---------+ +-----+ +--------+ +---------+
- | UUID | | Version | | Flags |  ...  | Flags | | Command | | CRC | | Length | | Payload |
- +------+ +---------+ +-------+       +-------+ +---------+ +-----+ +--------+ +---------+
-
+ +-------------------------------------------+       +--------------------------------------------------------+
+ |            Protocol negotiation           |  ...  |                    Message Protocol                    |  
+ +-------------------------------------------+       +--------------------------------------------------------+
+ +------+ +--------------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
+ | UUID | | Payload Size | | Version Payload |  ...  | Flags | | Command | | CRC | | Payload Size | | Payload |
+ +------+ +--------------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
 
 ===Protocol negotiation (20 bytes)===
 
 This is the first message sended, and is checked for continue or disconnect the client.
 
-
- +----------------------------+
- |    Protocol negotiation    |
- +----------------------------+
- +------+ +---------+ +-------+
- | UUID | | Version | | Flags |
- +------+ +---------+ +-------+
- | 16 b | |    2b   | |  2b   |
- +------+ +---------+ +-------+
- |          20 bytes          |
- +----------------------------+
-
+ +-------------------------------------+
+ |         Protocol negotiation        |
+ +-------------------------------------+
+ +------+ +--------+ +-----------------+
+ | UUID | |  Size  | | Version Payload |
+ +------+ +--------+ +-----------------+
+ | 16 b | |   2b   | |                 |
+ +------+ +--------+ |      n byes     |
+ |    18 bytes     | |                 |
+ +-----------------+ +-----------------+
 
 * UUID - 16 bytes
  We think that is better to be unique id that 4 bytes as currently doing
-* ProtocolVersion - 2 bytes
- The version is sended during the negotiation
-* ProtocolNegotiationFlags - 2 bytes
-  The current ProtocolNegotiationFlags are
-  - None= 0x00,
-  - SSL = 0x01
+ 
+* VersionPayload Size - 2 bytes
+ This correspond to the size of the VersionPayload
+
+* Version Payload - b bytes
+
+Current version payload have Services, we propose to add SSL as service (0x02), for change the TCP to SSLStream
 
 ===Message Protocol===
 
 Once this check is made, the communication flow begins as defined below.
 
-
  +--------------------------------------------------+
  |                 Message Protocol                 |  
  +--------------------------------------------------+
  +-------+ +---------+ +-----+ +--------+ +---------+
- | Flags | | Command | | CRC | | Length | | Payload |
+ | Flags | | Command | | CRC | |  Size  | | Payload |
  +-------+ +---------+ +-----+ +--------+ +---------+
  |  1b   | |    1b   | | 2b  | |   4b   | |         |
  +-------+ +---------+ +-----+ +--------+ | n bytes |
  |                   8b                 | |         |
  +--------------------------------------+ +---------+
 
-
 * Message Flags - 1 byte
-  The current MessageFlags are
+  
+  The availables MessageFlags are:
+  
   - None= 0x00,
   - Compressed = 0x01
   - Urgent = 0x02
 
 * Message Command - 1 byte
   Message Command
+  
 * Message CRC - 2 bytes
   Message Checksum
+
 * Payload Size - 4 bytes
   Payload size
+
 * Payload - X bytes
   Payload
