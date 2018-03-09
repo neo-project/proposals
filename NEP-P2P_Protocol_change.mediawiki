@@ -1,0 +1,80 @@
+<pre>
+  NEP: <to be assigned>
+  Title: P2P Protocol change
+  Author: Shargon and Belane
+  Type: Standard
+  Status: Draft
+  Created: 2018-03-07
+</pre>
+
+==Abstract==
+
+We believe is necessary a P2P protocol optimization to avoid unnecessary data exchange, reducing the computational consumption, in order to improve and speed up communication between the nodes.
+
+==Motivation==
+
+Improve the P2P protocol to support higher loads, improve the behavior of delayed communications and prioritize consensus messages.
+
+==Specification==
+
+TODO
+
+==Rationale==
+
+TODO
+
+==Backwards Compatibility==
+
+TODO
+
+==Test Cases==
+
+TODO
+
+==Implementation==
+
+The current header includes 4 bytes of magic numbers in all messages. 
+The proposal is to change this header to 20 bytes only during the initial negotiation of the communication.
+
+```
+ +----------------------------+       +--------------------------------------------------+
+ |    Protocol negotiation    |  ...  |                 Message Protocol                 |  
+ +----------------------------+       +--------------------------------------------------+
+ +------+ +---------+ +-------+       +-------+ +---------+ +-----+ +--------+ +---------+
+ | UUID | | Version | | Flags |  ...  | Flags | | Command | | CRC | | Length | | Payload |
+ +------+ +---------+ +-------+       +-------+ +---------+ +-----+ +--------+ +---------+
+```
+
+===Protocol negotiation (20 bytes)===
+
+This is the first message sended, and is checked for continue or disconnect the client.
+
+* UUID - 16 bytes
+ We think that is better to be unique id that 4 bytes as currently doing
+* ProtocolVersion - 2 bytes
+ The version is sended during the negotiation
+* ProtocolNegotiationFlags - 2 bytes
+  The current ProtocolNegotiationFlags are
+  - None= 0x00,
+  - SSL = 0x01
+
+===Message Protocol===
+
+Once this check is made, the communication flow begins as defined below.
+
+[8 bytes fixed] [ Payload x bytes]
+
+* Message Flags - 1 byte
+  The current MessageFlags are
+  - None= 0x00,
+  - Compressed = 0x01
+  - Urgent = 0x02
+
+* Message Command - 1 byte
+  Message Command
+* Message CRC - 2 bytes
+  Message Checksum
+* Payload Size - 4 bytes
+  Payload size
+* Payload - X bytes
+  Payload
