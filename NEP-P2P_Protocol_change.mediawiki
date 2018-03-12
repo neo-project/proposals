@@ -36,36 +36,34 @@ TODO
 The current header includes 4 bytes of magic numbers in all messages. 
 The proposal is to change this header to 20 bytes only during the initial negotiation of the communication.
 
- +-------------------------------------------+       +--------------------------------------------------------+
- |            Protocol negotiation           |  ...  |                    Message Protocol                    |  
- +-------------------------------------------+       +--------------------------------------------------------+
- +------+ +--------------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
- | UUID | | Payload Size | | Version Payload |  ...  | Flags | | Command | | CRC | | Payload Size | | Payload |
- +------+ +--------------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
+ +--------------------------+       +--------------------------------------------------------+
+ |   Protocol negotiation   |  ...  |                    Message Protocol                    |  
+ +--------------------------+       +--------------------------------------------------------+
+ +------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
+ | UUID | | Version Message |  ...  | Flags | | Command | | CRC | | Payload Size | | Payload |
+ +------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
 
 ===Protocol negotiation (20 bytes)===
 
 This is the first message sended, and is checked for continue or disconnect the client.
 
- +-------------------------------------+
- |         Protocol negotiation        |
- +-------------------------------------+
- +------+ +--------+ +-----------------+
- | UUID | |  Size  | | Version Payload |
- +------+ +--------+ +-----------------+
- | 16 b | |   2b   | |                 |
- +------+ +--------+ |      n byes     |
- |    18 bytes     | |                 |
- +-----------------+ +-----------------+
-
+ +----------------------------+
+ |    Protocol negotiation    |
+ +----------------------------+
+ +------+ +-------------------+
+ | UUID | |                   |
+ +------+ |  Version Message  |
+ | 16 b | |                   |
+ +------+ +-------------------+ 
+ 
 * UUID - 16 bytes
  We think that is better to be unique id that 4 bytes as currently doing
  
-* VersionPayload Size - 2 bytes
- This correspond to the size of the VersionPayload
-
-* Version Payload - b bytes
- Current version payload have Services, we propose to add SSL as service (0x02), for change the TCP to SSLStream
+* Version Message
+ This message is like Message Protocol with the VersionPayload as Payload
+ 
+ - Version Payload
+   Current version payload have Services, we propose to add SSL as service (0x02), for change the TCP to SSLStream
 
 ===Message Protocol===
 
