@@ -57,11 +57,13 @@ This is the first message sended, and is checked for continue or disconnect the 
  +------+ +-------------------+ 
  
 * UUID - 16 bytes
- We think that is better to be unique id that 4 bytes as currently doing
- 
+
+We think that is better to be unique id that 4 bytes as currently doing
+
 * Version Message
- This message is like Message Protocol with the VersionPayload as Payload
- 
+
+This message is like Message Protocol with the [VersionPayload](https://github.com/neo-project/neo/blob/master/neo/Network/Payloads/VersionPayload.cs) as Payload
+
  - Version Payload
    Current version payload have Services, we propose to add SSL as service (0x02), for change the TCP to SSLStream
 
@@ -81,14 +83,16 @@ Once this check is made, the communication flow begins as defined below.
  +--------------------------------------+ +---------+
 
 * Message Flags - 1 byte
- The availables MessageFlags are:
+
+The availables MessageFlags are:
   
   - None= 0x00,
   - Compressed = 0x01
   - Urgent = 0x02
 
 * Message Command - 1 byte
- Currently the available commands are:
+
+Currently the available commands are:
  
   - addr
   - alert
@@ -113,10 +117,13 @@ Once this check is made, the communication flow begins as defined below.
   - version
 
 * Message CRC - 2 bytes
- Message Checksum
+
+Message Checksum
 
 * Payload Size - 4 bytes
- Payload size
+
+Payload size
 
 * Payload - X bytes
- Payload
+
+Payload
