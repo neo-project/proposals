@@ -88,8 +88,30 @@ Once this check is made, the communication flow begins as defined below.
   - Urgent = 0x02
 
 * Message Command - 1 byte
- Message Command
-  
+ Currently the available commands are:
+ 
+  - addr
+  - alert
+  - block
+  - consensus
+  - filteradd
+  - filterclear
+  - filterload
+  - getaddr
+  - getblocks
+  - getdata
+  - getheaders
+  - headers
+  - inv
+  - mempool
+  - merkleblock
+  - ping
+  - pong
+  - reject
+  - tx
+  - verack
+  - version
+
 * Message CRC - 2 bytes
  Message Checksum
 
