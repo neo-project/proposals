@@ -10,7 +10,7 @@
 
 # Abstract
 
-The following standard outlines a non-fungible tokens(henceforth referred to as "NFTs") standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community.
+The following standard outlines a non-fungible tokens(henceforth referred to as "NFTs") standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples will be also provided to enable the development community.
 
 # Motivation
 
@@ -126,4 +126,4 @@ This standard defines two method types:
 
 # Implementation
 
-comming
+comming soon
