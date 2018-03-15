@@ -1,0 +1,129 @@
+
+```
+  NEP: to be assigned(suggestion：10)
+  Title: Non-fungible Token Standard
+  Author: AllenZhang <allenian@gmail.com>, JasonLiu<github:jasonliu91>,RunLyo<runlynch@gmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2018-03-10
+```
+
+# Abstract
+
+The following standard outlines a non-fungible tokens(henceforth referred to as "NFTs") standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community.
+
+# Motivation
+
+As the NEO blockchain scales, Smart Contract deployment and invocation will become increasingly important.  Without a standard interaction method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts.  Tokenized contracts present themselves as a prime example of this need because their basic operating mechanism is the same.  A standard method for interacting with these tokens relieves the entire ecosystem from maintaining a definition for basic operations that are required by every Smart Contract that employs a token. The difference in NEP-5, it will allow for NFTs to be tracked in standardized wallets and traded on exchanges.
+
+# Specification
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+This standard defines two method types:
+
+* '''(Required)''' : methods that are present on all NFTs.
+
+* '''(Optional)''' : methods that are optionally implemented on NFTs. These method types are not required for standard interfacing, and most tokens should not use them. All optional methods must be enabled if choosing to use them.
+
+## Methods
+
+### totalSupply
+
+* Syntax: <code>public static BigInteger totalSupply()</code>
+
+* Remarks: "totalSupply" returns the total NFTs supply deployed in the system.
+
+### name
+
+* Syntax: <code>public static string name()</code>
+
+* Remarks: "name" returns the NFTs name.
+
+
+### symbol
+
+* Syntax: <code>public static string symbol()</code>
+
+* Remarks: "symbol" returns the NFTs symbol.
+
+### decimals
+
+* Syntax: <code>public static byte decimals()</code>
+
+* Remarks: "decimals" returns the number of decimals used by the token.
+* The minimum unit of NFT is 1 and tokens cannot be subdivided.
+* "decimals" returns the number must be equal to 0.This method has no real value for NFTs, just to follows the semantics of NEP-5。
+
+### balanceOf
+
+* Syntax: <code>public static BigInteger balanceOf(byte[] account)</code>
+
+* Remarks: "balanceOf" returns the NFTs balance of the '''account'''.
+
+### transfer
+
+* Syntax: <code>public static bool transfer(byte[] from, byte[] to, BigInteger tokenId)</code>
+
+* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' tokenId to the '''to''' account.
+
+### ownerOf
+
+* Syntax: <code>public static byte[] ownerOf(BigInteger tokenId)</code>
+
+* Remarks: "ownerOf" returns the address currently marked as the owner of tokenID.
+
+### approve
+
+* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger tokenId)</code>
+
+* Remarks: "approve" will approve the '''to''' account to take possession of the NFT with ID tokenId from the '''originator''' acount. 
+
+### takeOwnership
+
+* Syntax: <code>public static bool takeOwnership(byte[] receiver, BigInteger tokenId)</code>
+
+* Remarks: "takeOwnership" assigns the ownership of the NFT with ID tokenId to receiver. 
+
+
+### allowance ''(optional)''
+
+* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
+
+* Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
+
+### transferFrom ''(optional)''
+
+* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
+
+* Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
+
+### tokenOfOwnerByIndex ''(optional)''
+
+* Syntax: <code>public static BigInteger tokenOfOwnerByIndex(byte[] owner, BigInteger index)</code>
+
+* Remarks: "tokenOfOwnerByIndex" will return the nth NFT assigned to the address owner, with n specified by the index argument.
+
+### tokenMetadata ''(optional)''
+
+* Syntax: <code>public static string tokenMetadata(BigInteger tokenId)</code>
+
+* Remarks: "tokenMetadata" will return a multiaddress string referencing an external resource bundle that contains (optionally localized) metadata about the NFT associated with tokenId. 
+
+## Events
+
+### transfer
+
+* Syntax: <code>public static event Action<byte[], byte[], BigInteger> transfer</code>
+
+* Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
+
+### approval
+
+* Syntax: <code>public static event Action<byte[], byte[], BigInteger> approval</code>
+
+* Remarks: The "approval" event is raised after a successful execution of the "approval" method.
+
+# Implementation
+
+comming
