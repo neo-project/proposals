@@ -34,7 +34,7 @@ TODO
 ==Implementation==
 
 The current header includes a magic numbers of 4 bytes in all messages. 
-This proposal try to change this header to 20 bytes only during the initial negotiation of the communication.
+This proposal try to change this header to 20 bytes only during the initial negotiation of the communication avoiding message overload.
 
  +--------------------------+       +--------------------------------------------------------+
  |   Protocol negotiation   |  ...  |                    Message Protocol                    |  
@@ -45,7 +45,7 @@ This proposal try to change this header to 20 bytes only during the initial nego
 
 ===Protocol negotiation (20 bytes)===
 
-This is the first message sent, and is checked for continue or disconnect the client.
+This is the first message sent, and UUID (Protocol Magic Number) is evaluated to establish the connection or disconnect the client.
 
  +----------------------------+
  |    Protocol negotiation    |
@@ -59,6 +59,7 @@ This is the first message sent, and is checked for continue or disconnect the cl
 * UUID - 16 bytes
 
 We think that is better have a unique id (16 bytes) on the negotiation than an integer (4 bytes) on each message.
+UUID should be defined on protocol.json as NEO protocol ID.
 
 * Version Message
 
