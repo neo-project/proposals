@@ -34,7 +34,7 @@ TODO
 ==Implementation==
 
 The current header includes a magic numbers of 4 bytes in all messages. 
-The proposal try to change this header to 20 bytes only during the initial negotiation of the communication.
+This proposal try to change this header to 20 bytes only during the initial negotiation of the communication.
 
  +--------------------------+       +--------------------------------------------------------+
  |   Protocol negotiation   |  ...  |                    Message Protocol                    |  
@@ -45,7 +45,7 @@ The proposal try to change this header to 20 bytes only during the initial negot
 
 ===Protocol negotiation (20 bytes)===
 
-This is the first message sended, and is checked for continue or disconnect the client.
+This is the first message sent, and is checked for continue or disconnect the client.
 
  +----------------------------+
  |    Protocol negotiation    |
@@ -62,13 +62,13 @@ We think that is better have a unique id (16 bytes) on the negotiation than an i
 
 * Version Message
 
-This field is a `Message Protocol` with the `Command` setted as `version`. The payload attributed to this message is `VersionPayload` as defined [https://github.com/neo-project/neo/blob/master/neo/Network/Payloads/VersionPayload.cs here].
+This field is a ''Message Protocol'' with the ''Command'' defined as ''version''. The payload attributed to this message is ''VersionPayload'' as defined [https://github.com/neo-project/neo/blob/master/neo/Network/Payloads/VersionPayload.cs here].
 
-```
+<pre>
 Version Payload
 
 Current version payload has Services field, we propose to change it to Enum Type and add SSL as possible value (0x02). With this value SSLStream will be used instead of NetworkStream.
-```
+</pre>
 
 ===Message Protocol===
 
