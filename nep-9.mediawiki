@@ -126,15 +126,33 @@ Begin transaction to specified address of 0.1 GAS. Put public key in ecdh02 attr
 
 
 This should be sufficient to facilitate transfer of native NEO assets safely.
+---
+
+===Smart Contract Invocation URI===
+To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer NEP-5 token, voting, etc. what left for a user to do is to authorize/sign the transaction. It would have the following URI. 
+
+<code>neo:<ScriptHash>?operation=<operation>[&<parameterName>=<parameterValue>][&<TransactionAttributeKey>=<value>]</code>
+
+===NEP-5 Token Transfer URI===
+
+A NEP-5 token transfer is a smart contract invocation and would have the following URI. 
+
+<code>neo:<ScriptHash>?operation=transfer&from=<address>&to=<address>&amount=<amount>[?<TransactionAttributeKey>=<value>]</code>
+
+====Examples====
+Begin transaction to transfer 10 ONT to specific adderess.
+
+<code>neo:ceab719b8baa2310f232ee0d277c061704541cfb?operation=transfer&from=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y&to=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y&amount=10</code>
+
 
 ==Rationale==
 
-The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. For this reason we will propose generic smart contract URI's in a subsequent NEP.
+The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. 
 
 ==Implementation==
 Reference Implementation (GoLang)
 
-[https://play.golang.org/p/USCC87orRMS]
+[https://github.com/O3Labs/NEP9-go]
 
 ==Reference==
 The below discussion has many relevant talking points relevant to the security implications of smart contract URI's.
