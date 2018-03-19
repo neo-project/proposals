@@ -43,7 +43,7 @@ This proposal try to change this header to 20 bytes only during the initial nego
  | UUID | | Version Message |  ...  | Flags | | Command | | CRC | | Payload Size | | Payload |
  +------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
 
-===Protocol negotiation (20 bytes)===
+===Protocol negotiation===
 
 This is the first message sent, and UUID (Protocol Magic Number) is evaluated to establish the connection or disconnect the client.
 
