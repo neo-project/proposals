@@ -119,4 +119,4 @@ Test 2:
 
 *neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Wallets/KeyPair.cs#L75
 
-*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/nep2.js
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/wallet/nep2.js
