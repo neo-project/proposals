@@ -119,4 +119,4 @@ All old-format wallets should be able to be converted to this new JSON format ea
 ==Implementation==
 
 *neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Implementations/Wallets/NEP6/NEP6Wallet.cs
-*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/feature/nep-wallet/src/wallet/Wallet.js
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/wallet/Wallet.js
