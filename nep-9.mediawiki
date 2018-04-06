@@ -1,6 +1,6 @@
 <pre>
   NEP: 9
-  Title: URI Scheme for Native Assets and Established Smart Contracts
+  Title: URI Scheme for Native Assets and Supported Smart Contracts
   Author: Andrei <terentiev.andrei@gmail.com>, Apisit <apisit.toompakdee@gmail.com>
   Type: Standard
   Status: Accepted
@@ -13,7 +13,7 @@ This NEP describes a URI standard for transfer of NEO native assets. Furthermore
 
 ==Motivation==
 
-Currently, there is no standard URI for NEO clients to consume. Bitcoin implements a URI standard so that clicking links or scanning QR codes can easily implement a bitcoin payment. Similarly the transfer of native assets on the NEO chain should be just as simple. 
+Currently, there is no standard URI for NEO clients to consume. Bitcoin implements a URI standard so that clicking links or scanning QR codes can easily implement a bitcoin payment. Similarly the transfer of native assets on the NEO chain should be jat as simple. 
 
 However NEO can possibly implement much more contract operations via smart contract execution. These can range from minting and transferring tokens, registering domain names, exchanges, and other customized applications. Ideally a URI could exist for generic smart contract execution. However, this has security implications, as it may be difficult to determine what a smart contract URI actually does, which could lead to loss of funds.
 
@@ -150,7 +150,7 @@ To invoke the smart contract, we need to specify a script hash and the operation
 |}
 
 ==Rationale==
-As mentioned before, generic smart contract execution is not necessarily suitable for URI's. This is because both of the secuity issues, and useability. A client of the URI should have 100% confidence that the URI that they will consume will have it's intended effect. Limiting it to a subset of contract operations does most of the heavy lifting. If the client wishes to be even more secure, it can whitelist it's own set of contracts for each subset of supported smart contract URI's.
+As mentioned before, generic smart contract execution is not necessarily suitable for URI's. This is because both of the security issues, and usability. A client of the URI should have 100% confidence that the URI that they will consume will have it's intended effect. Limiting it to a subset of contract operations does most of the heavy lifting. If the client wishes to be even more secure, it can whitelist it's own set of contracts for each subset of supported smart contract URI's.
 
 Any addition to supported smart contract URI's should follow the exact same procedure as other NEO enhancement proposals. In order to be added as a supported smart contract URI, the operation/proposal should have the following... 
 
