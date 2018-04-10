@@ -16,25 +16,12 @@
 ==Motivation==
 
 随着NEO的发展，想要建立管理独一无二资产的需要越来越强烈，特提出此标准
-As the NEO blockchain scales, Smart Contract deployment and invocation will become increasingly important.  Without a standard interaction method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts.  Tokenized contracts present themselves as a prime example of this need because their basic operating mechanism is the same.  A standard method for interacting with these tokens relieves the entire ecosystem from maintaining a definition for basic operations that are required by every Smart Contract that employs a token.
 
 ==Specification==
 
-In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
-
-This standard defines two method types:
-
-* '''(Required)''' : methods that are present on all NEP5 tokens.
-
-* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens. These method types are not required for standard interfacing, and most tokens should not use them. All optional methods must be enabled if choosing to use them.
 
 ===Methods===
 
-
-        //nft notify
-        public delegate void deleTransfer(TransferType type, byte[] nftid, byte[] from, byte[] to);
-        [DisplayName("transfer")]
-        public static event deleTransfer Transferred;
 
 ====totalSupply====
 
