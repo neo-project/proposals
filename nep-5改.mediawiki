@@ -76,8 +76,9 @@ NEP5代币标准改
 
 ====getTXInfo====
 
-* Syntax: <code>public static TxInfo getTXInfo(byte[] txid)
+* Syntax: <code>public static TxInfo getTXInfo(byte[] txid)</code>
 
+<code>
 	class TXInfo
 	{
 		public byte[] from;
