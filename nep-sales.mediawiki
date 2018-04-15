@@ -1,0 +1,123 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Crowdsale Standard
+  Author: Thomas Saunders, Yak Jun Xiang
+  Type: Standard
+  Status: Draft
+  Created: 2018-03-16
+  Requires: NEP-5
+</pre>
+
+==Abstract==
+
+This NEP describes a set of methods that complements the NEP-5 proposal by introducing guidelines and methods that aids both the user and the organisation in the crowdsale process. These methods present a common standard that exposes the necessary information to the public in order to have a smooth crowdsale process.
+
+==Motivation==
+
+Initial Coin Offerings (ICOs) are often the main source of funding for blockchain projects. These offerings are conducted as a form of a crowdsale of tokens, allowing investors who have passed an off-chain verification process to contribute some of their assets for some tokens.
+
+This process is currently not supported by the ecosystem, resulting in several weaknesses in the process:
+
+1. The investor verification process is largely opaque and done off-chain. The source of truth to check if an investor is verified is usually the website of the organsiation. However, it is difficult for the investor to verify that the website and the smart contract is in sync.
+
+2. The investor depends on an announcement for start and closing of the sales from the organisation. However, many people still do not do their research and proceed to participate in a closed sale, causing lost funds and anger.
+
+3. There might be contribution limits that are recorded on the blockchain but it is opaque to the wallet software. Thus, the wallet is unable to stop the investor from over-contributing.
+
+4. There is currently no records of the entire sales process. Tokens can be created at different rates at different times. It is confusing to tell what is the current exchange rate without attempting a transaction first.
+
+This proposal tackles the mentioned issues by proposing a standard set of methods that wallets can implement to provide investors with the visibility and confidence when contributing. With the proposed set of methods, the wallet can independently verify the sale and verification status, providing the investor with confidence in the sales.
+
+It is noted that the above issues are all tackled by using verification and having the contract reject transactions. However, this is a very unfriendly way of rejection with no clarity of the reason of rejection given to the investor. With this proposal, we hope that the token sales experience will be smooth and painless. This proposal is not an excuse to not implement verification as it is still the better option to implement.
+
+==Specification==
+
+We propose the following methods to be implemented in any crowdsale contract that requires investor verification as well as sales restricted to a timeframe.
+
+The methods starting with "kyc" are methods for individuals, indicating their status in the current sale.
+
+The methods starting with "sale" are methods for the entire sale, indicating the status of the current sale.
+
+This standard defines two method types:
+
+* '''(Required)''' : methods that are compulsory in order to be NEP-compliant. Methods are required unless marked otherwise. These methods are mostly user-facing and thus must be standardised for a smooth experience.
+
+* '''(Optional)''' : methods that are optionally implemented. These methods are not all user-facing and contains certains parameters not present in all sales. However, developer tools are encouraged to follow this specification for the best experience.
+
+===Methods===
+
+====mintTokens====
+
+* Syntax: <code>public static string mintTokens(byte[] address)</code>
+
+* Remarks: ''mintToken'' attempts to create tokens for the specified address. If successful, this action should increase the totalSupply of the tokens. This method must be implemented together with the ''token_mint'' event.
+
+====kycStatus====
+
+* Syntax: <code>public static bool kycStatus(byte[] address)</code>
+
+* Remarks: ''kycStatus'' Checks the whitelist status for the provided address. Returns True if registered.
+
+====kycLimit====
+
+* Syntax: <code>public static int kycLimit(byte[] address)</code>
+
+* Remarks: ''kycLimit'' returns the maximum amount of tokens that the provided address can exchange for. This method should ignore the global remaining tokens and focus on the personal limit. Sales without a personal limit should return the largest possible integer.
+
+* Example: For an address registered to exchange up to 1000 tokens, in a sale where 1 NEO is worth 100 tokens, 1 GAS is worth 10 tokens, this method should return 1000 at the beginning. After contributing 1 NEO and 10 GAS, this method should return 800. 
+
+====saleStatus====
+
+* Syntax: <code>public static bool saleStatus()</code>
+
+* Remarks: ''saleStatus'' returns the current state of the sale. Returns true if sale is active.
+
+====saleRemaining====
+
+* Syntax: <code>public static int saleRemaining()</code>
+
+* Remarks: "saleRemaining" returns the amount of tokens left for sale. This is the remaining amount of token left available for exchange. Sales without a limit should return the largest possible integer.
+
+====saleDetails ''(optional)''====
+
+* Syntax: <code>public static string saleDetails()</code>
+
+* Remarks: ''saleDetails'' returns a string that briefly describes the sale. The string should be a human-readable string and is left to the contract owner to decide what he wishes to display. This string is meant for the wallet software to display in order to convey some information to the users.
+
+* Example: At block 1000, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 100 TOKENS (till block 2000)</code>. At block 2001, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 50 TOKENS</code>. At block 3000, the sale has ended, the call to ''saleDetails'' will return the following string: <code>Sale Ended</code>.
+
+====kycRegister ''(optional)''====
+
+* Syntax: <code>public static bool kycRegister(byte[] address)</code>
+
+* Remarks: ''kycRegister'' registers the provided address as whitelisted and returns True if successful. This method can only be called by the contract owner. This method should be implemented with the event ''kyc_register''.
+
+====kycDeregister ''(optional)''====
+
+* Syntax: <code>public static bool kycDeregister(byte[] address)</code>
+
+* Remarks: ''kycDeregister'' removes the registration of the provided address and returns True if successful. This method can only be called by the contract owner. This method should be implemented with the event ''kyc_deregister''.
+
+===Events===
+
+====mintToken====
+
+* Syntax: <code> public static event Action<byte[], int> token_mint</code>
+
+* Remarks: The "token_mint" event is raised after a successful execution of the "mintToken" method with the arguments '''(address, amount of tokens created)'''
+
+====kycRegister''(optional)''====
+
+* Syntax: <code>public static event Action<byte[]> kyc_register</code>
+
+* Remarks: The "kycRegister" event is raised after a successful execution of the "kycRegister" method with the argument '''(address)'''
+
+====kycDeregister''(optional)''====
+
+* Syntax: <code> public static event Action<byte[]> kyc_deregister</code>
+
+* Remarks: The "kycDeregister" event is rasied after a successful execution of the "kycDeregister" method with the argument '''(address)'''
+
+==Implementation==
+
+TBD
