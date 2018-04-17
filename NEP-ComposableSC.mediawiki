@@ -1,0 +1,97 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Composable Smart Contracts
+  Author: Michael Herman (mwheran@parallelspace.net) aka @mwerman2000, Joe Stewart (hal0x2328@splyse.tech) aka @hal0x2328#2328 
+  Type: Standard
+  Status: Draft
+  Created: 2018-04-17
+  Requires (*optional): None
+  Replaces (*optional): None
+</pre>
+
+==Abstract==
+
+Many projects are proposing extensions to the NEP-5 required set of operations and methods. 
+NEP-<number to be assigned> proposes a solution to this scenario (and any other similar, non-NEP-5 scenarios) 
+where a smart contract supports an
+extension to an existing NEP. Conforming to NEP-<number to be assigned> involves implementing 
+a single required, constant-valued operation and method <code>supportedStandards</code>.
+
+==Motivation==
+
+Many projects are proposing extensions to the existing NEP-5 required set of operations and methods and there is
+currently no end-to-end solution for handling this scenario.
+Most often this manifests itself as a smart contract wanting to support the required operations and methods of 
+an existing NEP plus one or more additional draft, accepted, or final NEPs.
+It is imperative that off-chain client applications be able to know if a smart contract supports a particular set 
+of required operations and methods ...or not.
+A simple direct solution for this scenario is for smart contracts conforming to NEP-<number to be assigned> 
+to implement single, constant-valued operation and method called <code>supportedStandards</code>. 
+
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions 
+as they are defined in the smart contract as well as the invoke parameters.
+
+This standard defines one method types:
+
+* '''(Required)''' : operations and methods that are present in all smart contracts that conform to this NEP.
+
+===Methods===
+
+====supportedStandards====
+
+* Syntax: <code>public static string supportedStandards()</code>
+
+* Operation: <code>"supportedStandards"</code>
+
+* Remarks: This operation and method returns string of comma-separated string values. 
+Each string value is a code for an NEP (or other standard) supported by the smart contract.
+The inclusion of a specific code in the list of comma-separated string values implies the smart contract
+supports all of the required operations and methods defined in the NEP that cooresponds with the code. 
+Codes are specified with the lettercase native to the specification system. 
+In the case of NEP codes, it's "NEP-" (uppercase) followed by a integer (the NEP number) - not mixedcase or lowercase.
+
+* Example: <code>"NEP-5"</code> implies the smart contract supports the required operations and methods for NEP-5
+(an NEP-5 token).
+
+* Example: <code>"NEP-5,NEP-1234"</code> implies the smart contract supports the required operations and methods for an NEP-5 token
+as well as the required operations and methods for NEP-1234 (a fictitious NEP). The NEP-1234 required methods may be extensions to NEP-5
+or they may represent an entirely unrelated set of required operations and methods - jointly supported by the smart contract.
+
+* Example: <code>"nep-5"</code>, <code>"NEP5"</code>, and <code>"nep5"</code> will generally be 
+considered invalid responses unless "nep5" is a valid code for a specification in non-NEP specification system.
+
+==Rationale==
+
+The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
+
+The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
+
+==Backwards Compatibility==
+
+Support for NEP-<number to be assigned> by any particular smart contract is Optional. 
+If a smart contract supports NEP-<number to be assigned>, it is required that the smart contract support
+<code>"supportedStandards"</code>.
+
+If a smart contract does not support NEP-<number to be assigned>, the <code>invokefunction</code> call should fail the way
+it would normally fail if an <code>invokefunction</code> call is made for a method that is not implemented by 
+the smart contract.
+
+If a smart contact doesn't recognize the "supportedStandards" operation, the smart contract should return <code>false</code>
+
+==Test Cases==
+
+NEP-<number to be assigned> does not affect consensus changes. 
+
+There are 2 levels of test cases: i) does "supportedStandards" return a properly formatted string of comma-separated values
+and are the values valid codes representing NEPs (and other standards); and ii) does the smart contract 
+implement the required operations and methods for all of the NEP (and other standards) represented by the list of
+codes in the comma-separated string returned by the smart contract.
+
+"NEP-" (uppercase) followed by a integer (the NEP number) - not mixedcase or lowercase.
+
+==Implementation==
+
+[TODO] The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
