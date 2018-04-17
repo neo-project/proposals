@@ -66,11 +66,11 @@ This standard defines two method types:
 
 ====saleDetails ''(optional)''====
 
-* Syntax: <code>public static string saleDetails()</code>
+* Syntax: <code>public static string saleDetails(byte[] address)</code>
 
-* Remarks: ''saleDetails'' returns a string that briefly describes the sale. The string should be a human-readable string and is left to the contract owner to decide what he wishes to display. This string is meant for the wallet software to display in order to convey some information to the users.
+* Remarks: ''saleDetails'' returns a string that briefly describes the sale. The argument '''(address)''' can be made optional by passing in an empty byte array. If no argument is passed in, the method should return a message meant for anyone to read. If an address is passed in, the method may return a custom message specific for the address. The message should be a human-readable string and is left to the contract owner to decide what he wishes to display. This string is meant for the wallet software to display in order to convey some information to the users.
 
-* Example: At block 1000, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 100 TOKENS (till block 2000)</code>. At block 2001, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 50 TOKENS</code>. At block 3000, the sale has ended, the call to ''saleDetails'' will return the following string: <code>Sale Ended</code>.
+* Example: For a registered address, at block 1000, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 100 TOKENS (till block 2000)</code>. At block 2001, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 50 TOKENS</code>. At block 3000, the sale has ended, the call to ''saleDetails'' will return the following string: <code>Sale Ended</code>. For all non-registered addresses, the call will return the following string: <code>~TOKEN~ Find us at www.token.com!</code>
 
 ====kycRegister ''(optional)''====
 
