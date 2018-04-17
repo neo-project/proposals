@@ -72,12 +72,6 @@ This standard defines two method types:
 
 * Remarks: ''saleStatus'' returns the current state of the sale. Returns true if sale is active.
 
-====saleRemaining====
-
-* Syntax: <code>public static int saleRemaining()</code>
-
-* Remarks: "saleRemaining" returns the amount of tokens left for sale. This is the remaining amount of token left available for exchange. Sales without a limit should return the largest possible integer.
-
 ====saleDetails ''(optional)''====
 
 * Syntax: <code>public static string saleDetails()</code>
