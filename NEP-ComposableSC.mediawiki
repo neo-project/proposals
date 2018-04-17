@@ -1,5 +1,5 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: NEP-[number to be assigned]
   Title: Composable Smart Contracts
   Author: Michael Herman (mwheran@parallelspace.net) aka @mwerman2000, Joe Stewart (hal0x2328@splyse.tech) aka @hal0x2328#2328 
   Type: Standard
@@ -11,10 +11,10 @@
 
 ==Abstract==
 
-Many projects are proposing extensions to the NEP-5 required set of operations and methods. 
-NEP-<number to be assigned> proposes a solution to this scenario (and any other similar, non-NEP-5 scenarios) 
+Several projects are proposing extensions to the NEP-5 required operations and methods. 
+NEP-[number to be assigned] proposes a solution to this scenario (and any other similar, non-NEP-5 scenarios) 
 where a smart contract supports an
-extension to an existing NEP. Conforming to NEP-<number to be assigned> involves implementing 
+extension to an existing NEP. Conforming to NEP-[number to be assigned] involves implementing 
 a single required, constant-valued operation and method <code>supportedStandards</code>.
 
 ==Motivation==
@@ -25,7 +25,7 @@ Most often this manifests itself as a smart contract wanting to support the requ
 an existing NEP plus one or more additional draft, accepted, or final NEPs.
 It is imperative that off-chain client applications be able to know if a smart contract supports a particular set 
 of required operations and methods ...or not.
-A simple direct solution for this scenario is for smart contracts conforming to NEP-<number to be assigned> 
+A simple direct solution for this scenario is for smart contracts conforming to NEP-[number to be assigned] 
 to implement single, constant-valued operation and method called <code>supportedStandards</code>. 
 
 
@@ -71,11 +71,11 @@ The rationale may also provide evidence of consensus within the community, and s
 
 ==Backwards Compatibility==
 
-Support for NEP-<number to be assigned> by any particular smart contract is Optional. 
-If a smart contract supports NEP-<number to be assigned>, it is required that the smart contract support
+Support for NEP-[number to be assigned] by any particular smart contract is Optional. 
+If a smart contract supports NEP-[number to be assigned], it is required that the smart contract support
 <code>"supportedStandards"</code>.
 
-If a smart contract does not support NEP-<number to be assigned>, the <code>invokefunction</code> call should fail the way
+If a smart contract does not support NEP-[number to be assigned], the <code>invokefunction</code> call should fail the way
 it would normally fail if an <code>invokefunction</code> call is made for a method that is not implemented by 
 the smart contract.
 
@@ -83,7 +83,7 @@ If a smart contact doesn't recognize the "supportedStandards" operation, the sma
 
 ==Test Cases==
 
-NEP-<number to be assigned> does not affect consensus changes. 
+NEP-[number to be assigned] does not affect consensus changes. 
 
 There are 2 levels of test cases: i) does "supportedStandards" return a properly formatted string of comma-separated values
 and are the values valid codes representing NEPs (and other standards); and ii) does the smart contract 
