@@ -58,14 +58,6 @@ This standard defines two method types:
 
 * Remarks: ''kycStatus'' Checks the whitelist status for the provided address. Returns True if registered.
 
-====kycLimit====
-
-* Syntax: <code>public static int kycLimit(byte[] address)</code>
-
-* Remarks: ''kycLimit'' returns the maximum amount of tokens that the provided address can exchange for. This method should ignore the global remaining tokens and focus on the personal limit. Sales without a personal limit should return the largest possible integer.
-
-* Example: For an address registered to exchange up to 1000 tokens, in a sale where 1 NEO is worth 100 tokens, 1 GAS is worth 10 tokens, this method should return 1000 at the beginning. After contributing 1 NEO and 10 GAS, this method should return 800. 
-
 ====saleStatus====
 
 * Syntax: <code>public static bool saleStatus()</code>
