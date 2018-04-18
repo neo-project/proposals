@@ -48,7 +48,7 @@ This NEP defines one method type:
 
 * Operation: <code>"supportedStandards"</code>
 
-* Remarks: This operation and method uses no paramters and returns a string of comma-separated string values. Each string value is a code for an NEP (or other standard) supported by the smart contract. The inclusion of a specific code in the list of comma-separated string values implies the smart contract supports all of the required operations and methods defined in the NEP that cooresponds with the code. Codes are specified with the lettercase native to the specification system. For the case of NEP codes, it's "NEP-" (uppercase) followed by a integer (the NEP number) - not mixedcase or lowercase.
+* Remarks: This operation and method uses no paramters and returns a string of comma-separated list of string values. Each string value is a code for an NEP (or other standard) supported by the smart contract. The inclusion of a specific code in the list of comma-separated list of string values implies the smart contract supports all of the required operations and methods defined in the NEP that cooresponds with the code. Codes are specified with the lettercase native to the specification system. For the case of NEP codes, it's "NEP-" (uppercase) followed by a integer (the NEP number) - not mixedcase or lowercase.
 
 * Example: <code>"NEP-5"</code> implies the smart contract supports the required operations and methods for NEP-5 (an NEP-5 token).
 
@@ -76,10 +76,10 @@ If a smart contact doesn't recognize the "supportedStandards" operation, the sma
 
 NEP-[number to be assigned] does not affect consensus changes. 
 
-There are 2 levels of test cases: i) does "supportedStandards" return a properly formatted string of comma-separated values
-and are the values valid codes representing NEPs (and other standards); and ii) does the smart contract 
-implement the required operations and methods for all of the NEP (and other standards) represented by the list of
-codes in the comma-separated string returned by the smart contract.
+There are 2 levels of test cases: i) does "supportedStandards" return a properly formatted string of comma-separated list of string values
+and are the string values valid codes representing NEPs (and other standards); and ii) does the smart contract 
+implement the required operations and methods for the NEPs (and other standards) represented by the list of
+codes in the comma-separated list of string values returned by the smart contract.
 
 "NEP-" (uppercase) followed by a integer (the NEP number) - not mixedcase or lowercase.
 
