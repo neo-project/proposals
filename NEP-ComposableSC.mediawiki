@@ -58,7 +58,7 @@ This NEP defines one method type:
 
 ==Rationale==
 
-The rationale for this design is similar to that for the <code>name</code>, <code>decimals</code>, <code>symbol</code> and <code>totalSupply</code> NEP-5 constant-valued operations and methods: simple, expressive and straightforward to implement.
+The rationale for this design is similar to that for the <code>name</code>, <code>decimals</code>, <code>symbol</code> and <code>totalSupply</code> NEP-5 constant-valued operations and methods: simple, expressive, and straightforward to implement.
 
 ==Backwards Compatibility==
 
