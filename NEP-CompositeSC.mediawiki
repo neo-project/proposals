@@ -16,7 +16,7 @@ and are proposing (or about to propose) these additional operations and methods 
 NEP-[number to be assigned] proposes a solution to this scenario (as well as non-NEP-5 scenarios) 
 where a smart contract supports extensions to an existing NEP. Conforming to NEP-[number to be assigned] involves implementing 
 a single required, constant-valued operation and method <code>supportedStandards</code>, and possibly creating one or more new NEPs to define
-the new set(s) of operations and methods.
+the new set(s) of required operations and methods.
 
 ==Motivation==
 
