@@ -54,7 +54,7 @@ This NEP defines one method type:
 
 * Example: <code>"NEP-5,NEP-1234"</code> implies the smart contract supports the required operations and methods for an NEP-5 token as well as the required operations and methods for NEP-1234 (a fictitious NEP). The NEP-1234 required operations and methods may be extensions to NEP-5 or they may represent an entirely unrelated, additional set of required operations and methods - jointly supported by the smart contract.
 
-* Example: <code>"nep-5"</code>, <code>"NEP5"</code>, and <code>"nep5"</code> will generally be considered invalid responses unless "nep5" is a valid code for a specification in a non-NEP specification system.
+* Example: <code>"nep-5"</code>, <code>"NEP5"</code>, and <code>"nep5"</code> will generally be considered invalid responses unless "nep5", for example, is a valid code for a specification in a non-NEP specification system.
 
 ==Rationale==
 
