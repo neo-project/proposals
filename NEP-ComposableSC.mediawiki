@@ -64,7 +64,7 @@ The rationale for this design is similar to that for the <code>name</code>, <cod
 
 Support for NEP-[number to be assigned] by any particular smart contract is Optional. 
 If a smart contract supports NEP-[number to be assigned], it is required that the smart contract support
-<code>"supportedStandards"</code>.
+<code>supportedStandards</code>.
 
 If a smart contract does not support NEP-[number to be assigned], the <code>invokefunction</code> call should fail the way
 it would normally fail if an <code>invokefunction</code> call is made for a method that is not implemented by 
