@@ -1,6 +1,6 @@
 <pre>
   NEP: NEP-[number to be assigned]
-  Title: Composable Smart Contracts
+  Title: Composite Smart Contracts
   Author: Michael Herman (mwheran@parallelspace.net) aka @mwerman2000, Joe Stewart (hal0x2328@splyse.tech) aka @hal0x2328#2328 
   Type: Standard
   Status: Draft
