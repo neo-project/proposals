@@ -17,7 +17,7 @@ NEP-[number to be assigned] proposes a solution to this scenario (as well as non
 where a smart contract supports
 extensions to an existing NEP. Conforming to NEP-[number to be assigned] involves implementing 
 a single required, constant-valued operation and method <code>supportedStandards</code>, and possibly creating one or more new NEPs to define
-the new operations and methods.
+the new set(s) of operations and methods.
 
 ==Motivation==
 
@@ -32,7 +32,7 @@ This capability is critical for user applications as well as exchanges, trading 
 calls into a smart contract.
 A simple direct solution for this scenario is for smart contracts conforming to NEP-[number to be assigned] 
 to implement a single, constant-valued operation and method called <code>supportedStandards</code>, and possibly creating one or more new NEPs to define
-the new operations and methods.
+the new set(s) of operations and methods.
 
 
 ==Specification==
@@ -54,11 +54,11 @@ This NEP defines one operation/method type:
 
 * Remarks: This operation and method uses no parameters and returns a string of comma-separated list of string values. Each string value is a code for an NEP (or other standard) supported by the smart contract. The inclusion of a specific code in the list of comma-separated list of string values implies the smart contract supports all of the required operations and methods defined in the NEP that cooresponds with the code. Codes are specified with the lettercase native to the specification system. For NEP codes, the code format is "NEP-" (uppercase) followed by a integer (the NEP number) - not mixedcase or lowercase.
 
-* Example: <code>"NEP-5"</code> implies the smart contract supports the required operations and methods for NEP-5 (an NEP-5 token).
+* Example: The return value <code>"NEP-5"</code> implies the smart contract supports the required operations and methods for NEP-5 (an NEP-5 token).
 
-* Example: <code>"NEP-5,NEP-1234"</code> implies the smart contract supports the required operations and methods for an NEP-5 token as well as the required operations and methods for NEP-1234 (a fictitious NEP). The NEP-1234 required operations and methods may be extensions to NEP-5 or they may represent an entirely unrelated, additional set of required operations and methods - jointly supported by the smart contract.
+* Example: The return value <code>"NEP-5,NEP-1234"</code> implies the smart contract supports the required operations and methods for an NEP-5 token as well as the required operations and methods for NEP-1234 (a fictitious NEP). The NEP-1234 required operations and methods may be extensions to NEP-5 or they may represent an entirely unrelated, additional set of required operations and methods - jointly supported by the smart contract.
 
-* Example: <code>"nep-5"</code>, <code>"NEP5"</code>, and <code>"nep5"</code> will generally be considered invalid responses unless "nep5", for example, is a valid code for a specification in a non-NEP specification system.
+* Example: The return values <code>"nep-5"</code>, <code>"NEP5"</code>, and <code>"nep5"</code> will generally be considered invalid responses unless "nep5", for example, is a valid code for a specification in a non-NEP specification system.
 
 ==Rationale==
 
