@@ -50,7 +50,7 @@ This NEP defines one operation/method type:
 
 * Operation: <code>"supportedStandards"</code>
 
-* Remarks: This operation and method uses no parameters and returns a string of comma-separated list of string values. Each string value is a code for an NEP (or other standard) supported by the smart contract. The inclusion of a specific code in the list of comma-separated list of string values implies the smart contract supports all of the required operations and methods defined in the NEP that cooresponds with the code. Codes are specified with the lettercase native to the specification system. For NEP codes, the code format is "NEP-" (uppercase) followed by a whole number (the NEP number) - not mixedcase or lowercase.
+* Remarks: This operation and method expects no parameters and returns a string of comma-separated list of string values. Each string value is a code for an NEP (or other standard) supported by the smart contract. The inclusion of a specific code in the list of comma-separated list of string values implies the smart contract supports all of the required operations and methods defined in the NEP that cooresponds with the code. Codes are specified with the lettercase native to the specification system. For NEP codes, the code format is "NEP-" (uppercase) followed by a whole number (the NEP number) - not mixedcase or lowercase.
 
 * Example: The return value <code>"NEP-5"</code> implies the smart contract supports the required operations and methods for NEP-5 (an NEP-5 token).
 
