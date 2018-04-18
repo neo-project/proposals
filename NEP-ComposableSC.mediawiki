@@ -11,7 +11,7 @@
 
 ==Abstract==
 
-Several projects have extended the NEP-5 required operations and methods in their project's smart contracts 
+Several projects have extended NEP-5's required operations and methods in their project's smart contracts 
 and are proposing (or about to propose) these additional operations and methods as extensions to NEP-5. 
 NEP-[number to be assigned] proposes a solution to this scenario (as well as non-NEP-5 scenarios) 
 where a smart contract supports
@@ -21,7 +21,7 @@ the new operations and methods.
 
 ==Motivation==
 
-Several projects have extended the NEP-5 required operations and methods in their project's smart contracts 
+Several projects have extended NEP-5's required operations and methods in their project's smart contracts 
 and are proposing (or about to propose) these additional operations and methods as extensions to NEP-5.
 Currently, there is no end-to-end solution for handling this scenario.
 Most often this manifests itself as a smart contract wanting to support the required operations and methods of 
