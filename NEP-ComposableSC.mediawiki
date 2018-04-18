@@ -67,7 +67,7 @@ If a smart contract supports NEP-[number to be assigned], it is required that th
 <code>supportedStandards</code>.
 
 If a smart contract does not support NEP-[number to be assigned], the <code>invokefunction</code> call should fail the way
-it would normally fail if an <code>invokefunction</code> call is made for a method that is not implemented by 
+it would normally fail if an <code>invokefunction</code> call refers to a method that is not implemented by 
 the smart contract.
 
 If a smart contact doesn't recognize the "supportedStandards" operation, the smart contract should return <code>false</code>
