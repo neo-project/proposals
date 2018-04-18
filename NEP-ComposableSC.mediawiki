@@ -81,7 +81,7 @@ If a smart contact doesn't recognize the "supportedStandards" operation, the sma
 NEP-[number to be assigned] does not affect consensus changes. 
 
 There are 2 levels of test cases: (i) does <code>supportedStandards</code> return a properly formatted string of comma-separated list of string values
-and are the string values valid codes representing NEPs (and other standards); and (ii) does the smart contract 
+and do the string values valid codes representing NEPs (and other standards); and (ii) does the smart contract 
 implement the required operations and methods for the NEPs (and other standards) represented by the list of
 codes in the comma-separated list of string values returned by the smart contract.
 
