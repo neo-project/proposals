@@ -30,7 +30,8 @@ of required operations and methods represented by a particular NEP (or other sta
 This capability is critical for user applications as well as exchanges, trading platforms and virtually any application that
 calls into a smart contract.
 A simple direct solution for this scenario is for smart contracts conforming to NEP-[number to be assigned] 
-to implement a single, constant-valued operation and method called <code>supportedStandards</code>, and possibly creating one or more new NEPs to define the new set(s) of operations and methods.
+to implement a single, constant-valued operation and method called <code>supportedStandards</code>, and possibly creating 
+one or more new NEPs to define the new set(s) of required operations and methods.
 
 
 ==Specification==
