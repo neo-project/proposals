@@ -40,7 +40,7 @@ the new operations and methods.
 In the operation and method definitions below, we provide both the definitions of the operations and methods 
 as they are defined in the smart contract as well as the invoke parameters.
 
-This NEP defines one method type:
+This NEP defines one operation/method type:
 
 * '''(Required)''' : operations and methods that are present in all smart contracts that conform to this NEP.
 
