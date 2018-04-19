@@ -1,0 +1,123 @@
+<pre>
+  NEP: 10/NFT-1
+  Title: Non-Fungible Token Standard
+  Author: Joe Stewart hal0x2328@splyse.tech, Shane Mann fetter@splyse.tech
+  Type: Standard
+  Status: Draft
+  Created: 2018-04-18
+</pre>
+
+==Abstract==
+
+The NEP-10 NFT-1 proposal defines a standard non-fungible token system for the NEO Smart Economy. 
+
+==Motivation==
+
+NFTs are required to track, exchange and enforce ownership of digital assets. A non-fungible token (NFT) can be thought of like a property deed - each one is unique and carries some non-mutable information (e.g. the physical address of the property). Other information, such as the owner of the property, can be changed. Each token is indivisible in the same sense that a dog or a work of art cannot be divided. 
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions, as they are defined in the contract, as well as the invoke parameters.
+
+This standard defines two method types:
+
+* '''(Required)''' : methods that are present on all non-fungible tokens.
+
+* '''(Optional)''' : methods that are optionally implemented on non-fungible tokens. These method types are not required for standard interfacing and most tokens should not use them. All optional methods must be enabled if choosing to use them.
+
+===Methods===
+
+
+
+====balanceOf====
+* Syntax: <code>balanceOf(owner)</code>
+* Return: <code>BigInteger</code>
+* Remarks: <code>balanceOf()</code> returns current total tokens owned by <code>owner</code>.
+
+====circulation====
+
+* Syntax: <code>circulation()</code>
+* Return: <code>BigInteger</code>
+* Remarks: <code>circulation()</code> returns the total token supply deployed in the system.
+
+====decimals====
+* Syntax: <code>decimals()</code>
+* Return: <code>BigInteger</code>
+* Remarks: <code>decimals()</code> returns the number of decimals of tokens in the system.
+
+====mintToken====
+* Syntax: <code>mintToken(owner, ROData, RWData, URI)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>mintToken()</code> creates a new non-fungible token. This fails and returns <code>False</code> if <code>owner</code> is not the contract owner.
+
+
+====modifyRWData====
+* Syntax: <code>modifyRWData(tokenid, RWData)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>modifyRWData()</code> modifies a token's read/write data. This fails and returns <code>False</code> if <code>owner</code> is not the contract owner. Read-write data represents data that can be changed in the token, i.e., the owner of a property or work of art.
+
+====modifyURI====
+* Syntax: <code>modifyURI(tokenid, URI)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>modifyURI()</code> modifies a token's URI. This fails and returns <code>False</code> if <code>owner</code> is not the contract owner. The URI data of a token supplies a reference to get more information about a specific token or its data.
+
+====name====
+* Syntax: <code>name()</code>
+* Return: <code>String</code>
+* Remarks: <code>name()</code> returns the name of the token.
+
+====ownerOf====
+* Syntax: <code>ownerOf(tokenid)</code>
+* Return: <code>byte[]</code>
+* Remarks: <code>ownerOf()</code> returns the owner of token with id <code>tokenid</code>.
+
+====symbol====
+* Syntax: <code>symbol()</code>
+* Return: <code>String</code>
+* Remarks: <code>symbol()</code> returns the token symbol.
+
+====tokenOfOwnerByIndex====
+* Syntax: <code>tokenOfOwnerByIndex(owner, idx)</code>
+* Return: <code>byte[]</code>
+* Remarks: <code>tokenOfOwnerByIndex()</code> returns the token owned by <code>owner</code> at index <code>idx</code>.
+
+====tokenROData====
+* Syntax: <code>tokenROData(tokenid)</code>
+* Return: <code>byte[]</code>
+* Remarks: <code>tokenROData()</code> returns the read-only data for token with id <code>tokenid</code>. Read-only data represents immutable data contained in the token, i.e., a property address for a property or the artist's name for a work of art.
+
+====tokenRWData====
+* Syntax: <code>tokenRWData(tokenid)</code>
+* Return: <code>byte[]</code>
+* Remarks: <code>tokenRWData()</code> returns the read-write data for token with id <code>tokenid</code>. Read-write data represents data that can be changed in the token, i.e., the owner of a property or work of art.
+
+====tokenURI====
+* Syntax: <code>tokenURI(tokenid)</code>
+* Return: <code>String</code>
+* Remarks: <code>tokenURI()</code> returns the URI of token with id <code>tokenid</code>. The URI data of a token supplies a reference to get more information about a specific token or its data.
+
+====transfer====
+* Syntax: <code>transfer(from, to, tokenid)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>transfer()</code> transfers token with id <code>tokenid</code> from address <code>from</code> to address <code>to</code>. If the <code>from</code> address does not equal the sender of the transaction this returns <code>False</code>, <code>True</code> otherwise.
+
+====transferFrom====
+* Syntax: <code>transferFrom(from, to, tokenid)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>transferFrom</code> transfers a token with id <code>tokenid</code> from address <code>from</code> to address <code>to</code> if the from address has been approved by the <code>approve()</code> method. If the <code>from</code> address is not the owner of the token or if there is no approval this returns <code>False</code>, <code>True</code> otherwise.
+
+====approve====
+
+* Syntax: <code>approve(owner, spender, tokenid, revoke)</code>
+* Return: <code>Boolean</code> 
+* Remarks: <code>approve()</code> approves token <code>tokenid</code> owned by <code>owner</code> to be spent by <code>spender</code> using the <code>transferFrom()</code> method. If <code>revoke</code> is set to <code>1</code> the approval is revoked. A value of <code>True</code> is returned if the operation is approved. <code>False</code> is returned if the approval is denied because of incorrect permissions (owner is not in fact the owner, for example).
+
+==Rationale==
+
+'''Sequential token identifiers''' are preferred as this makes the tokens less costly to enumerate as a starting point and offset would be all that are needed to list or locate tokens.
+
+'''Standardized read-only and read-write token data access''' ensures contract and API authors all use one consistent interface and terminology. How the data is represented internally is left to the developer as data use should be specific to those needs. Therefore, marshalling is intentionally unspecified by this proposal.
+
+==Implementation==
+
+Splyse NFT Template: https://github.com/Splyse/neo-nft-template
