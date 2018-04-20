@@ -46,12 +46,6 @@ This standard defines two method types:
 
 ===Methods===
 
-====mintTokens====
-
-* Syntax: <code>public static string mintTokens(byte[] address)</code>
-
-* Remarks: ''mintToken'' attempts to create tokens for the specified address. If successful, this action should increase the totalSupply of the tokens. This method must be implemented together with the ''token_mint'' event.
-
 ====kycStatus====
 
 * Syntax: <code>public static bool kycStatus(byte[] address)</code>
@@ -85,12 +79,6 @@ This standard defines two method types:
 * Remarks: ''kycDeregister'' removes the registration of the provided address and returns True if successful. This method can only be called by the contract owner. This method should be implemented with the event ''kyc_deregister''.
 
 ===Events===
-
-====mintToken====
-
-* Syntax: <code> public static event Action<byte[], int> token_mint</code>
-
-* Remarks: The "token_mint" event is raised after a successful execution of the "mintToken" method with the arguments '''(address, amount of tokens created)'''
 
 ====kycRegister''(optional)''====
 
