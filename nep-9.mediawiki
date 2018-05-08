@@ -154,10 +154,10 @@ As mentioned before, generic smart contract execution is not necessarily suitabl
 
 Any addition to supported smart contract URI's should follow the exact same procedure as other NEO enhancement proposals. In order to be added as a supported smart contract URI, the operation/proposal should have the following... 
 
-1. Not application specific
-2. Well tested
-3. Well documented and easy to consume by a client
-4. A set of examples where the URI is useful
+# Not application specific.  
+# Well tested.    
+# Well documented and easy to consume by a client.  
+# A set of examples where the URI is useful.  
 
 If it meets these criteria than can be considered to enter the list of supported URI schema.
 
@@ -165,12 +165,36 @@ If it meets these criteria than can be considered to enter the list of supported
 
 A NEP-5 token transfer is a smart contract invocation and would have the following URI. 
 
-<code>neo:<ScriptHash>?operation=transfer&from=<address>&to=<address>&amount=<amount>[?<TransactionAttributeKey>=<value>]</code>
+<code>neo:<ScriptHash>?operation=transfer&to=<address>[?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
+
+==== URI Keys====
+{| class="wikitable"
+! Key
+! Description
+! Required
+|-
+| ScriptHash
+| Valid smart contract's script hash in big endian.
+| ✓
+|-
+| to
+| Valid NEO Address to transfer to
+| ✓
+|-
+| amount
+| amount of token being sent. e.g 1.0
+| -
+|-
+|}
 
 ====Examples====
 Begin transaction to transfer 10 ONT to specific adderess.
 
-<code>neo:ceab719b8baa2310f232ee0d277c061704541cfb?operation=transfer&from=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y&to=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y&amount=10</code>
+<code>neo:ceab719b8baa2310f232ee0d277c061704541cfb?operation=transfer&to=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y&amount=10</code>
+
+Begin transaction to transfer unspecified amount of ONT to specific adderess.
+
+<code>neo:ceab719b8baa2310f232ee0d277c061704541cfb?operation=transfer&to=AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y</code>
 
 
 ==Rationale==
@@ -178,9 +202,10 @@ Begin transaction to transfer 10 ONT to specific adderess.
 The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. 
 
 ==Implementation==
-Reference Implementation (GoLang)
+Reference Implementation
 
 [https://github.com/O3Labs/NEP9-go]
+[https://github.com/O3Labs/nep9.js]
 
 ==Reference==
 The below discussion has many relevant talking points relevant to the security implications of smart contract URI's.
