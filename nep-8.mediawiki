@@ -27,15 +27,15 @@ We add five new instructions for starting invocations with stack isolation: <cod
 
 ===CALL_I===
 
-The instruction <code>CALL_I</code> is very similar to the old instruction <code>CALL</code>. The difference is that <code>CALL_I</code> requires an operand behind the instruction for representing the number of parameters to copy.
+The instruction <code>CALL_I</code> is very similar to the old instruction <code>CALL</code>. The difference is that <code>CALL_I</code> requires an operand behind the instruction for representing the number of parameters and return values to copy.
 
 ===CALL_E===
 
-The instruction <code>CALL_E</code> is very similar to the old instruction <code>APPCALL</code> for static invocations. The difference is that <code>CALL_E</code> requires an operand behind the instruction for representing the number of parameters to copy.
+The instruction <code>CALL_E</code> is very similar to the old instruction <code>APPCALL</code> for static invocations. The difference is that <code>CALL_E</code> requires an operand behind the instruction for representing the number of parameters and return values to copy.
 
 ===CALL_ED===
 
-The instruction <code>CALL_ED</code> is very similar to the old instruction <code>APPCALL</code> for dynamic invocations. The difference is that <code>CALL_ED</code> requires an operand behind the instruction for representing the number of parameters to copy.
+The instruction <code>CALL_ED</code> is very similar to the old instruction <code>APPCALL</code> for dynamic invocations. The difference is that <code>CALL_ED</code> requires an operand behind the instruction for representing the number of parameters and return values to copy.
 
 ===CALL_ET===
 
