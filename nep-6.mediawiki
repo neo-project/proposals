@@ -1,0 +1,122 @@
+<pre>
+  NEP: 6
+  Title: Wallet Standard
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Final
+  Created: 2017-09-14
+  Requires: 2, 3
+</pre>
+
+==Abstract==
+
+This NEP describes a wallet standard that allows the wallet files to be shared between the various implementations of NEO.
+
+==Motivation==
+
+Currently, different client programs generate different wallet files. They have different file formats, different ways of storing, and different ways of encrypting. It is difficult for users to migrate between different client programs because the wallet files are not in the same format. Although migration can be achieved by exporting the private key, it is cumbersome for wallets with multiple private keys. We need an universal wallet format that allows users to migrate across all platforms safely and easily without having to change the wallet file or export the private keys.
+
+==Rationale==
+
+The wallet standard should consider both security and cross-platform compatibility. For security, we require the implementations to use the NEP-2 mechanism to encrypt or decrypt the private keys. For cross-platform, we use the JSON format to describe the wallet files, so that the contents of the wallet files can be easily recognized on each platform.
+
+==Specification==
+
+===Wallet===
+
+A wallet file in JSON format has the following basic structure:
+
+<pre>
+{
+  "name": "MyWallet",
+  "version": "1.0",
+  "scrypt": {},
+  "accounts": [],
+  "extra": null
+}
+</pre>
+
+<code>name</code> is a label that the user has made to the wallet file.
+
+<code>version</code> is currently fixed at <code>1.0</code> and will be used for functional upgrades in the future.
+
+<code>scrypt</code> is a ScryptParameters object which describe the parameters of SCrypt algorithm used for encrypting and decrypting the private keys in the wallet.
+
+<code>accounts</code> is an array of Account objects which describe the details of each account in the wallet.
+
+<code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>.
+
+===ScryptParameters===
+
+ScryptParameters object has the following structure:
+
+<pre>
+{
+  "n": 16384,
+  "r": 8,
+  "p": 8
+}
+</pre>
+
+<code>n</code> is a parameter that defines the CPU/memory cost. Must be a value 2^N.
+
+<code>r</code> is a tuning parameter.
+
+<code>p</code> is a tuning parameter (parallelization parameter). A large value of p can increase computational cost of SCrypt without increasing the memory usage.
+
+===Account===
+
+Account object has the following structure:
+
+<pre>
+{
+  "address": "AQLASLtT6pWbThcSCYU1biVqhMnzhTgLFq",
+  "label": "MyAddress",
+  "isDefault": true,
+  "lock": false,
+  "key": "6PYWB8m1bCnu5bQkRUKAwbZp2BHNvQ3BQRLbpLdTuizpyLkQPSZbtZfoxx",
+  "contract": {},
+  "extra": null
+}
+</pre>
+
+<code>address</code> is the base58 encoded address of the account.
+
+<code>label</code> is a label that the user has made to the account.
+
+<code>isDefault</code> indicates whether the account is the default change account.
+
+<code>lock</code> indicates whether the account is locked by user. The client shouldn't spend the funds in a locked account.
+
+<code>key</code> is the private key of the account in the NEP-2 format. This field can be <code>null</code> (for watch-only address or non-standard address).
+
+<code>contract</code> is a Contract object which describes the details of the contract. This field can be <code>null</code> (for watch-only address).
+
+<code>extra</code> is an object that is defined by the implementor of the client for storing extra data. This field can be <code>null</code>.
+
+===Contract===
+
+Contract object has the following structure:
+
+<pre>
+{
+  "script": "21036dc4bf8f0405dcf5d12a38487b359cb4bd693357a387d74fc438ffc7757948b0ac",
+  "parameters": [],
+  "deployed": false
+}
+</pre>
+
+<code>script</code> is the script code of the contract. This field can be <code>null</code> if the contract has been deployed to the blockchain.
+
+<code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the contract function. For more information about Parameter object, see the descriptions in [[nep-3.mediawiki|NEP-3: NeoContract ABI]].
+
+<code>deployed</code> indicates whether the contract has been deployed to the blockchain.
+
+==Backwards Compatibility==
+
+All old-format wallets should be able to be converted to this new JSON format easily. If these wallet files contain some extra data, they can be stored in the <code>extra</code> fileds.
+
+==Implementation==
+
+*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Implementations/Wallets/NEP6/NEP6Wallet.cs
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/wallet/Wallet.js
