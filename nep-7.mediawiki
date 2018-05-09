@@ -3,7 +3,7 @@
   Title: Triggers for NeoContract
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2017-10-16
 </pre>
 
