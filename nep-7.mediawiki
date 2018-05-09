@@ -90,3 +90,5 @@ The <code>received</code> function will be invoked automatically when a contract
 Any old contract that didn't implement the <code>receiving</code> and <code>received</code> function will lead to a <code>FAULT</code> VM state when triggered by <code>VerificationR</code> or <code>ApplicationR</code>. So any transfers to old contracts will be rejected and no state will be changed.
 
 ==Implementation==
+
+https://github.com/neo-project/neo
