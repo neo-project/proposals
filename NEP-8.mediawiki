@@ -98,7 +98,7 @@ Codes returned by <code>supportedStandards</code> for NEPs should be of the form
 
 The following is an example implementation (reference: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365):
 
-<syntaxhighlight lang="csharp">
+<syntaxhighlight>
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
 using System;
