@@ -12,13 +12,13 @@
 ==Abstract==
 
 Several projects have extended NEP-5's required operations and methods in their project's smart contracts 
-and are proposing (or about to propose) these additional operations and methods as extensions to NEP-5. 
+and are proposing (or about to propose) additional operations and methods as extensions to NEP-5. 
 
 NEP-8 proposes a solution to this NEP-5 scenario (as well as non-NEP-5 scenarios) 
 where a smart contract supports extensions to an existing NEP. Conforming to NEP-8 involves implementing 
-a single required, constant-valued operation and method <code>supportedStandards</code>, and possibly creating one or more new NEPs to define the new set(s) of required operations and methods.
+a single required, constant-valued operation and method <code>supportedStandards</code>, and possibly creating one or more new NEPs to define the any new, required set(s) of required operations and methods.
 
-NEP-8 is a standard alone specification. The specification itself is not an extension of any existing or future specifications. NEP-8 is an specification for creating a composite smart contract that conforms with the required operations/methods in one or more NEP specifications.
+NEP-8 is a standard alone specification. The specification itself is not an extension of any existing or future specifications. NEP-8 is an specification for creating a composite smart contract that conforms with the required operations/methods in two or more NEP specifications.
 
 ==Motivation==
 
@@ -81,14 +81,14 @@ If a smart contract does not support NEP-8, the <code>invokefunction</code> call
 it would normally fail if an <code>invokefunction</code> call refers to a method that is not implemented by 
 the smart contract.
 
-If a smart contact doesn't recognize the <code>"supportedStandards"</code> operation, the smart contract should return <code>false</code>.
+If a smart contact doesn't recognize the <code>supportedStandards</code> operation, the smart contract should return <code>false</code>.
 
 ==Test Cases==
 
-NEP-8 does not affect consensus changes. 
+NEP-8 does not introduce or require any consensus changes. 
 
 There are 2 levels of test cases: (i) in response to <code>supportedStandards</code>, does a smart contract return a proper array of strings
-and that the codes represented by the string values represent valid NEPs (or other standards); and (ii) does the smart contract 
+and do the codes represented by the string values represent valid NEPs (or other standards); and (ii) does the smart contract 
 implement the required operations and methods for the NEPs (and other standards) represented by array of
 codes in the array of string values returned by the smart contract.
 
@@ -96,8 +96,9 @@ Codes returned by <code>supportedStandards</code> for NEPs should be of the form
 
 ==Implementation==
 
-The following is an example implementation (reference: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365)
-```csharp
+The following is an example implementation (reference: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365):
+
+<code>
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
 using System;
@@ -132,7 +133,7 @@ namespace SupportedStandards1
         }
     }
 }
-```
+</code>
 
 TODO The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
 
