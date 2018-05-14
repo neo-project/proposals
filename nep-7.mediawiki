@@ -1,0 +1,94 @@
+<pre>
+  NEP: 7
+  Title: Triggers for NeoContract
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Final
+  Created: 2017-10-16
+</pre>
+
+==Abstract==
+
+Trigger is a mechanism for triggering execution for smart contracts. This NEP defines four different kinds of triggers, they are <code>Verification</code>, <code>VerificationR</code>, <code>Application</code> and <code>ApplicationR</code>.
+
+==Motivation==
+
+A blockchain that provides smart contract system should provide multiple triggers for the smart contracts running on it, makes them to function in different contexts.
+
+==Rationale==
+
+Currently, we have two kinds of triggers in NeoContract: <code>Verification</code> and <code>Application</code>. These two triggers make smart contracts able to verify the transactions and modify the states of the blockchain.
+
+But there is no way for smart contracts to refuse a transfer, or to modify the states of the blockchain while accepting a transfer. We need two new triggers to do it: <code>VerificationR</code> and <code>ApplicationR</code>.
+
+==Specification==
+
+We define four kinds of triggers: <code>Verification</code>, <code>VerificationR</code>, <code>Application</code> and <code>ApplicationR</code>.
+
+===Verification===
+
+The <code>Verification</code> trigger indicates that the contract is being invoked as a verification function. The verification function can accept multiple parameters, and should return a boolean value that indicates the validity of the transaction or block.
+
+The entry point of the contract will be invoked if the contract is triggered by <code>Verification</code>:
+
+<code>
+main(...);
+</code>
+
+The entry point of the contract must be able to handle this type of invocation.
+
+===VerificationR===
+
+The <code>VerificationR</code> trigger indicates that the contract is being invoked as a verification function because it is specified as a target of an output of the transaction. The verification function accepts no parameter, and should return a boolean value that indicates the validity of the transaction.
+
+The entry point of the contract will be invoked if the contract is triggered by <code>VerificationR</code>:
+
+<code>
+main("receiving", new object[0]);
+</code>
+
+The <code>receiving</code> function should have the following signature:
+
+<code>
+public bool receiving()
+</code>
+
+The <code>receiving</code> function will be invoked automatically when a contract is receiving assets from a transfer.
+
+===Application===
+
+The <code>Application</code> trigger indicates that the contract is being invoked as an application function. The application function can accept multiple parameters, change the states of the blockchain, and return any type of value.
+
+The contract can have any form of entry point, but we recommend that all contracts should have the following entry point:
+
+<code>
+public byte[] main(string operation, params object[] args)
+</code>
+
+The functions can be invoked by creating an <code>InvocationTransaction</code>.
+
+===ApplicationR===
+
+The <code>ApplicationR</code> trigger indicates that the '''default''' function <code>received</code> of the contract is being invoked because it is specified as a target of an output of the transaction. The <code>received</code> function accepts no parameter, changes the states of the blockchain, and returns any type of value.
+
+The entry point of the contract will be invoked if the contract is triggered by <code>ApplicationR</code>:
+
+<code>
+main("received", new object[0]);
+</code>
+
+The <code>received</code> function should have the following signature:
+
+<code>
+public byte[] received()
+</code>
+
+The <code>received</code> function will be invoked automatically when a contract is receiving assets from a transfer.
+
+==Backwards Compatibility==
+
+Any old contract that didn't implement the <code>receiving</code> and <code>received</code> function will lead to a <code>FAULT</code> VM state when triggered by <code>VerificationR</code> or <code>ApplicationR</code>. So any transfers to old contracts will be rejected and no state will be changed.
+
+==Implementation==
+
+https://github.com/neo-project/neo
