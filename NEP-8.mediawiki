@@ -96,44 +96,7 @@ Codes returned by <code>supportedStandards</code> for NEPs should be of the form
 
 ==Implementation==
 
-The following is an example implementation (reference: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365):
-
-<nowiki>
-using Neo.SmartContract.Framework;
-using Neo.SmartContract.Framework.Services.Neo;
-using System;
-using System.Numerics;
-
-namespace SupportedStandards1
-{
-    public class Contract1 : SmartContract
-    {
-        public static object Main(string operation, params object[] args)
-        {
-            object result = false;
-
-            if (operation == "supportedStandards")
-            {
-                result = (object)supportedStandards();
-            }
-            else if (...)
-            {
-                ...
-            }
-            ...
-
-            return result;
-        }
-
-        public static string[] supportedStandards()
-        {
-            string[] result = { "NEP-5", "NEP-1234" };
-
-            return result;
-        }
-    }
-}
-</nowiki>
+Example implementation: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365
 
 TODO The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
 
