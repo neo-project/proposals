@@ -98,7 +98,7 @@ Codes returned by <code>supportedStandards</code> for NEPs should be of the form
 
 The following is an example implementation (reference: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365):
 
-<nowiki>
+<syntaxhighlight lang="csharp">
 using Neo.SmartContract.Framework;
 using Neo.SmartContract.Framework.Services.Neo;
 using System;
@@ -133,7 +133,7 @@ namespace SupportedStandards1
         }
     }
 }
-</nowiki>
+</syntaxhighlight>
 
 TODO The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
 
