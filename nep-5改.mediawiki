@@ -1,0 +1,102 @@
+<pre>
+  NEP: 5改
+  Title: Token Standard
+  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
+  Type: Standard
+  Status: Final
+  Created: 2018-04-11
+</pre>
+
+==Abstract==
+
+NEP5代币标准改
+
+==Motivation==
+
+根据NEP5标准在实际使用中碰到的一些缺陷，提出一些修改意见
+
+==Specification==
+
+1.移除可选实现，保证大家的实现都是一致的
+
+2.约定transfer实现细节，拒绝跳板调用，防止用户签名一个看不出来明显含有transfer调用的合约，实际上跳转几次调用后调用transfer 转走用户资产
+
+3.增加交易凭证功能，每一笔成功交易都会留下用当前txid做key的凭据，将交易txid提供给对方即可检查nep5交易，智能合约也可检查
+
+4.提供采用应用和约鉴权的 transfer_app,把鉴证过程交给应用合约，可实现丰富的功能
+
+===Methods===
+
+====totalSupply====
+
+* Syntax: <code>public static BigInteger totalSupply()</code>
+
+* Remarks: "totalSupply" returns the total token supply deployed in the system.
+
+====name====
+
+* Syntax: <code>public static string name()</code>
+
+* Remarks: "name" returns the token name.
+
+
+====symbol====
+
+* Syntax: <code>public static string symbol()</code>
+
+* Remarks: "symbol" returns the token symbol.
+
+====decimals====
+
+* Syntax: <code>public static byte decimals()</code>
+
+* Remarks: "decimals" returns the number of decimals used by the token.
+
+====balanceOf====
+
+* Syntax: <code>public static BigInteger balanceOf(byte[] account)</code>
+
+* Remarks: "balanceOf" returns the token balance of the '''account'''.
+
+====transfer====
+
+* Syntax: <code>public static bool transfer(byte[] from, byte[] to, BigInteger amount)</code>
+
+* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
+
+约定transfer实现细节，拒绝跳板调用,
+
+====transfer_app====
+
+* Syntax: <code>public static bool transfer_app(byte[] from, byte[] to, BigInteger amount)</code>
+
+* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
+
+约定transfer_app实现细节，供智能合约账户使用， 仅当from==callscript 时，允许转账。则可由智能合约逻辑控制允不允许调用transfer，将鉴证过程放在应用合约中
+
+====getTXInfo====
+
+* Syntax: <code>public static TxInfo getTXInfo(byte[] txid)</code>
+
+<code>
+	class TXInfo
+	{
+		public byte[] from;
+		public byte[] to;
+		public BigInteger value;
+	}
+</code>
+
+* Remarks:得到交易信息，可以作为凭证，
+
+===Events===
+
+====transfer====
+
+* Syntax: <code>public static event Action<byte[], byte[], BigInteger> transfer</code>
+
+* Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
+
+==Implementation==
+
+*NEL GAS锚定 1比1自动兑换 nep5资产: https://github.com/NewEconoLab/dapp_nep5/blob/master/nep5.5gas_contract/Contract1.cs
