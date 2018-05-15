@@ -19,6 +19,8 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
 
+NEP-5 contracts can check the <code>payable</code> flag of the receiver contracts to decide whether it should transfer the tokens to those contracts.
+
 This standard defines two method types:
 
 * '''(Required)''' : methods that are present on all NEP5 tokens.
