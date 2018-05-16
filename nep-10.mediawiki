@@ -3,7 +3,7 @@
   Title: Composite Smart Contracts
   Author: Michael Herman (mwherman@parallelspace.net) aka @mwherman2000, Joe Stewart (hal0x2328@splyse.tech) aka @hal0x2328
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2018-04-17
 </pre>
 
@@ -95,7 +95,3 @@ Codes returned by <code>supportedStandards</code> for NEPs should be of the form
 ==Implementation==
 
 Example implementation: https://github.com/neo-project/proposals/issues/40#issuecomment-385080365
-
-TODO The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
-
-TODO The authors are creating two independent smart contract implementations to validate this NEP.
