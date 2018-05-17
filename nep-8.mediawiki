@@ -51,3 +51,5 @@ The instruction <code>CALL_EDT</code> is very similar to the instruction <code>C
 All old contracts can be executed correctly in the original instruction set, but no new contracts are proposed to continue using the old instructions. When a new contract requires dynamic invocation, the old instructions should be avoided.
 
 ==Implementation==
+
+https://github.com/neo-project/neo-vm/pull/39
