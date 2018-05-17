@@ -23,8 +23,6 @@ This standard defines two method types:
 
 * '''(Required)''' : methods that are present on all NEP5 tokens.
 
-* '''(Optional)''' : methods that are optionally implemented on NEP5 tokens. These method types are not required for standard interfacing, and most tokens should not use them. All optional methods must be enabled if choosing to use them.
-
 ===Methods===
 
 ====totalSupply====
@@ -38,7 +36,6 @@ This standard defines two method types:
 * Syntax: <code>public static string name()</code>
 
 * Remarks: "name" returns the token name.
-
 
 ====symbol====
 
@@ -62,25 +59,7 @@ This standard defines two method types:
 
 * Syntax: <code>public static bool transfer(byte[] from, byte[] to, BigInteger amount)</code>
 
-* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
-
-====allowance ''(optional)''====
-
-* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
-
-* Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
-
-====transferFrom ''(optional)''====
-
-* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
-
-* Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
-
-====approve ''(optional)''====
-
-* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
-
-* Remarks: "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
+* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account. Contract '''MUST''' check the <code>payable</code> flag of the receiver contracts to decide whether it should transfer the tokens to those contracts.
 
 ===Events===
 

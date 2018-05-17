@@ -69,7 +69,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/43 10]
+| [[nep-10.mediawiki|10]]
 | Composite Smart Contracts
 | Michael Herman, Joe Stewart
 | Standard
