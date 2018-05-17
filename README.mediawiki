@@ -73,7 +73,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Composite Smart Contracts
 | Michael Herman, Joe Stewart
 | Standard
-| Accepted
+| Final
 |-
 | 
 | Superconductive Exchange
