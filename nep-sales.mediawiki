@@ -1,7 +1,7 @@
 <pre>
   NEP: <to be assigned>
-  Title: Crowdsale Standard
-  Author: Thomas Saunders, Yak Jun Xiang
+  Title: Token Sales Standard
+  Author: Yak Jun Xiang (snowypowers@gmail.com)
   Type: Standard
   Status: Draft
   Created: 2018-03-16
@@ -16,41 +16,25 @@ This NEP describes a set of methods that complements the NEP-5 proposal by intro
 
 Initial Coin Offerings (ICOs) are often the main source of funding for blockchain projects. These offerings are conducted as a form of a crowdsale of tokens, allowing investors who have passed an off-chain verification process to contribute some of their assets for some tokens.
 
-This process is currently not supported by the ecosystem, resulting in several weaknesses in the process:
+Token sales are currently conducted through general wallet software such as the Neon wallet offered by City of Zion. However, the best that the software can offer currently is a simple interface to create an transaction that sends the assets to the smart contract. This has resulted in a few scenarios:
 
-1. The investor verification process is largely opaque and done off-chain. The source of truth to check if an investor is verified is usually the website of the organsiation. However, it is difficult for the investor to verify that the website and the smart contract is in sync.
+1. Investors have attempted to send funds to a closed sale, resulting in lost funds. Some have been lucky to be able to retrieve their funds through support but some have been lost forever.
 
-2. The investor depends on an announcement for start and closing of the sales from the organisation. However, many people still do not do their research and proceed to participate in a closed sale, causing lost funds and anger.
+2. Investors have been seeking information from various sources but is unable to confirm or fully comprehend the information provided. It is also left to the investor to verify the accuracy of the information that they receive and trust that the smart contract reflects that information.
 
-3. There might be contribution limits that are recorded on the blockchain but it is opaque to the wallet software. Thus, the wallet is unable to stop the investor from over-contributing.
+3. The software wallet is unable to independently verify the sales status and stop investors from sending their assets to a closed sales. ALthough the option is there, investors has no way to know if the sales is in process from the wallet.
 
-4. There is currently no records of the entire sales process. Tokens can be created at different rates at different times. It is confusing to tell what is the current exchange rate without attempting a transaction first.
+4. The software wallet is unable to display any pre-conditions that the sales might enforce. For example, some sales might require whitelisting and the investor has to rely on an external source to ensure that his address is properly whitelisted. There is no indication of that on the sales panel.
 
-This proposal tackles the mentioned issues by proposing a standard set of methods that wallets can implement to provide investors with the visibility and confidence when contributing. With the proposed set of methods, the wallet can independently verify the sale and verification status, providing the investor with confidence in the sales.
+This proposal tackles the mentioned issues by proposing a standard set of methods that wallets can implement to provide investors with the visibility and confidence when contributing. With the proposed set of methods, the wallet can independently verify the sale status, providing the investor with confidence in the sales.
 
 It is noted that the above issues are all tackled by using verification and having the contract reject transactions. However, this is a very unfriendly way of rejection with no clarity of the reason of rejection given to the investor. With this proposal, we hope that the token sales experience will be smooth and painless. This proposal is not an excuse to not implement verification as it is still the better option to implement.
 
 ==Specification==
 
-We propose the following methods to be implemented in any crowdsale contract that requires investor verification as well as sales restricted to a timeframe.
-
-The methods starting with "kyc" are methods for individuals, indicating their status in the current sale.
-
-The methods starting with "sale" are methods for the entire sale, indicating the status of the current sale.
-
-This standard defines two method types:
-
-* '''(Required)''' : methods that are compulsory in order to be NEP-compliant. Methods are required unless marked otherwise. These methods are mostly user-facing and thus must be standardised for a smooth experience.
-
-* '''(Optional)''' : methods that are optionally implemented. These methods are not all user-facing and contains certains parameters not present in all sales. However, developer tools are encouraged to follow this specification for the best experience.
+We propose the following methods to be implemented in any token contract that is conducting a public sales.
 
 ===Methods===
-
-====kycStatus====
-
-* Syntax: <code>public static bool kycStatus(byte[] address)</code>
-
-* Remarks: ''kycStatus'' Checks the whitelist status for the provided address. Returns True if registered.
 
 ====saleStatus====
 
@@ -58,7 +42,7 @@ This standard defines two method types:
 
 * Remarks: ''saleStatus'' returns the current state of the sale. Returns true if sale is active.
 
-====saleDetails ''(optional)''====
+====saleDetails====
 
 * Syntax: <code>public static string saleDetails(byte[] address)</code>
 
@@ -66,31 +50,9 @@ This standard defines two method types:
 
 * Example: For a registered address, at block 1000, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 100 TOKENS (till block 2000)</code>. At block 2001, the call to ''saleDetails'' will return the following string: <code>1 NEO -> 50 TOKENS</code>. At block 3000, the sale has ended, the call to ''saleDetails'' will return the following string: <code>Sale Ended</code>. For all non-registered addresses, the call will return the following string: <code>~TOKEN~ Find us at www.token.com!</code>
 
-====kycRegister ''(optional)''====
-
-* Syntax: <code>public static bool kycRegister(byte[] address)</code>
-
-* Remarks: ''kycRegister'' registers the provided address as whitelisted and returns True if successful. This method can only be called by the contract owner. This method should be implemented with the event ''kyc_register''.
-
-====kycDeregister ''(optional)''====
-
-* Syntax: <code>public static bool kycDeregister(byte[] address)</code>
-
-* Remarks: ''kycDeregister'' removes the registration of the provided address and returns True if successful. This method can only be called by the contract owner. This method should be implemented with the event ''kyc_deregister''.
-
 ===Events===
 
-====kycRegister''(optional)''====
-
-* Syntax: <code>public static event Action<byte[]> kyc_register</code>
-
-* Remarks: The "kycRegister" event is raised after a successful execution of the "kycRegister" method with the argument '''(address)'''
-
-====kycDeregister''(optional)''====
-
-* Syntax: <code> public static event Action<byte[]> kyc_deregister</code>
-
-* Remarks: The "kycDeregister" event is rasied after a successful execution of the "kycDeregister" method with the argument '''(address)'''
+There are no events that are associated with this standard.
 
 ==Implementation==
 
