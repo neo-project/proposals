@@ -1,0 +1,110 @@
+<pre>
+  NEP: 11
+  Title: Distributed Payments for UTXO Assets
+  Author: Igor M. Coelho <igor.machado@gmail.com>, Vitor N. Coelho
+  <vncoelho@gmail.com>, Fabio H. Cardoso <slynrick@gmail.com>, Peter Lin
+  <linpengtao@neo.org>, Li Jianyang (evaluating)
+  Type: Standard
+  Status: Draft
+  Created: 2018-04-17
+</pre>
+
+==Abstract==
+
+This NEP intends to provide a standard way of providing distributed payments on NEO network for UTXO assets, such as NEO and GAS.
+
+This way, payments can occur without the intervention of the contract owner and the interested party can send/receive the coins by itself.
+
+We propose standard function signatures that could be used for integration with current wallets and smart contracts, including different implementations (with different tradeoffs).
+
+==Motivation==
+
+One of the greatest advantages of having assets/tokens on a blockchain is the ability to easily move them between interested parties. The exchange is the natural basis of the cryptocurrency world and it should be an easy-to-use mechanism. Tokens (usually specified by NEP-5 standard) are quite straightforward to move between owners, since they are implemented in an upper layer, on top of smart contract Storage operations. Assets, on the other hand, operate at NEO network level and offchain wallet mechanisms can easily exchange them (by creating transactions), but there is no simple way to perform this operation from inside a smart contract.
+
+Usually, transfer operations are performed by using Events, marking the intention of performing a future assets transfer, which is then implemented by offchain mechanisms. Although this solution has worked for many successful and ongoing projects, it has the drawback of centralizing the transfer operations in a third-party mechanism, which may lock the funds in a way that the interested party may be not capable of receiving/claiming it.
+
+The intention of this NEP is to propose a distributed mechanism for allowing easy-to-use asset transfers inside a smart contract, considering current NEO capabilities (no extra mechanism is needed to be implemented on the network), allowing the interested party to receive the funds even without the need of the intervention of the assets' owner.
+
+==Specification==
+
+This specification is only possible because of the valuable work of NEO  community, including publications, technical reports and the developed tools.
+
+The implementation of this NEP is based on NEO Verification mechanism, which is still not very well understood by community developers.
+
+This mechanism is a generalization of payment verification methods, which are usually based on signature verification, but in this case it can be rewritten to allow any other different kind of logic.
+
+The general idea is to provide a special verification method to be embedded in the smart contract Verification phase, allowing or not, an external user to draw assets from the contract.
+In this sense, the transfer can be performed in two steps: (i) smart contract calls a special function SendUTXO(assetid, destination_address, value) -> bool, which schedules a future transfer to that address and returns true if funds are available (false otherwise); (ii) any user can create a transaction and submit to the network, executing function ValidateSendUTXO and requiring the value to be paid.
+
+Depending on the implementation, additional methods may be required, as explained below.
+
+===Methods===
+
+====SendUTXO====
+
+The function SendUTXO(assetid, destination_address, value) -> bool is composed by three parameters: the assetid (NEO, GAS, ...), the destination address (in public key, scripthash or base58 address formats) and the desired value. The funds can be blocked (or not) from the smart contract after performing the transfer call, and will be claimed later by invoking the {\tt validate\_send} from Validation context.
+
+The implementation of the transfer function consists in storing the triple (assetid, address, value) in a Storage indexed by the current contract UTXO. Another global storage variable counts the number of pending transfers and the total value for each asset. If the contract does not have enough funds to perform the transfer, the method should return false.
+
+In order to consume the stored transfer, any user can submit a invocation transaction to the network, including the destination address and correct values, and if values are correct (and UTXO is valid), Validation returns true and the transfer happens as expected (and the UTXO gets invalidated). So, double spending is not possible using the proposed functions.
+
+It is worth mentioning two possible ways of using this NEP (in Verification step): (i) owner maintains its power to perform transfers at its will, so funds won't be blocked at transfer time; (ii) the Verification phase of the contract will be solely implemented based on this NEP, so even contract owner will have to pass the process as any regular user and funds will be effectively blocked from the smart contract after SendUTXO function call.
+Although scenarios may exist for justifying owner to keep its superpowers (in the first scenario), we believe the second option is a much safer one for handling onchain transfers (using this NEP as Validation), as the owner can also implement external methods that will allow it to transfer any funds necessary by using the proposed SendUTXO function.
+
+As several transfers may occur in a single smart contract execution, we also propose to group transactions in a block of maximum size B. If another transfer is scheduled after block size is exceeded for the current UTXO, this is stored in a extra storage space called PendingSendUTXO with unlimited space. As soon as another transaction is scheduled and the current UTXO transfer block is empty (because the later have been consumed), at most $B$ elements are moved from PendingSendUTXO space to the current UTXO space (newer transfers always go to the end of the queue, to guarantee that all will be satisfied in a given moment).
+This size B can be chosen in a way that not so many GAS is spent in processing several transfers simultaneously, but if it's too big, it could take time to complete the transfer block. In this case, transfers can only occur in Validation step when the block is complete. An extra flag can be included to allow the contract owner to force a block to be closed (before limit B is achieved).
+If B=1, a complete serialization will occur for the transfers, and a single UTXO will be consumed for each transfer.
+
+
+====ValidateSendUTXO====
+
+The method ValidateSendUTXO should be called in Validation phase of the contract. If the owner is not given superpowers (recommended), the validation phase will consist of simply:
+
+if (TriggerType == Validation)
+    return validate_send();
+
+Obviously, the contract developer is free to combine this NEP with any other programming techniques, and change the Validation phase at its own taste (but it is not guaranteed that funds will be effectively blocked and transfers will happen as expected).
+
+
+====Naming Conventions and Scope====
+In order to avoid conflicts with NEP-5, the recommended name of the functions are SendUTXO and ValidateSendUTXO (transfer is used by NEP-5).
+
+The recommended visibility is private, although public versions could also be validated for specific recipients (when integrated with dynamic invoke techniques).
+
+
+====UTXO Grouping====
+
+Some UTXO may be blocked (for owner use only) and these may require a special method BlockedSendUTXO(), that move these assets only if superpowers are granted.
+
+The UTXO can be very fragmented if received in small pieces (as ICOs), and a special and motivating method can be created for joining them.
+If inputs and the output correspond to the contract address, no funds are lost, but the number of UTXO is reduced (to one, always). Method ValidateJoinUTXO() -> bool must check if: addresses are the same; output is one; all input utxos are free (not scheduled to any future payment); all input utxos are not blocked (for owner only); any maximum/minimum limit is not exceeded (to guarantee a minimum/maximum number of utxos).
+
+If superpowers exist, the owner must have a method for doing any kinds of transfers, even joining or fragmenting more.
+If a regular user use this method, the only intention is to create space for scheduling pending payments, which will accelerate his own payment (no bad side effects :D).
+
+
+==Rationale==
+
+The rationale was presented in Motivation and Specification. We believe this is a reasonable and efficient way of implementing  distributed payments on NEO network.
+
+==Backwards Compatibility==
+
+This NEP is fully backwards compatible.
+
+==Test Cases==
+
+One test case is implemented in NeoFrame github project (NeoResearch), showing an implementation of the transfer/verification methods in C#.
+
+We will also use Eco platform (https://neocompiler.io/#/ecolab) to propose light wallet capable of handling these basic operations.
+
+==Implementation==
+
+Example implementation: https://github.com/NeoResearch/nep-distributed-payments/blob/master/workingPrototype.cs
+
+===Drawbacks and Future Improvements===
+
+After the contract calls SendUTXO, the asset is frozen and the process starts.
+
+Currently, the the implementation requires an extra invocation to ScheduleSendUTXO function to schedule de transfer process, and another Verification call to perform the transfer.
+
+We are already working on a prototype that will require only an extra Verification step, which is much faster and cheaper, so it still remains open the possibility of having the whole process performed in a single step on the invoked Smart Contract.
