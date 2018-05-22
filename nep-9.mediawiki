@@ -128,9 +128,8 @@ Begin transaction to specified address of 0.1 GAS. Put public key in ecdh02 attr
 
 <code>neo:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?asset= gas&amount=0.1&ecdh02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4&description=Hello</code>
 
-
 This should be sufficient to facilitate transfer of native NEO assets safely.
----
+
 
 ===Smart contract invocation URI===
 To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer NEP-5 token, voting, etc. what left for a user to do is to authorize/sign the transaction. 
