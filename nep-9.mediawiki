@@ -25,7 +25,7 @@ Any new NEO URI that is added to this specification should be used for a smart c
 
 ===Native asset transfer URI===
 
-A native asset transfer would have the following URI. It describes the receiver address, assetID, and additional attributes that will be sent with the transaction. 
+A native asset transfer would have the following URI. It describes the receiver address, asset, and additional attributes that will be sent with the transaction. 
 
 '''URI scheme: <code>neo</code>'''
 
