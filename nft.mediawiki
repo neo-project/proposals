@@ -1,7 +1,7 @@
 <pre>
-  NEP: 10/NFT-1
+  NEP: <to be assigned>
   Title: Non-Fungible Token Standard
-  Author: Joe Stewart hal0x2328@splyse.tech, Shane Mann fetter@splyse.tech
+  Author: Joe Stewart <hal0x2328@splyse.tech>, Shane Mann <fetter@splyse.tech>
   Type: Standard
   Status: Draft
   Created: 2018-04-18
@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-The NEP-10 NFT-1 proposal defines a standard non-fungible token system for the NEO Smart Economy. 
+This NEP defines a standard non-fungible token system for the NEO Smart Economy.
 
 ==Motivation==
 
