@@ -42,7 +42,7 @@ A native asset transfer would have the following URI. It describes the receiver 
 | ✓
 |-
 | asset
-| neo, gas or or asset ID.
+| neo, gas or asset ID.
 | -
 |-
 | amount
@@ -189,11 +189,11 @@ The URI needs to consider both ease of use for users and wallet developers as we
 ==Implementation==
 Reference Implementation
 
-[https://github.com/O3Labs/NEP9-go]  
-[https://github.com/O3Labs/nep9.js]
+* [https://github.com/O3Labs/NEP9-go]
+* [https://github.com/O3Labs/nep9.js]
 
 ==Reference==
 The below discussion has many relevant talking points relevant to the security implications of smart contract URI's.
 
-[https://github.com/ethereum/EIPs/issues/67]
+* [https://github.com/ethereum/EIPs/issues/67]
 
