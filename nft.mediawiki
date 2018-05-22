@@ -159,6 +159,18 @@ Returns an <code>enumerator</code> that contains all the tokens owned by the spe
 
 The parameter <code>owner</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
+===Events===
+
+====transfer====
+
+<pre>
+public static event transfer(byte[] from, byte[] to, BigInteger amount, byte[] tokenid)
+</pre>
+
+MUST trigger when tokens are transferred, including zero value transfers.
+
+A token contract which creates new tokens SHOULD trigger a <code>transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
+
 ==Rationale==
 
 ==Implementation==
