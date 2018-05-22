@@ -23,7 +23,7 @@ Any new NEO URI that is added to this specification should be used for a smart c
 
 ==Specification==
 
-===Native Asset Transfer URI===
+===Native asset transfer URI===
 
 A native asset transfer would have the following URI. It describes the receiver address, assetID, and additional attributes that will be sent with the transaction. 
 
@@ -31,7 +31,7 @@ A native asset transfer would have the following URI. It describes the receiver 
 
 <code>neo:<address>[?asset=<asset>][?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
 
-==== URI Keys====
+==== URI keys====
 {| class="wikitable"
 ! Key
 ! Description
@@ -42,7 +42,7 @@ A native asset transfer would have the following URI. It describes the receiver 
 | ✓
 |-
 | asset
-| ID of an asset being sent.
+| neo, gas or or asset ID.
 | -
 |-
 | amount
@@ -93,7 +93,7 @@ A native asset transfer would have the following URI. It describes the receiver 
 |	Remarks
 |}
 
-====Native Assets====  
+====Reference native assets====  
 {| class="wikitable"
 ! Name
 ! Hash
@@ -114,46 +114,28 @@ Begin transaction to specified address
 
 Begin transaction of unspecified amount of NEO
 
-<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=neo</code>
 
 Begin transaction to specified address of 1 NEO
 
-<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=neo&amount=1.0</code>
 
 Begin transaction to specified address of 1 NEO with transaction attribute description = "Hello"
 
-<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset= c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b&amount=1.0&description=Hello</code>
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=neo&amount=1.0&description=Hello</code>
 
 Begin transaction to specified address of 0.1 GAS. Put public key in ecdh02 attribute field to allow sender to encrypt using ECDH. Transaction attribute description = "Hello"
 
-<code>neo:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?asset= 602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7&amount=0.1&ecdh02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4&description=Hello</code>
+<code>neo:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?asset= gas&amount=0.1&ecdh02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4&description=Hello</code>
 
 
 This should be sufficient to facilitate transfer of native NEO assets safely.
 ---
 
-===Smart Contract Invocation for NEP-5 token transfer URI===
-To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer NEP-5 token, voting, etc. what left for a user to do is to authorize/sign the transaction. It would have the following URI. 
+===Smart contract invocation URI===
+To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer NEP-5 token, voting, etc. what left for a user to do is to authorize/sign the transaction. 
 
-<code>neo:<ScriptHash>?operation=<operation>[&<parameterName>=<parameterValue>][&<TransactionAttributeKey>=<value>]</code>
-
-====NEP-5 Transfer====
-<code>neo:<address>?asset=<NEP5Scripthash>[?amount=<amount>][&<parameterName>=<parameterValue>][&<TransactionAttributeKey>=<value>]</code>
-
-===Supported Smart Contract URI's===
-
-{| class="wikitable"
-! Number
-! Name
-! Status
-|-
-| 1
-| NEP-5 Token Transfer 
-| Accepted 
-|}
-
-==Rationale==
-As mentioned before, generic smart contract execution is not necessarily suitable for URI's. This is because both of the security issues, and usability. A client of the URI should have 100% confidence that the URI that they will consume will have it's intended effect. Limiting it to a subset of contract operations does most of the heavy lifting. If the client wishes to be even more secure, it can whitelist it's own set of contracts for each subset of supported smart contract URI's.
+As mentioned before, generic smart contract execution is not necessarily suitable for URI's. This is because both of the security issues, and usability. A client of the URI should have 100% confidence that the URI that they will consume will have it's intended effect. Limiting it to a subset of contract operations does most of the heavy lifting. If the client wishes to be even more secure, it can whitelist its own set of contracts for each subset of supported smart contract URI's.
 
 Any addition to supported smart contract URI's should follow the exact same procedure as other NEO enhancement proposals. In order to be added as a supported smart contract URI, the operation/proposal should have the following... 
 
@@ -164,13 +146,14 @@ Any addition to supported smart contract URI's should follow the exact same proc
 
 If it meets these criteria than can be considered to enter the list of supported URI schema.
 
-===NEP-5 Token Transfer===
+====NEP-5 token transfer====
 
 A NEP-5 token transfer is a smart contract invocation and would have the following URI. 
 
 <code>neo:<address>?asset=<NEP5ScriptHash>[?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
 
-==== URI Keys====
+
+===== URI Keys=====
 {| class="wikitable"
 ! Key
 ! Description
@@ -190,7 +173,7 @@ A NEP-5 token transfer is a smart contract invocation and would have the followi
 |-
 |}
 
-====Examples====
+=====Examples=====
 Begin transaction to transfer 10 ONT to specific adderess.
 
 <code>neo:AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y?asset=ceab719b8baa2310f232ee0d277c061704541cfb&amount=10</code>
@@ -207,7 +190,7 @@ The URI needs to consider both ease of use for users and wallet developers as we
 ==Implementation==
 Reference Implementation
 
-[https://github.com/O3Labs/NEP9-go]
+[https://github.com/O3Labs/NEP9-go]  
 [https://github.com/O3Labs/nep9.js]
 
 ==Reference==
