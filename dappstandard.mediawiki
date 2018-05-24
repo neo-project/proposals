@@ -1,0 +1,91 @@
+<pre>
+  NEP: <to be assigned>
+  Title: DApp Standard
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2018-05-24
+  Requires: 10
+</pre>
+
+==Abstract==
+
+This NEP presents a set of methods that make DApps more accessible to the wallets and clients, and gives the users a more intuitive understanding of DApps.
+
+==Motivation==
+
+==Specification==
+
+===Methods===
+
+====name====
+
+<pre>
+public static string name()
+</pre>
+
+Returns the name of the DApp. e.g. <code>"MyDApp"</code>.
+
+This method MUST always return the same value every time it is invoked.
+
+====version====
+
+<pre>
+public static string version()
+</pre>
+
+''OPTIONAL'': It is recommend that this method is implemented for enhanced usability with wallets and clients, but interfaces and other contracts MUST NOT depend on the existence of this method.
+
+Returns the version of the DApp. e.g. <code>"1.0"</code>, <code>"1.0.1-beta"</code>.
+
+This method MUST always return the same value every time it is invoked.
+
+====author====
+
+<pre>
+public static string author()
+</pre>
+
+''OPTIONAL'': It is recommend that this method is implemented for enhanced usability with wallets and clients, but interfaces and other contracts MUST NOT depend on the existence of this method.
+
+Returns the names, and optionally the email addresses of all the authors/owners of the DApp. The format of the author must be <code>Random J. User <address@dom.ain></code> if the email address is included, and just <code>Random J. User</code> if the email address is not given.
+
+====logo====
+
+<pre>
+public static string logo()
+</pre>
+
+''OPTIONAL'': It is recommend that this method is implemented for enhanced usability with wallets and clients, but interfaces and other contracts MUST NOT depend on the existence of this method.
+
+Returns the logo URL of the DApp. This URL should refer to a PNG format image that allows the wallets and clients to display the logo of the DApp.
+
+====website====
+
+<pre>
+public static string website()
+</pre>
+
+''OPTIONAL'': It is recommend that this method is implemented for enhanced usability with wallets and clients, but interfaces and other contracts MUST NOT depend on the existence of this method.
+
+Returns the website URL of the DApp.
+
+===Methods from NEP-10===
+
+====supportedStandards====
+
+<pre>
+public static string[] supportedStandards()
+</pre>
+
+Returns an array of string values. Each string value is a code for an NEP (or other standard) supported by the smart contract.
+
+You can view the specific description in [[nep-10.mediawiki|NEP-10]].
+
+==Rationale==
+
+==Backwards Compatibility==
+
+==Test Cases==
+
+==Implementation==
