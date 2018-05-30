@@ -1,0 +1,68 @@
+<pre>
+  NEP: <to be assigned>
+  Title: AVMMap
+  Author: lights<lightsever@hotmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2018-05-30
+</pre>
+
+==Abstract==
+
+该标准提出一个统一的 AVM文件应该如何对应到源代码的map文件格式
+
+==Motivation==
+
+NEO智能合约的调试已经产生了一些方案，但没有得到有效的推广，据此提出关于调试的map文件标准，可促进不同方案协同工作
+
+
+==Implementation==
+
+通常NEO编译器已经产生了 .avm 文件 和 .abi.json文件
+本标准要求 NEO智能合约编译器多产生一个 .map.json文件
+
+该文件提供一个映射，一个avm地址->源代码的行数
+各种调试工具，都需要根据AVM地址，查看源代码，所以这个MAP文件，是所有调试工具都需要的一个基础标准
+
+==文件格式说明==
+整个json文件都是FunctionObject构成的数组
+[
+   FunctionObject,
+   FunctionObject,
+   FunctionObject,
+   ...
+]
+FunctionObject包含三个字段
+{
+    "name": string,
+    "addr": string,
+    "map": string[]
+}
+name表示对应的接口函数名称，比如“Main" "transfer"
+addr 是该函数对应avm中的地址的hexstring，比如 "0116"，
+map 是 一个字符串数组，他的每一项，表达一个avm地址到行数的映射关系,比如 "0120-71"，0120 是avm地址的hexstring，71是十进制的代码行数
+
+==文件示例==
+[
+    {
+	"name": "Main",
+	"addr": "0000",
+	"map": ["0003-24", "0004-27", "0049-30", "0099-32", "00AB-16707566", "00B3-33", "00B4-34", "00F6-35", "0101-37", "0102-37", "010D-68"]
+    },
+    {
+	"name": "GetTrueByte",
+	"addr": "0116",
+	"map": ["0120-71", "012A-74", "0152-75", "0161-76"]
+    },
+    {
+	"name": "NnsRegistry",
+	"addr": "016A",
+	"map": []
+    },
+    {
+	"name": "testRegistry",
+	"addr": "016A",
+	"map": ["0182-81", "01E3-84", "01F2-85"]
+    },
+    ......
+]
