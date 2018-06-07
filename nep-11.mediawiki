@@ -1,0 +1,48 @@
+<pre>
+  NEP: 11
+  Title: Smart Contract Verification and Invocation with System Assets
+  Author: Alex DiCarlo (alex.dicarlo@neotracker.io)
+  Type: Standard
+  Status: Draft
+  Created: 2018-06-07
+  Replaces: NEP-7
+</pre>
+
+==Abstract==
+
+This NEP defines a scheme for smart contracts to handle system asset transfers.
+
+==Motivation==
+
+Smart contract authors cannot reliably refuse system asset transfers in smart contract invocations. They cannot refuse or react to system asset transfers made with transactions other than invocation transactions to the smart contract address. There is additional complexity in handling the possibility of multiple invocations in the same invocation transaction that expect system assets, typically requiring tracking between calls. At a high level, there are two main issues that this NEP aims to solve:
+
+# Allow smart contracts to refuse system asset transfers.
+# Allow smart contracts to react to system asset transfers.
+
+==Specification==
+
+Implement the following changes to the NEO protocol:
+
+# Run invocation transactions' script with the `Verification` trigger if it contains system assets sent to a smart contract address. Track which smart contracts have been executed and verify that for each smart contract address output the associated smart contract has executed exactly once.
+# Reject all non-invocation transactions whose outputs contain an address that is a smart contract address.
+
+==Rationale==
+
+The specification ensures that smart contracts have a chance to refuse system asset transfers in invocation transactions. By running the script with the `Verification` trigger and verifying that the smart contract was called, we also guarantee that the smart contract will have a chance to react to system transfers in the `Application` trigger. Finally, by rejecting all non-invocation transactions that contain a smart contract address as the output, we close the loop and guarantee that whenever a smart contract address is the output of a system asset transfer, the smart contract has the chance to refuse and react to the transfer.
+
+In addition, it has the following beneficial properties:
+
+# Multiple methods that expect system assets are supported.
+# Which method and the arguments to the invoked method are known and can be used in the `Verification` trigger.
+# We do not introduce additional complexity to the smart contract system, in fact, we reduce the API surface area that smart contract authors have to reason about.
+# We do not allow multiple invocations, eliminating tracking required in the `Verification` and/or `Application` triggers.
+
+See additional discussion here: https://github.com/neo-project/neo/pull/172.
+
+==Backwards Compatibility==
+
+This NEP has the potential to break ongoing ICOs, however since most if not all implement the `Verification` trigger due to NEON requiring it, it's unlikely to effect any ICOs.
+
+==Implementation==
+
+TBD
