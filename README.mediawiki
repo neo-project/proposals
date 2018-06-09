@@ -27,17 +27,17 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/12 3]
+| [[nep-3.mediawiki|3]]
 | NeoContract ABI
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
-| [https://github.com/neo-project/proposals/pull/19 4]
+| [[nep-4.mediawiki|4]]
 | Dynamic Contract Invocation
 | localhuman, unignorant
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
@@ -45,17 +45,35 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/13 6]
+| [[nep-6.mediawiki|6]]
 | Wallet Standard
+| Erik Zhang
+| Standard
+| Final
+|-
+| [[nep-7.mediawiki|7]]
+| Triggers for NeoContract
+| Erik Zhang
+| Standard
+| Final
+|-
+| [https://github.com/neo-project/proposals/pull/22 8]
+| Stack Isolation for NeoVM
 | Erik Zhang
 | Standard
 | Accepted
 |-
-| 
+| [https://github.com/neo-project/proposals/pull/25 9]
 | URI Scheme
-| 
+| Andrei, Apisit
 | Standard
-| Stub
+| Accepted
+|-
+| [[nep-10.mediawiki|10]]
+| Composite Smart Contracts
+| Michael Herman, Joe Stewart
+| Standard
+| Final
 |-
 | 
 | Superconductive Exchange
