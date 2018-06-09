@@ -3,7 +3,7 @@
   Title: URI Scheme for Native Assets and Supported Smart Contracts
   Author: Andrei <terentiev.andrei@gmail.com>, Apisit <apisit.toompakdee@gmail.com>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2018-01-15
 </pre>
 
