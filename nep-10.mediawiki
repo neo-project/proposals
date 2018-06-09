@@ -62,7 +62,7 @@ This NEP defines one operation/method type:
 
 * Example: The return values <code>{"nep-5"}</code>, <code>{"NEP5"}</code>, and <code>{"nep5"}</code> will generally be considered invalid responses unless "nep5", for example, is a valid code for a specification in a non-NEP specification system.
 
-"NEP Extension" is achieved by creating a new NEP that defines the additional operations/methods. <code>supportedStandards</code> will, for example, return <code>{"NEP-5", "NEP-8", "NEP-1234"}</code> if NEP-1234 was the code (number) for the new standard containing the additional operations/methods.
+"NEP Extension" is achieved by creating a new NEP that defines the additional operations/methods. <code>supportedStandards</code> will, for example, return <code>{"NEP-5", "NEP-10", "NEP-1234"}</code> if NEP-1234 was the code (number) for the new standard containing the additional operations/methods.
 
 ==Rationale==
 
