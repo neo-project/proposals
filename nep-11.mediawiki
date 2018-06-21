@@ -23,26 +23,27 @@ Smart contract authors cannot reliably refuse system asset transfers in smart co
 
 Implement the following changes to the NEO protocol:
 
-# Run invocation transactions' script with the `Verification` trigger if it contains system assets sent to a smart contract address. Track which smart contracts have been executed and verify that for each smart contract address output the associated smart contract has executed exactly once.
+# Run invocation transactions' script with the `VerificationR` trigger if it contains system assets sent to a smart contract address. Track which smart contracts have been executed and verify that for each smart contract address output the associated smart contract has executed at least once.
+# Incorporate temporary storage for use in the VM during consensus which is used across verification of transactions
 # Reject all non-invocation transactions whose outputs contain an address that is a smart contract address.
 
 ==Rationale==
 
-The specification ensures that smart contracts have a chance to refuse system asset transfers in invocation transactions. By running the script with the `Verification` trigger and verifying that the smart contract was called, we also guarantee that the smart contract will have a chance to react to system transfers in the `Application` trigger. Finally, by rejecting all non-invocation transactions that contain a smart contract address as the output, we close the loop and guarantee that whenever a smart contract address is the output of a system asset transfer, the smart contract has the chance to refuse and react to the transfer.
+The specification ensures that smart contracts have a chance to refuse system asset transfers in invocation transactions. By running the script with the `VerificationR` trigger and verifying that the smart contract was called, we also guarantee that the smart contract will have a chance to react to system transfers in the `Application` trigger. Finally, by rejecting all non-invocation transactions that contain a smart contract address as the output, we close the loop and guarantee that whenever a smart contract address is the output of a system asset transfer, the smart contract has the chance to refuse and react to the transfer.
 
 In addition, it has the following beneficial properties:
 
 # Multiple methods that expect system assets are supported.
-# Which method and the arguments to the invoked method are known and can be used in the `Verification` trigger.
-# We do not introduce additional complexity to the smart contract system, in fact, we reduce the API surface area that smart contract authors have to reason about.
-# We do not allow multiple invocations, eliminating tracking required in the `Verification` and/or `Application` triggers.
+# Which method and the arguments to the invoked method are known and can be used in the `VerificationR` trigger.
+# We introduce a new `VerificationR` trigger, which introduces additional complexity, however, in most cases the functionality of the smart contract need not change whether the smart contract is being run in `Application` or `VerificationR` mode.
+# The `VerificationR` trigger can track invocations across calls, and even across transactions in a single block, using storage.
 
 See additional discussion here: https://github.com/neo-project/neo/pull/172.
 
 ==Backwards Compatibility==
 
-This NEP has the potential to break ongoing ICOs, however since most if not all implement the `Verification` trigger due to NEON requiring it, it's unlikely to effect any ICOs.
+This NEP has the potential to break ongoing ICOs and thus we must coordinate the launch to ensure that all existing smart contracts will handle the `VerificationR` trigger appropriately.
 
 ==Implementation==
 
-TBD
+https://github.com/neo-project/neo/pull/276
