@@ -1,7 +1,7 @@
 <pre>
   NEP: LATEST
   Title: Token Exchange Basic Extensions
-  Author: Michael Herman (mwherman@parallelspace.net)
+  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>, Michael Herman (mwherman@parallelspace.net)
   Type: Standard
   Status: Draft
   Created: 2018-07-21
