@@ -1,6 +1,6 @@
 <pre>
   NEP: 51
-  Title: Token Standard
+  Title: Token Standard Requiring Optional Methods
   Author: Alan Fong <afong@cityofzion.io>
   Type: Standard
   Status: Draft
