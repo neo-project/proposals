@@ -75,6 +75,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
+| [[nep-51.mediawiki|51]]
+| Token Standard Requiring Optional Methods
+| Alan Fong
+| Standard
+| Draft
+|-
 | 
 | Superconductive Exchange
 | 

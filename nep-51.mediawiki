@@ -1,17 +1,15 @@
 <pre>
-  NEP: 5
-  Title: Token Standard
-  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <afong@cityofzion.io>
+  NEP: 51
+  Title: Token Standard Requiring Optional Methods
+  Author: Alan Fong <afong@cityofzion.io>
   Type: Standard
-  Status: Final
-  Created: 2017-08-10
+  Status: Draft
+  Created: 2018-07-21
 </pre>
-
-NOTE: Those who require the use of optional methods for transfers in their smart contract should see NEP-51 (NEP-5.1), as this standard no longer supports these methods.
 
 ==Abstract==
 
-The NEP-5 Proposal outlines a token standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community.
+The NEP-51 (which can also be called NEP-5.1) Proposal outlines a token standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community. This token standard includes all optional methods from the original NEP-5 as required.
 
 ==Motivation==
 
@@ -20,6 +18,8 @@ As the NEO blockchain scales, Smart Contract deployment and invocation will beco
 ==Specification==
 
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+All methods are required in this standard.
 
 ===Methods===
 
@@ -95,6 +95,30 @@ If the <code>to</code> address is a deployed contract, the function SHOULD check
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
 
+====allowance====
+
+<pre>
+public static BigInteger allowance(byte[] from, byte[] to)
+</pre>
+
+Returns the amount of tokens that the <code>to</code> account can transfer from the <code>from</code> account.
+
+====transferFrom====
+
+<pre>
+public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)
+</pre>
+
+Transfers an <code>amount</code> from the <code>from</code> account to the <code>to</code> account if the <code>originator</code> has been approved to transfer the requested <code>amount</code>.
+
+====approve====
+
+<pre>
+public static bool approve(byte[] originator, byte[] to, BigInteger amount)
+</pre>
+
+Approves the <code>to</code> account to transfer <code>amount</code> tokens from the <code>originator</code> account. 
+
 ===Events===
 
 ====transfer====
@@ -103,7 +127,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 public static event transfer(byte[] from, byte[] to, BigInteger amount)
 </pre>
 
-MUST trigger when tokens are transferred, including zero value transfers.
+The <code>transfer</code> event is raised after a successful execution of the <code>transfer</code> method.
 
 A token contract which creates new tokens MUST trigger a <code>transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
 
