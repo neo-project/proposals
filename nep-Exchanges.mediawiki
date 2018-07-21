@@ -32,19 +32,25 @@ NEP-LATEST is designed to be used in composition with NEP-5 and NEP-10.
 
 ====allowance====
 
-* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
+<pre>
+public static BigInteger allowance(byte[] from, byte[] to)
+</pre>
 
 * Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
 
 ====transferFrom====
 
-* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
+<pre>
+public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)
+</pre>
 
 * Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
 
 ====approve====
 
-* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
+<pre>
+public static bool approve(byte[] originator, byte[] to, BigInteger amount)
+</pre>
 
 * Remarks: "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
 
@@ -54,4 +60,4 @@ None
 
 ==Implementation==
 
-* TODO - Need an example that is compliant with ["NEP-5", "NEP-LATEST", "NEP-10"]
+* TODO - Need an example that is compliant with <code>["NEP-5", "NEP-LATEST", "NEP-10"]</code>.
