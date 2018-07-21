@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-The NEP-LATEST Proposal defines three (3) additional methods designed to extend the base level token
+The NEP-LATEST proposal defines three (3) additional methods designed to extend the base level token
 functionality found in NEP-5 to support the needs of third-party agents such as exchanges.  Specialized exchanges
 may require additional or different functionality.  They should create and submit additional NEP proposals that
 su[pport their needs.
