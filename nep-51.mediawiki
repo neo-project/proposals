@@ -1,7 +1,7 @@
 <pre>
   NEP: 51
   Title: Token Standard
-  Author: Alan Fong (afong@cityofzion.io)
+  Author: Alan Fong <afong@cityofzion.io>
   Type: Standard
   Status: Draft
   Created: 2018-07-21
@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-The NEP-51 Proposal outlines a token standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community. This token standard includes all optional methods from the original NEP-5 as required.
+The NEP-51 (which can also be called NEP-5.1) Proposal outlines a token standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community. This token standard includes all optional methods from the original NEP-5 as required.
 
 ==Motivation==
 
