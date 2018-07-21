@@ -1,11 +1,13 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
+  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <afong@cityofzion.io>
   Type: Standard
   Status: Final
   Created: 2017-08-10
 </pre>
+
+NOTE: Those who require the use of optional methods for transfers in their smart contract should see NEP-51 (NEP-5.1), as this standard no longer supports these methods.
 
 ==Abstract==
 
