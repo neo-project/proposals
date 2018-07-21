@@ -1,6 +1,6 @@
 <pre>
   NEP: LATEST
-  Title: Token Exchange Extensions
+  Title: Token Exchange Basic Extensions
   Author: Michael Herman (mwherman@parallelspace.net)
   Type: Standard
   Status: Draft
