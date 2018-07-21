@@ -127,7 +127,7 @@ Approves the <code>to</code> account to transfer <code>amount</code> tokens from
 public static event transfer(byte[] from, byte[] to, BigInteger amount)
 </pre>
 
-MUST trigger when tokens are transferred, including zero value transfers.
+The <code>transfer<c/ode> event is raised after a successful execution of the <code>transfer</code> method.
 
 A token contract which creates new tokens MUST trigger a <code>transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
 
