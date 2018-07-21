@@ -1,0 +1,93 @@
+<pre>
+  NEP: 51
+  Title: Token Standard
+  Author: Alan Fong (afong@cityofzion.io)
+  Type: Standard
+  Status: Draft
+  Created: 2018-07-21
+</pre>
+
+==Abstract==
+
+The NEP-51 Proposal outlines a token standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for tokenized Smart Contracts.  This mechanic, along with the justification for each feature are defined.  A template and examples are also provided to enable the development community. This token standard includes all optional methods from the original NEP-5 as required.
+
+==Motivation==
+
+As the NEO blockchain scales, Smart Contract deployment and invocation will become increasingly important.  Without a standard interaction method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts.  Tokenized contracts present themselves as a prime example of this need because their basic operating mechanism is the same.  A standard method for interacting with these tokens relieves the entire ecosystem from maintaining a definition for basic operations that are required by every Smart Contract that employs a token.
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+All methods are required in this standard.
+
+===Methods===
+
+====totalSupply====
+
+* Syntax: <code>public static BigInteger totalSupply()</code>
+
+* Remarks: "totalSupply" returns the total token supply deployed in the system.
+
+====name====
+
+* Syntax: <code>public static string name()</code>
+
+* Remarks: "name" returns the token name.
+
+
+====symbol====
+
+* Syntax: <code>public static string symbol()</code>
+
+* Remarks: "symbol" returns the token symbol.
+
+====decimals====
+
+* Syntax: <code>public static byte decimals()</code>
+
+* Remarks: "decimals" returns the number of decimals used by the token.
+
+====balanceOf====
+
+* Syntax: <code>public static BigInteger balanceOf(byte[] account)</code>
+
+* Remarks: "balanceOf" returns the token balance of the '''account'''.
+
+====transfer====
+
+* Syntax: <code>public static bool transfer(byte[] from, byte[] to, BigInteger amount)</code>
+
+* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
+
+====allowance====
+
+* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
+
+* Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
+
+====transferFrom====
+
+* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
+
+* Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
+
+====approve====
+
+* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
+
+* Remarks: "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
+
+===Events===
+
+====transfer====
+
+* Syntax: <code>public static event Action<byte[], byte[], BigInteger> transfer</code>
+
+* Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
+
+==Implementation==
+
+*Woolong: https://github.com/lllwvlvwlll/Woolong
+
+*ICO Template: https://github.com/neo-project/examples/tree/master/ICO_Template
