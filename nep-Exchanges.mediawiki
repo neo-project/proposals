@@ -1,0 +1,55 @@
+<pre>
+  NEP: LATEST
+  Title: Token Exchange Extensions
+  Author: Michael Herman (mwherman@parallelspace.net)
+  Type: Standard
+  Status: Draft
+  Created: 2018-07-21
+</pre>
+
+==Abstract==
+
+The NEP-LATEST Proposal defines three (3) additional methods design to extend the base level token
+functionality found in NEP-5.
+
+==Motivation==
+
+Blockchain exchanges require token smart contracts to implement additional methods to support
+the permissioned transfer of value from an originator to a receiver. NEP-LATEST provides definitions
+for these functions. 
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+All methods are required to be implemented to be compliant with this standard.
+
+NEP-LATEST is designed to be used in composition with NEP-5 and NEP-10.
+
+===Methods===
+
+====allowance====
+
+* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
+
+* Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
+
+====transferFrom====
+
+* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
+
+* Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
+
+====approve====
+
+* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
+
+* Remarks: "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
+
+===Events===
+
+None
+
+==Implementation==
+
+* TODO - Need an example that is compliant with ["NEP-5", "NEP-LATEST", "NEP-10"]

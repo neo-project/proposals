@@ -75,6 +75,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
+| [[nep-Exchanges.mediawiki|LATEST]]
+| Token Exchange Extensions
+| Michael Herman
+| Standard
+| Draft
+|-
 | 
 | Superconductive Exchange
 | 
