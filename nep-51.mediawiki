@@ -25,66 +25,113 @@ All methods are required in this standard.
 
 ====totalSupply====
 
-* Syntax: <code>public static BigInteger totalSupply()</code>
+<pre>
+public static BigInteger totalSupply()
+</pre>
 
-* Remarks: "totalSupply" returns the total token supply deployed in the system.
+Returns the total token supply deployed in the system.
 
 ====name====
 
-* Syntax: <code>public static string name()</code>
+<pre>
+public static string name()
+</pre>
 
-* Remarks: "name" returns the token name.
+Returns the name of the token. e.g. <code>"MyToken"</code>.
 
+This method MUST always return the same value every time it is invoked.
 
 ====symbol====
 
-* Syntax: <code>public static string symbol()</code>
+<pre>
+public static string symbol()
+</pre>
 
-* Remarks: "symbol" returns the token symbol.
+Returns a short string symbol of the token managed in this contract. e.g. <code>"MYT"</code>. This symbol SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English).
+
+This method MUST always return the same value every time it is invoked.
 
 ====decimals====
 
-* Syntax: <code>public static byte decimals()</code>
+<pre>
+public static byte decimals()
+</pre>
 
-* Remarks: "decimals" returns the number of decimals used by the token.
+Returns the number of decimals used by the token - e.g. <code>8</code>, means to divide the token amount by <code>100,000,000</code> to get its user representation.
+
+This method MUST always return the same value every time it is invoked.
 
 ====balanceOf====
 
-* Syntax: <code>public static BigInteger balanceOf(byte[] account)</code>
+<pre>
+public static BigInteger balanceOf(byte[] account)
+</pre>
 
-* Remarks: "balanceOf" returns the token balance of the '''account'''.
+Returns the token balance of the <code>account</code>.
+
+The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+
+If the <code>account</code> is an unused address, this method MUST return <code>0</code>.
 
 ====transfer====
 
-* Syntax: <code>public static bool transfer(byte[] from, byte[] to, BigInteger amount)</code>
+<pre>
+public static bool transfer(byte[] from, byte[] to, BigInteger amount)
+</pre>
 
-* Remarks: "transfer" will transfer an '''amount''' of tokens from the '''from''' account to the '''to''' account.
+Transfers an <code>amount</code> of tokens from the <code>from</code> account to the <code>to</code> account.
+
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>amount</code> MUST be greater than or equal to <code>0</code>. If not, this method SHOULD <code>throw</code> an exception.
+
+The function MUST return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
+
+If the method succeeds, it MUST fire the <code>transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or <code>from</code> and <code>to</code> are the same address.
+
+The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+
+If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
+
+If the transfer is not processed, the function SHOULD return <code>false</code>.
 
 ====allowance====
 
-* Syntax: <code>public static BigInteger allowance(byte[] from, byte[] to)</code>
+<pre>
+public static BigInteger allowance(byte[] from, byte[] to)
+</pre>
 
-* Remarks: "allowance" will return the amount of tokens that the '''to''' account can transfer from the '''from''' acount.
+Returns the amount of tokens that the <code>to</code> account can transfer from the <code>from</code> account.
 
 ====transferFrom====
 
-* Syntax: <code>public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)</code>
+<pre>
+public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigInteger amount)
+</pre>
 
-* Remarks: "transferFrom" will transfer an '''amount''' from the '''from''' account to the '''to''' acount if the '''originator''' has been approved to transfer the requested '''amount'''.
+Transfers an <code>amount</code> from the <code>from</code> account to the <code>to</code> account if the <code>originator</code> has been approved to transfer the requested <code>amount</code>.
 
 ====approve====
 
-* Syntax: <code>public static bool approve(byte[] originator, byte[] to, BigInteger amount)</code>
+<pre>
+public static bool approve(byte[] originator, byte[] to, BigInteger amount)
+</pre>
 
-* Remarks: "approve" will approve the '''to''' account to transfer '''amount''' tokens from the '''originator''' acount. 
+Approves the <code>to</code> account to transfer <code>amount</code> tokens from the <code>originator</code> account. 
 
 ===Events===
 
 ====transfer====
 
-* Syntax: <code>public static event Action<byte[], byte[], BigInteger> transfer</code>
+<pre>
+public static event transfer(byte[] from, byte[] to, BigInteger amount)
+</pre>
 
-* Remarks: The "transfer" event is raised after a successful execution of the "transfer" method.
+MUST trigger when tokens are transferred, including zero value transfers.
+
+A token contract which creates new tokens MUST trigger a <code>transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
+
+A token contract which burns tokens MUST trigger a <code>transfer</code> event with the <code>to</code> address set to <code>null</code> when tokens are burned.
 
 ==Implementation==
 
