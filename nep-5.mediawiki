@@ -1,7 +1,7 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
+  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <afong@cityofzion.io>
   Type: Standard
   Status: Final
   Created: 2017-08-10
@@ -119,7 +119,7 @@ public static bool approve(byte[] originator, byte[] to, BigInteger amount)
 
 <b>Definition:</b> 
 
-Approves the <code>to</code> address to transfer <code>amount</code> tokens from the <code>originator</code> acount.
+Approves the <code>to</code> address to transfer <code>amount</code> tokens from the <code>originator</code> account.
 
 <b>Remarks:</b>
 
@@ -137,12 +137,12 @@ public static BigInteger allowance(byte[] from, byte[] to)
 
 <b>Definition:</b>
 
-Returns the amount of tokens that the <code>to</code> address can transfer from the <code>from</code> acount.
+Returns the amount of tokens that the <code>to</code> address can transfer from the <code>from</code> account.
 
 <b>Remarks:</b>
 
 # The parameters <code>from</code> and <code>to</code> <b>SHOULD</b> be a 20-byte address.  If not, this method <b>SHOULD</b> <code>throw</code> and exception.
-# If either <code>from</code> or <code>to</code> are unused, the method <b>MUST</b> return <code>0</code>
+# If either <code>from</code> or <code>to</code> are unused, the method <b>MUST</b> return <code>0</code>.
 
 ----
 ====transferFrom====
@@ -153,7 +153,7 @@ public static bool transferFrom(byte[] originator, byte[] from, byte[] to, BigIn
 
 <b>Definition:</b>
 
-Transfers an <code>amount</code> from the <code>from</code> address to the <code>to</code> acount if the <code>originator</code> has been approved to transfer the requested <code>amount</code>.
+Transfers an <code>amount</code> from the <code>from</code> address to the <code>to</code> account if the <code>originator</code> has been approved to transfer the requested <code>amount</code>.
 
 <b>Remarks:</b>
 
