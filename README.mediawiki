@@ -77,7 +77,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-Exchanges.mediawiki|LATEST]]
 | Token Exchange Basic Extensions
-| Michael Herman
+| Tyler Adams, luodanwg, tanyuan, Alan Fong, Michael Herman
 | Standard
 | Draft
 |-
