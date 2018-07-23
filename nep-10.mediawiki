@@ -1,7 +1,7 @@
 <pre>
   NEP: 10
   Title: Composite Smart Contracts
-  Author: Michael Herman (mwherman@parallelspace.net) aka @mwherman2000, Joe Stewart (hal0x2328@splyse.tech) aka @hal0x2328
+  Author: Michael Herman (mwherman@parallelspace.net) aka @mwherman2000
   Type: Standard
   Status: Final
   Created: 2018-04-17
