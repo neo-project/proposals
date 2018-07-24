@@ -71,7 +71,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-10.mediawiki|10]]
 | Composite Smart Contracts
-| Michael Herman, Joe Stewart
+| Michael Herman
 | Standard
 | Final
 |-
