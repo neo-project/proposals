@@ -60,6 +60,11 @@ public static bool approve(byte[] originator, byte[] to, BigInteger amount)
 
 None
 
+===NEP-10 Compliance===
+
+NEP-LATEST compliant smart contracts are required to implement the <code>supportStandards</code> method using
+a pattern that is compatible with this example: https://github.com/neo-project/proposals/pull/60#issuecomment-407439745
+
 ==Implementation==
 
-* TODO - Need an example that is compliant with <code>["NEP-5", "NEP-LATEST", "NEP-10"]</code>.
+* TODO - Need an example that is compliant with <code>["NEP-5", "NEP-10", "NEP-LATEST"]</code>.
