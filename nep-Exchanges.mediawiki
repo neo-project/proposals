@@ -1,6 +1,6 @@
 <pre>
   NEP: LATEST
-  Title: Token Exchange Basic Extensions
+  Title: Token Extension: Third Party Transfers
   Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>, Michael Herman (mwherman@parallelspace.net)
   Type: Standard
   Status: Draft
@@ -10,8 +10,10 @@
 ==Abstract==
 
 The NEP-LATEST proposal defines three (3) additional methods designed to extend the base level token
-functionality found in NEP-5 to support the needs of third-party agents such as exchanges.  Specialized exchanges
-may require additional or different functionality.  They should create and submit additional NEP proposals that
+functionality found in NEP-5 to support the third-party transfer requirements of third-party agents 
+such as exchanges.  
+
+Specialized exchanges and other applications may require additional or different functionality.  They will need to create and submit additional NEP proposals that
 support their needs.
 
 ==Motivation==
