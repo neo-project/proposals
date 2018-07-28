@@ -1,10 +1,10 @@
 <h2 id="economic-model-adjustments-consensus-node-rewards-and-neo-gas-inflation">Economic Model Adjustments, Consensus Node Rewards and NEO GAS Inflation</h2>
-<pre><code> NEP: To be assigned
+<pre> NEP: To be assigned
  Title: Economic Reward Adjustments
  Author: Andrei Terentiev &lt;andreit@o3.netowrk&gt;
  Type: Standard
  Status: Draft
- Created: 2018-8</code></pre>
+ Created: 2018-8</pre>
 <p>This NEP will propose an economic model adjustment to the distribution of GAS created through mining, system fees, and network fees. Additionally it will propose a permanent inflation to GAS mining in the NEO ecosystem. With these changes it will provide a clearer seperation of concerns between NEO (the governing token) and GAS (the utility token), as well as better align the incentives between the NEO holders and consensus nodes.</p>
 <h2 id="motivation">Motivation</h2>
 <p>Let us first consider three goals of the NEO network protocol</p>
@@ -21,11 +21,11 @@
 <p>I believe with these three implementation changes we will be able to effectively achieve the three goals that I have mentioned above.</p>
 <h2 id="rationale">Rationale</h2>
 <h3 id="low-network-fees-and-spam">Low Network Fees and Spam</h3>
-<p>Currently the NEO network has 0 fees which makes it susceptible to apam. We have already seen spam attacks carried on the test network, and most recently on the main network as well. The natural solution to spam attacks is to 1. Limit the number of free transactions per block 2. Make users attach fees to their transactions attach fees to transactions</p>
+<p>Currently the NEO network has 0 fees which makes it susceptible to apam. We have already seen spam attacks carried on the test network, and most recently on the main network as well. The natural solution to spam attacks is to <li>1. Limit the number of free transactions per block</li> <li>2. Make users attach fees to their transactions attach fees to transactions</li></p>
 <p>This will generally render spam useless or require the spammer to pay more and more money in order to continue his attack. The problem with this solution is that it HARMS NEO holders and HELPS consensus nodes.</p>
 <p>Let’s consider an escalation in a fee war between a spammer and the users of the NEO network. As the fees gradually rise, the consensus nodes will continue to get more and more profits while the users of the network suffer. This creates a perverse incentive where the consensus nodes actually have an incentive to spam the network because they will collect all the fees associated with the spam.</p>
 <p>So in the current iteration of Network fee implementation, consensus nodes and spammers prosper from high fees while users suffer.</p>
-<p>If we adjust so that network fees are instead paid out to the NEO holders, then the spammer will be paying the network users to continue his spam attack. If the attacker’s goal is to harm the NEO network paying large sums of money to the NEO is completely counter productive.</p>
+<p>If we adjust so that network fees are instead paid out to the NEO holders, then the spammer will be paying the network users to continue his spam attack. If the attacker’s goal is to harm the NEO network paying large sums of money to the NEO holders is completely counter productive.</p>
 <p>Users will effectively be subsidized in a fee war by the spammer, and although it maybe annoying is signficantly less harmful than the previous solution.</p>
 <p>There is one big problem, in this scenario we have completely removed the incentives for consensus nodes entirely. We will disccuss how to adjust the model so that consensus nodes can still be rewarded in this system later.</p>
 <p>However, with this adjustment I believe we have achieved Goal 1, which is keeping network fees as low as possible while still being resistant to spam attacks.</p>
