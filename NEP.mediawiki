@@ -1,7 +1,7 @@
 <h2 id="economic-model-adjustments-consensus-node-rewards-and-neo-gas-inflation">Economic Model Adjustments, Consensus Node Rewards and NEO GAS Inflation</h2>
 <pre> NEP: To be assigned
  Title: Economic Reward Adjustments
- Author: Andrei Terentiev &lt;andreit@o3.netowrk&gt;
+ Author: Andrei Terentiev <andreit@o3.network>;
  Type: Standard
  Status: Draft
  Created: 2018-8</pre>
