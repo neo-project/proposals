@@ -17,11 +17,17 @@
 <p>In order to achieve these goals. I propose three necessary changes to the protocol.</p>
 <p><strong>Action 1:</strong> Network fees are no longer distributed to consensus nodes, but instead NEO holders.<br />
 <strong>Action 2:</strong> GAS generation does not go to zero in twenty two years but instead asymptotically levels off to a fixed inflation rate<br />
-<strong>Action 3:</strong> Consensus nodes collect a percentage of mined gas indefinitely, instead of network fees</p>
+<strong>Action 3:</strong> Consensus nodes collect a percentage of mined GAS indefinitely, instead of network fees</p>
 <p>I believe with these three implementation changes we will be able to effectively achieve the three goals that I have mentioned above.</p>
 <h2 id="rationale">Rationale</h2>
 <h3 id="low-network-fees-and-spam">Low Network Fees and Spam</h3>
-<p>Currently the NEO network has 0 fees which makes it susceptible to apam. We have already seen spam attacks carried on the test network, and most recently on the main network as well. The natural solution to spam attacks is to <li>1. Limit the number of free transactions per block</li> <li>2. Make users attach fees to their transactions attach fees to transactions</li></p>
+<p>Currently the NEO network has 0 fees which makes it susceptible to spam. We have already seen spam attacks carried on the test network, and most recently on the main network as well. The natural solution to spam attacks is to 
+<ul>
+<li>Limit the number of free transactions per block</li> 
+<li>Make users attach fees to their transactions attach fees to transactions</li>
+</ul>
+</p>
+
 <p>This will generally render spam useless or require the spammer to pay more and more money in order to continue his attack. The problem with this solution is that it HARMS NEO holders and HELPS consensus nodes.</p>
 <p>Let’s consider an escalation in a fee war between a spammer and the users of the NEO network. As the fees gradually rise, the consensus nodes will continue to get more and more profits while the users of the network suffer. This creates a perverse incentive where the consensus nodes actually have an incentive to spam the network because they will collect all the fees associated with the spam.</p>
 <p>So in the current iteration of Network fee implementation, consensus nodes and spammers prosper from high fees while users suffer.</p>
@@ -29,8 +35,8 @@
 <p>Users will effectively be subsidized in a fee war by the spammer, and although it maybe annoying is signficantly less harmful than the previous solution.</p>
 <p>There is one big problem, in this scenario we have completely removed the incentives for consensus nodes entirely. We will disccuss how to adjust the model so that consensus nodes can still be rewarded in this system later.</p>
 <p>However, with this adjustment I believe we have achieved Goal 1, which is keeping network fees as low as possible while still being resistant to spam attacks.</p>
-<h3 id="asymptotic-gas-inflation">Asymptotic Gas Inflation</h3>
-<p>Currently as stated in the whitepaper, gas generation is meant to bootstrap the network and distribute it amongst NEO holders, and while this is a good goal, it leads to many problems.</p>
+<h3 id="asymptotic-gas-inflation">Asymptotic GAS Inflation</h3>
+<p>Currently as stated in the whitepaper, GAS generation is meant to bootstrap the network and distribute it amongst NEO holders, and while this is a good goal, it leads to many problems.</p>
 <p>In this system GAS becomes a deflationary currency over time. This means it encourages the hoarding of GAS rather than the spending of GAS. We see this time and time again with crypto assets that try to be a “means of transfer.”</p>
 <p><strong>If something is meant to be used as good means of transfer (utility coin) as opposed to a store of value it SHOULD be inflationary.</strong></p>
 <p>GAS will not be able to fulfill its main purpose of utility if it is a deflationary currency.</p>
@@ -39,10 +45,10 @@
 <p>Making GAS inflationary solidifies the use case and seperation for NEO and GAS instead of blurring the lines.</p>
 <p>So by making GAS inflationary we have achieved Goal 3 which is encouraging use and spending of GAS in the NEO ecosystem.</p>
 <h3 id="consensus-node-rewards">Consensus Node Rewards</h3>
-<p>With inflationary gas we can now effectively reward consensus nodes without ever putting them in conflict with the users. Consensus nodes can now be rewarded with a fixed or percentage amount from the mined GAS, so that they are always incentivized to keep producing blacks, and the network stable because that is their only source of income.</p>
+<p>With inflationary GAS we can now effectively reward consensus nodes without ever putting them in conflict with the users. Consensus nodes can now be rewarded with a fixed or percentage amount from the mined GAS, so that they are always incentivized to keep producing blacks, and the network stable because that is their only source of income.</p>
 <p>They do not have to worry about any sorts of fees, and are encourage to maintain a passive role in the ecosystem. They will be encouraged to find the best ways to keep block times low, and network uptime very high which also benefits users. Thus we have achieved goal #2 of effectively incentivizing consensus nodes without having any conflict between them and the users.</p>
-<p>Finally running consensus nodes has as fixed cost associated with it. It should have a fixed reward as well</p>
+<p>Finally running consensus nodes has as fixed cost associated with it. It should have a fixed reward as well.</p>
 <h2 id="specification">Specification</h2>
-<p>The main parameters we need to consider are the inflation rate, and the ratio of mined gas that is split between the consensus nodes and NEO holders. However more discussion is needed about the proposal at hand before these parameters can be considered</p>
+<p>The main parameters we need to consider are the inflation rate, and the ratio of mined GAS that is split between the consensus nodes and NEO holders. However more discussion is needed about the proposal at hand before these parameters can be considered</p>
 <h2 id="implementation">Implementation</h2>
 <p>Todo</p>
