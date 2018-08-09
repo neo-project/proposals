@@ -10,34 +10,27 @@
 
 ==Abstract==
 
-This NEP introduces memory-efficient methods for allowing conditional NEP-5 token transactions between users and third party smart contracts without the need for off-chain listeners. The methods take into account future changes in invocation fees, so as to make it work efficiently in multiple scenarios.
-
-This NEP is inspired by NewEconoLab's Neo Name Service implementations to handle transaction events between the auction smart contract and the programmable SGAS NEP5 Token (https://github.com/NewEconoLab/neo-ns/blob/master/dapp_nns_coinpool/coinpool.cs). The proposed methods are based on this logic, and include additional features and improved storage efficiency.
+This NEP introduces a memory-efficient method for allowing conditional NEP-5 token transactions between users and third party smart contracts without the need for off-chain listeners. The methods take into account future changes in invocation fees, so as to make it work efficiently in multiple scenarios.
 
 ==Motivation==
 All tokens should be ''programmable''. By programmable we mean that tokens should be conditionally transacted and held between users and smart contracts alike.
 
 Presently, dApp smart contracts handle conditional transactions (e.g. staking a NEP5 token with a release condition) via off-chain listeners that send invocations based on certain triggers such as NEP5 Transaction Notification events.
 
-NEL introduced <code>SetTxInfo</code> and <code>getTxData</code> methods in their SGAS NEP-5 token, creating a storage item with each ''transfer'' operation. These methods allow for third party smart contracts to retrieve transaction data by sending a <code>getTxData(tx_id)</code>dynamic invocation to the NEP5 contract.
+This NEP proposes the following solution:
 
-In practice, 2 transactions are chained together: one being <code>transfer(from, to, amount)</code> on the NEP5 contract, the other being <code>SGasIn(tx_id)</code> on the third party contract, where ''tx_id'' is the current transaction's identifier.
 
-This solution eliminates the necessity of using off-chain listeners for triggering transaction events. However, this can quickly turn into unnecessary bloatation of smart contract storage due to every ''transfer'' operation adding a transaction data item to the smart contract storage.
-
-The methods introduced by NEL should be modified to minimize storage usage and maximize efficiency. We can also introduce the ability for smart contracts to support transaction event triggers for a multitude of NEP5 tokens, and for specific smart contract operations to be called along with desired arguments. These improvements can be achieved by introducing the following:
-
-* A separate transfer method and operation (e.g. <code>transferToContract(from, to, amount, operation, args)</code>) that creates a storage item containing the transaction data. By separating it from ''transfer()'', storage will only be utilized for specific transactions that are intended to be processed by a smart contract. Additionally, ''operation'' and ''args'' defines the operation + arguments list for processing by the receiving smart contract.
-* Extending ''getTxData'' to execute <code>Storage.Delete</code> on the transaction data storage item (or ''txData'' in the diagram) after it has been retrieved once, to improve storage efficiency.
-* Extending ''getTxData'' to loop through 10 other transaction info storage items and deleting those as well to prevent unprocessed data from causing storage inefficiencies. 
+* A separate transfer method and operation <code>transferToContract(from, to, amount, operation, args)</code> that makes a transaction and calls a dynamic invocation on the <code>to</code> script hash, using <code>(string) operation, (list) args</code> as the parameters to be used in the dynamic invocation.
 
 The ''transferToContract'' operation can be called by web-based applications integrating with ''neon-js'', nOS dApps, and applications utilizing NeoLink or the NEX plug-in. Additionally, wallet applications such as ''Neon Wallet'' can present the user with an option whether their transaction is intended for a user or a smart contract (effectively switching between ''transfer'' and ''transferToContract'' operations).
+
+To achieve this, the NEP-5 token will need to be able to make dynamic invocations.
 
 ==Specification==
 
 We propose the following methods to be implemented in any token contract that is looking to have a memory-efficient ''programmable'' NEP5 token:
 
-[[File:https://i.imgur.com/3Hsquab.png]]
+[[File:https://user-images.githubusercontent.com/31391056/43914635-b34ed8c8-9c08-11e8-8f94-6e6146c4ec00.png]]
 
 ===Methods===
 
@@ -45,26 +38,7 @@ We propose the following methods to be implemented in any token contract that is
 
 * Syntax: <code>public static bool transferToContract(from, to, amount, operation, args)</code>
 
-* Remarks: This method (with operation ''transerToContract'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and stores the following in the smart contract storage: '''Key:''' <code>"tx-" + generated transaction id</code> '''Value:''' <code>from, to, amount, operation, args</code>. These values consist of the transaction arguments, plus the ''operation'' (string) and ''arguments'' (list) to be processed by the targeted smart contract. The storage item will look like: <code>"tx-" + tx_id : { from, to, amount, operation, args }</code>.
-
-====getTxData====
-* Syntax: <code>public static byte[] getTxData(from, to, amount)</code>
-
-*Remarks:
-**This method is called by a third party smart contract when it looks to handle the receiving of NEP5 tokens. Upon returning the requested data, it deletes the data item from storage + an amount of other items (with amount defined as ''x'') with the ''"tx-"'' pre-fix via ''Storage.Search''. Deleting other storage items is productive as the '''onTokenReceive''' event on the third party contract is always intended to be invoked in the same block as the NEP5 transaction (via chained transactions).
-
-**The reason we delete a multitude of additional <code>TxData</code> storage items (''x'') is because:
-
-*** In the future, smart contract invocation costs may be calculated with factors such as total storage actively utilized (not "deleted" with <code>Storage.Delete()</code>), and <code>Storage.Delete()</code> calls are intended to be free.
-*** In no case should a third party smart contract process a NEP5 transaction ''after'' the initial transaction's block, as the returned <code>getTxData()</code> data can be instantly stored into the third party's own contract storage. This way the NEP5 contract does not serve as a storage proxy for a third party smart contract.
-*** Deleting ''x'' items with every <code>getTxData()</code> call means that only 1 in ''x'' <code>transferToContract()</code> calls need to be processed properly (chained with a different smart contract that dynamically invokes the NEP5's ''getTxData'' operation), which further assures that these proposed methods won't negatively affect the NEP5's actively utilized storage.
-
-The amount of additional items to delete (''x'') can be a hard-coded value (such as 10, assuring a set max cost for invocations), or it could be set dynamically via a custom method only accessible by a contract owner/admin, should it be desired. In the latter case, it is recommended that any method that lets an owner/admin update ''x'' has a hard-coded maximum for ''x'', so as to still assure a maximum invocation fee.
-
-===cleanTxData===
-* Syntax: <code>public static bool[] cleanTxData(amount)</code>
-*Remarks:
-** This method is called by a ''cleanTxData'' operation (where ''amount'' is the only argument in the arguments list).  Anyone can invoke this operation to call <code>Storage.Delete</code> on an amount of ''amount'' storage items with the ''"tx-"'' storage key pre-fix. This pre-fix belongs to storage keys created by <code>transferToContract()</code> which are intended to remain active for no longer than 1 block.
+* Remarks: This method (with operation ''transerToContract'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>to</script> parameter, providing <code>from, to, amount, operation, args</code> as parameters for the receiving smart contract.
 
 ==Implementation==
 TBD
