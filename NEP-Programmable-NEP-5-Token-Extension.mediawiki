@@ -19,7 +19,7 @@ All tokens should be ''programmable''. By programmable we mean that tokens shoul
 
 Presently, dApp smart contracts handle conditional transactions (e.g. staking a NEP5 token with a release condition) via off-chain listeners that send invocations based on certain triggers such as NEP5 Transaction Notification events.
 
-NEL introduced <code>SetTxInfo</code> and <code>GetTxInfo</code> methods in their SGAS NEP-5 token, creating a storage item with each ''transfer'' operation. These methods allow for third party smart contracts to retrieve transaction data by sending a <code>GetTxInfo(tx_id)</code>dynamic invocation to the NEP5 contract.
+NEL introduced <code>SetTxInfo</code> and <code>GetTxData</code> methods in their SGAS NEP-5 token, creating a storage item with each ''transfer'' operation. These methods allow for third party smart contracts to retrieve transaction data by sending a <code>GetTxData(tx_id)</code>dynamic invocation to the NEP5 contract.
 
 In practice, 2 transactions are chained together: one being <code>transfer(from, to, amount)</code> on the NEP5 contract, the other being <code>SGasIn(tx_id)</code> on the third party contract, where ''tx_id'' is the current transaction's identifier.
 
@@ -47,7 +47,7 @@ We propose the following methods to be implemented in any token contract that is
 
 * Remarks: This method (with operation ''transerToContract'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and stores the following in the smart contract storage: '''Key:''' <code>"tx-" + generated transaction id</code> '''Value:''' <code>from, to, amount, operation, args</code>. These values consist of the transaction arguments, plus the ''operation'' (string) and ''arguments'' (list) to be processed by the targeted smart contract. The storage item will look like: <code>"tx-" + tx_id : { from, to, amount, operation, args }</code>.
 
-====getTxInfo====
+====getTxData====
 * Syntax: <code>public static byte[] getTxData(from, to, amount)</code>
 
 *Remarks:
@@ -56,8 +56,8 @@ We propose the following methods to be implemented in any token contract that is
 **The reason we delete 10 additional <code>TxData</code> storage items is because:
 
 *** In the future, smart contract invocation costs may be calculated with factors such as total storage actively utilized (not "deleted" with <code>Storage.Delete()</code>), and <code>Storage.Delete()</code> calls are intended to be free.
-*** In no case should a third party smart contract process a NEP5 transaction ''after'' the initial transaction's block, as the returned <code>GetTxInfo()</code> data can be instantly stored into the third party's own contract storage. This way the NEP5 contract does not serve as a storage proxy for a third party smart contract.
-*** Deleting 10 items with every <code>GetTxData()</code> call means that only 1 in 10 <code>transferToContract()</code> calls need to be processed properly (chained with a different smart contract that dynamically invokes the NEP5's ''GetTxInfo'' operation), which further assures that these proposed methods won't negatively affect the NEP5's actively utilized storage.
+*** In no case should a third party smart contract process a NEP5 transaction ''after'' the initial transaction's block, as the returned <code>GetTxData()</code> data can be instantly stored into the third party's own contract storage. This way the NEP5 contract does not serve as a storage proxy for a third party smart contract.
+*** Deleting 10 items with every <code>GetTxData()</code> call means that only 1 in 10 <code>transferToContract()</code> calls need to be processed properly (chained with a different smart contract that dynamically invokes the NEP5's ''GetTxData'' operation), which further assures that these proposed methods won't negatively affect the NEP5's actively utilized storage.
 
 ==Implementation==
 TBD
