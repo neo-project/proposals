@@ -1,7 +1,7 @@
 <pre>
   NEP: <to be assigned>
   Title: Programmable NEP-5 Token Extension
-  Author: Dean van Dugteren (dean@nos.io)
+  Author: Dean van Dugteren (dean@nos.io), Jeroen Peeters (contact@jeroenpeeters.me)
   Type: Standard
   Status: Draft
   Created: 2018-08-09
