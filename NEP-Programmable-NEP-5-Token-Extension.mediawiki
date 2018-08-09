@@ -38,7 +38,7 @@ We propose the following methods to be implemented in any token contract that is
 
 * Syntax: <code>public static bool transferToContract(from, to, amount, operation, args)</code>
 
-* Remarks: This method (with operation ''transerToContract'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>to</script> parameter, providing <code>from, to, amount, operation, args</code> as parameters for the receiving smart contract.
+* Remarks: This method (with operation ''transerToContract'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>to</code> parameter, providing <code>from, to, amount, operation, args</code> as parameters for the receiving smart contract.
 
 ==Implementation==
 TBD
