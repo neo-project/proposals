@@ -51,7 +51,7 @@ We propose the following methods to be implemented in any token contract that is
 * Syntax: <code>public static byte[] getTxData(from, to, amount)</code>
 
 *Remarks:
-**This method is called by a third party smart contract when it looks to handle the receiving of NEP5 tokens. Upon returning the requested data, it deletes the data item from storage + ''X'' others via ''Storage.Search''. Deleting other storage items is possible as the '''onTokenReceive''' event on the third party contract is always intended to be invoked in the same block as the NEP5 transaction (via chained transactions).
+**This method is called by a third party smart contract when it looks to handle the receiving of NEP5 tokens. Upon returning the requested data, it deletes the data item from storage + an amount of other items (with amount defined as ''x'') with the ''"tx-"'' pre-fix via ''Storage.Search''. Deleting other storage items is productive as the '''onTokenReceive''' event on the third party contract is always intended to be invoked in the same block as the NEP5 transaction (via chained transactions).
 
 **The reason we delete a multitude of additional <code>TxData</code> storage items (''x'') is because:
 
@@ -59,7 +59,7 @@ We propose the following methods to be implemented in any token contract that is
 *** In no case should a third party smart contract process a NEP5 transaction ''after'' the initial transaction's block, as the returned <code>getTxData()</code> data can be instantly stored into the third party's own contract storage. This way the NEP5 contract does not serve as a storage proxy for a third party smart contract.
 *** Deleting ''x'' items with every <code>getTxData()</code> call means that only 1 in ''x'' <code>transferToContract()</code> calls need to be processed properly (chained with a different smart contract that dynamically invokes the NEP5's ''getTxData'' operation), which further assures that these proposed methods won't negatively affect the NEP5's actively utilized storage.
 
-''x'' can be a hard-coded value (such as 10, assuring a set max cost for invocations), or it could be set dynamically via a custom method only accessible by a contract owner/admin, should it be desired. In the latter case, it is recommended that any method that lets an owner/admin update ''x'' has a hard-coded maximum for ''x'', so as to still assure a maximum invocation fee.
+The amount of additional items to delete (''x'') can be a hard-coded value (such as 10, assuring a set max cost for invocations), or it could be set dynamically via a custom method only accessible by a contract owner/admin, should it be desired. In the latter case, it is recommended that any method that lets an owner/admin update ''x'' has a hard-coded maximum for ''x'', so as to still assure a maximum invocation fee.
 
 ===cleanTxData===
 * Syntax: <code>public static bool[] cleanTxData(amount)</code>
