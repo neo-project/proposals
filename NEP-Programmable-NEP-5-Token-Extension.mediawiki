@@ -8,6 +8,8 @@
   Requires: NEP-5
 </pre>
 
+===NOTE: To be updated===
+
 ==Abstract==
 
 This NEP introduces a memory-efficient method for allowing conditional NEP-5 token transactions between users and third party smart contracts without the need for off-chain listeners. The methods take into account future changes in invocation fees, so as to make it work efficiently in multiple scenarios.
