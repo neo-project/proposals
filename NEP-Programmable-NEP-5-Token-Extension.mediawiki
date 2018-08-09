@@ -20,7 +20,7 @@ Presently, dApp smart contracts handle conditional transactions (e.g. staking a 
 This NEP proposes the following solution:
 
 
-* A separate transfer method and operation <code>transferToContract(from, to, amount, operation, args)</code> that makes a transaction and calls a dynamic invocation on the <code>to</code> script hash, using <code>(string) operation, (list) args</code> as the parameters to be used in the dynamic invocation.
+* A separate transfer method and operation <code>transferToContract(from, to, amount, operation, args)</code> that makes a transaction and calls a dynamic invocation on the <code>to</code> script hash, using <code>(string) from, (string) to, (bigint) amount, (string) operation, (list) args</code> as the parameters to be used in the dynamic invocation.
 
 The ''transferToContract'' operation can be called by web-based applications integrating with ''neon-js'', nOS dApps, and applications utilizing NeoLink or the NEX plug-in. Additionally, wallet applications such as ''Neon Wallet'' can present the user with an option whether their transaction is intended for a user or a smart contract (effectively switching between ''transfer'' and ''transferToContract'' operations).
 
