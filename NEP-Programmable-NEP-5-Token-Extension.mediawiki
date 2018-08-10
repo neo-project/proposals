@@ -48,13 +48,14 @@ We propose the following methods to be implemented in any token contract that is
 
 ==Example==
 User/application calls NEP-5 contract with this extension like: 
-```
+<code>
 transferAndInvoke [ myAddress, yourAddress, 100, dAppContractScriptHash, "processTransaction", ["This is a string to be handled by the dApp smart contract", "another string", 10, "as many as you want"] ]
-```
+</code>
+
 
 With `transferAndInvoke`, the NEP5 contract makes a dynamic invocation to `dAppContractScriptHash` with operation `processTransactions` and an args list:
 
-```
+<code>
 args[0] : from
 args[1] : to
 args[2] : amount
@@ -62,7 +63,7 @@ args[3] : "This is a string to be handled by the dApp smart contract"
 args[4] : "another string"
 args[5] : 10
 args[6] : "as many as you want"
-```
+</code>
 
 ==Implementation==
 TBD
