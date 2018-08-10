@@ -27,7 +27,7 @@ This NEP proposes the following solution:
 
 The ''transferAndInvoke'' operation can be called by web-based applications integrating with ''neon-js'', nOS dApps, and applications utilizing NeoLink or the NEX plug-in. Additionally, wallet applications such as ''Neon Wallet'' can present the user with an option whether their transaction is intended for a user or a smart contract (effectively switching between ''transfer'' and ''transferAndInvoke'' operations).
 
-One of the use cases is that an ICO smart contract can listen to transactions made to a different address, since the target receiver <code>to</code> and target smart contract <code>scriptHash</code> can be different.
+One of the use cases is that an ICO smart contract can listen to transactions made to a different address, since the target receiver <code>to</code> and target smart contract <code>scriptHash</code> can differ.
 Use cases also include token staking, conditional token releases, and anything else that a smart contract can do with ''programmable tokens''.
 
 To achieve this, the NEP-5 token will need to be able to make dynamic invocations.
