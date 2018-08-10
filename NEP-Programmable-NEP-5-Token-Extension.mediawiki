@@ -46,5 +46,23 @@ We propose the following methods to be implemented in any token contract that is
 
 * Remarks: This method (with operation ''transferAndInvoke'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>scriptHash</code> parameter, providing <code>from, to, amount, scriptHash, operation, args</code> as parameters for the receiving smart contract.
 
+==Example==
+User/application calls NEP-5 contract with this extension like: 
+```
+transferAndInvoke [ myAddress, yourAddress, 100, dAppContractScriptHash, "processTransaction", ["This is a string to be handled by the dApp smart contract", "another string", 10, "as many as you want"] ]
+```
+
+With `transferAndInvoke`, the NEP5 contract makes a dynamic invocation to `dAppContractScriptHash` with operation `processTransactions` and an args list:
+
+```
+args[0] : from
+args[1] : to
+args[2] : amount
+args[3] : "This is a string to be handled by the dApp smart contract"
+args[4] : "another string"
+args[5] : 10
+args[6] : "as many as you want"
+```
+
 ==Implementation==
 TBD
