@@ -36,15 +36,22 @@ To achieve this, the NEP-5 token will need to be able to make dynamic invocation
 
 We propose the following methods to be implemented in any token contract that is looking to have a memory-efficient ''programmable'' NEP5 token:
 
-[[File:https://i.imgur.com/1upOMZ5.png]]
+[[File:https://i.imgur.com/yJtoCO0.png]]
 
 ===Methods===
 
 ====transferAndInvoke====
 
-* Syntax: <code>public static bool transferAndInvoke(from, to, amount, scriptHash, operation, args)</code>
+* Syntax: <code>public static int transferAndInvoke(from, to, amount, scriptHash, operation, args)</code>
 
-* Remarks: This method (with operation ''transferAndInvoke'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>scriptHash</code> parameter, providing <code>from, to, amount, scriptHash, operation, args</code> as parameters for the receiving smart contract.
+* Remarks:
+** This method (with operation ''transferAndInvoke'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>scriptHash</code> parameter, providing <code>from, to, amount, scriptHash, operation, args</code> as parameters for the receiving smart contract.
+** Possible return values are:
+*** <code>(int) 0 : transfer() failed</code>
+*** <code>(int) 1 : transfer() success and dynamic invocation returns truthy</code>
+*** <code>(int) 2 : transfer() success but dynamic invocation returns falsey </code>
+
+
 
 ==Example==
 User/application calls NEP-5 contract with this extension like: 
