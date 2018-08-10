@@ -36,7 +36,7 @@ To achieve this, the NEP-5 token will need to be able to make dynamic invocation
 
 We propose the following methods to be implemented in any token contract that is looking to have a memory-efficient ''programmable'' NEP5 token:
 
-[[File:https://user-images.githubusercontent.com/31391056/43955419-70341b8c-9ca0-11e8-87ab-d1e4a13ee7af.png]]
+[[File:https://user-images.githubusercontent.com/31391056/43955913-7308ea3e-9ca2-11e8-937b-692344d77cc3.png]]
 
 ===Methods===
 
