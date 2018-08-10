@@ -5,6 +5,7 @@
   Type: Standard
   Status: Draft
   Created: 2018-08-09
+  Revisision: 2018/08/10
   Requires: NEP-5
 </pre>
 
@@ -22,9 +23,9 @@ Presently, dApp smart contracts handle conditional transactions (e.g. staking a 
 This NEP proposes the following solution:
 
 
-* A separate transfer method and operation <code>transferToContract(from, to, amount, operation, args)</code> that makes a transaction and calls a dynamic invocation on the <code>to</code> script hash, using <code>(string) from, (string) to, (bigint) amount, (string) operation, (list) args</code> as the parameters to be used in the dynamic invocation.
+* A separate transfer method and operation <code>transferAndInvoke(from, to, amount, scriptHash, operation, args)</code> that makes a transaction of NEP5 tokens using <code>from, to, amount</code> and calls a dynamic invocation on the <code>scriptHash</code> script hash, using <code>(string) from, (string) to, (bigint) amount, (string) operation, (list) args</code> in the arguments list to be used in the dynamic invocation.
 
-The ''transferToContract'' operation can be called by web-based applications integrating with ''neon-js'', nOS dApps, and applications utilizing NeoLink or the NEX plug-in. Additionally, wallet applications such as ''Neon Wallet'' can present the user with an option whether their transaction is intended for a user or a smart contract (effectively switching between ''transfer'' and ''transferToContract'' operations).
+The ''transferAndInvoke'' operation can be called by web-based applications integrating with ''neon-js'', nOS dApps, and applications utilizing NeoLink or the NEX plug-in. Additionally, wallet applications such as ''Neon Wallet'' can present the user with an option whether their transaction is intended for a user or a smart contract (effectively switching between ''transfer'' and ''transferAndInvoke'' operations).
 
 To achieve this, the NEP-5 token will need to be able to make dynamic invocations.
 
@@ -32,15 +33,15 @@ To achieve this, the NEP-5 token will need to be able to make dynamic invocation
 
 We propose the following methods to be implemented in any token contract that is looking to have a memory-efficient ''programmable'' NEP5 token:
 
-[[File:https://user-images.githubusercontent.com/31391056/43914635-b34ed8c8-9c08-11e8-8f94-6e6146c4ec00.png]]
+[[File:https://i.imgur.com/2PBHPW7.png]]
 
 ===Methods===
 
-====transferToContract====
+====transferAndInvoke====
 
-* Syntax: <code>public static bool transferToContract(from, to, amount, operation, args)</code>
+* Syntax: <code>public static bool transferAndInvoke(from, to, amount, scriptHash, operation, args)</code>
 
-* Remarks: This method (with operation ''transerToContract'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>to</code> parameter, providing <code>from, to, amount, operation, args</code> as parameters for the receiving smart contract.
+* Remarks: This method (with operation ''transferAndInvoke'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>scriptHash</code> parameter, providing <code>from, to, amount, scriptHash, operation, args</code> as parameters for the receiving smart contract.
 
 ==Implementation==
 TBD
