@@ -46,7 +46,7 @@ We propose the following methods to be implemented in any token contract that is
 
 * Remarks:
 ** This method (with operation ''transferAndInvoke'') executes the NEP5 token's <code>transfer(from, to, amount)</code> function, and dynamically invokes the script hash derived from the <code>scriptHash</code> parameter, providing <code>from, to, amount, scriptHash, operation, args</code> as parameters for the receiving smart contract.
-** Possible return values are:
+** Possible return values and their descriptions are:
 *** <code>(int) 0 : transfer() failed</code>
 *** <code>(int) 1 : transfer() success and dynamic invocation returns truthy</code>
 *** <code>(int) 2 : transfer() success but dynamic invocation returns falsey </code>
