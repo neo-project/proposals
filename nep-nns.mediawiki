@@ -1,0 +1,88 @@
+<pre>
+  NEP: <to be assigned>
+  Title: NEO Name Service Standard
+  Author: Phyrex Tsai <phyrex@portal.network>, Portal Network Team
+  Type: Standard
+  Status: Draft
+  Created: 2018-08-16
+</pre>
+
+==Abstract==
+
+This draft proposal details the NEO Name Service inspired by the Ethererum Name Service, which originated from the EIP137. This protocol and related interface definition is to provide extendable resoultion of easy-to-remeber, human-recognizable names to services and resources identifers from both centralized and decentralized systems, and only updated the names whenever the underlying resource (public wallet address, smart contract, content-addressed data, etc) changes.
+
+It's common nowadays that using URI with certain convention mapping to the specific resources. With this experience, we utilize the advantage of blockchain to provide blockchain domain names as short, stable, and human-readable identifiers used to specify network resources. In this way, users can enter a memorable string, such as <code>zion.neo</code>, just like how we normally do on browser, and be directed to the appropriate resource. The mapping between names and resources may change in any scenarios, so a website may change the corresponding IPFS hashes, projects may update their smart contract, a user may change wallets, or a IPFS document may be updated to a new version, without the domain name changing. Further, a domain need not specify a single resource; different record types allow the same domain to reference different resources. For instance, the browser may resolve <code>zion.neo</code> to the IPFS hash to redirect to IPFS content, even resolve the same address to a smart contract.
+
+==Motivation==
+
+Hash is the fundamental of blockchain and used to represent an account of an identity, but the hash address is not easily remember for the normal user, by integrate the NEO Name Service will bring three following advantages:
+
+* Human-readable identity, users can easily catch up with the name like <code>zion.neo</code> instead of hash address.
+* Multiple services under a single name, such as a DApp hosted in IPFS, a contract address, and even a mail server.
+* Increaing the security by tamper proof of the accessing smart contract for the mapping address.
+
+These three features will lower the gap of blockchain technologies and improvement the user adoption.
+
+==Specification==
+
+The NNS system has thsee main parts:
+
+* Registry Smart Contract
+
+Transfers ownership of a node to a new address. May only be called by the current owner of the node.
+```csharp
+Boolean setOwner(string node, byte[] owner, byte[] newOwner)
+```
+
+Sets the resolver address for the specified node.
+```csharp
+Boolean setResolver(string node, byte[] owner, byte[] resolver)
+```
+
+Sets the TTL for the specified node.
+```csharp
+Boolean setTTL(string node, byte[] owner, BigInteger ttl)
+```
+
+Returns the address that owns the specified node.
+```csharp
+byte[] owner(string node)
+```
+
+Returns the address of the resolver for the specified node.
+```csharp
+byte[] resolver(string node)
+```
+
+Returns the TTL of a node, and any records associated with it.
+```csharp
+BigInteger ttl(string node)
+```
+
+* Resolver Smart Contract
+
+Sets the address associated with an node. May only be called by the owner of that node in the registry.
+```csharp
+Boolean setAddr(string node, byte[] owner, byte[] addr)
+```
+
+Returns the address associated with an node.
+```csharp
+Boolean addr(string node, byte[] owner, byte[] addr)
+```
+
+* Registrar Smart Contract
+
+Start an auction for an available node
+```
+Boolean startAuctionAndBid(string label, byte[] who, BigInteger value)
+```
+
+Get an auction state
+```csharp
+String getAuctionState(string label)
+```
+
+==Implementation==
+
+* portalnetwork/nns: https://github.com/PortalNetwork/nns
