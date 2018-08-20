@@ -25,7 +25,7 @@ These three features will lower the gap of blockchain technologies and improveme
 
 ==Specification==
 
-The NNS system has thsee main parts:
+The NNS system has thsee main parts, with the methods definition is below:
 
 ===Registry Smart Contract===
 
