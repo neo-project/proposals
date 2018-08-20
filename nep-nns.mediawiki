@@ -30,24 +30,24 @@ The NNS system has thsee main parts:
 * Registry Smart Contract
 
 Transfers ownership of a node to a new address. May only be called by the current owner of the node.
-```csharp
+<code>
 Boolean setOwner(string node, byte[] owner, byte[] newOwner)
-```
+</code>
 
 Sets the resolver address for the specified node.
-```csharp
+<code>
 Boolean setResolver(string node, byte[] owner, byte[] resolver)
-```
+</code>
 
 Sets the TTL for the specified node.
-```csharp
+<code>
 Boolean setTTL(string node, byte[] owner, BigInteger ttl)
-```
+</code>
 
 Returns the address that owns the specified node.
-```csharp
+<code>
 byte[] owner(string node)
-```
+</code>
 
 Returns the address of the resolver for the specified node.
 ```csharp
@@ -55,16 +55,16 @@ byte[] resolver(string node)
 ```
 
 Returns the TTL of a node, and any records associated with it.
-```csharp
+<code>
 BigInteger ttl(string node)
-```
+</code>
 
 * Resolver Smart Contract
 
 Sets the address associated with an node. May only be called by the owner of that node in the registry.
-```csharp
+<code>
 Boolean setAddr(string node, byte[] owner, byte[] addr)
-```
+</code>
 
 Returns the address associated with an node.
 ```csharp
@@ -74,14 +74,14 @@ Boolean addr(string node, byte[] owner, byte[] addr)
 * Registrar Smart Contract
 
 Start an auction for an available node
-```
+<code>
 Boolean startAuctionAndBid(string label, byte[] who, BigInteger value)
-```
+</code>
 
 Get an auction state
-```csharp
+<code>
 String getAuctionState(string label)
-```
+</code>
 
 ==Implementation==
 
