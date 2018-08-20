@@ -27,11 +27,16 @@ These three features will lower the gap of blockchain technologies and improveme
 
 The NNS system has thsee main parts:
 
-* Registry Smart Contract
+===Registry Smart Contract===
 
 Transfers ownership of a node to a new address. May only be called by the current owner of the node.
 <pre>
-Boolean setOwner(string node, byte[] owner, byte[] newOwner)
+Boolean setOwner(string node, byte[] owner)
+</pre>
+
+Transfers ownership of a subnode.
+<pre>
+Boolean setSubnodeOwner(String node, String label, byte[] owner)
 </pre>
 
 Sets the resolver address for the specified node.
@@ -59,7 +64,7 @@ Returns the TTL of a node, and any records associated with it.
 BigInteger ttl(string node)
 </pre>
 
-* Resolver Smart Contract
+===Resolver Smart Contract===
 
 Sets the address associated with an node. May only be called by the owner of that node in the registry.
 <pre>
@@ -68,19 +73,34 @@ Boolean setAddr(string node, byte[] owner, byte[] addr)
 
 Returns the address associated with an node.
 <pre>
-Boolean addr(string node, byte[] owner, byte[] addr)
+byte[] addr(string node, byte[] owner)
 </pre>
 
-* Registrar Smart Contract
-
-Start an auction for an available node
+Sets the multihash associated with an node. May only be called by the owner of that node in the registry.
 <pre>
-Boolean startAuctionAndBid(string label, byte[] who, BigInteger value)
+Boolean setMultihash(string node, byte[] owner, byte[] multihash)
 </pre>
 
-Get an auction state
+Returns the multihash associated with an node.
 <pre>
-String getAuctionState(string label)
+byte[] multihash(string node, byte[] owner)
+</pre>
+
+Sets the text associated with an node. May only be called by the owner of that node in the registry.
+<pre>
+Boolean setText(string node, byte[] owner, String text)
+</pre>
+
+Returns the text associated with an node.
+<pre>
+String text(string node, byte[] owner)
+</pre>
+
+===Registrar Smart Contract===
+
+Register an available node.
+<pre>
+Boolean register(string node, byte[] who)
 </pre>
 
 ==Implementation==
