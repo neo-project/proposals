@@ -3,7 +3,7 @@
   Title: Time-locked approval voting
   Author: Edge <business@edge.gg>, cryptogirlHODL
   Type: Standard
-  Status: Draft
+  Status: Withdrawn
   Created: 2018-07-07
 </pre>
 
