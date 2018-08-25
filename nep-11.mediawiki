@@ -1,0 +1,52 @@
+<pre>
+  NEP: 11
+  Title: Time-locked approval voting
+  Author: Edge <business@edge.gg>, cryptogirlHODL
+  Type: Standard
+  Status: Withdrawn
+  Created: 2018-07-07
+</pre>
+
+==Abstract==
+
+The NEP-11 proposal is an improved voting system that uses approval voting with time-locked NEO voting contracts to reduce the influence of centralized exchanges.
+
+==Motivation==
+
+The currently proposed voting system is flawed, as outlined [https://github.com/neo-project/neo/issues/28 here]. The simplest solution is to set 1 NEO equal to 1 Vote, but this introduces a new issue; centralized exchanges with large quantities of NEO have the potential to vote with the tokens of their users, affecting NEO's ability to become/remain decentralized.
+
+==Specification==
+
+A user sends their NEO to the voting contract. 1 NEO = 1 vote. Let their total voting power be <code>x</code>, and <code>n</code> be their preferred number of candidates. Each node will receive <code>x/n</code> votes. Fractions can be kept or discarded.
+
+Each voting period can be set to a duration or a specific number of blocks. Votes are counted at the end of the voting period, and can easily be differentiated from other NEO.
+
+==Rationale==
+
+* Voting should be simple & fair
+
+We should allow NEO users to spread their votes across any number of nodes. This can be achieved using an approval voting system, where the voter selects all candidates they approve of. An informed decision can easily be made by referencing a candidate node datasheet. This system is intuitive and requires little effort from the token holder, reducing voter apathy and providing many benefits including accurate representation for minority candidates, easy to understand results, and fair, decentralized compromise on elected nodes.
+
+* Financial stake should be respected
+
+1 NEO 1 Vote provides holders with an economic incentive to vote for nodes that will uphold the honesty of the network.
+
+* Tokens held by centralized exchanges should not be able to affect node elections
+
+Users are required to lock their NEO into a contract to vote. For an exchange, this would cause severe liquidity problems in the case of users attempting to withdraw funds.
+
+* Providing NEO & GAS with seperate value propositions
+
+Time-locked voting contracts have two secondary benefits. Firstly, NEO's price will gain stability as tokens are locked for the purpose of voting. This also temporarily lowers supply which will in turn increase demand. Secondly, it provides a value proposition for GAS as NEO is made divisible. Divisble NEO could theoretically be useable for system fees, which makes the two-token model questionable. As they will be locking NEO into contracts, users will require GAS to continue using the network. As a result, NEO remains an investor/governance token, and GAS retains value as the utility token.
+
+* Voting should be incentivized
+
+All NEO receive generated GAS as per the current system, but any GAS pooled by system fees is distributed at the end of the voting period proportionally to all NEO locked for voting. This is one of several possible approaches.
+
+* Voter satisfaction
+
+Approval voting leads to the fairest compromise between selected nodes, and discourages random voting. Specific vote values/percentages can be used to determine the consensus node threshold. A secondary threshold could be used to form a network of backup candidates in the case of consensus failure.
+
+==Implementation==
+
+TBD.
