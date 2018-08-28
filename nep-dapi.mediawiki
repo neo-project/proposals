@@ -1,6 +1,6 @@
 <pre>
   NEP: <to be assigned>
-  Title: Unified dApp API for trusted 3rd party wallet providers
+  Title: Unified dApp API for trusted 3rd party wallet providers (dAPI)
   Author: Nick Fujita <nickfujita@gmail.com>, Matus Zamborsky <zamborsky@gmail.com>
   Type: Standard
   Status: Draft
@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This NEP describes a common API interface for dApps to communicate with external wallet providers. The use of a trusted 3rd party wallet provider will help users feel more sure when using dApps, and the unified interface will help dApp creators to have a more synchronous developer experience when making their dApps compatible with said providers.
+This NEP describes a common API interface for dApps (dAPI) to communicate with external wallet providers. The use of a trusted 3rd party wallet provider will help users feel more sure when using dApps, and the unified interface will help dApp creators to have a more synchronous developer experience when making their dApps compatible with said providers.
 
 
 ==Motivation==
@@ -34,17 +34,17 @@ Each wallet provider, when deciding on supporting dApps to utilize their service
 ===Provider===
 
 ====getProvider====
-Returns information about the wallet API provider, including who this provider is, the version of their API, and the NEP that the interface is compatible with.
+Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
-##### Method Interface
+=====Method Interface=====
 <pre>
 function getProvider(): Promise<Provider>
 </pre>
 
-#### Input arguments
+=====Input arguments=====
 None
 
-#### Return values
+=====Success return value=====
 object - Provider information defined by the interface below:
 <pre>
 interface Provider {
@@ -54,7 +54,7 @@ interface Provider {
 }
 </pre>
 
-The compatibility field will return a list of strings that corresponds to NEPs that the API conforms to. For example:
+The compatibility field will return a list of strings that corresponds to NEPs that the dAPI conforms to. For example:
 <pre>
 compatibility: [
     'NEP-14',
@@ -63,11 +63,11 @@ compatibility: [
 ]
 </pre>
 
-#### Example
-<pre>
-const dapi = window.NEO;
-// import dapi from 'dapi-provider-package';
+=====Error return value=====
+string - `NO_PROVIDER`
 
+=====Example=====
+<pre>
 getProvider()
 .then((provider: Provider) => {
   const {
@@ -77,11 +77,64 @@ getProvider()
   } = provider;
 
   console.log('Provider name: ' + name);
-  console.log('Provider API version: ' + version);
-  console.log('Provider API compatibility: ' + JSON.stringify(compatibility));
+  console.log('Provider dAPI version: ' + version);
+  console.log('Provider dAPI compatibility: ' + JSON.stringify(compatibility));
 })
 .catch(err => // no provider available);
 </pre>
+
+====connect===
+Requests a connection from the dApp to the dAPI provider.
+
+=====Method Interface=====
+<pre>
+function connect(): Promise<Account>
+</pre>
+
+=====Input arguments=====
+None
+
+=====Success return value=====
+object - Account information defined by the interface below:
+<pre>
+interface Account {
+  address: string;
+  publicKey: string;
+}
+</pre>
+
+=====Error return value=====
+string - `NO_PROVIDER`|`CONNECTION_DENIED`
+
+=====Example=====
+<pre>
+connect()
+.then((account: Account) => {
+  const {
+    address,
+    publicKey,
+  } = account;
+
+  console.log('Provider address: ' + address);
+  console.log('Provider public key: ' + publicKey);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_DENIED:
+      console.log('Connection request denied by user.');
+      break;
+  }
+});
+</pre>
+
+=====dAPI Provider Implementation=====
+- Upon receiving a request to connect from a dApp, get the domain of the url from which the dApp is requesting to connect.
+- Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
+- On user approval, resolve the request and provide the users Account information
+- On user denial, reject the request with the message `CONNECTION_DENIED`
 
 ==Implementation==
 
