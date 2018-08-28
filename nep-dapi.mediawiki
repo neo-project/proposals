@@ -138,12 +138,130 @@ connect()
 });
 </pre>
 
-'''dAPI Provider Implementation'''
+'''dAPI Provider'''
 
 * Upon receiving a request to connect from a dApp, get the domain of the url from which the dApp is requesting to connect.
 * Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
 * On user approval, resolve the request and provide the users Account information
 * On user denial, reject the request with the message `CONNECTION_DENIED`
+
+
+===getAccount===
+Return the Account that is currently connected to the dApp.
+
+'''Method Interface'''
+
+<pre>
+function getAccount(): Promise<Account>
+</pre>
+
+'''Input arguments'''
+
+None
+
+'''Success return value'''
+
+object - Account information defined by the interface below:
+<pre>
+interface Account {
+  address: string;
+  publicKey: string;
+}
+</pre>
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`NO_CONNECTION`
+
+'''Example'''
+
+<pre>
+getAccount()
+.then((account: Account) => {
+  const {
+    address,
+    publicKey,
+  } = account;
+
+  console.log('Provider address: ' + address);
+  console.log('Provider public key: ' + publicKey);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case NO_CONNECTION:
+      console.log('Connection dApp not connected. Please call the "connect" function.');
+      break;
+  }
+});
+</pre>
+
+
+
+===getBalance===
+Return balance of a specific asset for the connected account.
+
+'''Method Interface'''
+
+<pre>
+function getBalance({ asset }): Promise<string>
+</pre>
+
+'''Input arguments'''
+
+object - Contains the asset symbol the check the balance for the connected account
+<pre>
+interface Config {
+  asset: string;
+}
+</pre>
+
+
+'''Success return value'''
+
+object - Contains formatted balance of connected account for a given asset
+<pre>
+interface Result {
+  address: string;
+  asset: string;
+  amount: string;
+}
+</pre>
+
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`NO_CONNECTION`
+
+'''Example'''
+
+<pre>
+getBalance()
+.then((result: Result) => {
+  const {
+    address,
+    asset,
+    amount,
+  } = result;
+
+  console.log('Provider address: ' + address);
+  console.log('Provider public key: ' + publicKey);
+  console.log('Provider public key: ' + publicKey);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case NO_CONNECTION:
+      console.log('Connection dApp not connected. Please call the "connect" function.');
+      break;
+  }
+});
+</pre>
+
 
 ==Implementation==
 
