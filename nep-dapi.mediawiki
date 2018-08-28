@@ -1,0 +1,88 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Unified dApp API for trusted 3rd party wallet providers
+  Author: Nick Fujita <nickfujita@gmail.com>, Matus Zamborsky <zamborsky@gmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2018-08-28
+</pre>
+
+==Abstract==
+
+This NEP describes a common API interface for dApps to communicate with external wallet providers. The use of a trusted 3rd party wallet provider will help users feel more sure when using dApps, and the unified interface will help dApp creators to have a more synchronous developer experience when making their dApps compatible with said providers.
+
+
+==Motivation==
+
+===End Users===
+
+As more dApps come into the ecosystem, there will be more concerns about the safety of their assets. If dApps all required users to input their private keys in order to use them, it just takes one malicious dApp to steal all their funds. By using a trusted 3rd party wallet provider which interfaces with the various dApps in the ecosystem on their behalf, users can reduce the exposure of their private keys. This will even allow users to use their hardware wallets with these wallet providers, and never reveal their private keys, even to the wallet itself.
+
+===dApp Developers===
+
+One of the initial hurtles for any developer when starting to develop a dApp is to create a wallet module that will allow the user and application to interface with the NEO blockchain. While there are many quality SDKs out there such as neon-js for facilitating the communication of these requests, there are often many hurtles to successfully constructing the right combination of methods, along with input and output parsing. The issue only get amplified when trying to integrate with hardware wallet providers such as a Ledger device.
+
+While there may be several options for 3rd party wallet providers that will help them to facilitate these transactions, the is currently no common consensus on the consistency of their interfaces. With a lack of consistency in interfaces to use these wallet provider services, dApp developers will be forced to make a decision to have their platform supported by a single provider, or to double or even triple their development efforts to accommodate all the different wallet provider interfaces. This will lead to a fragmentation in the dApps ecosystem.
+
+===Wallet providers===
+
+Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Provider developers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplication an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers can spend more time on making their individual services better for their users.
+
+
+==Specification==
+
+===Provider===
+
+====getProvider====
+Returns information about the wallet API provider, including who this provider is, the version of their API, and the NEP that the interface is compatible with.
+
+##### Method Interface
+<pre>
+function getProvider(): Promise<Provider>
+</pre>
+
+#### Input arguments
+None
+
+#### Return values
+object - Provider information defined by the interface below:
+<pre>
+interface Provider {
+  name: string;
+  version: string;
+  compatibility: string[];
+}
+</pre>
+
+The compatibility field will return a list of strings that corresponds to NEPs that the API conforms to. For example:
+<pre>
+compatibility: [
+    'NEP-14',
+    'NEP-23',
+    'NEP-29'
+]
+</pre>
+
+#### Example
+<pre>
+const dapi = window.NEO;
+// import dapi from 'dapi-provider-package';
+
+getProvider()
+.then((provider: Provider) => {
+  const {
+    name,
+    version,
+    compatibility,
+  } = provider;
+
+  console.log('Provider name: ' + name);
+  console.log('Provider API version: ' + version);
+  console.log('Provider API compatibility: ' + JSON.stringify(compatibility));
+})
+.catch(err => // no provider available);
+</pre>
+
+==Implementation==
+
+In progress. To be finalized as consensus is reached on the specifications of this NEP.
