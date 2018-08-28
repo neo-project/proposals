@@ -37,14 +37,17 @@ Each wallet provider, when deciding on supporting dApps to utilize their service
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
 '''Method Interface'''
+
 <pre>
 function getProvider(): Promise<Provider>
 </pre>
 
 '''Input arguments'''
+
 None
 
 '''Success return value'''
+
 object - Provider information defined by the interface below:
 <pre>
 interface Provider {
@@ -64,9 +67,11 @@ compatibility: [
 </pre>
 
 '''Error return value'''
+
 string - `NO_PROVIDER`
 
 '''Example'''
+
 <pre>
 getProvider()
 .then((provider: Provider) => {
@@ -87,14 +92,17 @@ getProvider()
 Requests a connection from the dApp to the dAPI provider.
 
 '''Method Interface'''
+
 <pre>
 function connect(): Promise<Account>
 </pre>
 
 '''Input arguments'''
+
 None
 
 '''Success return value'''
+
 object - Account information defined by the interface below:
 <pre>
 interface Account {
@@ -104,9 +112,11 @@ interface Account {
 </pre>
 
 '''Error return value'''
+
 string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
 '''Example'''
+
 <pre>
 connect()
 .then((account: Account) => {
@@ -131,10 +141,11 @@ connect()
 </pre>
 
 '''dAPI Provider Implementation'''
-- Upon receiving a request to connect from a dApp, get the domain of the url from which the dApp is requesting to connect.
-- Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
-- On user approval, resolve the request and provide the users Account information
-- On user denial, reject the request with the message `CONNECTION_DENIED`
+
+* Upon receiving a request to connect from a dApp, get the domain of the url from which the dApp is requesting to connect.
+* Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
+* On user approval, resolve the request and provide the users Account information
+* On user denial, reject the request with the message `CONNECTION_DENIED`
 
 =Implementation=
 
