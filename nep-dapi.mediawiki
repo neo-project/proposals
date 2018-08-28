@@ -7,44 +7,44 @@
   Created: 2018-08-28
 </pre>
 
-==Abstract==
+=Abstract=
 
 This NEP describes a common API interface for dApps (dAPI) to communicate with external wallet providers. The use of a trusted 3rd party wallet provider will help users feel more sure when using dApps, and the unified interface will help dApp creators to have a more synchronous developer experience when making their dApps compatible with said providers.
 
 
-==Motivation==
+=Motivation=
 
-===End Users===
+==End Users==
 
 As more dApps come into the ecosystem, there will be more concerns about the safety of their assets. If dApps all required users to input their private keys in order to use them, it just takes one malicious dApp to steal all their funds. By using a trusted 3rd party wallet provider which interfaces with the various dApps in the ecosystem on their behalf, users can reduce the exposure of their private keys. This will even allow users to use their hardware wallets with these wallet providers, and never reveal their private keys, even to the wallet itself.
 
-===dApp Developers===
+==dApp Developers==
 
 One of the initial hurtles for any developer when starting to develop a dApp is to create a wallet module that will allow the user and application to interface with the NEO blockchain. While there are many quality SDKs out there such as neon-js for facilitating the communication of these requests, there are often many hurtles to successfully constructing the right combination of methods, along with input and output parsing. The issue only get amplified when trying to integrate with hardware wallet providers such as a Ledger device.
 
 While there may be several options for 3rd party wallet providers that will help them to facilitate these transactions, the is currently no common consensus on the consistency of their interfaces. With a lack of consistency in interfaces to use these wallet provider services, dApp developers will be forced to make a decision to have their platform supported by a single provider, or to double or even triple their development efforts to accommodate all the different wallet provider interfaces. This will lead to a fragmentation in the dApps ecosystem.
 
-===Wallet providers===
+==Wallet providers==
 
 Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Provider developers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplication an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers can spend more time on making their individual services better for their users.
 
 
-==Specification==
+=Specification=
 
-===Provider===
+==Provider==
 
-====getProvider====
+===getProvider===
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
-=====Method Interface=====
+====Method Interface====
 <pre>
 function getProvider(): Promise<Provider>
 </pre>
 
-=====Input arguments=====
+====Input arguments====
 None
 
-=====Success return value=====
+====Success return value====
 object - Provider information defined by the interface below:
 <pre>
 interface Provider {
@@ -63,10 +63,10 @@ compatibility: [
 ]
 </pre>
 
-=====Error return value=====
+====Error return value====
 string - `NO_PROVIDER`
 
-=====Example=====
+====Example====
 <pre>
 getProvider()
 .then((provider: Provider) => {
@@ -83,18 +83,18 @@ getProvider()
 .catch(err => // no provider available);
 </pre>
 
-====connect===
+===connect===
 Requests a connection from the dApp to the dAPI provider.
 
-=====Method Interface=====
+====Method Interface====
 <pre>
 function connect(): Promise<Account>
 </pre>
 
-=====Input arguments=====
+====Input arguments====
 None
 
-=====Success return value=====
+====Success return value====
 object - Account information defined by the interface below:
 <pre>
 interface Account {
@@ -103,10 +103,10 @@ interface Account {
 }
 </pre>
 
-=====Error return value=====
+====Error return value====
 string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
-=====Example=====
+====Example====
 <pre>
 connect()
 .then((account: Account) => {
@@ -130,12 +130,12 @@ connect()
 });
 </pre>
 
-=====dAPI Provider Implementation=====
+====dAPI Provider Implementation====
 - Upon receiving a request to connect from a dApp, get the domain of the url from which the dApp is requesting to connect.
 - Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
 - On user approval, resolve the request and provide the users Account information
 - On user denial, reject the request with the message `CONNECTION_DENIED`
 
-==Implementation==
+=Implementation=
 
 In progress. To be finalized as consensus is reached on the specifications of this NEP.
