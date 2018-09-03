@@ -1,0 +1,99 @@
+<pre>
+  NEP: XXX
+  Title: Staked low-cost tx
+  Author: Igor M. Coelho <igor.machado@gmail.com>, Vitor N. Coelho <vncoelho@gmail.com>, et al (I hope so!)
+  Type: Draft
+  Created: 2018-8-25
+</pre>
+
+==Abstract==
+
+This NEP proposes a standard for low-cost tx on high-staked accounts.
+Each account with a minimum value (on governance token) will be able to emit a limited number of "tickets" that guarantee access to low-cost network fees.
+If misbehavior (such as network attacks) is detected by automated filters using staked tickets, the accounts will be blocked for a given period of time.
+
+==Motivation==
+
+Pricing is a fundamental tool to control access on a network and it is deemed necessary to avoid network attacks (CITATION BITCOIN?).
+Neo technology organizes fees in two categories: network and system. Network fees intend to reward consensus nodes, charging (or not) every operation on the network.
+System fees control the nature of the operations executed on the smart contracts, guiding the development of efficient software (CITE NEO White Paper).
+However, it is hard to decide "optimal" prices when several actors are involved in a blockchain ecosystem, so the discussions on price adjustments tend to be quite challenging and slow to react to reality changes.
+Usually, a single actor (and price) is considered, but this NEP intends to create an alternative pricing structure for an important actor on the network: big business and exchanges.
+Big business (and exchanges) that bet on Neo technology should be rewarded and kept safe from sudden general price adjustments.
+This NEP proposes two different network prices: a general price and a staked low-cost price, which is accessible only by account posessing high quantities of governance token (Neo).
+If abuse is detected by automated filters (developed by community), the account may be block for a given period of time, which will highly desencourage misbehavior from high-staking actors, and even extending these benefits to trusted customers.
+
+==Specification==
+
+This NEP is fully backwards compatible and is implemented based on UTXO attributes and control parameters.
+
+===Staking===
+
+If this NEP is adopted, a staking transaction can be made in the following way.
+- (1) Transaction is made to an output account holding at least `minimumStakingValue` of governance tokens (Neo)
+- (2) Transaction includes attribute `Remark7` (`0xf7` chosen arbitrarialy), with variable size starting with string `NEP-XXX` (name of this NEP), followed by the number of access keys.
+- (3) Each access key is a public key, and activation time (in blocks) and expiration time (in blocks). If zero is passed to activation, the access key is activated immediately. If passed to expiration, it will never expires (until UTXO is valid)
+
+The access keys are only valid when UTXO is unspent, so any transfer using the staked value will invalidate the use of the keys.
+A global parameter `minimumActivationTime` will define how many blocks are necessary to consider the staking valid, and this parameter varies from 0 (immediately) to any positive number (of blocks).
+
+===Low cost tx===
+
+To use a low-cost tx, the transaction must be done in the following way.
+- (1) Transaction includes attribute `Remark8` (`0xf8` chosen arbitrarialy), with variable size starting with string `NEP-XXX` (name of this NEP), followed by four parameters: staking utxo (32-bits), utxo_id (2 bytes), pubkey in access key (33-bytes) and tx signature (considering staking pubkey).
+- (2) Signature must cover utxo inputs/ouputs, but not remarks themselves, so this is a slightly different signature from usual header/message tx signing.
+
+If these are valid, the tx will apply for lower tx, calculated the following way:
+
+`Tx_Price = Parameter_Staking_Price / Staking_Amount`
+
+So, if `minimumStakingValue = 1000 NEO`, the `Staking_Amount = 2000 NEO`, `Parameter_Staking_Price=0.0002 GAS` (lower than general network tx pricing), the actual price will be:
+
+`Tx_Price = 0.0002 / 2000 = 0.0000001 GAS`
+
+If value goes below 10e-8, it becomes zero.
+
+===Control Strategies and Filters===
+
+If one tries to use an invalid staking low-cost tx, the relay nodes should REJECT the transaction.
+If the transaction gets to a consensus node and it is processed, account will be blocked for a given period (in blocks), defined by `stakingBlockTime`.
+
+The idea is to propose the idea of "filter" to allow the community to propose rules that define what a "misbehavior" is in practice.
+For example, if community decides that thousands of tx with fractions of NEP-5 tokens is a misbehavior, and if this can be computed AUTOMATICALLY and EFFICIENTLY, the staking account could be blocked.
+
+For general cases (non-staking utxo) it is considered that the general network fee is enough disencourage misbehavior. These strategies can also be extended to system fees, during the development/discussion of this NEP, but right now only focus network fees.
+
+==Rationale==
+
+To implement the NEP efficiently, we propose the following parameters.
+
+===Proposed Parameters===
+
+`minimumStakingValue = 1000 NEO` (any positive value)
+
+`Parameter_Staking_Price = lower or equals to General_Network_Price` (any value is enough)
+
+`minimumActivationTime = 1000 blocks` (around 4 hours)
+
+`stakingBlockTime = 1000 blocks` (around 4 hours)
+
+This initial proposal should be feasible in practice, since every business should hold at least 1000 NEO, and bigger business may benefit of even lower network fees (with higher stakes).
+The activation time of around 4 hours should be enough to allow business to organize themselves before low-cost tx is used, and if utxo changes, this timer will be automatically reset (thus disallowing attacks based on changing staking addresses).
+
+The `stakingBlockTime` is 4 hours, but could be larger. Initially, this NEP could work without any form of "punishment", since it is unexpected that high-staking Neo holders will engage in any form of "misbehavior". So, this could be implemented separately in the future, if necessary.
+
+===Airdrops and network intensive operations===
+
+Any interested association in Neo ecosystem holding enough governance tokens will be able to "allow" low-cost (or zero cost) airdrops to be performed, it just needs to create an access key and give the access to the airdrop project.
+
+==Backwards Compatibility==
+
+This NEP is fully backwards compatible.
+
+==Test Cases==
+
+The test cases are still under development on eco-sdk.
+
+==Implementations==
+
+This NEP is currently being implemented on github.com/neoresearch/eco-sdk project, but can be easily done in any sdk (neo-cli, thinsdk, neo-python, neon-js, etc).
