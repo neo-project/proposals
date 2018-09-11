@@ -28,6 +28,12 @@ While there may be several options for 3rd party wallet providers that will help
 
 Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Provider developers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplication an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers can spend more time on making their individual services better for their users.
 
+Incoming request handling:
+* Upon receiving a request from a dApp, get the domain of the url from which the dApp is requesting to connect.
+* Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
+* On user approval, resolve the request and save connection status for this domain according to the user preference.
+* On user denial, reject the request with the message `CONNECTION_DENIED`
+
 
 ==Specification==
 
@@ -66,7 +72,7 @@ compatibility: [
 
 '''Error return value'''
 
-string - `NO_PROVIDER`
+string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
 '''Example'''
 
@@ -83,68 +89,17 @@ getProvider()
   console.log('Provider dAPI version: ' + version);
   console.log('Provider dAPI compatibility: ' + JSON.stringify(compatibility));
 })
-.catch(err => // no provider available);
-</pre>
-
-===connect===
-Requests a connection from the dApp to the dAPI provider.
-
-'''Method Interface'''
-
-<pre>
-function connect(): Promise<Account>
-</pre>
-
-'''Input arguments'''
-
-None
-
-'''Success return value'''
-
-object - Account information defined by the interface below:
-<pre>
-interface Account {
-  address: string;
-  publicKey: string;
-}
-</pre>
-
-'''Error return value'''
-
-string - `NO_PROVIDER`|`CONNECTION_DENIED`
-
-'''Example'''
-
-<pre>
-connect()
-.then((account: Account) => {
-  const {
-    address,
-    publicKey,
-  } = account;
-
-  console.log('Provider address: ' + address);
-  console.log('Provider public key: ' + publicKey);
-})
 .catch((err: string) => {
   switch(err) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
     case CONNECTION_DENIED:
-      console.log('Connection request denied by user.');
+      console.log('The user rejected the request to connect with your dApp.');
       break;
   }
 });
 </pre>
-
-'''dAPI Provider'''
-
-* Upon receiving a request to connect from a dApp, get the domain of the url from which the dApp is requesting to connect.
-* Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
-* On user approval, resolve the request and provide the users Account information
-* On user denial, reject the request with the message `CONNECTION_DENIED`
-
 
 ===getAccount===
 Return the Account that is currently connected to the dApp.
@@ -162,11 +117,12 @@ None
 '''Success return value'''
 
 address: string - Address of the connected account
+
 publicKey: string - Address of the connected account
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`NO_CONNECTION`
+string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
 '''Example'''
 
@@ -186,8 +142,8 @@ getAccount()
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
-    case NO_CONNECTION:
-      console.log('Connection dApp not connected. Please call the "connect" function.');
+    case CONNECTION_DENIED:
+      console.log('The user rejected the request to connect with your dApp');
       break;
   }
 });
@@ -201,7 +157,7 @@ Return balance of a specific asset for the connected account.
 '''Method Interface'''
 
 <pre>
-function getBalance({ asset: string }): Promise<string>
+function getBalance({ asset: string }): Promise<{ address: string, asset: string, amount: string }}>
 </pre>
 
 '''Input arguments'''
@@ -211,19 +167,16 @@ string - The asset symbol the check the balance for the connected account
 
 '''Success return value'''
 
-object - Contains formatted balance of connected account for a given asset
-<pre>
-interface Result {
-  address: string;
-  asset: string;
-  amount: string;
-}
-</pre>
+address: string - Address of the connected account
+
+asset: string - Asset symbol for the requested balance
+
+amount: string - Parsed balance of the requested asset
 
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`NO_CONNECTION`
+string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
 '''Example'''
 
@@ -245,8 +198,8 @@ getBalance()
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
-    case NO_CONNECTION:
-      console.log('Connection dApp not connected. Please call the "connect" function.');
+    case CONNECTION_DENIED:
+      console.log('The user rejected the request to connect with your dApp');
       break;
   }
 });
@@ -315,6 +268,19 @@ send({
 });
 </pre>
 
+
+===invokeRead===
+Execute a contract invocation in read-only mode.
+
+'''Method Interface'''
+
+<pre>
+function invokeRead({ scriptHash: string, operation: string, args: Object[] }): Promise<result: Object>
+</pre>
+
+'''Input arguments'''
+
+script
 
 ==Implementation==
 
