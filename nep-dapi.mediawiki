@@ -152,7 +152,7 @@ Return the Account that is currently connected to the dApp.
 '''Method Interface'''
 
 <pre>
-function getAccount(): Promise<Account>
+function getAccount(): Promise<{ address: string, publicKey: string }>
 </pre>
 
 '''Input arguments'''
@@ -161,13 +161,8 @@ None
 
 '''Success return value'''
 
-object - Account information defined by the interface below:
-<pre>
-interface Account {
-  address: string;
-  publicKey: string;
-}
-</pre>
+address: string - Address of the connected account
+publicKey: string - Address of the connected account
 
 '''Error return value'''
 
@@ -206,17 +201,12 @@ Return balance of a specific asset for the connected account.
 '''Method Interface'''
 
 <pre>
-function getBalance({ asset }): Promise<string>
+function getBalance({ asset: string }): Promise<string>
 </pre>
 
 '''Input arguments'''
 
-object - Contains the asset symbol the check the balance for the connected account
-<pre>
-interface Config {
-  asset: string;
-}
-</pre>
+string - The asset symbol the check the balance for the connected account
 
 
 '''Success return value'''
@@ -258,6 +248,69 @@ getBalance()
     case NO_CONNECTION:
       console.log('Connection dApp not connected. Please call the "connect" function.');
       break;
+  }
+});
+</pre>
+
+
+===send===
+Invoke a transfer of a specified amount of a given asset from the connected account to another account.
+
+'''Method Interface'''
+
+<pre>
+function send({ receiver: string, asset: string, amount: string, remark?: string }): Promise<txid: string>
+</pre>
+
+'''Input arguments'''
+
+receiver: string - Address of the receiver of the assets to be sent
+
+asset: string - The symbol of the asset to be sent
+
+amount: string - The parsed amount of the asset to be sent
+
+remark?: string - (Optional) Description of the transaction to be made
+
+
+'''Success return value'''
+
+txid: string - The transaction ID of the send invocation
+
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`
+
+'''Example'''
+
+<pre>
+send({
+  receiver: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  asset: 'GAS',
+  amount: '0.0001',
+  remark: 'Hash puppy clothing purchase. Invoice#abc123',
+})
+.then((txid: string) => {
+  console.log('Send transaction success! Transaction ID: ' + txid);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_REFUSED:
+      console.log('Connection dApp not connected. Please call the "connect" function.');
+      break;
+   case SEND_ERROR:
+    console.log('There was an error when broadcasting this transaction to the network.');
+    break;
+   case MALFORMED_ADDRESS:
+      console.log('The receiver address provided is not valid.');
+      break;
+  case CANCELED:
+    console.log('The user has canceled this transaction.');
+    break;
   }
 });
 </pre>
