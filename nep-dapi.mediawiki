@@ -304,7 +304,7 @@ string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
 
 <pre>
 invokeRead({
-  scriptHash: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  scriptHash: '505663a29d83663a838eee091249abd167e928f5',
   operation: 'calculatorAdd',
   arguments: [
     {
@@ -331,6 +331,72 @@ invokeRead({
    case RPC_ERROR:
     console.log('There was an error when broadcasting this transaction to the network.');
     break;
+  }
+});
+</pre>
+
+
+===invoke===
+Execute a contract invocation.
+
+'''Method Interface'''
+
+<pre>
+type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+
+interface Argument {
+  type: ArgumentType;
+  value: any;
+}
+
+function invoke({ scriptHash: string, operation: string, args: Argument[] }): Promise<txid: string>
+</pre>
+
+'''Input arguments'''
+
+scriptHash: string - script hash of the smart contract to invoke a read on
+operation: string - operation on the smart contract to call
+args: Argument[] - any input arguments for the operation
+
+
+'''Success return value'''
+
+txid: string - The transaction ID of the invocation
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`
+
+'''Example'''
+
+<pre>
+invoke({
+  scriptHash: '505663a29d83663a838eee091249abd167e928f5',
+  operation: 'storeData',
+  arguments: [
+    {
+      type: 'string',
+      value: 'hello'
+    }
+  ],
+})
+.then((txid: string) => {
+  console.log('Invoke transaction success! Transaction ID: ' + txid);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_REFUSED:
+      console.log('Connection dApp not connected. Please call the "connect" function.');
+      break;
+    case RPC_ERROR:
+      console.log('There was an error when broadcasting this transaction to the network.');
+      break;
+    case CANCELED:
+      console.log('The user has canceled this transaction.');
+      break;
   }
 });
 </pre>
