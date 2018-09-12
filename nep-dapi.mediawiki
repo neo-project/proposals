@@ -275,12 +275,65 @@ Execute a contract invocation in read-only mode.
 '''Method Interface'''
 
 <pre>
-function invokeRead({ scriptHash: string, operation: string, args: Object[] }): Promise<result: Object>
+type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+
+interface Argument {
+  type: ArgumentType;
+  value: any;
+}
+
+function invokeRead({ scriptHash: string, operation: string, args: Argument[] }): Promise<result: Object>
 </pre>
 
 '''Input arguments'''
 
-script
+scriptHash: string - script hash of the smart contract to invoke a read on
+operation: string - operation on the smart contract to call
+args: Argument[] - any input arguments for the operation
+
+
+'''Success return value'''
+
+result: Object - Response from RPC node
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+
+'''Example'''
+
+<pre>
+invokeRead({
+  scriptHash: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  operation: 'calculatorAdd',
+  arguments: [
+    {
+      type: 'integer',
+      value: 2
+    },
+    {
+      type: 'integer',
+      value: 10
+    }
+  ],
+})
+.then((result: Object) => {
+  console.log('Read invocation result: ' + JSON.stringigy(result));
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_REFUSED:
+      console.log('Connection dApp not connected. Please call the "connect" function.');
+      break;
+   case RPC_ERROR:
+    console.log('There was an error when broadcasting this transaction to the network.');
+    break;
+  }
+});
+</pre>
 
 ==Implementation==
 
