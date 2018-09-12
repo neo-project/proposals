@@ -401,6 +401,55 @@ invoke({
 });
 </pre>
 
+
+===getStorage===
+Reads the raw value in smart contract storage.
+
+'''Method Interface'''
+
+<pre>
+function getStorage({ scriptHash: string, key: string }): Promise<value: string>
+</pre>
+
+'''Input arguments'''
+
+scriptHash: string - script hash of the smart contract to invoke a read on
+key: string - key of the storage value to retreive from the contract
+
+'''Success return value'''
+
+value: string - The raw value that's stored in the contract
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+
+'''Example'''
+
+<pre>
+getStorage({
+  scriptHash: '505663a29d83663a838eee091249abd167e928f5',
+  key: 'game.status'
+})
+.then((value: string) => {
+  console.log('Storage value: ' + value);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_REFUSED:
+      console.log('Connection dApp not connected. Please call the "connect" function.');
+      break;
+   case RPC_ERROR:
+    console.log('There was an error when broadcasting this transaction to the network.');
+    break;
+  }
+});
+</pre>
+
+
 ==Implementation==
 
 In progress. To be finalized as consensus is reached on the specifications of this NEP.
