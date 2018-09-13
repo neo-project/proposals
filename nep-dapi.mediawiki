@@ -452,6 +452,9 @@ getStorage({
 });
 </pre>
 
+==Rational==
+
+This protocol will allow dApp developers to create applications that interact with the NEO blockchain without having to be concerned about managing a full wallet within their application or the details related to handing transaction creation or broadcasting. This will also allow dApps to allow users to transact in a secure fashion that does not require sharing of their private key.
 
 ==Implementation==
 
