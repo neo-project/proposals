@@ -1,6 +1,6 @@
 <pre>
   NEP: <to be assigned>
-  Title: Unified dApp API for trusted 3rd party wallet providers (dAPI)
+  Title: Unified dApp API for wallet providers
   Author: Nick Fujita <nickfujita@gmail.com>, Matus Zamborsky <zamborsky@gmail.com>
   Type: Standard
   Status: Draft
@@ -9,30 +9,34 @@
 
 ==Abstract==
 
-This NEP describes a common API interface for dApps (dAPI) to communicate with external wallet providers. The use of a trusted 3rd party wallet provider will help users feel more sure when using dApps, and the unified interface will help dApp creators to have a more synchronous developer experience when making their dApps compatible with said providers.
+This NEP describes a common API interface for dApps to communicate with external wallet providers. The use of a trusted 3rd party wallet providers will help users feel more secure when using dApps, and the unified interface will help dApp creators to have a more uniform developer experience when making their dApps compatible with various providers.
 
 
 ==Motivation==
 
 ===End Users===
 
-As more dApps come into the ecosystem, there will be more concerns about the safety of their assets. If dApps all required users to input their private keys in order to use them, it just takes one malicious dApp to steal all their funds. By using a trusted 3rd party wallet provider which interfaces with the various dApps in the ecosystem on their behalf, users can reduce the exposure of their private keys. This will even allow users to use their hardware wallets with these wallet providers, and never reveal their private keys, even to the wallet itself.
+As dApps come into the ecosystem, there will be more concerns about the safety of user assets. If dApps all required users to input their private keys in order to use them, it just takes one malicious dApp to steal all their funds. By using a trusted wallet provider which interfaces with the various dApps in the ecosystem on their behalf, users can reduce the exposure of their private keys. This will even allow users to transact with their hardware wallets via the wallet provider,  never having to reveal their private keys even to the wallet itself.
 
 ===dApp Developers===
 
-One of the initial hurtles for any developer when starting to develop a dApp is to create a wallet module that will allow the user and application to interface with the NEO blockchain. While there are many quality SDKs out there such as neon-js for facilitating the communication of these requests, there are often many hurtles to successfully constructing the right combination of methods, along with input and output parsing. The issue only get amplified when trying to integrate with hardware wallet providers such as a Ledger device.
+One of the initial hurtles for any developer when starting to develop a dApp is to create a wallet module that will allow the user and application to interface with the NEO blockchain. While there are many quality SDKs out there such as neon-js for facilitating the communication of these requests, there are often many hurtles to successfully constructing the right combination of methods, along with input and output parsing. The issue only gets amplified when trying to integrate with hardware wallet providers such as a Ledger device.
 
 While there may be several options for 3rd party wallet providers that will help them to facilitate these transactions, the is currently no common consensus on the consistency of their interfaces. With a lack of consistency in interfaces to use these wallet provider services, dApp developers will be forced to make a decision to have their platform supported by a single provider, or to double or even triple their development efforts to accommodate all the different wallet provider interfaces. This will lead to a fragmentation in the dApps ecosystem.
 
 ===Wallet providers===
 
-Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Provider developers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplication an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers can spend more time on making their individual services better for their users.
+Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Wallet providers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplication an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted by both the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers can spend more time on making their individual services better for their users.
 
-Incoming request handling:
-* Upon receiving a request from a dApp, get the domain of the url from which the dApp is requesting to connect.
-* Prompt the user if they would like to allow a dApp connection from the requesting domain, and which account they would like to use to interact with this dApp. Up to provider to provide a account by default based on the UX of their app.
-* On user approval, resolve the request and save connection status for this domain according to the user preference.
-* On user denial, reject the request with the message `CONNECTION_DENIED`
+The current list of wallet providers that can benefit from the use of this protocol are currently:
+- nOS dApps browser
+- NeoLink Chrome extension
+- NEX Chrome extension
+- O3 dApps browser
+
+Each wallet provider has their own value proposition to it's users beyond the interface from this protocol itself, so it seems that formalizing it would be a net positive for all.
+
+Additionally, since there are a significant amount of overlap in the protocols between NEO and Ontology for sending assets, and interacting with contract on NeoVM, this proposal is a joint effort with [OEP6](https://github.com/ontio/OEPs/pull/8). Since there are differences in the two platforms, the result of these proposals will not be identical, nor should they be, but getting as much overlap as possible will help to simplify cross-chain interactions for both platforms.
 
 
 ==Specification==
