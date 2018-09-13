@@ -469,7 +469,7 @@ Upon receiving this request, return:
 * The privider specifc version of the wallet
 * A list of NEP for which the specific provider protocol is compatable with
 
-'''Example'''
+Example
 <pre>
 {
   name: 'Awesome Wallet',
@@ -486,7 +486,7 @@ Upon receiving this request, return:
 Upon receiving this request, return:
 - The address and public key of account currently selected by the user in the wallet interface
 
-'''Example'''
+Example
 <pre>
 {
   address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
@@ -497,7 +497,7 @@ Upon receiving this request, return:
 ====getBalance====
 Upon receiving this request, fetch the latest balance of the given account for the specific asset, and return the amount with an echo of the request details.
 
-'''Example'''
+Example
 <pre>
 {
   address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
@@ -515,7 +515,7 @@ Upon receiving this request
 * Broadcast the RPC request
 * Return the transaction Id
 
-'''Example'''
+Example
 <pre>
 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77'
 </pre>
@@ -529,7 +529,7 @@ Upon receiving this request
 * Broadcast the RPC request
 * Return the RPC response results
 
-'''Example'''
+Example
 <pre>
 {
   script: '8h89fh398f42f.....89hf2894hf9834',
@@ -554,7 +554,7 @@ Upon receiving this request
 * Broadcast the RPC request
 * Return the transaction id
 
-'''Example'''
+Example
 <pre>
 '34e07328e50984b28a26e3a534878f7db23a8b6827fbfbb20419c3b6b7410129'
 </pre>
@@ -567,7 +567,7 @@ Upon receiving this request
 * Broadcast the RPC request
 * Return the RPC response results
 
-'''Example'''
+Example
 <pre>
 'hello world'
 </pre>
