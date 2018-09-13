@@ -222,12 +222,12 @@ Invoke a transfer of a specified amount of a given asset from the connected acco
 '''Method Interface'''
 
 <pre>
-function send({ receiver: string, asset: string, amount: string, remark?: string }): Promise<txid: string>
+function send({ to: string, asset: string, amount: string, remark?: string }): Promise<txid: string>
 </pre>
 
 '''Input arguments'''
 
-receiver: string - Address of the receiver of the assets to be sent
+to: string - Address of the receiver of the assets to be sent
 
 asset: string - The symbol of the asset to be sent
 
@@ -249,7 +249,7 @@ string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CA
 
 <pre>
 send({
-  receiver: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  to: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
   asset: 'GAS',
   amount: '0.0001',
   remark: 'Hash puppy clothing purchase. Invoice#abc123',
@@ -509,7 +509,7 @@ Example
 ====send====
 Upon receiving this request
 * Validate the inputs
-** Receiver address is valid
+** To address is valid
 ** Asset symbol is valid
 ** Amount is valid value, and account has enough balance
 * Broadcast the RPC request
