@@ -36,13 +36,14 @@ The current list of wallet providers that can benefit from the use of this proto
 
 Each wallet provider has their own value proposition to it's users beyond the interface from this protocol itself, so it seems that formalizing it would be a net positive for all.
 
-Additionally, since there are a significant amount of overlap in the protocols between NEO and Ontology for sending assets, and interacting with contract on NeoVM, this proposal is a joint effort with [OEP6](https://github.com/ontio/OEPs/pull/8). Since there are differences in the two platforms, the result of these proposals will not be identical, nor should they be, but getting as much overlap as possible will help to simplify cross-chain interactions for both platforms.
+Additionally, since there are a significant amount of overlap in the protocols between NEO and Ontology for sending assets, and interacting with contract on NeoVM, this proposal is a joint effort with [https://github.com/ontio/OEPs/pull/8 OEP6]. Since there are differences in the two platforms, the result of these proposals will not be identical, nor should they be, but getting as much overlap as possible will help to simplify cross-chain interactions for both platforms.
 
 
 ==Specification==
 
-===Provider===
-====getProvider====
+===dApp API Interface===
+====Provider====
+=====getProvider=====
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
 '''Method Interface'''
@@ -106,8 +107,8 @@ getProvider()
 });
 </pre>
 
-===Asset===
-====getAccount====
+====Assets====
+=====getAccount=====
 Return the Account that is currently connected to the dApp.
 
 '''Method Interface'''
@@ -157,18 +158,20 @@ getAccount()
 
 
 
-====getBalance====
-Return balance of a specific asset for the connected account.
+=====getBalance=====
+Return balance of a specific asset for the given account.
 
 '''Method Interface'''
 
 <pre>
-function getBalance({ asset: string }): Promise<{ address: string, asset: string, amount: string }}>
+function getBalance({ address: string, asset: string }): Promise<{ address: string, asset: string, amount: string }}>
 </pre>
 
 '''Input arguments'''
 
-string - The asset symbol the check the balance for the connected account
+address: string - The asset symbol the check the balance for the connected account
+
+asset: string - The asset symbol the check the balance for the connected account
 
 
 '''Success return value'''
@@ -187,7 +190,10 @@ string - `NO_PROVIDER`|`CONNECTION_DENIED`
 '''Example'''
 
 <pre>
-getBalance()
+getBalance({
+  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  asset: 'NKN'
+})
 .then((result: Result) => {
   const {
     address,
@@ -195,9 +201,9 @@ getBalance()
     amount,
   } = result;
 
-  console.log('Provider address: ' + address);
-  console.log('Provider public key: ' + publicKey);
-  console.log('Provider public key: ' + publicKey);
+  console.log('Connected address: ' + address);
+  console.log('Asset: ' + asset);
+  console.log('Amount: ' + amount);
 })
 .catch((err: string) => {
   switch(err) {
@@ -212,7 +218,7 @@ getBalance()
 </pre>
 
 
-====send====
+=====send=====
 Invoke a transfer of a specified amount of a given asset from the connected account to another account.
 
 '''Method Interface'''
@@ -274,9 +280,9 @@ send({
 });
 </pre>
 
-===Smart Contract===
+====Smart Contract====
 
-====invokeRead====
+=====invokeRead=====
 Execute a contract invocation in read-only mode.
 
 '''Method Interface'''
@@ -343,7 +349,7 @@ invokeRead({
 </pre>
 
 
-====invoke====
+=====invoke=====
 Execute a contract invocation.
 
 '''Method Interface'''
@@ -409,7 +415,7 @@ invoke({
 </pre>
 
 
-====getStorage====
+=====getStorage=====
 Reads the raw value in smart contract storage.
 
 '''Method Interface'''
@@ -454,6 +460,117 @@ getStorage({
     break;
   }
 });
+</pre>
+
+
+===Provider Request Handling===
+====getProvider====
+Upon receiving this request, return:
+* The name of the provider wallet
+* The privider specifc version of the wallet
+* A list of NEP for which the specific provider protocol is compatable with
+
+'''Example'''
+<pre>
+{
+  name: 'Awesome Wallet',
+  version: 'v0.0.1',
+  compatibility: [
+    'NEP-14',
+    'NEP-23',
+    'NEP-29'
+  ]
+}
+</pre>
+
+====getAccount====
+Upon receiving this request, return:
+- The address and public key of account currently selected by the user in the wallet interface
+
+'''Example'''
+<pre>
+{
+  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  publicKey: '03d43468721ef8936548878071b534d8228c313e02e6d90cef8c65fd3c2d4eaeed'
+}
+</pre>
+
+====getBalance====
+Upon receiving this request, fetch the latest balance of the given account for the specific asset, and return the amount with an echo of the request details.
+
+'''Example'''
+<pre>
+{
+  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  asset: 'NKN',
+  amount: '0.00000233'
+}
+</pre>
+
+====send====
+Upon receiving this request
+* Validate the inputs
+** Receiver address is valid
+** Asset symbol is valid
+** Amount is valid value, and account has enough balance
+* Broadcast the RPC request
+* Return the transaction Id
+
+'''Example'''
+<pre>
+'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77'
+</pre>
+
+====invokeRead====
+Upon receiving this request
+* Validate and format the inputs
+** Script hash is valid
+** Format parameters
+*** If `byteArray`, convert to appropriate hexstring based on assumed format
+* Broadcast the RPC request
+* Return the RPC response results
+
+'''Example'''
+<pre>
+{
+  script: '8h89fh398f42f.....89hf2894hf9834',
+  state: 'HALT, BREAK',
+  gas_consumed: '0.13',
+  stack: [
+    {
+      type: 'Integer',
+      value: '1337'
+    }
+  ]
+}
+</pre>
+
+====invoke====
+
+Upon receiving this request
+* Validate and format the inputs
+** Script hash is valid
+** Format parameters
+*** If `byteArray`, convert to appropriate hexstring based on assumed format
+* Broadcast the RPC request
+* Return the transaction id
+
+'''Example'''
+<pre>
+'34e07328e50984b28a26e3a534878f7db23a8b6827fbfbb20419c3b6b7410129'
+</pre>
+
+====getStorage====
+
+Upon receiving this request
+* Validate and format the inputs
+** Script hash is valid
+* Broadcast the RPC request
+* Return the RPC response results
+
+'''Example'''
+<pre>
+'hello world'
 </pre>
 
 ==Rational==
