@@ -42,8 +42,7 @@ Additionally, since there are a significant amount of overlap in the protocols b
 ==Specification==
 
 ===dApp API Interface===
-====Provider====
-=====getProvider=====
+====getProvider====
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
 '''Method Interface'''
@@ -107,8 +106,7 @@ getProvider()
 });
 </pre>
 
-====Assets====
-=====getAccount=====
+====getAccount====
 Return the Account that is currently connected to the dApp.
 
 '''Method Interface'''
@@ -158,7 +156,7 @@ getAccount()
 
 
 
-=====getBalance=====
+====getBalance====
 Return balance of a specific asset for the given account.
 
 '''Method Interface'''
@@ -218,7 +216,7 @@ getBalance({
 </pre>
 
 
-=====send=====
+====send====
 Invoke a transfer of a specified amount of a given asset from the connected account to another account.
 
 '''Method Interface'''
@@ -280,9 +278,8 @@ send({
 });
 </pre>
 
-====Smart Contract====
 
-=====invokeRead=====
+====invokeRead====
 Execute a contract invocation in read-only mode.
 
 '''Method Interface'''
@@ -349,7 +346,7 @@ invokeRead({
 </pre>
 
 
-=====invoke=====
+====invoke====
 Execute a contract invocation.
 
 '''Method Interface'''
@@ -415,7 +412,7 @@ invoke({
 </pre>
 
 
-=====getStorage=====
+====getStorage====
 Reads the raw value in smart contract storage.
 
 '''Method Interface'''
@@ -464,6 +461,8 @@ getStorage({
 
 
 ===Provider Request Handling===
+Implementation details of per dApp domain handling will be left to the discression of the wallet provider. Proviers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
+
 ====getProvider====
 Upon receiving this request, return:
 * The name of the provider wallet
