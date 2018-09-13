@@ -37,7 +37,8 @@ Incoming request handling:
 
 ==Specification==
 
-===getProvider===
+===Provider===
+====getProvider====
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
 '''Method Interface'''
@@ -101,7 +102,8 @@ getProvider()
 });
 </pre>
 
-===getAccount===
+===Asset===
+====getAccount====
 Return the Account that is currently connected to the dApp.
 
 '''Method Interface'''
@@ -151,7 +153,7 @@ getAccount()
 
 
 
-===getBalance===
+====getBalance====
 Return balance of a specific asset for the connected account.
 
 '''Method Interface'''
@@ -206,7 +208,7 @@ getBalance()
 </pre>
 
 
-===send===
+====send====
 Invoke a transfer of a specified amount of a given asset from the connected account to another account.
 
 '''Method Interface'''
@@ -268,8 +270,9 @@ send({
 });
 </pre>
 
+===Smart Contract===
 
-===invokeRead===
+====invokeRead====
 Execute a contract invocation in read-only mode.
 
 '''Method Interface'''
@@ -336,7 +339,7 @@ invokeRead({
 </pre>
 
 
-===invoke===
+====invoke====
 Execute a contract invocation.
 
 '''Method Interface'''
@@ -402,7 +405,7 @@ invoke({
 </pre>
 
 
-===getStorage===
+====getStorage====
 Reads the raw value in smart contract storage.
 
 '''Method Interface'''
