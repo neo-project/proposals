@@ -61,6 +61,7 @@ object - Provider information defined by the interface below:
 <pre>
 interface Provider {
   name: string;
+  website: string;
   version: string;
   compatibility: string[];
 }
@@ -86,11 +87,13 @@ getProvider()
 .then((provider: Provider) => {
   const {
     name,
+    website,
     version,
     compatibility,
   } = provider;
 
   console.log('Provider name: ' + name);
+  console.log('Provider website: ' + website);
   console.log('Provider dAPI version: ' + version);
   console.log('Provider dAPI compatibility: ' + JSON.stringify(compatibility));
 })
@@ -466,6 +469,7 @@ Implementation details of per dApp domain handling will be left to the discressi
 ====getProvider====
 Upon receiving this request, return:
 * The name of the provider wallet
+* The provider website
 * The privider specifc version of the wallet
 * A list of NEP for which the specific provider protocol is compatable with
 
@@ -473,6 +477,7 @@ Example
 <pre>
 {
   name: 'Awesome Wallet',
+  website: 'https://www.awesome.com',
   version: 'v0.0.1',
   compatibility: [
     'NEP-14',
