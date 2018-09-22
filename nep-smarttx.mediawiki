@@ -1,0 +1,77 @@
+<pre>
+  NEP: XXX
+  Title: Smart Transactions
+  Author: Igor M. Coelho <igor.machado@gmail.com>, Vitor N. Coelho <vncoelho@gmail.com>, et al (I hope so!)
+  Type: Draft
+  Created: 2018-9-22
+</pre>
+
+==Abstract==
+
+NEO is a rich and flexible blockchain ecosystem that can be programmed in different layers.
+The most well known programming capability is used for Smart Contracts, often called Dapps.
+Another fundamental logic is used to handle user accounts, also known as Verification Contracts, allowing to withdraw funds (assets) according to a given set of rules.
+At the Transaction level it is also possible to attach Scripts, which work as complementary Verification Contracts, giving powerful Smart Transaction capabilities to Neo user.
+This NEP proposes an identification system (with 10 bytes on remark field) that allows users (or machines) to easily detect Smart Transactions on Neo network.
+
+==Motivation==
+
+The Smart Transaction capabilities on Neo allows advanced programming logic to be developed without changing Neo core functionality.
+However, without a standard identification system it becomes hard to user interfaces (including blockchain explorers) to quickly detect the contents of the given transactions.
+The proposal is fully backwards compatible and consists of using 10 bytes (or more) of any remark attribute field, in a human readable format.
+The 10-byte header is a visible part composed by prefix `NEP-11`, single space and an operation code consisting of three chars.
+The operation code can refer to an specific NEP implementation that may require extra payload, which may not be human-readable.
+
+==Specification==
+
+This NEP can be used as the payload of a remark field. There are 16 remark fields (0xf0-0xff) defined in this file:
+`https://github.com/neo-project/neo/blob/c64748ecbac3baeb8045b16af0d518398a6ced24/neo/Network/P2P/Payloads/TransactionAttributeUsage.cs`
+Since `Remark` (`0xf0`) was often used in the past, we suggest this NEP only be valid from `Remark1` to `Remark15` (`0xf1-0xff`).
+Multiple NEP-11 attributes can be submitted in a single transaction, if multiple information on the smart transaction is necessary (up to 15).
+
+A NEP-11 remark attribute is composed by: (i) a human-readable 10-byte header (ii) a payload.
+The header is divided in two parts, a standard `NEP-11` prefix and a 3-char operation code, both separated by a single space.
+The operation code can include any visible character, although ambiguities are disencouraged, for example, using both upper and lower cases.
+Using special characters is also disencouraged. An efficient operation code can consist of only numbers and/or upper-case letters.
+
+As an example, an airdrop operation could include a remark field with the following content: `NEP-11 AIR` (`0x4e45502d313120414952`).
+If not all three characters are used in operation code, char zero can be used for right-padding: `NEP-11 A` (`0x4e45502d313120410000`).
+
+Machines can easily detect prefix `NEP-11 ` (`0x4e45502d313120`) as a NEP-11 operation, if attribute size is at least 10 bytes.
+
+==Rationale==
+
+We suggest that the operation code is easily readable by humans, also simplifying the task of Smart Transaction detection for machines.
+The proposed operation codes are not mandatory and can be used in the best way by the community.
+There is also no need to rewrite this document to include all proposed operation fields, as new ideas will naturally emerge from this standard, including new applications.
+
+===Transfers from Standard Accounts===
+
+Transfers performed from standard accounts with single or multiple signatures (`CHECKSIG`, `CHECKMULTISIG`), could be identified as: `SIG` and `MIG`.
+That could possibly help blockchain explorers and user interfaces to easily display the nature of the performed operation.
+
+===Transfers from Smart Contracts===
+
+Transfers from Smart Contracts or Dapps using Verification Trigger could be identified as: `DAP`.
+
+===Self Transfers===
+
+If funds are fully transfered from the same account, it can use operation code `SLF`.
+
+===Airdrops===
+
+Airdrops can use operation code `AIR` to identify its behavior. It is typically performed using 7 bytes on remark field `airdrop` (`0x61697264726f70`), so it will use three extra bytes to conform to this (machine/human)-readable standard. Example: `NEP-11 AIR` (`0x4e45502d313120414952`).
+
+
+==Backwards Compatibility==
+
+This NEP is fully backwards compatible, since it does not introduce any logic that changes transaction validation results.
+However, as mentioned in the previous section, specific uses of this NEP may intentionally change the behavior of the smart transactions, so these should be considered carefully when implemented in network to avoid incompatibilities.
+
+==Test Cases==
+
+TODO.
+
+==Implementations==
+
+TODO.
