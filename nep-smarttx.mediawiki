@@ -1,5 +1,5 @@
 <pre>
-  NEP: XXX
+  NEP: 11 (??)
   Title: Smart Transactions
   Author: Igor M. Coelho <igor.machado@gmail.com>, Vitor N. Coelho <vncoelho@gmail.com>, et al (I hope so!)
   Type: Draft
