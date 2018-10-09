@@ -1,0 +1,137 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Mintable/Burnable NEP-5 Token
+  Author: Dmitry Radkovskiy <zlumer@gmail.com>, Ivan Kocheshev <ivan.kocheshev@gmail.com>
+  Type: Meta
+  Status: Draft
+  Created: 2018-10-01
+</pre>
+
+==Abstract==
+
+This NEP describes a smart contract interface for mintable and burnable NEP-5 tokens.  
+
+==Motivation==
+
+Currently, there existst a NEP-5 token standard for developers to implement tokens that can be easily integrated to wallets and exchanges.
+
+While NEP-5 covers most use cases such as value transfers, balance retrieval and token info (name, symbol, decimals, total supply), it is often the case that the owner of the token implements <code>mint</code>/<code>burn</code> methods to control token distribution e.g. during an ICO. These methods directly affect total token supply and may be helpful for users to understand possible changes in token value and distribution.
+
+We feel the need to standardize both <code>mint</code>/<code>burn</code> methods as well as methods to expose current state of minting.
+
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+===Methods===
+
+All NEP-5 methods (as defined in [https://github.com/neo-project/proposals/blob/master/nep-5.mediawiki NEP-5 specification]):  
+<pre>
+public static BigInteger totalSupply()
+public static string name()
+public static string symbol()
+public static byte decimals()
+public static BigInteger balanceOf(byte[] account)
+public static bool transfer(byte[] from, byte[] to, BigInteger amount)
+</pre>
+
+====hardCap====
+
+<pre>
+public static BigInteger hardCap()
+</pre>
+
+Returns maximum amount of tokens that is allowed to mint.
+
+<code>totalSupply()</code> can never exceed <code>hardCap()</code>.
+
+====mint====
+
+<pre>
+public static bool mint(byte[] toAddress, BigInteger amount)
+</pre>
+
+Mints an <code>amount</code> of tokens to the <code>toAddress</code>.
+
+The parameter <code>toAddress</code> SHOULD be 20-byte addresse. If not, this method SHOULD throw an exception.
+
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+
+This method MUST return <code>false</code> if <code>totalSupply()</code> will exceed<code>hardCap()</code> after minting.
+
+This method MUST return <code>false</code> if <code>mintingFinished()</code> returns <code>true</code>.
+
+If the method succeeds, it MUST fire both <code>transfer</code> and <code>minted</code> events, and MUST return <code>true</code>, even if the <code>amount</code> is 0.
+
+<code>transfer</code> event should fire with <code>from</code> set to <code>null</code>.
+
+Firing both <code>transfer</code> and <code>minted</code> events provides full backwards compatibility with any wallet or service that can handle NEP-5 tokens.
+
+====burn====
+
+<pre>
+public static bool burn(byte[] fromAddress, BigInteger amount)
+</pre>
+
+Burns an <code>amount</code> of tokens from the <code>fromAddress</code>.
+
+The parameter <code>toAddress</code> SHOULD be 20-byte addresse. If not, this method SHOULD throw an exception.
+
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+
+This method MUST return <code>false</code> if <code>fromAddress</code> does not have enough tokens to burn.
+
+This method MUST return <code>false</code> if the calling entity does not equal <code>fromAddress</code> or does not have allowance from <code>fromAddress</code> to burn enough tokens.
+
+If the method succeeds, it MUST fire both <code>transfer</code> and <code>burned</code> events, and MUST return <code>true</code>, even if the <code>amount</code> is 0.
+
+<code>transfer</code> event should fire with <code>to</code> set to <code>null</code>.
+
+Firing both <code>transfer</code> and <code>burned</code> events provides full backwards compatibility with any wallet or service that can handle NEP-5 tokens.
+
+====mintingFinished====
+
+<pre>
+public static bool mintingFinished()
+</pre>
+
+Returns current state of minting: whether token is available to mint.
+
+If the method returns <code>false</code>, <code>mint()</code> method should return false and not mint any new tokens.
+
+If <code>mintingFinished()</code> returns <code>false</code>, it must mean that no more tokens can ever be minted under any circumstances.
+
+===Events===
+
+====minted====
+
+<pre>
+public static event minted(byte[] toAddress, BigInteger amount)
+</pre>
+
+MUST trigger when tokens are minted, including zero value mints.
+
+====burned====
+
+<pre>
+public static event burned(byte[] fromAddress, BigInteger amount)
+</pre>
+
+MUST trigger when tokens are burned, including zero value burns.
+
+====mintingFinished====
+
+<pre>
+public static event mintingFinished()
+</pre>
+
+MUST trigger when minting was finished.
+
+After this event no more tokens should be minted under any circumstances.
+
+----
+
+Key points for discussion:  
+1. Should zero value mints/burns fire the corresponding event?  
+2. Should <code>mint</code> method be part of this specification or it's implementation can be left up to developer?
