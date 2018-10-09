@@ -1,0 +1,201 @@
+<pre>
+  NEP: 
+  Title: Multi-Token Contract
+  Author: Dmitry Radkovskiy <zlumer@gmail.com>, Ivan Kocheshev <ivan.kocheshev@gmail.com>
+  Type: Meta
+  Status: Draft
+  Created: 2018-10-01
+</pre>
+
+==Abstract==
+
+This NEP describes a smart contract interface for NEP-5-like multi-token contract.
+
+==Motivation==
+
+Currently, there exists a NEP-5 token standard for developers to implement tokens that can be easily integrated to wallets and exchanges.
+
+Similar token standards exist on other blockchains (e.g. [https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md ERC20]).
+However, there is an important difference between ERC20 and NEP-5 usage on main networks.
+While on Ethereum a simple ERC20 token contract deployment costs around 750K gas or $1.3 (at the time of writing, using average gas price), on NEO a simple NEP-5 contract deployment will cost 500 GAS or $2900. These prices only go up with GAS price and we've already seen $15000 price tag for a simple NEP-5 token this spring.
+
+While this GAS is used to pay all NEO holders, it makes the barrier for entry too high for many developers that are just seeking funding through ICOs and are not yet funded with initial capital.
+
+We propose a new standard that will provide developers with an option to deploy a new token with highly reduced cost.
+
+This new standard is meant to serve as an entry point for developers that need to deploy a new token for ICO or other purposes, but may not be ready yet to pay the corresponding GAS price.
+
+This standard should be familiar to anyone who has experience with NEP-5 tokens: the method signatures are identical to NEP-5 with token ID added as the first argument.
+
+We suggest that new developers follow the route of <code>Multi-Token -> NEP-5 -> NEO Asset</code> as they become more confident both in their funding and NEO as platform.
+
+We also expect to see increased interest in NEO due to reduce of token deployment costs.
+
+==Specification==
+
+Most of the methods are direct copies of NEP-5 methods with token ID added as the first argument.
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+===Methods===
+
+====createToken====
+
+<pre>
+public static bool createToken(string tokenId, string name, string symbol, byte[] owner, byte decimals)
+</pre>
+
+Creates a new token with the provided parameters.
+
+This method SHOULD throw if the token with <code>tokenId</code> was created before.
+
+The parameter <code>symbol</code> SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English).
+
+The parameter <code>owner</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+
+====deprecateToken====
+
+<pre>
+public static bool deprecateToken(string tokenId, byte[] nep5contract)
+</pre>
+
+Deprecates token with provided <code>tokenId</code> in favor of the new NEP-5 token.
+
+This method is meant to be called when the owner of the token deploys a full NEP-5 conforming contract and wishes to redirect token holders to a new contract.
+
+Token migration algorithm can be implemented in any way the developer feels appropriate, in either centralized or decentralized way.
+
+This method MUST check the owner of the token and prevent unauthorized token deprecation.
+
+This method SHOULD throw an exception if token was already deprecated earlier.
+
+This method SHOULD throw an exception if token with the corresponding <code>tokenId</code> was not created.
+
+If the method succeeds, it MUST fire <code>deprecated</code> event and MUST return <code>true</code>.
+
+====isDeprecated====
+
+<pre>
+public static bool isDeprecated(string tokenId)
+</pre>
+
+Returns current deprecation state of the token with provided <code>tokenId</code>.
+
+This method SHOULD throw an exception if token with the corresponding <code>tokenId</code> was not created.
+
+====migratedAddress====
+
+<pre>
+public static byte[] migratedAddress(string tokenId)
+</pre>
+
+Returns the new address of the deprecated token with provided <code>tokenId</code>.
+
+This method MUST return <code>null</code> if token was not deprecated yet.
+
+This method SHOULD throw an exception if token with the corresponding <code>tokenId</code> was not created.
+
+====totalSupply====
+
+<pre>
+public static BigInteger totalSupply(string tokenId)
+</pre>
+
+Returns the total token supply deployed in the system.
+
+This method MUST throw an exception if token with the corresponding ID was not created.
+
+====name====
+
+<pre>
+public static string name(string tokenId)
+</pre>
+
+Returns the name of the token. e.g. <code>"MyToken"</code>.
+
+This method MUST always return the same value every time it is invoked.
+
+This method MUST throw an exception if token with the corresponding ID was not created.
+
+====symbol====
+
+<pre>
+public static string symbol(string tokenId)
+</pre>
+
+Returns a short string symbol of the token managed in this contract with the provided <code>tokenId</code>. e.g. <code>"MYT"</code>. This symbol SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English).
+
+This method MUST always return the same value every time it is invoked.
+
+This method MUST throw an exception if token with the corresponding ID was not created.
+
+====decimals====
+
+<pre>
+public static byte decimals(string tokenId)
+</pre>
+
+Returns the number of decimals used by the token - e.g. <code>8</code>, means to divide the token amount by <code>100,000,000</code> to get its user representation.
+
+This method MUST always return the same value every time it is invoked.
+
+This method MUST throw an exception if token with the corresponding ID was not created.
+
+====balanceOf====
+
+<pre>
+public static BigInteger balanceOf(string tokenId, byte[] account)
+</pre>
+
+Returns the token balance of the <code>account</code>.
+
+The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+
+If the <code>account</code> is an unused address, this method MUST return <code>0</code>.
+
+This method MUST throw an exception if token with the corresponding ID was not created.
+
+====transfer====
+
+<pre>
+public static bool transfer(string tokenId, byte[] from, byte[] to, BigInteger amount)
+</pre>
+
+Transfers an <code>amount</code> of tokens from the <code>from</code> account to the <code>to</code> account.
+
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>amount</code> MUST be greater than or equal to <code>0</code>. If not, this method SHOULD <code>throw</code> an exception.
+
+The function MUST return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
+
+If the method succeeds, it MUST fire the <code>transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or <code>from</code> and <code>to</code> are the same address.
+
+The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+
+If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
+
+If the transfer is not processed, the function SHOULD return <code>false</code>.
+
+This method MUST throw an exception if token with the corresponding ID was not created.
+
+===Events===
+
+====deprecated====
+<pre>
+public static event deprecated(string tokenId, byte[] newAddress)
+</pre>
+
+MUST trigger when token becomes deprecated due to <code>deprecateToken</code> call.
+
+====transfer====
+
+<pre>
+public static event transfer(string tokenId, byte[] from, byte[] to, BigInteger amount)
+</pre>
+
+MUST trigger when tokens are transferred, including zero value transfers.
+
+A token contract which creates new tokens MUST trigger a <code>transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
+
+A token contract which burns tokens MUST trigger a <code>transfer</code> event with the <code>to</code> address set to <code>null</code> when tokens are burned.
