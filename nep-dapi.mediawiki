@@ -225,7 +225,7 @@ Invoke a transfer of a specified amount of a given asset from the connected acco
 '''Method Interface'''
 
 <pre>
-function send({ to: string, asset: string, amount: string, remark?: string }): Promise<txid: string>
+function send({ to: string, asset: string, amount: string, remark?: string, fee?: string }): Promise<txid: string>
 </pre>
 
 '''Input arguments'''
@@ -237,6 +237,8 @@ asset: string - The symbol of the asset to be sent
 amount: string - The parsed amount of the asset to be sent
 
 remark?: string - (Optional) Description of the transaction to be made
+
+fee?: string - (Optional) The parsed amount of network fee (in GAS) to include with transaction
 
 
 '''Success return value'''
@@ -256,6 +258,7 @@ send({
   asset: 'GAS',
   amount: '0.0001',
   remark: 'Hash puppy clothing purchase. Invoice#abc123',
+  fee: '0.0001',
 })
 .then((txid: string) => {
   console.log('Send transaction success! Transaction ID: ' + txid);
