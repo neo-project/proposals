@@ -248,7 +248,7 @@ txid: string - The transaction ID of the send invocation
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`|`INSUFFICIENT_FUNDS`
 
 '''Example'''
 
@@ -269,17 +269,20 @@ send({
       console.log('No provider available.');
       break;
     case CONNECTION_REFUSED:
-      console.log('Connection dApp not connected. Please call the "connect" function.');
+      console.log('dApp not connected. Please call the "connect" function.');
       break;
-   case SEND_ERROR:
-    console.log('There was an error when broadcasting this transaction to the network.');
-    break;
-   case MALFORMED_ADDRESS:
+    case SEND_ERROR:
+      console.log('There was an error when broadcasting this transaction to the network.');
+      break;
+    case MALFORMED_ADDRESS:
       console.log('The receiver address provided is not valid.');
       break;
-  case CANCELED:
-    console.log('The user has canceled this transaction.');
-    break;
+    case CANCELED:
+      console.log('The user has canceled this transaction.');
+      break;
+    case INSUFFICIENT_FUNDS:
+      console.log('The user has insufficient funds to execute this transaction.');
+      break;
   }
 });
 </pre>
