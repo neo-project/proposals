@@ -47,15 +47,18 @@ Implementation details of per dApp domain handling will be left to the discretio
 ===getProvider===
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
+
 '''Method Interface'''
 
 <pre>
 function getProvider(): Promise<Provider>
 </pre>
 
+
 '''Input arguments'''
 
 None
+
 
 '''Success return value'''
 
@@ -78,9 +81,11 @@ compatibility: [
 ]
 </pre>
 
+
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_DENIED`
+
 
 '''Example'''
 
@@ -111,7 +116,9 @@ getProvider()
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request, return:
 * The name of the provider wallet
 * The provider website
@@ -135,15 +142,18 @@ Example
 ===getAccount===
 Return the Account that is currently connected to the dApp.
 
+
 '''Method Interface'''
 
 <pre>
 function getAccount(): Promise<{ address: string, publicKey: string }>
 </pre>
 
+
 '''Input arguments'''
 
 None
+
 
 '''Success return value'''
 
@@ -151,9 +161,11 @@ address: string - Address of the connected account
 
 publicKey: string - Address of the connected account
 
+
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_DENIED`
+
 
 '''Example'''
 
@@ -180,7 +192,9 @@ getAccount()
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request, return:
 - The address and public key of account currently selected by the user in the wallet interface
 
@@ -196,11 +210,13 @@ Example
 ===getBalance===
 Return balance of a specific asset for the given account.
 
+
 '''Method Interface'''
 
 <pre>
 function getBalance({ address: string, asset: string }): Promise<{ address: string, asset: string, amount: string }}>
 </pre>
+
 
 '''Input arguments'''
 
@@ -221,6 +237,7 @@ amount: string - Parsed balance of the requested asset
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_DENIED`
+
 
 '''Example'''
 
@@ -252,7 +269,9 @@ getBalance({
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request, fetch the latest balance of the given account for the specific asset, and return the amount with an echo of the request details.
 
 Example
@@ -268,11 +287,13 @@ Example
 ===send===
 Invoke a transfer of a specified amount of a given asset from the connected account to another account.
 
+
 '''Method Interface'''
 
 <pre>
 function send({ to: string, asset: string, amount: string, remark?: string, fee?: string }): Promise<txid: string>
 </pre>
+
 
 '''Input arguments'''
 
@@ -295,6 +316,7 @@ txid: string - The transaction ID of the send invocation
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`|`INSUFFICIENT_FUNDS`
+
 
 '''Example'''
 
@@ -333,7 +355,9 @@ send({
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request
 * Validate the inputs
 ** To address is valid
@@ -349,6 +373,7 @@ Example
 
 ===invokeRead===
 Execute a contract invocation in read-only mode.
+
 
 '''Method Interface'''
 
@@ -366,7 +391,9 @@ function invokeRead({ scriptHash: string, operation: string, args: Argument[] })
 '''Input arguments'''
 
 scriptHash: string - script hash of the smart contract to invoke a read on
+
 operation: string - operation on the smart contract to call
+
 args: Argument[] - any input arguments for the operation
 
 
@@ -374,9 +401,11 @@ args: Argument[] - any input arguments for the operation
 
 result: Object - Response from RPC node
 
+
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+
 
 '''Example'''
 
@@ -413,7 +442,9 @@ invokeRead({
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request
 * Validate and format the inputs
 ** Script hash is valid
@@ -441,6 +472,7 @@ Example
 ===invoke===
 Execute a contract invocation.
 
+
 '''Method Interface'''
 
 <pre>
@@ -454,10 +486,13 @@ interface Argument {
 function invoke({ scriptHash: string, operation: string, args: Argument[] }): Promise<txid: string>
 </pre>
 
+
 '''Input arguments'''
 
 scriptHash: string - script hash of the smart contract to invoke a read on
+
 operation: string - operation on the smart contract to call
+
 args: Argument[] - any input arguments for the operation
 
 
@@ -465,9 +500,11 @@ args: Argument[] - any input arguments for the operation
 
 txid: string - The transaction ID of the invocation
 
+
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`
+
 
 '''Example'''
 
@@ -503,7 +540,9 @@ invoke({
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request
 * Validate and format the inputs
 ** Script hash is valid
@@ -521,24 +560,30 @@ Example
 ===getStorage===
 Reads the raw value in smart contract storage.
 
+
 '''Method Interface'''
 
 <pre>
 function getStorage({ scriptHash: string, key: string }): Promise<value: string>
 </pre>
 
+
 '''Input arguments'''
 
 scriptHash: string - script hash of the smart contract to invoke a read on
+
 key: string - key of the storage value to retrieve from the contract
+
 
 '''Success return value'''
 
 value: string - The raw value that's stored in the contract
 
+
 '''Error return value'''
 
 string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+
 
 '''Example'''
 
@@ -565,7 +610,9 @@ getStorage({
 });
 </pre>
 
+
 '''Provider Request Handling'''
+
 Upon receiving this request
 * Validate and format the inputs
 ** Script hash is valid
