@@ -218,16 +218,16 @@ Return balance of a specific asset for the given account.
 '''Method Interface'''
 
 <pre>
-function getBalance({ address: string, asset: string }): Promise<{ address: string, asset: string, amount: string }}>
+function getBalance(args: BalanceRequest|BalanceRequest[]): Promise<BalanceResults>}>
 </pre>
 
 
 '''Input arguments'''
 
 <pre>
-interface GetBalanceArgs {
+interface BalanceRequest {
   address: string; // Address to check balance(s)
-  asset: string; // Asset symbol or script hash to check balance
+  asset?: string; // Asset symbol or script hash to check balance
 }
 </pre>
 
@@ -235,11 +235,15 @@ interface GetBalanceArgs {
 '''Success return value'''
 
 <pre>
-interface Balance {
-  address: string; // Address to check balance(s)
-  asset: string; // Asset symbol or script hash to check balance
-  amount: string; // Parsed balance of the requested asset
+interface BalanceResults {
+  [address: string]: Balances;
 }
+
+interface Balances {
+  [asset: string]: amount: string;
+}
+// Asset symbol or script hash to check balance
+// Parsed balance of the requested asset
 </pre>
 
 
@@ -255,16 +259,21 @@ getBalance({
   address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
   asset: 'NKN'
 })
-.then((result: Balance) => {
-  const {
-    address,
-    asset,
-    amount,
-  } = result;
-
-  console.log('Connected address: ' + address);
-  console.log('Asset: ' + asset);
-  console.log('Amount: ' + amount);
+.then((results: BalanceResults) => {
+  // results array should return a single entry
+  Object.keys(results).forEach(address => {
+    
+    const { balances } = results[address];
+    
+    Object.keys(balances).forEach(asset => {
+    
+      const amount = balances[asset];
+    
+      console.log('Connected address: ' + address);
+      console.log('Asset: ' + asset);
+      console.log('Amount: ' + amount);
+    });
+  });
 })
 .catch((err: string) => {
   switch(err) {
@@ -278,19 +287,70 @@ getBalance({
 });
 </pre>
 
+Single asset balance request sample
+<pre>
+// input
+{
+  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  asset: 'NKN'
+}
+
+// output
+{
+  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': {
+    'NKN': '0.00000233',
+  },
+}
+</pre>
+
+Single account balances request sample
+<pre>
+// input
+{
+  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+}
+
+// output
+{
+  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': {
+    'NEO': '10',
+    'GAS': '777.0001',
+    'NKN': '0.00000233',
+    'NNC': '2000',
+  },
+}
+
+Multiple account balances request sample
+<pre>
+// input
+[
+  {
+    address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  },
+  {
+    address: 'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ',
+    asset: 'PHX',
+  },
+]
+
+// output
+{
+  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': {
+    'NEO': '10',
+    'GAS': '777.0001',
+    'NKN': '0.00000233',
+    'NNC': '2000',
+  },
+  'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ': {
+    'PHX': '11000',
+  },
+}
+</pre>
 
 '''Provider Request Handling'''
 
-Upon receiving this request, fetch the latest balance of the given account for the specific asset, and return the amount with an echo of the request details.
-
-Example
-<pre>
-{
-  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-  asset: 'NKN',
-  amount: '0.00000233'
-}
-</pre>
+Upon receiving this request, fetch the latest balance(s) for each given account, for the specific asset if applicable.
+Typechecking will be required on the input argument, as it can be eather a single BalanceRequest object, or an array of BalanceRequest objects. In the case where a specific asset is not provided to check the balance for, the wallet provider will fetch balances for all assets and tokens for that account.
 
 
 ===send===
