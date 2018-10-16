@@ -45,7 +45,8 @@ Additionally, since there are a significant amount of overlap in the protocols b
 
 Implementation details of per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
 
-===getProvider===
+===Read Methods===
+====getProvider====
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
 
@@ -141,7 +142,7 @@ Example
 </pre>
 
 
-===getNetwork===
+====getNetwork====
 Return the network the wallet provider is connected to.
 
 
@@ -204,7 +205,7 @@ Example
 </pre>
 
 
-===getAccount===
+====getAccount====
 Return the Account that is currently connected to the dApp.
 
 
@@ -275,7 +276,7 @@ Example
 </pre>
 
 
-===getBalance===
+====getBalance====
 Return balance of a specific asset for the given account.
 
 
@@ -413,52 +414,46 @@ Upon receiving this request, fetch the latest balance(s) for each given account,
 Typechecking will be required on the input argument, as it can be eather a single BalanceRequest object, or an array of BalanceRequest objects. In the case where a specific asset is not provided to check the balance for, the wallet provider will fetch balances for all assets and tokens for that account.
 
 
-===send===
-Invoke a transfer of a specified amount of a given asset from the connected account to another account.
+====getStorage====
+Reads the raw value in smart contract storage.
 
 
 '''Method Interface'''
 
 <pre>
-function send({ to: string, asset: string, amount: string, remark?: string, fee?: string }): Promise<txid: string>
+function getStorage({ scriptHash: string, key: string }): Promise<value: string>
 </pre>
 
 
 '''Input arguments'''
 
 <pre>
-interface SendArgs {
-  to: string; // Address of the receiver of the assets to be sent
-  asset: string; // The symbol of the asset to be sent
-  amount: string; // The parsed amount of the asset to be sent
-  remark?: string; // (Optional) Description of the transaction to be made
-  fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
+interface GetStorageArgs {
+  scriptHash: string; // script hash of the smart contract to invoke a read on
+  key: string; // key of the storage value to retrieve from the contract
 }
 </pre>
 
 
 '''Success return value'''
 
-txid: string - The transaction ID of the send invocation
+value: string - The raw value that's stored in the contract
 
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`|`INSUFFICIENT_FUNDS`
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
 
 
 '''Example'''
 
 <pre>
-send({
-  to: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
-  asset: 'GAS',
-  amount: '0.0001',
-  remark: 'Hash puppy clothing purchase. Invoice#abc123',
-  fee: '0.0001',
+getStorage({
+  scriptHash: '505663a29d83663a838eee091249abd167e928f5',
+  key: 'game.status'
 })
-.then((txid: string) => {
-  console.log('Send transaction success! Transaction ID: ' + txid);
+.then((value: string) => {
+  console.log('Storage value: ' + value);
 })
 .catch((err: string) => {
   switch(err) {
@@ -466,20 +461,11 @@ send({
       console.log('No provider available.');
       break;
     case CONNECTION_REFUSED:
-      console.log('dApp not connected. Please call the "connect" function.');
+      console.log('Connection dApp not connected. Please call the "connect" function.');
       break;
-    case SEND_ERROR:
-      console.log('There was an error when broadcasting this transaction to the network.');
-      break;
-    case MALFORMED_ADDRESS:
-      console.log('The receiver address provided is not valid.');
-      break;
-    case CANCELED:
-      console.log('The user has canceled this transaction.');
-      break;
-    case INSUFFICIENT_FUNDS:
-      console.log('The user has insufficient funds to execute this transaction.');
-      break;
+   case RPC_ERROR:
+    console.log('There was an error when broadcasting this transaction to the network.');
+    break;
   }
 });
 </pre>
@@ -488,19 +474,18 @@ send({
 '''Provider Request Handling'''
 
 Upon receiving this request
-* Validate the inputs
-** To address is valid
-** Asset symbol is valid
-** Amount is valid value, and account has enough balance
+* Validate and format the inputs
+** Script hash is valid
 * Broadcast the RPC request
-* Return the transaction Id
+* Return the RPC response results
 
 Example
 <pre>
-'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77'
+'hello world'
 </pre>
 
-===invokeRead===
+
+====invokeRead====
 Execute a contract invocation in read-only mode.
 
 
@@ -601,7 +586,96 @@ Example
 </pre>
 
 
-===invoke===
+===Write Methods===
+====send====
+Invoke a transfer of a specified amount of a given asset from the connected account to another account.
+
+
+'''Method Interface'''
+
+<pre>
+function send({ to: string, asset: string, amount: string, remark?: string, fee?: string }): Promise<txid: string>
+</pre>
+
+
+'''Input arguments'''
+
+<pre>
+interface SendArgs {
+  to: string; // Address of the receiver of the assets to be sent
+  asset: string; // The symbol of the asset to be sent
+  amount: string; // The parsed amount of the asset to be sent
+  remark?: string; // (Optional) Description of the transaction to be made
+  fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
+}
+</pre>
+
+
+'''Success return value'''
+
+txid: string - The transaction ID of the send invocation
+
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`|`INSUFFICIENT_FUNDS`
+
+
+'''Example'''
+
+<pre>
+send({
+  to: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  asset: 'GAS',
+  amount: '0.0001',
+  remark: 'Hash puppy clothing purchase. Invoice#abc123',
+  fee: '0.0001',
+})
+.then((txid: string) => {
+  console.log('Send transaction success! Transaction ID: ' + txid);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_REFUSED:
+      console.log('dApp not connected. Please call the "connect" function.');
+      break;
+    case SEND_ERROR:
+      console.log('There was an error when broadcasting this transaction to the network.');
+      break;
+    case MALFORMED_ADDRESS:
+      console.log('The receiver address provided is not valid.');
+      break;
+    case CANCELED:
+      console.log('The user has canceled this transaction.');
+      break;
+    case INSUFFICIENT_FUNDS:
+      console.log('The user has insufficient funds to execute this transaction.');
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request
+* Validate the inputs
+** To address is valid
+** Asset symbol is valid
+** Amount is valid value, and account has enough balance
+* Broadcast the RPC request
+* Return the transaction Id
+
+Example
+<pre>
+'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77'
+</pre>
+
+
+====invoke====
 Execute a contract invocation.
 
 
@@ -701,76 +775,6 @@ Example
 '34e07328e50984b28a26e3a534878f7db23a8b6827fbfbb20419c3b6b7410129'
 </pre>
 
-
-===getStorage===
-Reads the raw value in smart contract storage.
-
-
-'''Method Interface'''
-
-<pre>
-function getStorage({ scriptHash: string, key: string }): Promise<value: string>
-</pre>
-
-
-'''Input arguments'''
-
-<pre>
-interface GetStorageArgs {
-  scriptHash: string; // script hash of the smart contract to invoke a read on
-  key: string; // key of the storage value to retrieve from the contract
-}
-</pre>
-
-
-'''Success return value'''
-
-value: string - The raw value that's stored in the contract
-
-
-'''Error return value'''
-
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
-
-
-'''Example'''
-
-<pre>
-getStorage({
-  scriptHash: '505663a29d83663a838eee091249abd167e928f5',
-  key: 'game.status'
-})
-.then((value: string) => {
-  console.log('Storage value: ' + value);
-})
-.catch((err: string) => {
-  switch(err) {
-    case NO_PROVIDER:
-      console.log('No provider available.');
-      break;
-    case CONNECTION_REFUSED:
-      console.log('Connection dApp not connected. Please call the "connect" function.');
-      break;
-   case RPC_ERROR:
-    console.log('There was an error when broadcasting this transaction to the network.');
-    break;
-  }
-});
-</pre>
-
-
-'''Provider Request Handling'''
-
-Upon receiving this request
-* Validate and format the inputs
-** Script hash is valid
-* Broadcast the RPC request
-* Return the RPC response results
-
-Example
-<pre>
-'hello world'
-</pre>
 
 ==Rational==
 
