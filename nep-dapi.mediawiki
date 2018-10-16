@@ -140,6 +140,70 @@ Example
 }
 </pre>
 
+
+===getNetwork===
+Return the network the wallet provider is connected to.
+
+
+'''Method Interface'''
+
+<pre>
+function getNetwork(): Promise<{ network: Network }>
+</pre>
+
+
+'''Input arguments'''
+
+None
+
+
+'''Success return value'''
+
+<pre>
+enum Network {
+  MainNet = 'MainNet';
+  TestNet = 'TestNet';
+  PrivateNet = 'PrivateNet';
+}
+</pre>
+
+
+'''Error return value'''
+
+string - `NO_PROVIDER`|`CONNECTION_DENIED`
+
+
+'''Example'''
+
+<pre>
+getNetwork()
+.then((network: Network) => {
+  console.log('Network: ' + network);
+})
+.catch((err: string) => {
+  switch(err) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_DENIED:
+      console.log('The user rejected the request to connect with your dApp');
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request, return:
+- The NEO network which the wallet provider is connected to.
+
+Example
+<pre>
+'MainNet'
+</pre>
+
+
 ===getAccount===
 Return the Account that is currently connected to the dApp.
 
