@@ -46,6 +46,41 @@ Additionally, since there are a significant amount of overlap in the protocols b
 Implementation details of per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
 
 ===Read Methods===
+
+====isReady====
+Used to check if the protocol is ready to start exchanging messages.
+
+
+'''Method Interface'''
+
+<pre>
+function isReady(): Promise<boolean>
+</pre>
+
+
+'''Input arguments'''
+
+None
+
+
+'''Success return value'''
+
+boolean - `true` if connection is ready to exchange messages, and `false` if not
+
+
+'''Example'''
+
+<pre>
+isReady()
+.then((result: boolean) => {
+  console.log('Provider isReady: ' + result);
+})
+.catch((err: string) => {
+  console.log('Unknown error' + err);
+});
+</pre>
+
+
 ====getProvider====
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
@@ -792,8 +827,21 @@ function addEventListener(event: Event, callback: Function): Void
 
 <pre>
 enum Event {
+  READY = 'READY',
   NETWORK_CHANGED = 'NETWORK_CHANGED',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
+}
+</pre>
+
+=====READY=====
+
+On a READY event, the callback will fire with a single argument with information about the wallet provider.
+<pre>
+interface Provider {
+  name: string;
+  website: string;
+  version: string;
+  compatibility: string[];
 }
 </pre>
 
@@ -802,9 +850,9 @@ enum Event {
 On a NETWORK_CHANGED event, the callback will fire with a single argument of the new network.
 <pre>
 enum Network {
-  MainNet = 'MainNet';
-  TestNet = 'TestNet';
-  PrivateNet = 'PrivateNet';
+  MainNet = 'MainNet',
+  TestNet = 'TestNet',
+  PrivateNet = 'PrivateNet',
 }
 </pre>
 
@@ -833,6 +881,7 @@ function removeEventListener(event: Event): Void
 
 <pre>
 enum Event {
+  READY = 'READY',
   NETWORK_CHANGED = 'NETWORK_CHANGED',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
 }
