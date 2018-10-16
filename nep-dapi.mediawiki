@@ -42,6 +42,7 @@ Additionally, since there are a significant amount of overlap in the protocols b
 ==Specification==
 
 '''Provider Request Handling'''
+
 Implementation details of per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
 
 ===getProvider===
@@ -157,9 +158,12 @@ None
 
 '''Success return value'''
 
-address: string - Address of the connected account
-
-publicKey: string - Address of the connected account
+<pre>
+interface Account {
+  address: string; // Address of the connected account
+  publicKey: string; // Public key of the connected account
+}
+</pre>
 
 
 '''Error return value'''
@@ -220,18 +224,23 @@ function getBalance({ address: string, asset: string }): Promise<{ address: stri
 
 '''Input arguments'''
 
-address: string - The address to check the balance for the connected account
-
-asset: string - The asset symbol the check the balance for the connected account
+<pre>
+interface GetBalanceArgs {
+  address: string; // Address to check balance(s)
+  asset: string; // Asset symbol or script hash to check balance
+}
+</pre>
 
 
 '''Success return value'''
 
-address: string - Address of the connected account
-
-asset: string - Asset symbol for the requested balance
-
-amount: string - Parsed balance of the requested asset
+<pre>
+interface Balance {
+  address: string; // Address to check balance(s)
+  asset: string; // Asset symbol or script hash to check balance
+  amount: string; // Parsed balance of the requested asset
+}
+</pre>
 
 
 '''Error return value'''
@@ -246,7 +255,7 @@ getBalance({
   address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
   asset: 'NKN'
 })
-.then((result: Result) => {
+.then((result: Balance) => {
   const {
     address,
     asset,
@@ -297,15 +306,15 @@ function send({ to: string, asset: string, amount: string, remark?: string, fee?
 
 '''Input arguments'''
 
-to: string - Address of the receiver of the assets to be sent
-
-asset: string - The symbol of the asset to be sent
-
-amount: string - The parsed amount of the asset to be sent
-
-remark?: string - (Optional) Description of the transaction to be made
-
-fee?: string - (Optional) The parsed amount of network fee (in GAS) to include with transaction
+<pre>
+interface SendArgs {
+  to: string; // Address of the receiver of the assets to be sent
+  asset: string; // The symbol of the asset to be sent
+  amount: string; // The parsed amount of the asset to be sent
+  remark?: string; // (Optional) Description of the transaction to be made
+  fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
+}
+</pre>
 
 
 '''Success return value'''
@@ -378,23 +387,26 @@ Execute a contract invocation in read-only mode.
 '''Method Interface'''
 
 <pre>
-type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
-
-interface Argument {
-  type: ArgumentType;
-  value: any;
-}
 
 function invokeRead({ scriptHash: string, operation: string, args: Argument[] }): Promise<result: Object>
 </pre>
 
 '''Input arguments'''
 
-scriptHash: string - script hash of the smart contract to invoke a read on
+<pre>
+interface InvokeReadArgs {
+  scriptHash: string; // script hash of the smart contract to invoke a read on
+  operation: string; // operation on the smart contract to call
+  args: Argument[]; // any input arguments for the operation
+}
 
-operation: string - operation on the smart contract to call
+interface Argument {
+  type: ArgumentType;
+  value: any;
+}
 
-args: Argument[] - any input arguments for the operation
+type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+</pre>
 
 
 '''Success return value'''
@@ -476,24 +488,26 @@ Execute a contract invocation.
 '''Method Interface'''
 
 <pre>
-type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
-
-interface Argument {
-  type: ArgumentType;
-  value: any;
-}
-
 function invoke({ scriptHash: string, operation: string, args: Argument[] }): Promise<txid: string>
 </pre>
 
 
 '''Input arguments'''
 
-scriptHash: string - script hash of the smart contract to invoke a read on
+<pre>
+interface InvokeArgs {
+  scriptHash: string; // script hash of the smart contract to invoke
+  operation: string; // operation on the smart contract to call
+  args: Argument[]; // any input arguments for the operation
+}
 
-operation: string - operation on the smart contract to call
+interface Argument {
+  type: ArgumentType;
+  value: any;
+}
 
-args: Argument[] - any input arguments for the operation
+type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+</pre>
 
 
 '''Success return value'''
@@ -570,9 +584,12 @@ function getStorage({ scriptHash: string, key: string }): Promise<value: string>
 
 '''Input arguments'''
 
-scriptHash: string - script hash of the smart contract to invoke a read on
-
-key: string - key of the storage value to retrieve from the contract
+<pre>
+interface GetStorageArgs {
+  scriptHash: string; // script hash of the smart contract to invoke a read on
+  key: string; // key of the storage value to retrieve from the contract
+}
+</pre>
 
 
 '''Success return value'''
