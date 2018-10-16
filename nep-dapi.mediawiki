@@ -729,6 +729,7 @@ interface InvokeArgs {
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
   assets?: AttachedAssets
+  fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
 }
 
 interface Argument {
@@ -772,6 +773,7 @@ invoke({
     NEO: '100',
     GAS: '0.0001',
   },
+  fee: '0.001',
 })
 .then((txid: string) => {
   console.log('Invoke transaction success! Transaction ID: ' + txid);
