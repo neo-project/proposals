@@ -776,6 +776,46 @@ Example
 </pre>
 
 
+===Events===
+
+dApps can listen for events emitted by the wallet provider using the `addEventListener` method.
+
+====addEventListener====
+
+'''Method Interface'''
+
+<pre>
+function addEventListener(event: Event, callback: Function): Void
+</pre>
+
+'''Input arguments'''
+
+<pre>
+enum Event {
+  NETWORK_CHANGED = 'NETWORK_CHANGED',
+  ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
+}
+</pre>
+
+'''Callback arguments'''
+
+On a NETWORK_CHANGED event, the callback will fire with a single argument of the new network.
+<pre>
+enum Network {
+  MainNet = 'MainNet';
+  TestNet = 'TestNet';
+  PrivateNet = 'PrivateNet';
+}
+</pre>
+
+On a ACCOUNT_CHANGED event, the callback will fire with a single argument of the new account. In the case that the user logs out without providing a new account to connect, this will be null.
+<pre>
+interface Account {
+  address: string; // Address of the connected account
+  publicKey: string; // Public key of the connected account
+}
+</pre>
+
 ==Rational==
 
 This protocol will allow dApp developers to create applications that interact with the NEO blockchain without having to be concerned about managing a full wallet within their application or the details related to handing transaction creation or broadcasting. This will also allow dApps to allow users to transact in a secure fashion that does not require sharing of their private key.
