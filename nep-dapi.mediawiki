@@ -240,10 +240,10 @@ interface BalanceResults {
 }
 
 interface Balances {
-  [asset: string]: amount: string;
+  [asset: string]: string;
 }
-// Asset symbol or script hash to check balance
-// Parsed balance of the requested asset
+// KEY: Asset symbol or script hash to check balance
+// VALUE: Parsed balance of the requested asset
 </pre>
 
 
@@ -260,15 +260,11 @@ getBalance({
   asset: 'NKN'
 })
 .then((results: BalanceResults) => {
-  // results array should return a single entry
   Object.keys(results).forEach(address => {
-    
     const { balances } = results[address];
-    
     Object.keys(balances).forEach(asset => {
-    
       const amount = balances[asset];
-    
+
       console.log('Connected address: ' + address);
       console.log('Asset: ' + asset);
       console.log('Amount: ' + amount);
@@ -548,7 +544,7 @@ Execute a contract invocation.
 '''Method Interface'''
 
 <pre>
-function invoke({ scriptHash: string, operation: string, args: Argument[] }): Promise<txid: string>
+function invoke({ scriptHash: string, operation: string, args: Argument[], assets?: AttachedAssets }): Promise<txid: string>
 </pre>
 
 
@@ -559,6 +555,7 @@ interface InvokeArgs {
   scriptHash: string; // script hash of the smart contract to invoke
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
+  assets?: AttachedAssets
 }
 
 interface Argument {
@@ -567,6 +564,12 @@ interface Argument {
 }
 
 type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+
+interface AttachedAssets {
+  [asset: 'NEO'|'GAS']: string,
+}
+// KEY: Asset symbol (only NEO or GAS)
+// VALUE: Parsed amount to attach
 </pre>
 
 
@@ -592,6 +595,10 @@ invoke({
       value: 'hello'
     }
   ],
+  assets: {
+    NEO: '100',
+    GAS: '0.0001',
+  },
 })
 .then((txid: string) => {
   console.log('Invoke transaction success! Transaction ID: ' + txid);
