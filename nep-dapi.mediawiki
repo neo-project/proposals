@@ -797,7 +797,7 @@ enum Event {
 }
 </pre>
 
-'''Callback arguments'''
+=====NETWORK_CHANGED=====
 
 On a NETWORK_CHANGED event, the callback will fire with a single argument of the new network.
 <pre>
@@ -808,6 +808,8 @@ enum Network {
 }
 </pre>
 
+=====ACCOUNT_CHANGED=====
+
 On a ACCOUNT_CHANGED event, the callback will fire with a single argument of the new account. In the case that the user logs out without providing a new account to connect, this will be null.
 <pre>
 interface Account {
@@ -815,6 +817,27 @@ interface Account {
   publicKey: string; // Public key of the connected account
 }
 </pre>
+
+
+====removeEventListener====
+
+Removes any callback listeners previously set for a given event.
+
+'''Method Interface'''
+
+<pre>
+function removeEventListener(event: Event): Void
+</pre>
+
+'''Input arguments'''
+
+<pre>
+enum Event {
+  NETWORK_CHANGED = 'NETWORK_CHANGED',
+  ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
+}
+</pre>
+
 
 ==Rational==
 
