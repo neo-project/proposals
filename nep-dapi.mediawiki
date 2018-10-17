@@ -638,7 +638,7 @@ function send({ to: string, asset: string, amount: string, remark?: string, fee?
 <pre>
 interface SendArgs {
   to: string; // Address of the receiver of the assets to be sent
-  asset: string; // The symbol of the asset to be sent
+  asset: string; // Asset symbol or script hash to be sent
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
@@ -699,7 +699,7 @@ send({
 Upon receiving this request
 * Validate the inputs
 ** To address is valid
-** Asset symbol is valid
+** Map asset symbol to script hash of one is provided instead of script hash
 ** Amount is valid value, and account has enough balance
 * Broadcast the RPC request
 * Return the transaction Id
