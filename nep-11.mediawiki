@@ -1,9 +1,9 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 11
   Title: Non-Fungible Token Standard
   Author: Joe Stewart <hal0x2328@splyse.tech>, Shane Mann <fetter@splyse.tech>
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2018-04-18
 </pre>
 
