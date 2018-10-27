@@ -3,7 +3,7 @@
   Title: Stack Isolation for NeoVM
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2017-12-26
   Replaces: 4
 </pre>

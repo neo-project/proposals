@@ -61,7 +61,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Stack Isolation for NeoVM
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [https://github.com/neo-project/proposals/pull/25 9]
 | URI Scheme
