@@ -37,7 +37,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Dynamic Contract Invocation
 | localhuman, unignorant
 | Standard
-| Final
+| [[nep-8.mediawiki|Replaced]]
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
@@ -57,11 +57,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/22 8]
+| [[nep-8.mediawiki|8]]
 | Stack Isolation for NeoVM
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-9.mediawiki|9]]
 | URI Scheme

@@ -1,0 +1,55 @@
+<pre>
+  NEP: 8
+  Title: Stack Isolation for NeoVM
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Final
+  Created: 2017-12-26
+  Replaces: 4
+</pre>
+
+==Abstract==
+
+This NEP proposes that stack isolation of the NeoVM evaluation stack should be carried out to ensure the security of dynamic invocations and provide support for future new features.
+
+==Motivation==
+
+Now that [[nep-4.mediawiki|NEP-4 (dynamic invocation)]] has been implemented, but because the NeoVM evaluation stack is not isolated, a dynamically invoked contract may break the caller's stack at runtime, resulting in the contract not being executed as expected.
+
+On the other hand, some features, such as exception handling, also require stack isolation to be implemented.
+
+==Rationale==
+
+We need a new set of instructions so that each invocation creates a separate evaluation stack and automatically copies the arguments of the function to the new stack. After the function has finished running, the return value is automatically copied to the caller's stack. In this way, the invoked contract will no longer affect the caller's behavior by modifying with the stack.
+
+==Specification==
+
+We add five new instructions for starting invocations with stack isolation: <code>CALL_I</code>, <code>CALL_E</code>, <code>CALL_ED</code>, <code>CALL_ET</code>, <code>CALL_EDT</code>.
+
+===CALL_I===
+
+The instruction <code>CALL_I</code> is very similar to the old instruction <code>CALL</code>. The difference is that <code>CALL_I</code> requires an operand behind the instruction for representing the number of parameters and return values to copy.
+
+===CALL_E===
+
+The instruction <code>CALL_E</code> is very similar to the old instruction <code>APPCALL</code> for static invocations. The difference is that <code>CALL_E</code> requires an operand behind the instruction for representing the number of parameters and return values to copy.
+
+===CALL_ED===
+
+The instruction <code>CALL_ED</code> is very similar to the old instruction <code>APPCALL</code> for dynamic invocations. The difference is that <code>CALL_ED</code> requires an operand behind the instruction for representing the number of parameters and return values to copy.
+
+===CALL_ET===
+
+The instruction <code>CALL_ET</code> is very similar to the instruction <code>CALL_E</code>. The difference is that <code>CALL_ET</code> will start a tail call.
+
+===CALL_EDT===
+
+The instruction <code>CALL_EDT</code> is very similar to the instruction <code>CALL_ED</code>. The difference is that <code>CALL_EDT</code> will start a tail call.
+
+==Backwards Compatibility==
+
+All old contracts can be executed correctly in the original instruction set, but no new contracts are proposed to continue using the old instructions. When a new contract requires dynamic invocation, the old instructions should be avoided.
+
+==Implementation==
+
+https://github.com/neo-project/neo-vm/pull/39
