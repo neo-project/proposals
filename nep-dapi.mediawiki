@@ -177,14 +177,14 @@ Example
 </pre>
 
 
-====getNetwork====
-Return the network the wallet provider is connected to.
+====getNetworks====
+Returns the networks the wallet provider has available to connect to.
 
 
 '''Method Interface'''
 
 <pre>
-function getNetwork(): Promise<{ network: Network }>
+function getNetworks(): Promise<{ network: string[] }>
 </pre>
 
 
@@ -195,13 +195,7 @@ None
 
 '''Success return value'''
 
-<pre>
-enum Network {
-  MainNet = 'MainNet';
-  TestNet = 'TestNet';
-  PrivateNet = 'PrivateNet';
-}
-</pre>
+string[] - Array of network names the wallet provider has available for the dapp developer to connect to.
 
 
 '''Error return value'''
@@ -212,9 +206,10 @@ string - `NO_PROVIDER`|`CONNECTION_DENIED`
 '''Example'''
 
 <pre>
-getNetwork()
-.then((network: Network) => {
-  console.log('Network: ' + network);
+getNetworks()
+.then((networks: string[]) => {
+  console.log('Networks: ' + networks);
+  // eg. ["MainNet", "TestNet", "PrivateNet"]
 })
 .catch((err: string) => {
   switch(err) {
@@ -232,11 +227,11 @@ getNetwork()
 '''Provider Request Handling'''
 
 Upon receiving this request, return:
-- The NEO network which the wallet provider is connected to.
+- The list of NEO networks that the wallet is able to connect to. The return values will be used by the dapp developer to communicate to which network they would like their request to be directed to. The wallet provider will be responsible for the logistics of which node to submit any request to for each network alias provided.
 
 Example
 <pre>
-'MainNet'
+["MainNet", "TestNet", "PrivateNet"]
 </pre>
 
 
@@ -314,20 +309,29 @@ Example
 ====getBalance====
 Return balance of a specific asset for the given account.
 
+If the asset is omited from a request to MainNet, all asset and token balances will be returned.
+
 
 '''Method Interface'''
 
 <pre>
-function getBalance(args: BalanceRequest|BalanceRequest[]): Promise<BalanceResults>}>
+function getBalance(args: GetBalanceArgs): Promise<BalanceResults>}>
 </pre>
 
 
 '''Input arguments'''
 
 <pre>
+interface GetBalanceArgs {
+  params: BalanceRequest|BalanceRequest[];
+  network?: string - Network alias to submit this request to. If omitted, will default to "MainNet".
+}
+
 interface BalanceRequest {
   address: string; // Address to check balance(s)
-  asset?: string; // Asset symbol or script hash to check balance
+  asset?: string; // Asset script hash to check balance.
+  // Requests to "MainNet" will accept the asset symbols we well.
+  // Only optional for request to "MainNet"
 }
 </pre>
 
@@ -336,14 +340,14 @@ interface BalanceRequest {
 
 <pre>
 interface BalanceResults {
-  [address: string]: Balances;
+  [address: string]: Balance[];
 }
 
-interface Balances {
-  [asset: string]: string;
+interface Balance {
+  scriptHash: string;
+  symbol: string;
+  amount: string;
 }
-// KEY: Asset symbol or script hash to check balance
-// VALUE: Parsed balance of the requested asset
 </pre>
 
 
@@ -356,17 +360,21 @@ string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
 <pre>
 getBalance({
-  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-  asset: 'NKN'
+  params: {
+    address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+    asset: 'NKN'
+  },
+  network: 'MainNet',
 })
 .then((results: BalanceResults) => {
   Object.keys(results).forEach(address => {
     const { balances } = results[address];
-    Object.keys(balances).forEach(asset => {
-      const amount = balances[asset];
+    Object.keys(balances).forEach(balance => {
+      const { scriptHash, symbol, amount } = balance
 
-      console.log('Connected address: ' + address);
-      console.log('Asset: ' + asset);
+      console.log('Address: ' + address);
+      console.log('Asset scriptHash: ' + scriptHash);
+      console.log('Asset symbol: ' + symbol);
       console.log('Amount: ' + amount);
     });
   });
@@ -387,15 +395,22 @@ Single asset balance request sample
 <pre>
 // input
 {
-  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-  asset: 'NKN'
+  params: {
+    address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+    asset: 'NKN'
+  },
+  network: 'MainNet',
 }
 
 // output
 {
-  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': {
-    'NKN': '0.00000233',
-  },
+  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': [
+    {
+      'scriptHash': 'c36aee199dbba6c3f439983657558cfb67629599',
+      'symbol': 'NKN',
+      'amount': '0.00000233',
+    }
+  ],
 }
 </pre>
 
@@ -403,43 +418,85 @@ Single account balances request sample
 <pre>
 // input
 {
-  address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  params: {
+    address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+  },
+  network: 'MainNet',
 }
 
 // output
 {
-  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': {
-    'NEO': '10',
-    'GAS': '777.0001',
-    'NKN': '0.00000233',
-    'NNC': '2000',
-  },
+  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': [
+    {
+      'scriptHash': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+      'symbol': 'NEO',
+      'amount': '10',
+    },
+    {
+      'scriptHash': '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
+      'symbol': 'GAS',
+      'amount': '777.0001',
+    },
+    {
+      'scriptHash': 'c36aee199dbba6c3f439983657558cfb67629599',
+      'symbol': 'NKN',
+      'amount': '0.00000233',
+    },
+    {
+      'scriptHash': 'fc732edee1efdf968c23c20a9628eaa5a6ccb934',
+      'symbol': 'NNC',
+      'amount': '2000',
+    }
+  ]
 }
 
 Multiple account balances request sample
 <pre>
 // input
-[
-  {
-    address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-  },
-  {
-    address: 'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ',
-    asset: 'PHX',
-  },
-]
+{
+  params: [
+    {
+      address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
+    },
+    {
+      address: 'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ',
+      asset: 'PHX',
+    },
+  ],
+  network: 'MainNet',
+}
 
 // output
 {
-  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': {
-    'NEO': '10',
-    'GAS': '777.0001',
-    'NKN': '0.00000233',
-    'NNC': '2000',
-  },
-  'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ': {
-    'PHX': '11000',
-  },
+  'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru': [
+    {
+      'scriptHash': 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+      'symbol': 'NEO',
+      'amount': '10',
+    },
+    {
+      'scriptHash': '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
+      'symbol': 'GAS',
+      'amount': '777.0001',
+    },
+    {
+      'scriptHash': 'c36aee199dbba6c3f439983657558cfb67629599',
+      'symbol': 'NKN',
+      'amount': '0.00000233',
+    },
+    {
+      'scriptHash': 'fc732edee1efdf968c23c20a9628eaa5a6ccb934',
+      'symbol': 'NNC',
+      'amount': '2000',
+    }
+  ],
+  'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ': [
+    {
+      'scriptHash': '1578103c13e39df15d0d29826d957e85d770d8c9',
+      'symbol': 'PHX',
+      'amount': '11000',
+    }
+  ]
 }
 </pre>
 
@@ -456,7 +513,7 @@ Reads the raw value in smart contract storage.
 '''Method Interface'''
 
 <pre>
-function getStorage({ scriptHash: string, key: string }): Promise<value: string>
+function getStorage({ scriptHash: string, key: string, network?: string }): Promise<value: string>
 </pre>
 
 
@@ -466,6 +523,7 @@ function getStorage({ scriptHash: string, key: string }): Promise<value: string>
 interface GetStorageArgs {
   scriptHash: string; // script hash of the smart contract to invoke a read on
   key: string; // key of the storage value to retrieve from the contract
+  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
 }
 </pre>
 
@@ -485,7 +543,8 @@ string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
 <pre>
 getStorage({
   scriptHash: '505663a29d83663a838eee091249abd167e928f5',
-  key: 'game.status'
+  key: 'game.status',
+  network: 'TestNet'
 })
 .then((value: string) => {
   console.log('Storage value: ' + value);
@@ -498,9 +557,9 @@ getStorage({
     case CONNECTION_REFUSED:
       console.log('Connection dApp not connected. Please call the "connect" function.');
       break;
-   case RPC_ERROR:
-    console.log('There was an error when broadcasting this transaction to the network.');
-    break;
+    case RPC_ERROR:
+      console.log('There was an error when broadcasting this transaction to the network.');
+      break;
   }
 });
 </pre>
@@ -527,8 +586,12 @@ Execute a contract invocation in read-only mode.
 '''Method Interface'''
 
 <pre>
-
-function invokeRead({ scriptHash: string, operation: string, args: Argument[] }): Promise<result: Object>
+function invokeRead({
+  scriptHash: string,
+  operation: string,
+  args: Argument[]
+  network?: string,
+ }): Promise<result: Object>
 </pre>
 
 '''Input arguments'''
@@ -538,6 +601,7 @@ interface InvokeReadArgs {
   scriptHash: string; // script hash of the smart contract to invoke a read on
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
+  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
 }
 
 interface Argument {
@@ -575,6 +639,7 @@ invokeRead({
       value: 10
     }
   ],
+  network: 'PrivNet'
 })
 .then((result: Object) => {
   console.log('Read invocation result: ' + JSON.stringigy(result));
@@ -629,7 +694,14 @@ Invoke a transfer of a specified amount of a given asset from the connected acco
 '''Method Interface'''
 
 <pre>
-function send({ to: string, asset: string, amount: string, remark?: string, fee?: string }): Promise<txid: string>
+function send({
+  to: string,
+  asset: string,
+  amount: string,
+  remark?: string,
+  fee?: string,
+  network?: string,
+}): Promise<SendOutput>
 </pre>
 
 
@@ -638,17 +710,23 @@ function send({ to: string, asset: string, amount: string, remark?: string, fee?
 <pre>
 interface SendArgs {
   to: string; // Address of the receiver of the assets to be sent
-  asset: string; // Asset symbol or script hash to be sent
+  asset: string; // Asset script hash to be sent. Accepts asset symbol only for "MainNet"
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
+  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
 }
 </pre>
 
 
 '''Success return value'''
 
-txid: string - The transaction ID of the send invocation
+<pre>
+interface SendOutput {
+  txid: string; // The transaction ID of the send invocation
+  nodeUrl: string; // The node which the transaction was broadcast to.
+}
+</pre>
 
 
 '''Error return value'''
@@ -665,9 +743,12 @@ send({
   amount: '0.0001',
   remark: 'Hash puppy clothing purchase. Invoice#abc123',
   fee: '0.0001',
+  network: 'MainNet'
 })
-.then((txid: string) => {
-  console.log('Send transaction success! Transaction ID: ' + txid);
+.then(({txid, nodeUrl}: SendOutput) => {
+  console.log('Send transaction success!');
+  console.log('Transaction ID: ' + txid);
+  console.log('RPC node URL: ' + nodeUrl);
 })
 .catch((err: string) => {
   switch(err) {
@@ -702,11 +783,14 @@ Upon receiving this request
 ** Map asset symbol to script hash of one is provided instead of script hash
 ** Amount is valid value, and account has enough balance
 * Broadcast the RPC request
-* Return the transaction Id
+* Return the transaction Id and the url of the rpc node which the tx was broadcast to
 
 Example
 <pre>
-'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77'
+{
+  txid: 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77',
+  nodeUrl: 'http://seed7.ngd.network:10332',
+}:
 </pre>
 
 
@@ -717,7 +801,13 @@ Execute a contract invocation.
 '''Method Interface'''
 
 <pre>
-function invoke({ scriptHash: string, operation: string, args: Argument[], assets?: AttachedAssets }): Promise<txid: string>
+function invoke({
+  scriptHash: string,
+  operation: string,
+  args: Argument[],
+  assets?: AttachedAssets,
+  network?: string,
+}): Promise<InvokeOutput>
 </pre>
 
 
@@ -730,6 +820,7 @@ interface InvokeArgs {
   args: Argument[]; // any input arguments for the operation
   assets?: AttachedAssets
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
+  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
 }
 
 interface Argument {
@@ -749,7 +840,10 @@ interface AttachedAssets {
 
 '''Success return value'''
 
-txid: string - The transaction ID of the invocation
+interface InvokeOutput {
+  txid: string; // The transaction ID of the invocation
+  nodeUrl: string; // The node which the transaction was broadcast to.
+}
 
 
 '''Error return value'''
@@ -774,9 +868,12 @@ invoke({
     GAS: '0.0001',
   },
   fee: '0.001',
+  network: 'TestNet',
 })
-.then((txid: string) => {
-  console.log('Invoke transaction success! Transaction ID: ' + txid);
+.then(({txid, nodeUrl}: InvokeOutput) => {
+  console.log('Invoke transaction success!');
+  console.log('Transaction ID: ' + txid);
+  console.log('RPC node URL: ' + nodeUrl);
 })
 .catch((err: string) => {
   switch(err) {
@@ -805,11 +902,14 @@ Upon receiving this request
 ** Format parameters
 *** If `byteArray`, convert to appropriate hexstring based on assumed format
 * Broadcast the RPC request
-* Return the transaction id
+* Return the transaction Id and the url of the rpc node which the tx was broadcast to
 
 Example
 <pre>
-'34e07328e50984b28a26e3a534878f7db23a8b6827fbfbb20419c3b6b7410129'
+{
+  txid: 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77',
+  nodeUrl: 'http://seed7.ngd.network:10332',
+}:
 </pre>
 
 
@@ -830,7 +930,6 @@ function addEventListener(event: Event, callback: Function): Void
 <pre>
 enum Event {
   READY = 'READY',
-  NETWORK_CHANGED = 'NETWORK_CHANGED',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
 }
 </pre>
@@ -844,17 +943,6 @@ interface Provider {
   website: string;
   version: string;
   compatibility: string[];
-}
-</pre>
-
-=====NETWORK_CHANGED=====
-
-On a NETWORK_CHANGED event, the callback will fire with a single argument of the new network.
-<pre>
-enum Network {
-  MainNet = 'MainNet',
-  TestNet = 'TestNet',
-  PrivateNet = 'PrivateNet',
 }
 </pre>
 
