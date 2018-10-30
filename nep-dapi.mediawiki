@@ -984,4 +984,6 @@ This protocol will allow dApp developers to create applications that interact wi
 
 ==Implementation==
 
-In progress. To be finalized as consensus is reached on the specifications of this NEP.
+JS implementation to demonstrate the usage of these methods from a dapp developer.
+
+o3-dapi-neo - [https://github.com/O3Labs/o3-dapi/tree/master/packages/neo Github]
