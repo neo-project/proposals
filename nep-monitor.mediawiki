@@ -1,0 +1,170 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Node monitoring interface
+  Author: <insert others>, Erik van den Brink (erik@cityofzion.io)
+  Type: Standard
+  Status: Draft
+  Created: 2018-11-04
+</pre>
+
+==Abstract==
+
+A monitoring standard and interface enables extensive data collection capabilities on nodes in a predictable manner. Such capabilities and measures are essential in order to monitor node performance in addition to providing insights into the overall network for current and potential users. This proposal describes an architectural solution for enabling monitoring data collection as well as an expanded set of attributes that can be collected.
+
+==Motivation==
+
+There is currently insufficient insight into NEO’s network quality and performance in part due to lack of data collection capabilities and available data attributes to collect. Network insight is important for 
+* Developers & investors assessing network suitability for their business case
+* Developers looking to improve network performance
+* Token holders looking to make an educated vote for consensus node candidates
+* (Future) Token holders to build or maintain trust in the network
+* Node hosters looking for hosting requirements and monitoring tools
+* Media outlets comparing blockchain platforms
+
+Current data attribute collection happens for most part via RPC calls which requires RPC server availability (enabled and port exposed). RPC calls only allow for collecting a single data attribute per call therefore requiring multiple RPC calls to collect all attributes. This pull based mechanism will put unnecessary load on the node when collecting data and repeats for every client requesting this data. If RPC server capabilities are not supported in the particular client, enabled in the configuration, or ports are not properly forwarded when supported, valuable node statistics are lost. Therefore, we feel a new monitoring interface and data attribute set that keeps the node load to a minimum while expanding insights is justified.
+
+
+==Specification==
+
+The specification consists of three parts 
+# architectural changes for exposing the monitor interface in a load efficient manner 
+# a description of the <code>monitor</code> payload format 
+# a description of the new data attribute set.
+
+===Monitor interface===
+The monitor interface is the access point where collection clients can access the data attributes. When a client connects to a node over the P2P or Websocket port a handshake protocol is started. First, the node sends a [http://docs.neo.org/en-us/network/network-protocol.html#network-message network message] with a <code>version</code> command and the appropriate payload. In the original handshake implementation the client is expected to respond with a similar <code>version</code> command network message and its own payload or be disconnected from the node. According to this proposal, we allow the client to provide an alternative response in the form of a network message holding the <code>monitor</code> command type and a zero length payload to indicate that the client is not a regular peer but a client that wishes to collect data attributes. The node separates the connection into its own monitoring channel on which no [http://docs.neo.org/en-us/network/network-protocol.html#network-message regular network messages] from the client are accepted and only data from the node is broadcasted. The <code>monitor</code> payload format is described in the next section. 
+
+Data attribute broadcasting is to occur after every block persist. In the [https://github.com/neo-project/neo current official C# client] this means on every <code>Blockchain.PersistCompleted</code> event. A visual representation of the idea can be seen below
+[[Image:https://raw.githubusercontent.com/ixje/proposals/monitor/assets/nep-monitor/handshake.png]]
+
+'''Implementation caveats: '''
+
+Separate monitoring clients from regular node clients into their own connection pool to avoid maximum node connection limitations being hit due to connected monitoring clients.
+
+===Monitor payload===
+The payload data is a serialized JSON object containing the attributes listed in the next section. An example using neo-python for returning a monitor network message with 2 attributes for the MainNet would look as follows:
+<pre>
+json_data = {"Description": "my node", "Agent": "neopython-0.8.2"}
+m = Message(magic=0x00746e41, command='monitor', payload=MonitorPayload(data=json.dumps(json_data)))
+data_bytearray = Helper.ToArray(m)
+</pre>
+
+===Data attributes===
+The following data attributes shall be encapsulated in the <code>monitor</code> payload.
+
+{| class="wikitable"
+! Attribute/Key
+! Return type/value
+! Description
+|-
+| Description
+| uint8[20]
+| User friendly identification string
+|-
+| Agent
+| uint8[20]
+| Client identification string <code><name>-<version> </code>(i.e. "neopython-0.8.2")
+|-
+| BlockHeight
+| uint32
+| Index of the last block in the chain
+|-
+| BlockHash
+| uint160
+| Hash value of the last block in the chain
+|-
+| BlockTxCount
+| uint32
+| Number of transactions in the last block
+|-
+| BlockSize
+| uint32
+| The number of bytes the last block's data consist off<br/>
+Note: need to specify what exact data to count
+|-
+| BlockReceivedTime
+| uint32
+| Time in seconds from Unix EPOCH since receiving the latest block from the network
+|-
+| PeerCount
+| uint16
+| The combined number of peers connected on the P2P and/or websocket
+|-
+| InterfaceState
+| uint8
+| A flag indicating available interfaces<br/>
+0x1: P2P<br/>
+0x2: Websocket<br/>
+0x4: RPC<br/>
+0x8: REST<br/>
+0x10: reserved<br/>
+0x20: reserved
+|-
+| UnconfirmedTxCount
+| uint32
+| The number of transactions in the mempool after committing the block
+|-
+| IncomingTxPerSecond
+| uint32
+| The number of transactions submitted to the mempool between the LastBlock and LastBlock-1
+|-
+| ProcessedTxPerSecond
+| Fixed8
+| The number of transactions processed per second in the last block<br/>
+Calculated as: number of transactions in block divided by the total time in seconds needed to process the transactions
+|-
+| Uptime
+| uint32
+| Time in seconds from Unix EPOCH since the node started running without interruption.
+|}
+
+==Rationale==
+
+===Monitor interface===
+'''Shared vs separate interface'''
+
+By establishing a separate channel on the regular P2P/WebSocket port, as opposed to creating the service on its own port, we avoid losing the ability to collect statistics whenever a node is actively participating in the network. 
+
+'''custom vs established monitoring framework'''
+
+We've chosen a basic approach close to the original network implementation instead of integrating established frameworks such as [https://prometheus.io/ Prometheus] to avoid being biased. We encourage those in favour of using other monitoring suites to create and share their adapters with the community. 
+
+'''push vs pull data exposure'''
+
+Exposing a RestAPI or similar interface that can be queried is considered inefficient from a Node load perspective. In such a scenario each client interested in the data attributes will have to pull (and optionally poll) the node on a certain self determined interval. This repeatedly hits the database to collect essentially the same information. Even if caching is applied, there's still more overhead in handling the requests for each collecting client than when using a push/broadcast mechanism as proposed.
+
+===Monitor payload===
+'''JSON vs traditional fixed payload format'''
+
+The traditional payload formats of NEO network messages is fixed type and fixed order ([https://github.com/neo-project/neo/blob/a64ca722afc40d40faede9b35c049233875b9071/neo/Network/P2P/Payloads/InvPayload.cs example]). While this allows for optimized parsing it is limiting from an expansion perspective. By utilising the standardised JSON format, we keep the ability to expand the collected attributes through plugins according to the node hoster's needs. An example could be consensus state tracking, which is dangerous to include by default from a public attacker perspective but can be added in an obfuscated way through extensions. Through this approach, attribute extensions do not break existing clients because the additional keys will not have to be parsed as opposed to the traditional payload formatting.
+
+===Data attributes===
+The attributes listed have been established on the idea that the node itself should not have to track data in some persistent storage themselves (e.g. for averages) but only provide snapshots of their latest state. Statistic tracking clients or websites should take care of average and historical data tracking.
+
+====Considered but rejected====
+Beyond excluding attributes that are ''averages'' of an attribute over time, the following attributes have been proposed but excluded for the listed reasons
+{| class="wikitable"
+! Attribute
+! Description
+! Rejection rationale
+|-
+| NodeRTT
+| Node Round Trip Time
+| A node should not have to collect RTT data for potentially 100+ connected peers. This is up to the client to determine
+|-
+| WalletState
+| Whether a wallet is opened
+| This attribute leaks information to potential attackers
+|-
+| ConsensusState
+| Consensus state: i.e. prepareRequest, prepareResponse, ChangeView
+| This attribute leaks information to attackers allowing them to identify consensus nodes
+|}
+
+==Backwards Compatibility==
+Backwards compatibility is maintained. Nodes that do not implement the monitoring interface can, and likely already will, simply reject network messages with the <code>monitor</code> type command.
+
+==Implementation==
+
+- insert JSON schema link when attribute list is final
+- insert example implementation when architectural approach is final
