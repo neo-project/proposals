@@ -167,4 +167,5 @@ Backwards compatibility is maintained. Nodes that do not implement the monitorin
 ==Implementation==
 
 - insert JSON schema link when attribute list is final
+
 - insert example implementation when architectural approach is final
