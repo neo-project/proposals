@@ -695,7 +695,8 @@ Invoke a transfer of a specified amount of a given asset from the connected acco
 
 <pre>
 function send({
-  to: string,
+  fromAddress: string,
+  toAddress: string,
   asset: string,
   amount: string,
   remark?: string,
@@ -709,7 +710,8 @@ function send({
 
 <pre>
 interface SendArgs {
-  to: string; // Address of the receiver of the assets to be sent
+  fromAddress: string; // Address of the connected account to send the assets from
+  toAddress: string; // Address of the receiver of the assets to be sent
   asset: string; // Asset script hash to be sent. Accepts asset symbol only for "MainNet"
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
@@ -738,7 +740,8 @@ string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CA
 
 <pre>
 send({
-  to: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  fromAddress: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
+  toAddress: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
   asset: 'GAS',
   amount: '0.0001',
   remark: 'Hash puppy clothing purchase. Invoice#abc123',
@@ -779,6 +782,7 @@ send({
 
 Upon receiving this request
 * Validate the inputs
+** From address matches connected account
 ** To address is valid
 ** Map asset symbol to script hash of one is provided instead of script hash
 ** Amount is valid value, and account has enough balance
@@ -972,7 +976,6 @@ function removeEventListener(event: Event): Void
 <pre>
 enum Event {
   READY = 'READY',
-  NETWORK_CHANGED = 'NETWORK_CHANGED',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
 }
 </pre>
