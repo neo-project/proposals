@@ -22,7 +22,6 @@ Due to the lack of a global state hash, poor implemented nodes can disagree on S
 This problem can be easily solved by using Merkle Patricia Trees (MPT).
 We propose the introduction of a Global MPT (GMPT), which deterministically maps scripthashes to Global State (GS) structures.
 Each GS aggregates three different MPT root hashes: Storage MPT (SMPT), Votes MPT (VMPT) and Assets MPT (AMPT).
-It also includes block height (4 bytes) information regarding latest update on the state, which is useful to avoid double spending attacks when depending solely on Storage information.
 
 If a client wants to provide evidence regarding Storage information, it can include the value information of a leaf node on SMPT, together with the hashes of nodes in the up-tree path to the SMPT root.
 Any node can match this information to the GMPT root (possibly included in a block header), which guarantees that key-value mapping actually exists.
@@ -35,7 +34,8 @@ We propose that the asset balance on a specific scripthash is added to AMPT, whi
 It is worth mentioning that, initially, `balance` will be zero for all UTXO assets, and their total available on UTXO will be listed as the classic `unspent` value.
 
 An extra byte can be included on transaction outputs to indicate if output is a classic UTXO unspent coin, or if it will be added to scripthash `balance`.
-The `balance` can also be used as input in a transaction, if it follows the standard: scripthash (20 bytes) + block height (4 bytes) + zero padding (8 bytes). Coin reference (2 bytes) can be used to order transactions that consume assets on the same block to enforce avoiding double-spending.
+The `balance` can also be used as input in a transaction, if it follows the standard: scripthash (20 bytes) + zero padding (12 bytes).
+Since no repeated transaction hash is allowed, no double spending is possible. To allow deactivating old transactions, coin reference id (2 bytes) can be used to enforce transaction ordering on a block.
 This feature allows a smooth transaction from a UTXO model to a model where global asset balance is aggregated, and any user and smart contract will be easily capable of sending assets and informing balances.
 
 Every scripthash which is deployed or holds assets should be included in GMPT. If scripthash is not deployed and holds no assets, it should be removed from GMPT.
