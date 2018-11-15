@@ -10,7 +10,7 @@
 ==Abstract==
 
 Nodes in NEO network store Smart Contract information on a local Storage and past transactions on the blockchain itself.
-This NEP intends to propose standard Merkle State Proofs regarding Storage values, voting and global asset balances, through the implementation of three different Merkle Patricia Trees.
+This NEP intends to propose standard Merkle State Proofs regarding Storage values, voting, global asset balances and notifications, through the implementation of four different Merkle Patricia Trees.
 
 ==Motivation==
 
@@ -21,13 +21,16 @@ Due to the lack of a global state hash, poor implemented nodes can disagree on S
 
 This problem can be easily solved by using Merkle Patricia Trees (MPT).
 We propose the introduction of a Global MPT (GMPT), which deterministically maps scripthashes to Global State (GS) structures.
-Each GS aggregates three different MPT root hashes: Storage MPT (SMPT), Votes MPT (VMPT) and Assets MPT (AMPT).
+Each GS aggregates four different MPT root hashes: Storage MPT (SMPT), Votes MPT (VMPT), Notifications MPT (NMPT) and Assets MPT (AMPT).
 
 If a client wants to provide evidence regarding Storage information, it can include the value information of a leaf node on SMPT, together with the hashes of nodes in the up-tree path to the SMPT root.
 Any node can match this information to the GMPT root (possibly included in a block header), which guarantees that key-value mapping actually exists.
 This process is enough to guarantee NEP-5 balances are correct, for any given block, even without access to the complete Storage information.
 
 Votes associated to a scripthash are stored on VMPT. It maps the public keys of candidate consensus nodes to a fixed8 value (vote count).
+
+Notifications associated to a scripthash are stored on NMPT. It maps a transaction hash to a list of notifications (of that scripthash).
+This way, user can prove that a notification actually occurred on a given transaction.
 
 UTXO model already guarantees that global assets are not double-spent on transactions, however no unified balance currently exists.
 We propose that the asset balance on a specific scripthash is added to AMPT, which maps a global asset hash to a pair `(unspent, direct)` of fixed8 values, where `unspent` corresponds to unspent UTXO and `direct` corresponds to the scripthash direct balance of that asset.
