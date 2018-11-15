@@ -1,40 +1,65 @@
 <pre>
   NEP: <to be assigned>
-  Title: <NEP title>
-  Author: <list of authors' names and optionally, email addresses>
-  Type: <Standard | Informational | Meta>
+  Title: Merkle State Proofs
+  Author: Igor M. Coelho, Rodolfo Araujo, Vitor N. Coelho, et al (join us!)
+  Type: Standard
   Status: Draft
-  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-  Requires (*optional): <NEP number(s)>
-  Replaces (*optional): <NEP number(s)>
+  Created: 2018-11-14
 </pre>
 
 ==Abstract==
 
-A short (~200 words) description of the technical issue being addressed.
+Nodes in NEO network store Smart Contract information on a local Storage and past transactions on the blockchain itself.
+This NEP intends to propose standard Merkle State Proofs regarding Storage values, voting and global asset balances, through the implementation of three different Merkle Patricia Trees.
 
 ==Motivation==
 
-The motivation is critical for NEPs that want to change the NEO protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the NEP solves. NEP submissions without sufficient motivation may be rejected outright.
+Nodes in NEO network store Smart Contract information on a local Storage and past transactions on the blockchain itself.
+A client can prove it has a given amount of (global) assets by providing a list of (unspent) transactions, which can be validated on the blockchain, according to the UTXO model.
+However, a client is not capable of providing evidence regarding information on the Storage space, what includes NEP-5 tokens.
+Due to the lack of a global state hash, poor implemented nodes can disagree on Storage information, also lacking the capability to prove that its Storage is actually correct.
+
+This problem can be easily solved by using Merkle Patricia Trees (MPT).
+We propose the introduction of a Global MPT (GMPT), which deterministically maps scripthashes to Global State (GS) structures.
+Each GS aggregates three different MPT root hashes: Storage MPT (SMPT), Votes MPT (VMPT) and Assets MPT (AMPT).
+It also includes block height (4 bytes) information regarding latest update on the state, which is useful to avoid double spending attacks when depending solely on Storage information.
+
+If a client wants to provide evidence regarding Storage information, it can include the value information of a leaf node on SMPT, together with the hashes of nodes in the up-tree path to the SMPT root.
+Any node can match this information to the GMPT root (possibly included in a block header), which guarantees that key-value mapping actually exists.
+This process is enough to guarantee NEP-5 balances are correct, for any given block, even without access to the complete Storage information.
+
+Votes associated to a scripthash are stored on VMPT. It maps the public keys of candidate consensus nodes to a fixed8 value (vote count).
+
+UTXO model already guarantees that global assets are not double-spent on transactions, however no unified balance currently exists.
+We propose that the asset balance on a specific scripthash is added to AMPT, which maps a global asset hash to a pair `(unspent, balance)` of fixed8 values, where `unspent` corresponds to unspent UTXO and `balance` corresponds to the scripthash balance of that asset.
+It is worth mentioning that, initially, `balance` will be zero for all UTXO assets, and their total available on UTXO will be listed as the classic `unspent` value.
+
+An extra byte can be included on transaction outputs to indicate if output is a classic UTXO unspent coin, or if it will be added to scripthash `balance`.
+The `balance` can also be used as input in a transaction, if it follows the standard: scripthash (20 bytes) + block height (4 bytes) + zero padding (8 bytes). Coin reference (2 bytes) can be used to order transactions that consume assets on the same block to enforce avoiding double-spending.
+This feature allows a smooth transaction from a UTXO model to a model where global asset balance is aggregated, and any user and smart contract will be easily capable of sending assets and informing balances.
+
+Every scripthash which is deployed or holds assets should be included in GMPT. If scripthash is not deployed and holds no assets, it should be removed from GMPT.
 
 ==Specification==
 
-The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current NEO platforms.
+Merkle Patricia Tree implementation can follow any standard, as long as it is deterministic and efficient.
 
 ==Rationale==
 
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
-
-The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
+This proposal emerges from discussions with the community to enforce Storage correctness and the migration to an alternative model (different than UTXO).
 
 ==Backwards Compatibility==
 
-All NEPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The NEP must explain how the author proposes to deal with these incompatibilities. NEP submissions without a sufficient backwards compatibility treatise may be rejected outright.
+This NEP is fully backwards compatible, unless GMPT root hash is added to block header (this would require a new block version).
 
 ==Test Cases==
 
 Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
 
+TODO
+
 ==Implementation==
 
 The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
+
+TODO
