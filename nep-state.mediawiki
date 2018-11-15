@@ -34,12 +34,13 @@ This way, user can prove that a notification actually occurred on a given transa
 
 UTXO model already guarantees that global assets are not double-spent on transactions, however no unified balance currently exists.
 We propose that the asset balance on a specific scripthash is added to AMPT, which maps a global asset hash to a pair `(unspent, direct)` of fixed8 values, where `unspent` corresponds to unspent UTXO and `direct` corresponds to the scripthash direct balance of that asset.
-It is worth mentioning that, initially, `balance` will be zero for all UTXO assets, and their total available on UTXO will be listed as the classic `unspent` value.
+It is worth mentioning that, initially, `direct` will be zero for all UTXO assets, and their total available on UTXO will be listed as the classic `unspent` value.
 
 An extra byte can be included on transaction outputs to indicate if output is a classic UTXO unspent coin, or if it will be added to scripthash `direct` balance (no utxo).
 The `direct` balance can also be used as input in a transaction, if it follows the standard: scripthash (20 bytes) + zero padding (12 bytes).
 Since no repeated transaction hash is allowed, no double spending is possible. To allow deactivating old transactions, coin reference id (2 bytes) can be used to enforce transaction ordering on a block.
 This feature allows a smooth transaction from a UTXO model to a model where global asset balance is aggregated, and any user and smart contract will be easily capable of sending assets and informing balances.
+If asset is NEP-5 compliant, we can possibly include it here too, in order to get all benefits (consolidated balance, smart contract transfer)
 
 Every scripthash which is deployed or holds assets should be included in GMPT. If scripthash is not deployed and holds no assets, it should be removed from GMPT.
 
