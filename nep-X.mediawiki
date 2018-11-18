@@ -1,40 +1,63 @@
 <pre>
   NEP: <to be assigned>
-  Title: <NEP title>
-  Author: <list of authors' names and optionally, email addresses>
-  Type: <Standard | Informational | Meta>
+  Title: Non fungible tokens with expirable transfer
+  Author: Martin Ivanov, Anton Sotirov, Bogdan Alov
+  Type: Standard
   Status: Draft
-  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-  Requires (*optional): <NEP number(s)>
-  Replaces (*optional): <NEP number(s)>
+  Created: 2018-11-18 
+  Requires: NEP-11
 </pre>
 
 ==Abstract==
 
-A short (~200 words) description of the technical issue being addressed.
+Generally lendable/expirable tokens are NEP-11 tokens, which in addition can be transfered to a reciever address for a period of time. Once the period expires the original owner or the recipient can trigger a return to owner. The main feature of such lendable tokens is that the owner is modified, but the original owner will surely receive back the token.
 
 ==Motivation==
 
-The motivation is critical for NEPs that want to change the NEO protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the NEP solves. NEP submissions without sufficient motivation may be rejected outright.
+We want to introduce NFT's as the goto standard for licensing a product or a service. For example a smart contract might want to extend certain unique rights in the form of an NFT. By keeping the original owner intact and introducing a second layer of temporary owner (current user) we can enable NFT tokens to be used in a wider range of digital use-cases.
+On the flipside an owner of a "scarce" NFT's can rent their resources for a period of time. Usually, such "lending" or "renting" is accompanied with a certain revenue model. Introducing such "renting" can easily be implemented as an extension of such "expirable transfer".
 
 ==Specification==
 
-The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current NEO platforms.
+We introduce 3 methods as extension to the NFT (NEP 11) standard, as well as one property added to the NFT token:
+
+===Methods===
+
+====lend====
+* Syntax: <code>lend(from, to, tokenId, expiration)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>lend()</code> returns whether the token was successfuly transfered for a period of time.
+
+====returnToOwner====
+* Syntax: <code>returnToOwner(tokenId)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>returnToOwner()</code> returns whether the token has transfered ownership from the lender to the original owner. The method can be called by both the *OriginalOwner* and the *Owner*.
+
+====isLendActive====
+* Syntax: <code>isLendActive(tokenId)</code>
+* Return: <code>Boolean</code>
+* Remarks: <code>isLendActive()</code> returns whether the token is currently lended and the expiration time is not reached. Note that the token could still have the old owner if *returnToOwner()* wasn't called.
+
+===Property===
+
+====OriginalOwner====
+* Syntax: <code>OriginalOwner</code>
+* Type: <code>byte[]</code>
+* Remarks: <code>OriginalOwner</code> indicates the owner after mint of the token. It SHOULD be set on mint and be changed only through a regular TRANSFER. It SHOULD NOT be changed by the lend operation.
 
 ==Rationale==
 
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
-
-The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
+Simple and clean design, usefull also as a code template for NEP-10 tokens written in .NET.
 
 ==Backwards Compatibility==
 
-All NEPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The NEP must explain how the author proposes to deal with these incompatibilities. NEP submissions without a sufficient backwards compatibility treatise may be rejected outright.
+Provides full compatibilitiy with the NEP-10 standart
 
 ==Test Cases==
 
-Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
+Test cases in javascript and npm demonstrating how a token is minterd, transfered, lended and returned back to owner.
 
+https://github.com/bogdanalov/NEP-lendable-tokens/tree/master/node-unit-tests
 ==Implementation==
 
-The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
+https://github.com/bogdanalov/NEP-lendable-tokens
