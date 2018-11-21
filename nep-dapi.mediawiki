@@ -571,11 +571,11 @@ interface InvokeReadArgs {
 }
 
 interface Argument {
-  type: ArgumentType;
+  type: ArgumentDataType;
   value: any;
 }
 
-type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Integer'|'ByteArray'|'Array'|'Address';
 </pre>
 
 
@@ -775,7 +775,10 @@ function invoke({
   scriptHash: string,
   operation: string,
   args: Argument[],
-  assets?: AttachedAssets,
+  attachedAssets?: AttachedAssets,
+  fee?: string,
+  assetIntentOverrides?: AssetIntentOverrides,
+  triggerContractVerification?: boolean,
   network?: string,
 }): Promise<InvokeOutput>
 </pre>
@@ -788,23 +791,46 @@ interface InvokeArgs {
   scriptHash: string; // script hash of the smart contract to invoke
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
-  assets?: AttachedAssets
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
   network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
+  attachedAssets?: AttachedAssets;
+  
+  assetIntentOverrides?: AssetIntentOverrides;
+  // A hard override of all transaction utxo inputs and outputs.
+  // IMPORTANT: If provided, fee and attachedAssets will be ignored.
+  
+  triggerContractVerification?: boolean; // Adds the instruction to invoke the contract verification trigger
 }
 
 interface Argument {
-  type: ArgumentType;
+  type: ArgumentDataType;
   value: any;
 }
 
-type ArgumentType = `string`|`boolean`|`hash160`|`integer`|`bytearray`|`array`;
+type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Integer'|'ByteArray'|'Array'|'Address';
 
 interface AttachedAssets {
-  [asset: 'NEO'|'GAS']: string,
+  [asset: 'NEO'|'GAS']: string;
 }
 // KEY: Asset symbol (only NEO or GAS)
 // VALUE: Parsed amount to attach
+
+interface AssetIntentOverrides {
+  inputs: AssetInput[];
+  outputs: AssetOutput[];
+}
+
+interface AssetInput {
+  txid: string;
+  index: number;
+}
+
+interface AssetOutput {
+  asset: string;
+  address: number;
+  value: string;
+}
+
 </pre>
 
 
