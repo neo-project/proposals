@@ -47,40 +47,6 @@ Implementation details of per dApp domain handling will be left to the discretio
 
 ===Read Methods===
 
-====isReady====
-Used to check if the protocol is ready to start exchanging messages.
-
-
-'''Method Interface'''
-
-<pre>
-function isReady(): Promise<boolean>
-</pre>
-
-
-'''Input arguments'''
-
-None
-
-
-'''Success return value'''
-
-boolean - `true` if connection is ready to exchange messages, and `false` if not
-
-
-'''Example'''
-
-<pre>
-isReady()
-.then((result: boolean) => {
-  console.log('Provider isReady: ' + result);
-})
-.catch((err: string) => {
-  console.log('Unknown error' + err);
-});
-</pre>
-
-
 ====getProvider====
 Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
@@ -940,7 +906,7 @@ enum Event {
 
 =====READY=====
 
-On a READY event, the callback will fire with a single argument with information about the wallet provider.
+On a READY event, the callback will fire with a single argument with information about the wallet provider. At any time a READY event listener is added, it will immidiately be called if the provider is already in a ready state. This provides a single flow for dapp developers since this listener should start any and all interactions with the dapi protocol.
 <pre>
 interface Provider {
   name: string;
