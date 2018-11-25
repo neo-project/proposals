@@ -21,7 +21,7 @@ Information will be stored in each block header. This information will be necess
 
 [[File:oracles/oracles-image-1.png|center|header]]
 
-A section called "MetaData" will be added to the block that will store, following the key-value structure, the information necessary for the execution that will allow the persistence of the result over time. This header (or the entire block) can be compressed using Gzip.
+A section called "MetaData" will be added to the block that will store, following the key-value structure, the information necessary for the execution that will allow the persistence of the result over time. ''This header (or the entire block) can be compressed using Gzip.''
 
 In order to provide the system with a non-deterministic execution, Smart Contracts will be provided with a set of Access Proxies to all those elements that could cause an unstable result (through SYSCALL).
 
