@@ -1,0 +1,42 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Decentralized and Anonymous Voting
+  Author: hazal, alex, albert, giancarlo
+  Type: Standard
+  Status: Draft
+  Created: 2018-11-25
+</pre>
+
+==Abstract==
+
+We propose an overlay protocol for the NEO protocol that enables decentralized and anonymous voting. It uses homomorphic encryption to preserve anonymity.
+
+==Motivation==
+
+Online voting can use the property of blockchain immutability to cast the votes. But the need to preserve the privacy of the vote is in contrast with the idea of a public blockchain. By using homomorphic encryption it's possible to preserve the privacy. In addition we enable a way for voters to verify that their votes have been casted and to validate the results of the voting.
+
+==Specification==
+
+====vote====
+ <pre>
+public static bool vote(byte[] address, byte[] encryptedvote)
+</pre>
+ Saves to storage the encrypted vote casted by address.
+
+====getencryptedvotes====
+ <pre>
+public static byte[] getencryptedvotes()
+</pre>
+ Gets all the encrypted votes.
+
+==Rationale==
+
+We decided to use homomorphic encryption because of its wide spread use in electronic voting. In order for homomorphic encryption to work in electronic voting it is necessary to run a setup for the division of the secret shares that compose the decryption key. NEO validator nodes represent an excellent choice to run this setup and enable the possibility of decentralized anonymous voting. Another possibility we considered was to build a web of trust to decide how to choose the validators. The web of trust allowed as well to identify, although with minor risk of false positives, anomalous vertices that most probably represent fake identities.
+
+The usage of homomorphic encryption allows the voter to send her encrypted vote to the smart contract that performs the role of an immutable public dashboard. This mechanism makes it possible for the voter to verify that her vote is certainly going to be considered in the tallying. There is no risk of violating the privacy of the vote thanks to the encryption. Homomorphism of the encryption allows everyone to compute the encryption of the sum of the votes. The validators need to get together to decrypt this sum and the voters can verify that the decryption has been performed correctly.
+
+==Test Cases==
+
+* Referendum 
+
+==Implementation==
