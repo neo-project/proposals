@@ -1,0 +1,54 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Neo oracles
+  Author: Shargon and Belane
+  Type: Standard
+  Status: Draft
+  Created: 2018-11-22
+</pre>
+
+==Abstract==
+
+The objective of this proposal is to be the first chain capable of not needing oracles to interact with non-deterministic content. Our mission is to make NEO capable of performing REST API calls and other types of non-deterministic functionalities that can be extended in the future.
+
+==Motivation==
+
+Nowadays it is necessary to have access to information sources external to the Smart Contract for the performance of certain tasks (non-deterministic tasks). That is why it is necessary to give the option to run non-deterministic content safely and without the need of a centralized oracle.
+
+==Specification==
+
+Information will be stored in each block header. This information will be necessary, both for the correct execution of the transactions contained in it, and general information for positioning the block within the blockchain.
+
+[[File:oracles/oracles-image-1.png|center|header]]
+
+A section called "MetaData" will be added to the block that will store, following the key-value structure, the information necessary for the execution that will allow the persistence of the result over time. This header (or the entire block) can be compressed using Gzip.
+
+In order to provide the system with a non-deterministic execution, Smart Contracts will be provided with a set of Access Proxies to all those elements that could cause an unstable result (through SYSCALL).
+
+The result of the execution of a non-deterministic function will be stored in the metadata of the block header, allowing the future persistence of the result thus giving the system determinism in time. The execution of a Smart Contract will check if the result has been stored, in which case, the value will be reused. Otherwise, the complete execution of the contract will be performed and the result will be stored in the metadata of the block according to the following cycle:
+
+[[File:oracles/oracles-image-2.png|center|flow]]
+
+Another option is to include the information of the results of the Oracles of a transaction in the remark field of the transaction itself, being able to validate each TX for specific results.
+
+The origin/creator of the transaction will include the results of the calls in the TX itself and will sign it. Then, both the nodes and the consensus will verify that this information matches the same calls to the Oracles.
+Basically the internet proxy would be a function of the style:
+
+[[File:oracles/oracles-image-3.png|center|source]]
+
+In this way someone who executes that block within 1 year with the web service written off, will obtain the same result since the return of it is cached.
+
+===Consensus===
+
+If, during the execution of the block (for each consensus node), values other than those stored in the metadata of the returned block are obtained, that block won’t be signed and the TXs containing those calls will be discarded. This is because the determinism of the non-deterministic call cannot be guaranteed at the moment of execution.
+The verification of transactions with Oracle operations will always be carried out in background, the generation time of a block will never be increased. If one of the consensus nodes does not have the result of an oracle transaction prior to the creation or verification of a block, it will be discarded.
+
+===Security concerns===
+
+# The execution of the oracle syscalls by the consensus nodes could leak its IP address. Therefore it is recommended to have several network interfaces and the use of VPN for this purpose.
+# The processing of these Syscall will increase the consumption of the nodes during the transactions verification, therefore, operations should be more expensive, and with a reduced timeout.
+# The use of metadata avoid duplicate information when there are several TXs calling the same contract or API.
+
+==Backwards Compatibility==
+
+This NEP is fully backwards compatible, as it depends on smart contract implementation.
