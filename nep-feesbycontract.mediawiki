@@ -1,0 +1,136 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Fees paid by Contract <tbd>
+  Author: belane, shargon
+  Type: Standard
+  Status: Draft
+  Created: 2018-11-27
+</pre>
+
+==Abstract==
+
+This proposal will establish new methods to pay fees for smart contract interactions, making it possible for the contract itself to bear the cost of the operation and allow for priority transfers to be charged to the recipient.
+
+==Motivation==
+
+NEO is a blockchain that aims to keep costs down for users by maintaining low fees and granting a limited number of free transfers per block. This makes it attractive for projects that want to operate in NEO blockchain.
+
+Currently, however, the fee payment system is limited so that only the sender pays for the costs of the operation.
+
+Allowing projects to pay for the running costs of the network for the users may give NEO the edge in attracting projects interested in this feature, helping users make calls to contracts or token transfers without even having any GAS in their wallet.
+
+Transfers will carry fee thus they will be considered priority transactions. Projects can deploy contracts that will allow commission on contract funds to be charged based on the logic established by the contract itself.
+
+
+==Specification==
+
+NEO calculates a transaction’s fee based on the GAS difference between the Inputs and Outputs no matter the source or destination. Thus, a new Input and Output (from the contract) can be added to the transaction with the GAS difference that is to be paid for the network fee.
+
+|          |Inputs      |Outputs      |
+|----------|------------|-------------|
+|Invocation|Address A   |Contract B   |
+|Fee       |Contract B  |Contract B   |
+
+
+==Implementation==
+
+Implementing these features will include small changes to the wallets so that this functionality can be used and contracts developed with this feature in mind. Note that this functionality can be introduced without making changes to the core.
+
+===Wallet===
+
+The wallet should be capable of creating these types of transactions so it will be essential to look for available UTXOs in the contract. The more UTXOs the contract has, the easier it will be and it will ensure that more users can use the feature in the same block without crossing paths coinciding. (the absence of utxo in neo 3.0 will make easier to make the most of this feature).
+
+For the wallet to know this contract feature so that it can be used, the contract should set out a public method, with the following structure, that will return the accepted value:
+
+```csharp
+public BigInteger MaxBenFee()
+{
+   return new BigInteger(0.001m);
+}
+```
+
+Moreover, this NEP should appear in the list that exposed by the contract in the NEP10.
+
+===Contract===
+
+The contract should implement this logic in the _Verification_ section so that it will be able to apply any type of logic required to accept the transaction fee.
+
+It should accept transactions whose origin and destination may be a contract with a GAS difference that is equal to the authorized fee.
+
+```csharp
+namespace Contract
+{
+public class Contract : SmartContract
+	{
+    	private static readonly byte[] GasAssetId = Helper.HexToBytes("e72d286979ee6cb1b7e65dfddfb2e384100b8d148e7758de42e4168b71792c60");
+    	private static BigInteger maxFee = new BigInteger(0.001m);
+
+    	public static object Main(string method, object[] args)
+    	{
+        	if (Runtime.Trigger == TriggerType.Verification)
+        	{
+            	if (Runtime.VerifyWitness(Admin))
+            	{
+                	return true;
+            	}
+
+            	var tx = ExecutionEngine.ScriptContainer as Transaction;
+            	var outputs = tx.GetOutputs();
+            	var currentHash = ExecutionEngine.ExecutingScriptHash;
+
+            	BigInteger inputAmount = 0;
+            	foreach (var refe in tx.GetReferences())
+            	{
+                	if (refe.ScriptHash.AsBigInteger() == currentHash.AsBigInteger() &&
+                    	refe.AssetId.AsBigInteger() == GasAssetId.AsBigInteger())
+                    	inputAmount += refe.Value;
+            	}
+
+            	BigInteger outputAmount = 0;
+            	foreach (var output in outputs)
+   	         {
+                	if (output.ScriptHash.AsBigInteger() == currentHash.AsBigInteger() &&
+                        output.AssetId.AsBigInteger() == GasAssetId.AsBigInteger())
+                    	outputAmount += output.Value;
+
+            	    if (output.ScriptHash.AsBigInteger() != currentHash.AsBigInteger())
+                    	return false;
+            	}
+
+            	return inputAmount - outputAmount <= maxFee;
+        	}
+
+        	// ...
+    	}
+	}
+}
+```
+
+A method to check the maximum fee allowed for the contract should also be included.
+```csharp
+public static readonly BigInteger MaxBenFee() => maxFee;
+```
+Furthermore, each project will be able to add the necessary logic so that this particular feature is only used under certain conditions, such as only authorizing registered users or users with a balance greater than a specific value.
+
+The same logic should be applied both in _Verification_ and in _MaxBenFee_ so that the answer will be coherent and the wallets will recognize the expected result before carrying out the operation.
+
+===Security Concerns===
+
+_Verification_ should return True for this operation but False for the rest of the unwanted operations. If it does not return False, this may produce high risk vulnerability when authorizing users to withdrawal contract’s funds. It must always be kept in mind that this check must always be done only with GAS outputs and no other type of asset.
+
+
+==Rationale==
+
+Introduce new features that will add value to the projects and facilities for the users, allowing for the deployment of projects in which operations are transparent to the users.
+
+
+==Backwards Compatibility==
+
+This NEP is fully backwards compatible as it only depends on the smart contract implementation and current contracts wouldn't be affected.
+
+
+==References==
+
+1 - NetworkFee calculation: https://github.com/neo-project/neo/blob/master/neo/Network/P2P/Payloads/Transaction.cs#L55:L67
+2 - NEP-10: https://github.com/neo-project/proposals/blob/master/nep-10.mediawiki
+3 - BEN (beneficiary pays costs) means that the sender does not pay any charges.
