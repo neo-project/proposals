@@ -19,12 +19,12 @@ Currently, however, the fee payment system is limited so that only the sender pa
 
 Allowing projects to pay for the running costs of the network for the users may give NEO the edge in attracting projects interested in this feature, helping users make calls to contracts or token transfers without even having any GAS in their wallet.
 
-Transfers will carry fee thus they will be considered priority transactions. Projects can deploy contracts that will allow commission on contract funds to be charged based on the logic established by the contract itself.
+Transfers will carry fee and so they will be considered priority transactions. Projects can deploy contracts that will allow commission on contract funds to be charged based on the logic established by the contract itself.
 
 
 ==Specification==
 
-NEO calculates a transaction’s fee based on the GAS difference<sup>1</sup> between the Inputs and Outputs no matter the source or destination. Thus, a new Input and Output (from the contract) can be added to the transaction with the GAS difference that is to be paid for the network fee.
+NEO calculates a transaction’s fee based on the GAS difference<sup>1</sup> between the Inputs and Outputs regardless the source or destination. Therefore, a new Input and Output (from the contract) can be added to the transaction with the GAS difference that is to be paid for the network fee.
 
 {|
 |'''''|| Inputs|| Outputs
@@ -40,9 +40,9 @@ Implementing these features will include small changes to the wallets so that th
 
 ===Wallet===
 
-The wallet should be capable of creating these types of transactions so it will be essential to look for available UTXOs in the contract. The more UTXOs the contract has, the easier it will be and it will ensure that more users can use the feature in the same block without crossing paths coinciding. (the absence of utxo in neo 3.0 will make easier to make the most of this feature).
+The wallet should be capable of creating these types of transactions so it will be essential to look for available UTXOs in the contract. The more UTXOs the contract has, the easier it will be and it will ensure that more users can use the feature in the same block without crossing paths. (the absence of utxo in neo 3.0 will make easier to make the most of this feature).
 
-For the wallet to know this contract feature so that it can be used, the contract should set out a public method, with the following structure, that will return the accepted value:
+For the wallet to recognise this contract feature so that it can be used, the contract should set out a public method, with the following structure, that will return the accepted value:
 
 <source lang="csharp">
 public BigInteger MaxBenFee()
@@ -51,7 +51,7 @@ public BigInteger MaxBenFee()
 }
 </source>
 
-Moreover, this NEP should appear in the list that exposed by the contract in the NEP10<sup>2</sup>.
+Moreover, this NEP should appear in the list that is laid out by the contract in the NEP10<sup>2</sup>.
 
 ===Contract===
 
