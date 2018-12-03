@@ -150,7 +150,7 @@ Returns the networks the wallet provider has available to connect to.
 '''Method Interface'''
 
 <pre>
-function getNetworks(): Promise<{ network: string[] }>
+function getNetworks(): Promise<Networks>
 </pre>
 
 
@@ -161,8 +161,14 @@ None
 
 '''Success return value'''
 
-string[] - Array of network names the wallet provider has available for the dapp developer to connect to.
+interface Networks {
 
+<pre>
+interface Networks {
+  networks: string[];
+  // Array of network names the wallet provider has available for the dapp developer to connect to.
+}
+</pre>
 
 '''Error return value'''
 
@@ -173,7 +179,8 @@ string - `NO_PROVIDER`|`CONNECTION_DENIED`
 
 <pre>
 getNetworks()
-.then((networks: string[]) => {
+.then(response => {
+  const networks = response.networks;
   console.log('Networks: ' + networks);
   // eg. ["MainNet", "TestNet", "PrivateNet"]
 })
@@ -295,9 +302,11 @@ interface GetBalanceArgs {
 
 interface BalanceRequest {
   address: string; // Address to check balance(s)
-  asset?: string; // Asset script hash to check balance.
+  assets?: string|string[]; // Asset script hash to check balance.
   // Requests to "MainNet" will accept the asset symbols we well.
-  // Only optional for request to "MainNet"
+  // Requests to non "MainNet" will just return asset balances for NEO and GAS
+  fetchUTXO?: boolean;
+  // Fetches to UTXO data for NEO and/or GAS if attribute is 'true'
 }
 </pre>
 
@@ -328,7 +337,7 @@ string - `NO_PROVIDER`|`CONNECTION_DENIED`
 getBalance({
   params: {
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-    asset: 'NKN'
+    assets: ['NKN']
   },
   network: 'MainNet',
 })
@@ -363,7 +372,7 @@ Single asset balance request sample
 {
   params: {
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-    asset: 'NKN'
+    assets: ['NKN']
   },
   network: 'MainNet',
 }
@@ -479,7 +488,7 @@ Reads the raw value in smart contract storage.
 '''Method Interface'''
 
 <pre>
-function getStorage({ scriptHash: string, key: string, network?: string }): Promise<value: string>
+function getStorage({ scriptHash: string, key: string, network?: string }): Promise<StorageResponse>
 </pre>
 
 
@@ -496,7 +505,11 @@ interface GetStorageArgs {
 
 '''Success return value'''
 
-value: string - The raw value that's stored in the contract
+<pre>
+interface StorageResponse {
+  result: string; // The raw value that's stored in the contract
+}
+</pre>
 
 
 '''Error return value'''
@@ -512,7 +525,8 @@ getStorage({
   key: 'game.status',
   network: 'TestNet'
 })
-.then((value: string) => {
+.then(res => {
+  const value = res.result;
   console.log('Storage value: ' + value);
 })
 .catch((err: string) => {
@@ -541,7 +555,9 @@ Upon receiving this request
 
 Example
 <pre>
-'hello world'
+{
+  result: 'hello world'
+}
 </pre>
 
 
