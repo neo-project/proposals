@@ -10,17 +10,24 @@
 
 This NEP proposes a standard for low-cost tx on high-staked accounts.
 Each account with a minimum value (on governance token) will be able to emit a limited number of "tickets" that guarantee access to low-cost network fees.
+
 If misbehavior (such as network attacks) is detected by automated filters using staked tickets, the accounts will be blocked for a given period of time.
 
 ==Motivation==
 
 Pricing is a fundamental tool to control access on a network and it is deemed necessary to avoid network attacks (CITATION BITCOIN?).
-Neo technology organizes fees in two categories: network and system. Network fees intend to reward consensus nodes, charging (or not) every operation on the network.
-System fees control the nature of the operations executed on the smart contracts, guiding the development of efficient software (CITE NEO White Paper).
+Neo technology organizes fees in two categories: network and system. 
+   * Network fees intend to reward consensus nodes, charging (or not) every operation on the network.
+   * System fees control the nature of the operations executed on the smart contracts, guiding the development of efficient software (CITE NEO White Paper).
 However, it is hard to decide "optimal" prices when several actors are involved in a blockchain ecosystem, so the discussions on price adjustments tend to be quite challenging and slow to react to reality changes.
+
 Usually, a single actor (and price) is considered, but this NEP intends to create an alternative pricing structure for an important actor on the network: big business and exchanges.
-Big business (and exchanges) that bet on Neo technology should be rewarded and kept safe from sudden general price adjustments.
-This NEP proposes two different network prices: a general price and a staked low-cost price, which is accessible only by account posessing high quantities of governance token (Neo).
+    * Big business (and exchanges) that bet on Neo technology should be rewarded and kept safe from sudden general price adjustments.
+
+This NEP proposes adds a new different network prices: 
+       * Currently, we have a general price;
+       * this proposal considers a staked low-cost price, which is accessible only by account posessing high quantities of governance token (Neo).
+
 If abuse is detected by automated filters (developed by community), the account may be block for a given period of time, which will highly desencourage misbehavior from high-staking actors, and even extending these benefits to trusted customers.
 
 ==Specification==
@@ -61,7 +68,7 @@ If the transaction gets to a consensus node and it is processed, account will be
 The idea is to propose the idea of "filter" to allow the community to propose rules that define what a "misbehavior" is in practice.
 For example, if community decides that thousands of tx with fractions of NEP-5 tokens is a misbehavior, and if this can be computed AUTOMATICALLY and EFFICIENTLY, the staking account could be blocked.
 
-For general cases (non-staking utxo) it is considered that the general network fee is enough disencourage misbehavior. These strategies can also be extended to system fees, during the development/discussion of this NEP, but right now only focus network fees.
+For general cases (non-staking utxo) it is considered that the general network fee is enough to disencourage misbehavior. These strategies can also be extended to system fees, during the development/discussion of this NEP, but right now only focus network fees.
 
 ==Rationale==
 
