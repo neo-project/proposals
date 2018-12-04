@@ -66,4 +66,6 @@ TODO
 
 The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
 
-TODO
+Currently, storage changes of every block can be dumped following the use of this plugin: https://github.com/neo-project/neo-plugins/commit/db04e756a64c149e86d117fe89879c72f319c7df
+
+We can use the same reasoning for an optional plugin that Persist the merkle tree states.
