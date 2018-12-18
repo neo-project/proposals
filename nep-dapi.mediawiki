@@ -144,7 +144,7 @@ Example
 
 
 ====getNetworks====
-Returns the networks the wallet provider has available to connect to.
+Returns the networks the wallet provider has available to connect to, along with the default network the wallet is currently set to.
 
 
 '''Method Interface'''
@@ -161,12 +161,10 @@ None
 
 '''Success return value'''
 
-interface Networks {
-
 <pre>
 interface Networks {
-  networks: string[];
-  // Array of network names the wallet provider has available for the dapp developer to connect to.
+  networks: string[]; // Array of network names the wallet provider has available for the dapp developer to connect to.
+  defaultNetwork: string; // Network the wallet is currently set to.
 }
 </pre>
 
@@ -180,9 +178,16 @@ string - `NO_PROVIDER`|`CONNECTION_DENIED`
 <pre>
 getNetworks()
 .then(response => {
-  const networks = response.networks;
+  const {
+    networks,
+    defaultNetwork,
+  } = response.networks;
+
   console.log('Networks: ' + networks);
   // eg. ["MainNet", "TestNet", "PrivateNet"]
+  
+  console.log('Default network: ' + defaultNetwork);
+  // eg. "MainNet"
 })
 .catch((err: string) => {
   switch(err) {
@@ -201,10 +206,14 @@ getNetworks()
 
 Upon receiving this request, return:
 - The list of NEO networks that the wallet is able to connect to. The return values will be used by the dapp developer to communicate to which network they would like their request to be directed to. The wallet provider will be responsible for the logistics of which node to submit any request to for each network alias provided.
+- The wallet provider is to also return the default network that the wallet UI is currently set to by user.
 
 Example
 <pre>
-["MainNet", "TestNet", "PrivateNet"]
+{
+  networks: ["MainNet", "TestNet", "PrivateNet"],
+  defaultNetwork: "TestNet", 
+}
 </pre>
 
 
