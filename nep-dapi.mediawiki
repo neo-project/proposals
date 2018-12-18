@@ -87,7 +87,13 @@ compatibility: [
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_DENIED`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_DENIED`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -107,8 +113,8 @@ getProvider()
   console.log('Provider dAPI version: ' + version);
   console.log('Provider dAPI compatibility: ' + JSON.stringify(compatibility));
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
@@ -170,7 +176,13 @@ interface Networks {
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_DENIED`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_DENIED`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -189,8 +201,8 @@ getNetworks()
   console.log('Default network: ' + defaultNetwork);
   // eg. "MainNet"
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
@@ -245,7 +257,13 @@ interface Account {
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_DENIED`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_DENIED`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -261,8 +279,8 @@ getAccount()
   console.log('Provider address: ' + address);
   console.log('Provider public key: ' + publicKey);
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
@@ -337,7 +355,13 @@ interface Balance {
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_DENIED`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_DENIED`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -363,8 +387,8 @@ getBalance({
     });
   });
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
@@ -523,7 +547,13 @@ interface StorageResponse {
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -538,8 +568,8 @@ getStorage({
   const value = res.result;
   console.log('Storage value: ' + value);
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
@@ -611,7 +641,13 @@ result: Object - Response from RPC node
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_REFUSED`|`RPC_ERROR`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -635,8 +671,8 @@ invokeRead({
 .then((result: Object) => {
   console.log('Read invocation result: ' + JSON.stringigy(result));
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
       break;
@@ -724,7 +760,13 @@ interface SendOutput {
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`|`INSUFFICIENT_FUNDS`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_INPUT`|`CANCELED`|`INSUFFICIENT_FUNDS`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -744,18 +786,15 @@ send({
   console.log('Transaction ID: ' + txid);
   console.log('RPC node URL: ' + nodeUrl);
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
-      break;
-    case CONNECTION_REFUSED:
-      console.log('dApp not connected. Please call the "connect" function.');
       break;
     case SEND_ERROR:
       console.log('There was an error when broadcasting this transaction to the network.');
       break;
-    case MALFORMED_ADDRESS:
+    case MALFORMED_INPUT:
       console.log('The receiver address provided is not valid.');
       break;
     case CANCELED:
@@ -869,7 +908,13 @@ interface InvokeOutput {
 
 '''Error return value'''
 
-string - `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_ADDRESS`|`CANCELED`
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_INPUT`|`CANCELED`
+  description: string;
+  data: string;
+}
+</pre>
 
 
 '''Example'''
@@ -896,13 +941,10 @@ invoke({
   console.log('Transaction ID: ' + txid);
   console.log('RPC node URL: ' + nodeUrl);
 })
-.catch((err: string) => {
-  switch(err) {
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
     case NO_PROVIDER:
       console.log('No provider available.');
-      break;
-    case CONNECTION_REFUSED:
-      console.log('Connection dApp not connected. Please call the "connect" function.');
       break;
     case RPC_ERROR:
       console.log('There was an error when broadcasting this transaction to the network.');
@@ -995,6 +1037,28 @@ enum Event {
   READY = 'READY',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
 }
+</pre>
+
+===Error handling===
+
+All methods return a promise which will result in a resolve or reject. In the case of a rejection, the return argument will be an object formatted with standard fields for the type of error, a brief description, and any raw error data.
+
+<pre>
+interface Error {
+  type: string;
+  description: string;
+  data?: string;
+}
+</pre>
+
+Common error definitions
+<pre>
+NO_PROVIDER -> Thrown when there is no interface capable of interacting with NEO blockchain
+CONNECTION_DENIED -> Thrown when API provider refuses to execute a transaction (e.g. trying to execute a transaction on an unavialable network)
+RPC_ERROR -> Thrown when a command relying on RPC connection to a network node fails
+MALFORMED_INPUT -> Thrown when an input such as the address is not a valid NEO address
+CANCELED -> Thrown when a user cancels, or refuses the dapps request
+INSUFFICIENT_FUNDS -> Thrown when the action does not have a sufficient balance
 </pre>
 
 
