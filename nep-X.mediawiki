@@ -1,40 +1,44 @@
 <pre>
   NEP: <to be assigned>
-  Title: <NEP title>
-  Author: <list of authors' names and optionally, email addresses>
-  Type: <Standard | Informational | Meta>
+  Title: Proof-of-Safety
+  Author: Vitor N. Coelho, Igor M.Coelho, et al (join us!)
+  Type: Standard
   Status: Draft
-  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
-  Requires (*optional): <NEP number(s)>
-  Replaces (*optional): <NEP number(s)>
+  Created: 2018-12-21
 </pre>
 
 ==Abstract==
 
-A short (~200 words) description of the technical issue being addressed.
+Massive decentralization has the cost of safety.
+It is impossible to deny that in unlucky cases `M` (safety level) nodes can be Byzantine and attack the Blockchain.
+While there are different types of possible attacks, some of them are easy to detect, such as: 1- blocks with wrong transactions; and 2- blocks with double-spending.
+Considering this possibility, this NEP proposes a simple deep-reorganization mechanism in which consensus nodes that signed the Byzantine Block are banned.
+For ensuring safety by economic means, all consensus nodes will stake NEO (similar to what is done today) are may lose them in case of being Byzantine.
 
-==Motivation==
 
-The motivation is critical for NEPs that want to change the NEO protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the NEP solves. NEP submissions without sufficient motivation may be rejected outright.
+==Motivation and Rationale==
+
+After https://github.com/neo-project/neo/pull/426 is merged it is believed that no more natural forks will occur on the network.
+Then, some additional safety mechanism should be implemented in order to boost massive decentralization.
 
 ==Specification==
 
-The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current NEO platforms.
+A new message should be added, in which nodes can report the byzantine blocks.
+Initially, there will be two types of possible bans:
 
-==Rationale==
+* If the block contains wrong transactions all nodes that signed that blocked are automatically banned, removed as validators and losing their stake;
+* If two/more blocks on a same height are reported, the longer branch (with, at least, more than `X` blocks. `X` should be defined in a safety manner. Maybe 2 blocks could be enough) will be defined as the correct chain and all signatures from the other branches will be banned.
 
-The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
-
-The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
+In both cases the Blockchain will be deep reorganized and re-synced.
 
 ==Backwards Compatibility==
 
-All NEPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The NEP must explain how the author proposes to deal with these incompatibilities. NEP submissions without a sufficient backwards compatibility treatise may be rejected outright.
+This NEP requires a height definition where it will start, otherwise an attack can be done used any previous fault of the network.
 
 ==Test Cases==
 
-Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
+TODO
 
 ==Implementation==
 
-The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.
+TODO
