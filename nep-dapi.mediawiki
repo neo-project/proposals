@@ -29,6 +29,7 @@ While there may be several options for 3rd party wallet providers that will help
 Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Wallet providers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplication an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted by both the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers can spend more time on making their individual services better for their users.
 
 The current list of wallet providers that can benefit from the use of this protocol are currently:
+* NEL Chrome extension
 * nOS dApps browser
 * NeoLink Chrome extension
 * NEX Chrome extension
@@ -72,6 +73,7 @@ interface Provider {
   website: string;
   version: string;
   compatibility: string[];
+  extra: object; //this object can contain any attributes specific to the dapi provider, such as an app theme.
 }
 </pre>
 
@@ -106,12 +108,14 @@ getProvider()
     website,
     version,
     compatibility,
+    extra,
   } = provider;
 
   console.log('Provider name: ' + name);
   console.log('Provider website: ' + website);
   console.log('Provider dAPI version: ' + version);
   console.log('Provider dAPI compatibility: ' + JSON.stringify(compatibility));
+  console.log('Extra provider specific atributes: ' + JSON.stringify(compatibility));
 })
 .catch(({type: string, description: string, data: any}) => {
   switch(type) {
@@ -144,7 +148,10 @@ Example
     'NEP-14',
     'NEP-23',
     'NEP-29'
-  ]
+  ],
+  extra: {
+    theme: 'Dark Mode'
+  }
 }
 </pre>
 
@@ -250,7 +257,7 @@ None
 <pre>
 interface Account {
   address: string; // Address of the connected account
-  publicKey: string; // Public key of the connected account
+  label?: string; // A label the users has set to identify their wallet
 }
 </pre>
 
@@ -273,11 +280,11 @@ getAccount()
 .then((account: Account) => {
   const {
     address,
-    publicKey,
+    label
   } = account;
 
   console.log('Provider address: ' + address);
-  console.log('Provider public key: ' + publicKey);
+  console.log('Provider account label (Optional): ' + label);
 })
 .catch(({type: string, description: string, data: any}) => {
   switch(type) {
@@ -301,7 +308,7 @@ Example
 <pre>
 {
   address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-  publicKey: '03d43468721ef8936548878071b534d8228c313e02e6d90cef8c65fd3c2d4eaeed'
+  label: 'My Spending Wallet'
 }
 </pre>
 
