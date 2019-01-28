@@ -1018,13 +1018,18 @@ interface Provider {
 
 =====ACCOUNT_CHANGED=====
 
-On a ACCOUNT_CHANGED event, the callback will fire with a single argument of the new account. In the case that the user logs out without providing a new account to connect, this will be null.
+On a ACCOUNT_CHANGED event, the callback will fire with a single argument of the new account. This occurs when an account is already connected to the dapp, and the user has changed the connected account from the dapi provider side.
 <pre>
 interface Account {
   address: string; // Address of the connected account
-  publicKey: string; // Public key of the connected account
+  label?: string; // A label the users has set to identify their wallet
 }
 </pre>
+
+
+=====DISCONNECTED=====
+
+On a DISCONNECTED event, the account connected to the dapp via the dapi provider has been disconnected (logged out).
 
 
 ====removeEventListener====
@@ -1043,6 +1048,7 @@ function removeEventListener(event: Event): Void
 enum Event {
   READY = 'READY',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
+  DISCONNECTED = 'DISCONNECTED'
 }
 </pre>
 
