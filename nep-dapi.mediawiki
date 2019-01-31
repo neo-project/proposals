@@ -1032,6 +1032,26 @@ interface Account {
 On a DISCONNECTED event, the account connected to the dapp via the dapi provider has been disconnected (logged out).
 
 
+=====NETWORK_CHANGED=====
+
+On a NETWORK_CHANGED event, the callback will fire with a single argument of the new network details. This occurs when the user has changed the network on their provider wallet.
+
+<pre>
+interface Networks {
+  networks: string[]; // Array of network names the wallet provider has available for the dapp developer to connect to.
+  defaultNetwork: string; // Network the wallet is currently set to.
+}
+</pre>
+
+Example:
+<pre>
+{
+  networks: ["MainNet"],
+  defaultNetwork: "MainNet", 
+}
+</pre>
+
+
 ====removeEventListener====
 
 Removes any callback listeners previously set for a given event.
