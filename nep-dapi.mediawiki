@@ -1001,6 +1001,9 @@ function addEventListener(event: Event, callback: Function): Void
 enum Event {
   READY = 'READY',
   ACCOUNT_CHANGED = 'ACCOUNT_CHANGED',
+  NETWORK_CHANGED = 'NETWORK_CHANGED',
+  CONNECTED = 'CONNECTED',
+  DISCONNECTED = 'DISCONNECTED'
 }
 </pre>
 
