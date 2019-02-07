@@ -1079,8 +1079,8 @@ All methods return a promise which will result in a resolve or reject. In the ca
 <pre>
 interface Error {
   type: string;
-  description: string;
-  data?: string;
+  description?: string;
+  data?: any;
 }
 </pre>
 
