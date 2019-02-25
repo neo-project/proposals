@@ -797,6 +797,90 @@ Example
 </pre>
 
 
+====verifyMessage====
+Returns whether the provided signature data matches the provided message and was signed by the account of the provided public key.
+
+
+'''Method Interface'''
+
+<pre>
+function verifyMessage({
+  message: string,
+  data: string,
+  publicKey: string,
+}): Promise<{result: boolean}>
+</pre>
+
+
+'''Input arguments'''
+
+<pre>
+interface VerifyMessageArgs {
+  message: string; // Salt prefix + original message
+  data: string; // Signed message
+  publicKey: string; // Public key of account that signed message
+}
+</pre>
+
+
+'''Success return value'''
+
+<pre>
+interface Response {
+  result: boolean;
+}
+</pre>
+
+
+'''Error return value'''
+
+<pre>
+interface Error {
+  type: string;
+  description: string;
+  data: string;
+}
+</pre>
+
+
+'''Example'''
+
+<pre>
+verifyMessage({
+  message: '058b9e03e7154e4db1e489c99256b7faHello World!',
+  data: '0147fb89d0999e9d8a90edacfa26152fe695ec8b3770dcad522048297ab903822e12472364e254ff2e088fc3ebb641cc24722c563ff679bb1d1623d08bd5863d0d',
+  publicKey: '0241392007396d6ef96159f047967c5a61f1af0871ecf9dc82afbedb68afbb949a',
+})
+.then(({result: bool}) => {
+  console.log('Signature data matches provided message and public key: ' + result);
+})
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_DENIED:
+      console.log('The user rejected the request to connect with your dApp');
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request
+* Verify that the signed data matches the provided public key and message
+* Return result to dapp
+
+Example
+<pre>
+{
+  result: true,
+}
+</pre>
+
+
 ===Write Methods===
 ====send====
 Invoke a transfer of a specified amount of a given asset from the connected account to another account.
@@ -908,7 +992,7 @@ Example
 {
   txid: 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77',
   nodeUrl: 'http://seed7.ngd.network:10332',
-}:
+}
 </pre>
 
 
@@ -1057,6 +1141,97 @@ Example
   txid: 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77',
   nodeUrl: 'http://seed7.ngd.network:10332',
 }:
+</pre>
+
+
+====signMessage====
+Signs a provided messaged with an account selected by user. A salt prefix is added to the input string, and provided as a part of the data while signing. In the example, the signed value would be `058b9e03e7154e4db1e489c99256b7faHello World!`.
+
+
+'''Method Interface'''
+
+<pre>
+function signMessage({message: string}): Promise<SignedMessage>
+</pre>
+
+
+'''Input arguments'''
+
+<pre>
+interface SignMessageArgs {
+  message: string; // Arbitrary message to sign
+}
+</pre>
+
+
+'''Success return value'''
+
+<pre>
+interface SignedMessage {
+  publicKey: string; // Public key of account that signed message
+  message: string; // Original message signed
+  salt: string; // Salt added to original message as prefix, before signing
+  data; sring; // Signed message
+}
+</pre>
+
+
+'''Error return value'''
+
+<pre>
+interface Error {
+  type: string;
+  description: string;
+  data: string;
+}
+</pre>
+
+
+'''Example'''
+
+<pre>
+signMessage({
+  message: 'Hello World!',
+})
+.then((signedMessage: SignedMessage) => {
+  const {
+    publicKey,
+    message,
+    salt,
+    data,
+  } = signedMessage;
+
+  console.log('Public key used to sign:', publicKey);
+  console.log('Original message:', message);
+  console.log('Salt added to message:', salt);
+  console.log('Signed data:', data);
+})
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
+    case UNKNOWN_ERROR:
+      console.log(description);
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request
+* Present the message to the user for signing
+* Create a randomized salt value to be prefixed to the message before signing
+* Sign the salt + message value once the user confirms
+* Return to dapp
+
+Example
+<pre>
+{
+  publicKey: '0241392007396d6ef96159f047967c5a61f1af0871ecf9dc82afbedb68afbb949a',
+  data: '0147fb89d0999e9d8a90edacfa26152fe695ec8b3770dcad522048297ab903822e12472364e254ff2e088fc3ebb641cc24722c563ff679bb1d1623d08bd5863d0d',
+  salt: '058b9e03e7154e4db1e489c99256b7fa',
+  message: 'Hello World!',
+}
 </pre>
 
 
