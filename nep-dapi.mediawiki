@@ -637,7 +637,7 @@ interface Argument {
   value: any;
 }
 
-type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Integer'|'ByteArray'|'Array'|'Address';
+type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Hash256'|'Integer'|'ByteArray'|'Array'|'Address';
 </pre>
 
 
@@ -878,7 +878,7 @@ interface Argument {
   value: any;
 }
 
-type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Integer'|'ByteArray'|'Array'|'Address';
+type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Hash256'|'Integer'|'ByteArray'|'Array'|'Address';
 
 interface AttachedAssets {
   [asset: 'NEO'|'GAS']: string;
