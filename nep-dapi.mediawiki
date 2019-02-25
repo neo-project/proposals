@@ -243,7 +243,7 @@ Return the Account that is currently connected to the dApp.
 '''Method Interface'''
 
 <pre>
-function getAccount(): Promise<{ address: string, publicKey: string }>
+function getAccount(): Promise<{ address: string, label: string }>
 </pre>
 
 
@@ -302,13 +302,90 @@ getAccount()
 '''Provider Request Handling'''
 
 Upon receiving this request, return:
-- The address and public key of account currently selected by the user in the wallet interface
+- The address and label of account currently selected by the user in the wallet interface
 
 Example
 <pre>
 {
   address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
   label: 'My Spending Wallet'
+}
+</pre>
+
+
+====getPublicKey====
+Return the public key of the Account that is currently connected to the dApp.
+
+
+'''Method Interface'''
+
+<pre>
+function getPublicKey(): Promise<{ address: string, publicKey: string }>
+</pre>
+
+
+'''Input arguments'''
+
+None
+
+
+'''Success return value'''
+
+<pre>
+interface Account {
+  address: string; // Address of the connected account
+  publicKey: string; // Public key of the connected account
+}
+</pre>
+
+
+'''Error return value'''
+
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_DENIED`
+  description: string;
+  data: string;
+}
+</pre>
+
+
+'''Example'''
+
+<pre>
+getPublicKey()
+.then((publicKeyData: PublicKeyData) => {
+  const {
+    address,
+    publicKey,
+  } = publicKeyData;
+
+  console.log('Account address: ' + address);
+  console.log('Account public key: ' + publicKey);
+})
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case CONNECTION_DENIED:
+      console.log('The user rejected the request to connect with your dApp');
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request, return:
+- The address and public key of account currently selected by the user in the wallet interface
+
+Example
+<pre>
+{
+  address: 'ATUaTd3LA4kZiyB6it9fdb5oJpZYMBF4DX',
+  publicKey: '03fa41b6ff75ebeff8464556629cfceae7402f5d815626a7a6542f786974b942e0'
 }
 </pre>
 
