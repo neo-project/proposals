@@ -1097,7 +1097,7 @@ invoke({
       value: 'hello'
     }
   ],
-  assets: {
+  attachedAssets: {
     NEO: '100',
     GAS: '0.0001',
   },
