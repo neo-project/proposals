@@ -17,10 +17,16 @@ Considering this possibility, this NEP proposes a simple mechanism that allows v
 
 ==Motivation and Rationale==
 
-After https://github.com/neo-project/neo/pull/426 is merged it is believed that no more natural forks will occur on the network.
+After dBFT 2.0 was merged it is believed that no more natural forks will occur on the network.
 Then, some additional safety mechanism should be implemented in order to boost massive decentralization.
+Furthermore, in case that NEO holders detects missbehavior of CN they should be able to vote at any time.
+
+In addition, in a "normal" scenario where `f+1` nodes lose acess to their private key the network could stuck.
+In this sense, a mechanism should be prepared for the most adverse situation.
 
 ==Specification==
+
+TO CHANGE after the idea of lightining voting.
 
 A new message should be added, in which nodes can report the byzantine blocks.
 Initially, there will be two types of possible bans:
@@ -32,7 +38,9 @@ In both cases the Blockchain will be deep reorganized and re-synced.
 
 ==Backwards Compatibility==
 
-This NEP requires a height definition where it will start, otherwise an attack can be done used any previous fault of the network.
+This NEP will be fully compatible.
+
+However, it should be noticed that at any time of the history if votes are enough we could redesign the chain.
 
 ==Test Cases==
 
