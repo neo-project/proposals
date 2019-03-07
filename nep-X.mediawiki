@@ -1,7 +1,7 @@
 <pre>
   NEP: <to be assigned>
-  Title: Proof-of-Safety
-  Author: Vitor N. Coelho, Igor M.Coelho, et al (join us!)
+  Title: Lightning-Voting
+  Author: Vitor N. Coelho, Igor M.Coelho, Jeff Solinsky, et al. (join us!)
   Type: Standard
   Status: Draft
   Created: 2018-12-21
@@ -12,8 +12,7 @@
 Massive decentralization has the cost of safety.
 It is impossible to deny that in unlucky cases `M` (safety level) nodes can be Byzantine and attack the Blockchain.
 While there are different types of possible attacks, some of them are easy to detect, such as: 1- blocks with wrong transactions; and 2- blocks with double-spending.
-Considering this possibility, this NEP proposes a simple deep-reorganization mechanism in which consensus nodes that signed the Byzantine Block are banned.
-For ensuring safety by economic means, all consensus nodes will stake NEO (similar to what is done today) are may lose them in case of being Byzantine.
+Considering this possibility, this NEP proposes a simple mechanism that allows voting to happen in an upper layer, namely, in the mempool.
 
 
 ==Motivation and Rationale==
