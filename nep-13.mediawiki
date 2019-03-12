@@ -61,6 +61,7 @@ This reference can be found [here](https://docs.google.com/document/d/1U1RGAehQw
 <b>Line 4:</b> An optional source root, useful for relocating source files on a server or removing repeated values in the “sources” entry.  This value is prepended to the individual entries in the “source” field.
 <br/>
 <b>Line 5:</b> A list of original sources used by the “mappings” entry.
+<br/>
 <b>Line 6:</b> An optional list of source content, useful when the “source” can’t be hosted. The contents are listed in the same order as the sources in line 5. “null” may be used if some original sources should be retrieved by name.
 <br/>
 <b>Line 7:</b> A list of symbol names used by the “mappings” entry.
@@ -68,23 +69,27 @@ This reference can be found [here](https://docs.google.com/document/d/1U1RGAehQw
 <b>Line 8:</b> A string with the encoded mapping data.
 
 The “mappings” data is broken down as follows:
-1. Each group representing a line in the generated file is separated by a ”;”
-2.  Each segment is separated by a “,”
-3.  Each segment is made up of 1,4 or 5 variable length fields.
+<br/>
+#  Each group representing a line in the generated file is separated by a ”;”
+<br/>
+#  Each segment is separated by a “,”
+<br/>
+#  Each segment is made up of 1,4 or 5 variable length fields.
+<br/>
 
 The fields in each segment are:
 <br/>
-1. The zero-based starting column of the line in the generated code that the segment represents. If this is the first field of the first segment, or the first segment following a new generated line (“;”), then this field holds the whole base 64 VLQ. Otherwise, this field contains a base 64 VLQ that is relative to the previous occurrence of this field.
+# The zero-based starting column of the line in the generated code that the segment represents. If this is the first field of the first segment, or the first segment following a new generated line (“;”), then this field holds the whole base 64 VLQ. Otherwise, this field contains a base 64 VLQ that is relative to the previous occurrence of this field.
 <br/>
 <i>Note that this is different than the fields below because the previous value is reset after every generated line.</i>
 <br/>
-2. If present, an zero-based index into the “sources” list. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.
+# If present, an zero-based index into the “sources” list. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.
 <br/>
-3. If present, the zero-based starting line in the original source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.
+# If present, the zero-based starting line in the original source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.
 <br/>
-If present, the zero-based starting column of the line in the source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.
+# If present, the zero-based starting column of the line in the source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.
 <br/>
-If present, the zero-based index into the “names” list associated with this segment. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.
+# If present, the zero-based index into the “names” list associated with this segment. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.
 
 ====Resolving sources====
 
