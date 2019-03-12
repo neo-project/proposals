@@ -42,7 +42,7 @@ This reference can be found [https://docs.google.com/document/d/1U1RGAehQwRypUTo
 
 ====File Format====
 <pre>
-<code>{
+{
 "version" : 3,
 "file": "out.js",
 "sourceRoot": "",
@@ -50,7 +50,7 @@ This reference can be found [https://docs.google.com/document/d/1U1RGAehQwRypUTo
 "sourcesContent": [null, null],
 "names": ["src", "maps", "are", "fun"],
 "mappings": "A,AAAB;;ABCDE;"
-}</code>
+}
 </pre>
 <b>Line 1:</b> The entire file is a single JSON object
 <br/>
