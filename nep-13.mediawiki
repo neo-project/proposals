@@ -80,15 +80,10 @@ The “mappings” data is broken down as follows:
 The fields in each segment are:
 <br/>
 # The zero-based starting column of the line in the generated code that the segment represents. If this is the first field of the first segment, or the first segment following a new generated line (“;”), then this field holds the whole base 64 VLQ. Otherwise, this field contains a base 64 VLQ that is relative to the previous occurrence of this field.
-<br/>
 <i>Note that this is different than the fields below because the previous value is reset after every generated line.</i>
-<br/>
 # If present, an zero-based index into the “sources” list. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.
-<br/>
 # If present, the zero-based starting line in the original source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.
-<br/>
 # If present, the zero-based starting column of the line in the source represented. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented. Always present if there is a source field.
-<br/>
 # If present, the zero-based index into the “names” list associated with this segment. This field is a base 64 VLQ relative to the previous occurrence of this field, unless this is the first occurrence of this field, in which case the whole value is represented.
 
 ====Resolving sources====
