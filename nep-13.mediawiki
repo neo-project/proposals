@@ -18,7 +18,7 @@ In order to increase smart-contract debugging support, we need a source mapping 
 ==Specification==
 
 The NEO source mapping file specification is based on the existing Source Mapping revision 3, made by John Lenz and Nick Fitzgerald.
-This reference can be found [here](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/preview#heading=h.1ce2c87bpj24).
+This reference can be found [https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/preview#heading=h.1ce2c87bpj24 here].
 
 ====Terminology====
 
@@ -72,7 +72,6 @@ The “mappings” data is broken down as follows:
 #  Each group representing a line in the generated file is separated by a ”;”
 #  Each segment is separated by a “,”
 #  Each segment is made up of 1,4 or 5 variable length fields.
-<br/>
 
 The fields in each segment are:
 # The zero-based starting column of the line in the generated code that the segment represents. If this is the first field of the first segment, or the first segment following a new generated line (“;”), then this field holds the whole base 64 VLQ. Otherwise, this field contains a base 64 VLQ that is relative to the previous occurrence of this field. <i>Note that this is different than the fields below because the previous value is reset after every generated line.</i>
