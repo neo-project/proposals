@@ -1234,6 +1234,118 @@ Example
 }
 </pre>
 
+====deploy====
+Will deploy a compiled smart contract to the blockchain with the provided input parameters. The GAS cost for deploying the contract will be calculated by the provider, and displayed to the user upon tx acceptance or rejection.
+
+
+'''Method Interface'''
+
+<pre>
+function deploy({
+  network: any,
+  name: string,
+  version: string,
+  author: string,
+  email: string,
+  description: string,
+  needsStorage?: boolean,
+  dynamicInvoke?: boolean,
+  isPayable?: boolean,
+  parameterList: string,
+  returnType: string,
+  code: string,
+}): Promise<DeployOutput>
+</pre>
+
+
+'''Input arguments'''
+
+<pre>
+interface DeployArgs {
+  network: any;
+  name: string;
+  version: string;
+  author: string;
+  email: string;
+  description: string;
+  needsStorage?: boolean;
+  dynamicInvoke?: boolean;
+  isPayable?: boolean;
+  parameterList: string;
+  returnType: string;
+  code: string;
+}
+</pre>
+
+
+'''Success return value'''
+
+<pre>
+interface DeployOutput {
+  txid: string;
+  nodeUrl: string;
+}
+</pre>
+
+
+'''Error return value'''
+
+<pre>
+interface Error {
+  type: string;
+  description: string;
+  data: string;
+}
+</pre>
+
+
+'''Example'''
+
+<pre>
+deploy({
+  network: 'PrivateNet',
+  name: 'Hello world!',
+  version: 'v0.0.1',
+  author: 'John Smith',
+  email: 'info@o3.network',
+  description: 'My first contract.',
+  needsStorage: true,
+  dynamicInvoke: false,
+  isPayable: false,
+  parameterList: '0710',
+  returnType: '05',
+  code: '53c56b0d57616b652075702c204e454f21680f4e656f2e52756e74696d652e4c6f6761006c7566',
+})
+.then(({txid, nodeUrl}: InvokeOutput) => {
+  console.log('Deploy transaction success!');
+  console.log('Transaction ID: ' + txid);
+  console.log('RPC node URL: ' + nodeUrl);
+})
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
+    case UNKNOWN_ERROR:
+      console.log(description);
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request
+* Run a testinvoke on the deploy transaction to get the gas cost in order to deploy the contract
+* Display the deploy input parameters to the user along with the associated deployment fee
+* Sign and broadcast transaction upon receiving confirmation from user
+
+Example
+<pre>
+{
+  txid: 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77',
+  nodeUrl: 'http://seed7.ngd.network:10332',
+}
+</pre>
+
 
 ===Events===
 
