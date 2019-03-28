@@ -1,7 +1,7 @@
 <pre>
   NEP: <to be assigned>
   Title: Smart Contract Source Mapping File
-  Author: Sérgio Flores (@relfos), Ricardo Prado (@lock9), Alex  Fragapane(@afragapane) and Alex DiCarlo(dicarlo2)
+  Author: Sérgio Flores (@relfos), Ricardo Prado (@lock9), Alex  Fragapane(@afragapane) and Alex DiCarlo(@dicarlo2)
   Type: Standard
   Status: Draft
   Created: 2019-03-07
