@@ -9,20 +9,28 @@
 
 ==Abstract==
 
-Massive decentralization has the cost of safety.
-It is impossible to deny that in unlucky cases `M` (safety level) nodes can be Byzantine and attack the Blockchain.
-While there are different types of possible attacks, some of them are easy to detect, such as: 1- blocks with wrong transactions; and 2- blocks with double-spending.
-Considering this possibility, this NEP proposes a simple mechanism that allows voting to happen in an upper layer, namely, in the mempool.
+Fully distributed systems have the cost of safety.
+
+It is impossible to deny that, in unlucky cases, M (safety level) nodes can be Byzantine and attack the Blockchain.
+While there are different types of possible attacks, some of them are easy to detect, such as: 1- blocks with wrong transactions; 2- blocks with double-spending; 3 - more than f consensus node lagging plenty of time to sign next block: among others.
+
+Considering this possibility, this NEP proposes a lightning voting experience, in which NEO holders would be able to modify validators during block creation.
+In this sense, this proposal is a simple mechanism that allows voting to happen in an upper layer, namely, in the mempool.
 
 
 ==Motivation and Rationale==
 
 After dBFT 2.0 was merged it is believed that no more natural forks will occur on the network.
-Then, some additional safety mechanism should be implemented in order to boost massive decentralization.
-Furthermore, in case that NEO holders detects missbehavior of CN they should be able to vote at any time.
+Then, an additional safety mechanism should be implemented in order to boost massive decentralization.
+Furthermore, in case that NEO holders detects missbehavior of CN they should be able to vote at any time, without having to trust that most of us will post your request
+
+The name Lightining Voting came with the idea that the voting is an offchain process. 
+The state channel with NEO blockchain was already created by means of UTXO or a Native Contract Asset.
+In this sense, as soon as NEO holders sign txs and the majority agrees with validators change, that could happen during block creation (and not only after publishing the vote intentation).
+
 
 In addition, in a "normal" scenario where `f+1` nodes lose acess to their private key the network could stuck.
-In this sense, a mechanism should be prepared for the most adverse situation.
+In this sense, this proposal is a mechanism that prepares NEO blockchain for the most adverse situation.
 
 ==Specification==
 
@@ -39,8 +47,6 @@ In both cases the Blockchain will be deep reorganized and re-synced.
 ==Backwards Compatibility==
 
 This NEP will be fully compatible.
-
-However, it should be noticed that at any time of the history if votes are enough we could redesign the chain.
 
 ==Test Cases==
 
