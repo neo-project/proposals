@@ -864,8 +864,14 @@ verifyMessage({
 '''Provider Request Handling'''
 
 Upon receiving this request
-* Verify that the signed data matches the provided public key and message
-* Return result to dapp
+* The input message should have the salt already added.
+* Create the hexstring that was signed. '010001f0' + <length of message in hex> + message + '0000'
+For more details, please see:
+[https://docs.switcheo.network/#signing-messages-for-neo]
+
+* Verify that the signed data matches the provided public key and hexstring.
+* Return to dapp
+
 
 Example
 <pre>
@@ -1137,7 +1143,7 @@ Example
 
 
 ====signMessage====
-Signs a provided messaged with an account selected by user. A salt prefix is added to the input string, and provided as a part of the data while signing. In the example, the signed value would be `058b9e03e7154e4db1e489c99256b7faHello World!`.
+Signs a provided messaged with an account selected by user. A randomized salt prefix is added to the input string before it is signed, and it is encased in a non-executable transaction before signed. This ensures allow compatibility with Ledger devices.
 
 
 '''Method Interface'''
@@ -1163,7 +1169,7 @@ interface SignedMessage {
   publicKey: string; // Public key of account that signed message
   message: string; // Original message signed
   salt: string; // Salt added to original message as prefix, before signing
-  data; sring; // Signed message
+  data; string; // Signed message
 }
 </pre>
 
@@ -1213,8 +1219,12 @@ signMessage({
 Upon receiving this request
 * Present the message to the user for signing
 * Create a randomized salt value to be prefixed to the message before signing
-* Sign the salt + message value once the user confirms
+* Create the hexstring to be signed. '010001f0' + <length of salt+message in hex> + salt + message + '0000'
+* Sign the hexstring value once the user confirms
 * Return to dapp
+
+For more details, please see:
+[https://docs.switcheo.network/#signing-messages-for-neo]
 
 Example
 <pre>
