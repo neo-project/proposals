@@ -204,7 +204,7 @@ getNetworks()
 
   console.log('Networks: ' + networks);
   // eg. ["MainNet", "TestNet", "PrivateNet"]
-  
+
   console.log('Default network: ' + defaultNetwork);
   // eg. "MainNet"
 })
@@ -231,7 +231,7 @@ Example
 <pre>
 {
   networks: ["MainNet", "TestNet", "PrivateNet"],
-  defaultNetwork: "TestNet", 
+  defaultNetwork: "TestNet",
 }
 </pre>
 
@@ -408,7 +408,7 @@ function getBalance(args: GetBalanceArgs): Promise<BalanceResults>}>
 <pre>
 interface GetBalanceArgs {
   params: BalanceRequest|BalanceRequest[];
-  network?: string - Network alias to submit this request to. If omitted, will default to "MainNet".
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
 }
 
 interface BalanceRequest {
@@ -456,7 +456,6 @@ getBalance({
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
     assets: ['NKN']
   },
-  network: 'MainNet',
 })
 .then((results: BalanceResults) => {
   Object.keys(results).forEach(address => {
@@ -491,7 +490,6 @@ Single asset balance request sample
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
     assets: ['NKN']
   },
-  network: 'MainNet',
 }
 
 // output
@@ -513,7 +511,6 @@ Single account balances request sample
   params: {
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
   },
-  network: 'MainNet',
 }
 
 // output
@@ -554,8 +551,7 @@ Multiple account balances request sample
       address: 'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ',
       asset: 'PHX',
     },
-  ],
-  network: 'MainNet',
+  ]
 }
 
 // output
@@ -615,7 +611,7 @@ function getStorage({ scriptHash: string, key: string, network?: string }): Prom
 interface GetStorageArgs {
   scriptHash: string; // script hash of the smart contract to invoke a read on
   key: string; // key of the storage value to retrieve from the contract
-  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
 }
 </pre>
 
@@ -645,8 +641,7 @@ interface Error {
 <pre>
 getStorage({
   scriptHash: '505663a29d83663a838eee091249abd167e928f5',
-  key: 'game.status',
-  network: 'TestNet'
+  key: 'game.status'
 })
 .then(res => {
   const value = res.result;
@@ -706,7 +701,7 @@ interface InvokeReadArgs {
   scriptHash: string; // script hash of the smart contract to invoke a read on
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
-  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
 }
 
 interface Argument {
@@ -749,8 +744,7 @@ invokeRead({
       type: 'integer',
       value: 10
     }
-  ],
-  network: 'PrivNet'
+  ]
 })
 .then((result: Object) => {
   console.log('Read invocation result: ' + JSON.stringigy(result));
@@ -911,7 +905,7 @@ interface SendArgs {
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
-  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
 }
 </pre>
 
@@ -946,8 +940,7 @@ send({
   asset: 'GAS',
   amount: '0.0001',
   remark: 'Hash puppy clothing purchase. Invoice#abc123',
-  fee: '0.0001',
-  network: 'MainNet'
+  fee: '0.0001'
 })
 .then(({txid, nodeUrl}: SendOutput) => {
   console.log('Send transaction success!');
@@ -1024,13 +1017,13 @@ interface InvokeArgs {
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
-  network?: string; // Network alias to submit this request to. If omitted, will default to "MainNet".
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
   attachedAssets?: AttachedAssets;
-  
+
   assetIntentOverrides?: AssetIntentOverrides;
   // A hard override of all transaction utxo inputs and outputs.
   // IMPORTANT: If provided, fee and attachedAssets will be ignored.
-  
+
   triggerContractVerification?: boolean; // Adds the instruction to invoke the contract verification trigger
 }
 
@@ -1101,8 +1094,7 @@ invoke({
     NEO: '100',
     GAS: '0.0001',
   },
-  fee: '0.001',
-  network: 'TestNet',
+  fee: '0.001'
 })
 .then(({txid, nodeUrl}: InvokeOutput) => {
   console.log('Invoke transaction success!');
@@ -1242,7 +1234,6 @@ Will deploy a compiled smart contract to the blockchain with the provided input 
 
 <pre>
 function deploy({
-  network: any,
   name: string,
   version: string,
   author: string,
@@ -1254,6 +1245,7 @@ function deploy({
   parameterList: string,
   returnType: string,
   code: string,
+  network?: string,
 }): Promise<DeployOutput>
 </pre>
 
@@ -1262,7 +1254,6 @@ function deploy({
 
 <pre>
 interface DeployArgs {
-  network: any;
   name: string;
   version: string;
   author: string;
@@ -1274,6 +1265,7 @@ interface DeployArgs {
   parameterList: string;
   returnType: string;
   code: string;
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
 }
 </pre>
 
@@ -1303,7 +1295,6 @@ interface Error {
 
 <pre>
 deploy({
-  network: 'PrivateNet',
   name: 'Hello world!',
   version: 'v0.0.1',
   author: 'John Smith',
@@ -1414,7 +1405,7 @@ Example:
 <pre>
 {
   networks: ["MainNet"],
-  defaultNetwork: "MainNet", 
+  defaultNetwork: "MainNet",
 }
 </pre>
 
