@@ -34,32 +34,31 @@ TODO
 ==Implementation==
 
 The current header includes a magic numbers of 4 bytes in all messages. 
-This proposal try to change this header to 20 bytes only during the initial negotiation of the communication avoiding message overload.
+This proposal send this header only during the initial negotiation of the communication avoiding message overload.
 
- +--------------------------+       +--------------------------------------------------------+
- |   Protocol negotiation   |  ...  |                    Message Protocol                    |  
- +--------------------------+       +--------------------------------------------------------+
- +------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
- | UUID | | Version Message |  ...  | Flags | | Command | | CRC | | Payload Size | | Payload |
- +------+ +-----------------+       +-------+ +---------+ +-----+ +--------------+ +---------+
+ +--------------------------------+       +------------------------------------------------+
+ |      Protocol negotiation      |  ...  |                Message Protocol                |  
+ +--------------------------------+       +------------------------------------------------+
+ +------------+ +-----------------+       +-------+ +---------+ +--------------+ +---------+
+ | MagicBytes | | Version Message |  ...  | Flags | | Command | | Payload Size | | Payload |
+ +------------+ +-----------------+       +-------+ +---------+ +--------------+ +---------+
 
 ===Protocol negotiation===
 
-This is the first message sent, and UUID (Protocol Magic Number) is evaluated to establish the connection or disconnect the client.
+This is the first message sent, the protocol magic number is evaluated to establish the connection or disconnect the client.
 
- +----------------------------+
- |    Protocol negotiation    |
- +----------------------------+
- +------+ +-------------------+
- | UUID | |                   |
- +------+ |  Version Message  |
- | 16 b | |                   |
- +------+ +-------------------+ 
+ +----------------------------------+
+ |       Protocol negotiation       |
+ +----------------------------------+
+ +------------+ +-------------------+
+ | MagicBytes | |                   |
+ +------------+ |  Version Message  |
+ |     4 b    | |                   |
+ +------------+ +-------------------+ 
 
-* UUID - 16 bytes
+* Magic Bytes - 4 bytes
 
-We think that is better have a unique id (16 bytes) on the negotiation than an integer (4 bytes) on each message.
-UUID should be defined on protocol.json as NEO protocol ID.
+This integer must be defined on protocol.json as NEO protocol ID.
 
 * Version Message
 
@@ -75,16 +74,16 @@ Current version payload has Services field, we propose to change it to Enum Type
 
 Once this check is made, the communication flow begins as defined below.
 
- +--------------------------------------------------+
- |                 Message Protocol                 |  
- +--------------------------------------------------+
- +-------+ +---------+ +-----+ +--------+ +---------+
- | Flags | | Command | | CRC | |  Size  | | Payload |
- +-------+ +---------+ +-----+ +--------+ +---------+
- |  1b   | |    1b   | | 2b  | |   4b   | |         |
- +-------+ +---------+ +-----+ +--------+ | n bytes |
- |                   8b                 | |         |
- +--------------------------------------+ +---------+
+ +-------------------------------------------+
+ |              Message Protocol             |  
+ +-------------------------------------------+
+ +-------+ +---------+ +---------+ +---------+
+ | Flags | | Command | | VarSize | | Payload |
+ +-------+ +---------+ +---------+ +---------+
+ |  1b   | |    1b   | |  1-5b   | |         |
+ +-------+ +---------+ +---------+ | n bytes |
+ |               8b              | |         |
+ +-------------------------------+ +---------+
 
 * Message Flags - 1 byte
 
@@ -92,7 +91,6 @@ The availables MessageFlags are:
   
   - None = 0x00,
   - Compressed = 0x01
-  - Urgent = 0x02
 
 * Message Command - 1 byte
 
@@ -120,11 +118,7 @@ Currently the available commands are:
   - verack
   - version
 
-* Message CRC - 2 bytes
-
-Message Checksum. Light CRC function instead of SHA256. [https://stackoverflow.com/questions/27939882/fast-crc-algorithm *]
-
-* Payload Size - 4 bytes
+* Payload Size - dynamic size, from 1 to 5 bytes
 
 Payload size. Integer (little-endian).
 
