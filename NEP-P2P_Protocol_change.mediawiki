@@ -9,11 +9,13 @@
 
 ==Abstract==
 
-We believe is necessary a P2P protocol optimization to avoid unnecessary data exchange, reducing the computational consumption, in order to improve and speed up communication between the nodes.
+We believe that a P2P protocol optimization is necessary in order to avoid unnecessary data exchange between nodes.
+In this sense, reducing the computational consumption and, consequently, improving and speeding up the communication between nodes.
 
 ==Motivation==
 
-Improve the P2P protocol to support higher loads, improve the communications speed and prioritize consensus messages. We think that is necessary to implement a compression mechanism and safe all bytes that should be possible
+Improve the P2P protocol to support higher loads, as well as improving the communication speed and prioritizing consensus messages. 
+In addition, we think that it is necessary to implement a compression mechanism and save all bytes that should be possible.
 
 ==Specification==
 
@@ -33,8 +35,8 @@ TODO
 
 ==Implementation==
 
-The current header includes a magic numbers of 4 bytes in all messages. 
-This proposal send this header only during the initial negotiation of the communication avoiding message overload.
+The current header includes a magic number of 4 bytes in all messages. 
+With this current proposal, this header is sent only during the initial negotiation of the communication, avoiding message overload.
 
  +--------------------------------+       +------------------------------------------------+
  |      Protocol negotiation      |  ...  |                Message Protocol                |  
