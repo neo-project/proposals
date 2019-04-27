@@ -36,7 +36,7 @@ TODO
 ==Implementation==
 
 The current header includes a magic number of 4 bytes in all messages. 
-With this current proposal, this header is sent only during the initial negotiation of the communication, avoiding message overload.
+With this proposal, this header is sent only during the initial negotiation of the communication, reducing overhead in all remaining communication messages.
 
  +--------------------------------+       +------------------------------------------------+
  |      Protocol negotiation      |  ...  |                Message Protocol                |  
