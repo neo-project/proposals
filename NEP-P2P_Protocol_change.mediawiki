@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-We believe that a P2P protocol optimization is necessary in order to avoid unnecessary data exchange between nodes.
+A P2P protocol optimization is deemed necessary in order to avoid unnecessary data exchange between nodes. 
 In this sense, reducing the computational consumption and, consequently, improving and speeding up the communication between nodes.
 
 ==Motivation==
