@@ -1338,6 +1338,7 @@ function send({
   remark?: string,
   fee?: string,
   network?: string,
+  broadcastOverride?: boolean,
 }): Promise<SendOutput>
 </pre>
 
@@ -1352,7 +1353,8 @@ interface SendArgs {
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
-  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string; //  Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
 }
 </pre>
 
@@ -1362,7 +1364,8 @@ interface SendArgs {
 <pre>
 interface SendOutput {
   txid: string; // The transaction ID of the send invocation
-  nodeUrl: string; // The node which the transaction was broadcast to.
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
 }
 </pre>
 
@@ -1424,7 +1427,8 @@ Upon receiving this request
 ** To address is valid
 ** Map asset symbol to script hash of one is provided instead of script hash
 ** Amount is valid value, and account has enough balance
-* Broadcast the RPC request
+* If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
+* Else broadcast the RPC request
 * Return the transaction Id and the url of the rpc node which the tx was broadcast to
 
 Example
@@ -1452,6 +1456,7 @@ function invoke({
   assetIntentOverrides?: AssetIntentOverrides,
   triggerContractVerification?: boolean,
   network?: string,
+  broadcastOverride?: boolean,
 }): Promise<InvokeOutput>
 </pre>
 
@@ -1466,6 +1471,7 @@ interface InvokeArgs {
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
   network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
   attachedAssets?: AttachedAssets;
+  broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
 
   assetIntentOverrides?: AssetIntentOverrides;
   // A hard override of all transaction utxo inputs and outputs.
@@ -1510,7 +1516,8 @@ interface AssetOutput {
 
 interface InvokeOutput {
   txid: string; // The transaction ID of the invocation
-  nodeUrl: string; // The node which the transaction was broadcast to.
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
 }
 
 
@@ -1571,7 +1578,8 @@ Upon receiving this request
 ** Script hash is valid
 ** Format parameters
 *** If `byteArray`, convert to appropriate hexstring based on assumed format
-* Broadcast the RPC request
+* If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
+* Else broadcast the RPC request
 * Return the transaction Id and the url of the rpc node which the tx was broadcast to
 
 Example
@@ -1697,6 +1705,7 @@ function deploy({
   returnType: string,
   code: string,
   network?: string,
+  broadcastOverride?: boolean,
 }): Promise<DeployOutput>
 </pre>
 
@@ -1717,6 +1726,7 @@ interface DeployArgs {
   returnType: string;
   code: string;
   network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
 }
 </pre>
 
@@ -1726,7 +1736,8 @@ interface DeployArgs {
 <pre>
 interface DeployOutput {
   txid: string;
-  nodeUrl: string;
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
 }
 </pre>
 
@@ -1778,7 +1789,10 @@ deploy({
 Upon receiving this request
 * Run a testinvoke on the deploy transaction to get the gas cost in order to deploy the contract
 * Display the deploy input parameters to the user along with the associated deployment fee
-* Sign and broadcast transaction upon receiving confirmation from user
+* Sign transaction upon receiving confirmation from user
+* If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
+* Else broadcast the RPC request
+* Return the transaction Id and the url of the rpc node which the tx was broadcast to
 
 Example
 <pre>
