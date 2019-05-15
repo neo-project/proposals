@@ -1457,6 +1457,7 @@ function invoke({
   triggerContractVerification?: boolean,
   network?: string,
   broadcastOverride?: boolean,
+  txHashAttributes?: TxHashAttribute[],
 }): Promise<InvokeOutput>
 </pre>
 
@@ -1478,11 +1479,17 @@ interface InvokeArgs {
   // IMPORTANT: If provided, fee and attachedAssets will be ignored.
 
   triggerContractVerification?: boolean; // Adds the instruction to invoke the contract verification trigger
+  
+  txHashAttributes?: TxHashAttribute[]; // Adds transaction attributes for the "Hash<x>" usage block
 }
 
 interface Argument {
   type: ArgumentDataType;
   value: any;
+}
+
+interface TxHashAttribute extends Argument {
+  txAttrUsage: 'Hash1'|'Hash2'|'Hash3'|'Hash4'|'Hash5'|'Hash6'|'Hash7'|'Hash8'|'Hash9'|'Hash10'|'Hash11'|'Hash12'|'Hash13'|'Hash14'|'Hash15';
 }
 
 type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Hash256'|'Integer'|'ByteArray'|'Array'|'Address';
