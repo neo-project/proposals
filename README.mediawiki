@@ -51,12 +51,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [[nep-7.mediawiki|7]]
-| Triggers for NeoContract
-| Erik Zhang
-| Standard
-| Final
-|-
 | [[nep-8.mediawiki|8]]
 | Stack Isolation for NeoVM
 | Erik Zhang
