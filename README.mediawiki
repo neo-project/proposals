@@ -81,6 +81,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [https://github.com/neo-project/proposals/pull/69 12]
+| dApp Platform Provider Interface
+| Nick Fujita, Matus Zamborsky
+| Standard
+| Accepted
+|-
 | 
 | Superconductive Exchange
 | 
