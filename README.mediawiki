@@ -33,12 +33,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [[nep-4.mediawiki|4]]
-| Dynamic Contract Invocation
-| localhuman, unignorant
-| Standard
-| [[nep-8.mediawiki|Replaced]]
-|-
 | [[nep-5.mediawiki|5]]
 | Token Standard
 | Tyler Adams, luodanwg, tanyuan, Alan Fong
@@ -47,12 +41,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-6.mediawiki|6]]
 | Wallet Standard
-| Erik Zhang
-| Standard
-| Final
-|-
-| [[nep-8.mediawiki|8]]
-| Stack Isolation for NeoVM
 | Erik Zhang
 | Standard
 | Final
