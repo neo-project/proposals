@@ -70,12 +70,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Accepted
 |-
 | 
-| Superconductive Exchange
-| 
-| Standard
-| Stub
-|-
-| 
 | Dynamic Sharding
 | 
 | Standard
@@ -100,12 +94,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Stub
 |-
 | 
-| SM2 Cryptography
-| 
-| Standard
-| Stub
-|-
-| 
 | Homomorphic Encryption
 | 
 | Standard
@@ -119,30 +107,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | 
 | Stealth Addresses
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoID
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoFS
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoX
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoQS
 | 
 | Standard
 | Stub
