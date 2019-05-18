@@ -71,7 +71,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [https://github.com/neo-project/proposals/pull/48 13]
 | Source Mapping for NeoVM
-| S¨¦rgio Flores, Ricardo Prado, Alex Fragapane, Alex DiCarlo, Li Jianying
+| SÃ©rgio Flores, Ricardo Prado, Alex Fragapane, Alex DiCarlo, Li Jianying
 | Standard
 | Accepted
 |-
