@@ -158,6 +158,10 @@ The URI may point to a JSON file that conforms to the "NEO NFT Metadata JSON Sch
 }
 </pre>
 
+The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
+
+The "data" URI scheme is defined in [https://tools.ietf.org/html/rfc2397 RFC 2397].
+
 ====balanceOf====
 
 <pre>
