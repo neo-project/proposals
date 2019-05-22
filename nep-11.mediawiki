@@ -135,7 +135,7 @@ Returns a distinct Uniform Resource Identifier (URI) for a given asset. URIs are
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SHOULD <code>throw</code> an exception.
 
-The URI may point to a JSON file that conforms to the "NEO NFT Metadata JSON Schema":
+The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Schema":
 
 <pre>
 {
@@ -157,6 +157,8 @@ The URI may point to a JSON file that conforms to the "NEO NFT Metadata JSON Sch
   }
 }
 </pre>
+
+The field <code>name</code> in the JSON is required, while other fields are optional. Custom fields can also be included in the JSON file.
 
 The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
 
