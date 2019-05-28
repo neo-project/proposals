@@ -1,0 +1,231 @@
+<pre>
+  NEP: 4
+  Title: Dynamic Contract Invocation
+  Author: localhuman, unignorant
+  Type: Standard
+  Status: Replaced
+  Created: 2017-11-06
+  Superseded-By: 8
+</pre>
+
+==Abstract==
+
+This NEP Proposal outlines a mechanism whereby a Smart Contract is provided the ability to invoke other Smart Contracts not known until runtime, rather than being limited to invoking only Smart Contracts that are defined at compile time. In order to retain the ability for Smart Contracts to interface with a future Dynamic Sharding process, included is a proposed specification to be used in the creation of Smart Contracts to denote whether a Smart Contract needs the Dynamic Contract Invocation feature or not. 
+
+==Motivation==
+
+The motivation for this NEP is to give smart contract (SC) authors the ability to interface with SCs that are not known at compile time. For example, a SC that operates a decentralized exchange of NEP-5 tokens might call the <code>transferFrom</code> method of a token SC determined at runtime. At present, such a SC would need to hard-code all supported NEP-5 token addresses and be re-published whenever a new token is added. Many SCs on Ethereum require this feature, including any that adhere to the [https://github.com/ethereum/EIPs/issues/223 ERC223 token standard]. By giving SC authors the ability to specify at runtime an SC to interface with, functionality resembling that contained in more advanced Ethereum contracts would be much easier to develop and maintain.
+
+It is important to note that adding dynamic SC calls to NEO affects scalability. With dynamic SC calls, we no longer know in advance which other SCs will be called, and consequently the subset of VM state which must be available for execution to succeed. This makes dynamic sharding more difficult to implement. 
+
+To overcome the scalability drawback, this proposal adds a specification to each SC when it is created on the blockchain to denote whether it will need the dynamic calling feature or not. This specification will allow all existing contracts and the majority of future contracts to be executed in a storage context that is known in advance and thus more amenable to dynamic sharding, while also making SCs much more powerful and expressive.  
+
+In order to take into account for the scalability drawback of the dynamic calling feature, this NEP advises an updated fee structure for SC that request this feature.  A sample implementation of the updated fee structure is included below.
+
+==Specification==
+
+This proposal outlines changes in three general areas of the Neo project, and provides a sample for how this change could be used in a SC:
+
+* neo
+* neo-vm
+* neo-compiler
+* sample smart contract
+
+The changes listed below do not attempt to be exhaustive, but rather give a general overview of important changes needed in each library.
+
+====neo====
+
+In order for a SC to denote whether it has the ability to dynamically invoke other SCs, this NEP advises to add the following property to <code>neo.Core.ContractState</code> object, which would default to <code>false</code>.
+
+<pre>
+        public bool HasDynamicInvoke
+</pre>
+
+In order to keep the implentation interoperable with the current Neo protocol, The <code>HasDynamicInvoke</code> property would be serialized as a byte flag along with the current <code>HasStorage</code> property:
+
+<pre>
+
+    [Flags]
+    public enum ContractPropertyState : byte
+    {
+        NoProperty = 0,
+        HasStorage = 1 << 0,
+        HasDynamicInvoke = 1 << 1,
+    }
+
+
+    public class ContractState : StateBase, ICloneable<ContractState>
+    {
+
+        ...
+
+        public ContractPropertyState ContractProperties;
+
+        public bool HasStorage => ContractProperties.HasFlag(ContractPropertyState.HasStorage)
+
+        public bool HasDynamicInvoke => ContractProperties.HasFlag(ContractPropertyState.HasDynamicInvoke)
+
+        ...
+
+        public override void Serialize(BinaryWriter writer)
+        {
+            base.Serialize(writer);
+            writer.WriteVarBytes(Script);
+            writer.WriteVarBytes(ParameterList.Cast<byte>().ToArray());
+            writer.Write((byte)ReturnType);
+            writer.Write(ContractProperties);   // currently is writer.Write(HasStorage)
+            writer.WriteVarString(Name);
+            writer.WriteVarString(CodeVersion);
+            writer.WriteVarString(Author);
+            writer.WriteVarString(Email);
+            writer.WriteVarString(Description);
+        }
+</pre>
+
+The following changes in <code>neo.SmartContract.ApplicationEngine</code> would be used to charge a different Gas fee for the creation of SCs.  The price of creating a SC with no additional functionality would be lowered, while the price for those which have the <code>HasDynamicInvoke</code> or <code>HasStorage</code> properties as <code>true</code> would incur additional costs.  
+
+<pre>
+        
+        protected virtual long GetPriceForSysCall()
+        {
+           // lines omitted
+           ...
+
+                case "Neo.Contract.Create":
+                case "Neo.Contract.Migrate":
+                case "AntShares.Contract.Create":
+                case "AntShares.Contract.Migrate":
+                    
+                    long fee = 100L;
+                    ContractState contract = PeekContractState() // this would need to be implemented
+                    
+                    if( contract.HasStorage ) 
+                    {
+                      fee += 400L
+                    }
+                
+                    if( contract.HasDynamicInvoke ) 
+                    {
+                      fee += 500L;
+                    }
+                
+                    return fee * 100000000L / ratio;
+      
+</pre>
+
+
+
+====neo-vm====
+
+This specification proposes adding a new OpCode to the Neo Virtual Machine to denote the usage of a ''dynamic'' <code>AppCall</code> versus a ''static'' one.
+
+<pre>
+        DYNAMICCALL = 0xFA
+</pre>
+
+The execution of the <code>DYNAMICCALL</code> OpCode in <code>neo.VM.ExecutionEngine.ExecuteOp</code> method will also differ from the execution of the current <code>APPCALL</code> and <code>TAILCALL</code> OpCodes in the following way:
+
+<pre>
+                case OpCode.APPCALL:
+                case OpCode.TAILCALL:
+                case OpCode.DYNAMICCALL:
+                    {
+                        if (table == null)
+                        {
+                            State |= VMState.FAULT;
+                            return;
+                        }
+
+                        byte[] script_hash = null;
+
+                        if ( opcode == OpCode.DYNAMICCALL ) 
+                        {
+
+                            script_hash = EvaluationStack.Pop().GetByteArray();
+                            
+                            if ( script_hash.Length != 20 ) 
+                            {
+                              State |= VMState.FAULT
+                              return;
+                            }
+
+                        } else {
+
+                            script_hash = context.OpReader.ReadBytes(20);
+                        }
+
+                        byte[] script = table.GetScript(script_hash);
+                        if (script == null)
+                        {
+                            State |= VMState.FAULT;
+                            return;
+                        }
+                        if (opcode == OpCode.TAILCALL || opcode == OpCode.DYNAMICCALL)
+                            InvocationStack.Pop().Dispose();
+                        LoadScript(script);
+                    }
+                    break;
+</pre>
+
+
+====neo-compiler====
+
+A sample method to be used in order to convert a method call to a <code>DYNAMICCALL</code> could look like the following:
+
+<pre>
+            else if (calltype == CallType.DYNAMICCALL)
+            {
+                _ConvertPush(callhash, null, to)
+                _Convert1by1(VM.OpCode.DYNAMICCALL, null, to);
+
+            }
+</pre>
+
+
+====sample smart contract====
+
+Below is a sample SC demonstrating a simple usage of the proposed functionality.
+
+<pre>
+
+using Neo.SmartContract.Framework.Services.Neo;
+
+namespace Neo.SmartContract
+{
+    public class DynamicTotalSupply : Framework.SmartContract
+    {
+        public static int Main(byte[] contract_hash)
+        {
+        
+            if( contract_hash.Length == 20 ) {
+            
+                BigInteger totalSupply = DynamicCall( contract_hash, 'totalSupply')
+            
+                return totalSupply;
+            }
+            
+            return 0;
+        }
+    }
+}
+</pre>
+
+==Rationale==
+
+Dynamic sharding is not impossible with dynamic SC calls (Ethereum has [https://github.com/ethereum/wiki/wiki/Sharding-FAQ#how-can-we-facilitate-cross-shard-communication proposed many solutions]), though it would add to an already difficult task. Just because we know the compuatation call graph in advance does not mean we would be able to successfully shard resources into perfect, non-overlapping subsets. Communication between shards would still likely need to be implemented, as in the Ethereum proposals.
+
+With this in mind, it may be possible to implement dynamic app calls without adding any metadata to the SC about whether it needs dynamic calls or not, given the idea that both could be executed and scaled in the same manner.
+
+Even in the case, however, that a system could be implemented to allow for both dynamic SC calls and dynamic sharding, this proposal argues that storing the <code>HasDynamicInvoke</code> property would most likely be useful in that implementation.
+
+Storing this property would also allow the system to charge a different fee for publishing SCs with the <code>HasDynamicInvoke</code> property.
+
+
+==Backwards Compatibility==
+
+This NEP would introduce a new set of functionality without affecting existing SCs.  By utilizing the existing byte being used to indicate whether a SC needs storage or not and adding an additional flag, we are able to retain the current functionality and add to it, if necessary, without affecting the network protocol.
+
+==Implementation==
+
+*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/SmartContract/ApplicationEngine.cs
+*neo-project/neo-vm: https://github.com/neo-project/neo-vm/blob/master/src/neo-vm/ExecutionEngine.cs

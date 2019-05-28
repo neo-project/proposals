@@ -27,41 +27,53 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/12 3]
+| [[nep-3.mediawiki|3]]
 | NeoContract ABI
 | Erik Zhang
 | Standard
-| Accepted
-|-
-| [https://github.com/neo-project/proposals/pull/19 4]
-| Dynamic Contract Invocation
-| localhuman, unignorant
-| Standard
-| Accepted
+| Final
 |-
 | [[nep-5.mediawiki|5]]
 | Token Standard
-| lllwvlvwlll, luodanwg, tanyuan, Alan Fong
+| Tyler Adams, luodanwg, tanyuan, Alan Fong
 | Standard
 | Final
 |-
-| 
+| [[nep-6.mediawiki|6]]
 | Wallet Standard
-| 
+| Erik Zhang
 | Standard
-| Stub
+| Final
 |-
-| 
+| [[nep-9.mediawiki|9]]
 | URI Scheme
-| 
+| Andrei, Apisit
 | Standard
-| Stub
+| Final
 |-
-| 
-| Superconductive Exchange
-| 
+| [[nep-10.mediawiki|10]]
+| Composite Smart Contracts
+| Michael Herman
 | Standard
-| Stub
+| Final
+|-
+| [https://github.com/neo-project/proposals/pull/41 11]
+| Non-fungible Token Standard
+| Joe Stewart, Shane Mann
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/69 12]
+| dApp Platform Provider Interface
+| Nick Fujita, Matus Zamborsky
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/48 13]
+| Source Mapping for NeoVM
+| Sérgio Flores, Ricardo Prado, Alex Fragapane, Alex DiCarlo, Li Jianying
+| Standard
+| Accepted
 |-
 | 
 | Dynamic Sharding
@@ -88,12 +100,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Stub
 |-
 | 
-| SM2 Cryptography
-| 
-| Standard
-| Stub
-|-
-| 
 | Homomorphic Encryption
 | 
 | Standard
@@ -107,30 +113,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | 
 | Stealth Addresses
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoID
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoFS
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoX
-| 
-| Standard
-| Stub
-|-
-| 
-| NeoQS
 | 
 | Standard
 | Stub

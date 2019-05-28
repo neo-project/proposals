@@ -1,0 +1,199 @@
+<pre>
+  NEP: 9
+  Title: URI Scheme for Native Assets and Supported Smart Contracts
+  Author: Andrei <terentiev.andrei@gmail.com>, Apisit <apisit.toompakdee@gmail.com>
+  Type: Standard
+  Status: Final
+  Created: 2018-01-15
+</pre>
+
+==Abstract==
+
+This NEP describes a URI standard for transfer of NEO native assets. Furthermore it proposes a subset of URI's for well established smart contract operations, which at the time of this proposal encompasses NEP-5 token transfers. In the future, as more well understood and well tested contracts are added to the network, URI's may be added. We define a framework for determining if a URI scheme is appropriate for a given smart contract operation below.  
+
+==Motivation==
+
+Currently, there is no standard URI for NEO clients to consume. Bitcoin implements a URI standard so that clicking links or scanning QR codes can easily implement a bitcoin payment. Similarly the transfer of native assets on the NEO chain should be jat as simple. 
+
+However NEO can possibly implement much more contract operations via smart contract execution. These can range from minting and transferring tokens, registering domain names, exchanges, and other customized applications. Ideally a URI could exist for generic smart contract execution. However, this has security implications, as it may be difficult to determine what a smart contract URI actually does, which could lead to loss of funds.
+
+To counter this we propose that the URI's generated for smart contract invocation to be limited to a subset of well established contract operations like NEP-5 token transfer. This will allow a client to easily understand and verify what a given URI will be to do. If the client is even more security conscious it could maintain a white list of contracts that follow the given URI spec.
+
+Any new NEO URI that is added to this specification should be used for a smart contract that is secure, well documented, and commonly used. We will discuss more about this at the end of this proposal.
+
+==Specification==
+
+===Native asset transfer URI===
+
+A native asset transfer would have the following URI. It describes the receiver address, asset, and additional attributes that will be sent with the transaction. 
+
+'''URI scheme: <code>neo</code>'''
+
+<code>neo:<address>[?asset=<asset>][?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
+
+==== URI keys====
+{| class="wikitable"
+! Key
+! Description
+! Required
+|-
+| address
+| Valid NEO Address
+| ✓
+|-
+| asset
+| neo, gas or asset ID.
+| -
+|-
+| amount
+| amount of asset being sent. e.g 1.0
+| -
+|}
+
+==== Available URI keys map to NEO transaction attribute keys ====
+{| class="wikitable"
+! URI Key
+! NEO Transaction attribute
+! Description
+|-
+| contractHash
+| 0x00
+| Hash value of contract 
+|-
+| ecdh02, ecdh03
+|	0x02,0x03
+|	Public key for ECDH key exchange
+|-
+| script 
+|	0x20
+|	Additional validation of transactions
+|-
+| vote
+|	0x30
+| For voting
+|-
+| certUrl
+| 0x80 
+|	Url address of certificate 
+|-
+| descriptionUrl
+| 0x81
+|	Url address of description 
+|-
+| description
+| 0x90
+| Brief description 
+|-
+| hash1,hash2,...,hash15
+|	0xa1,0xa2,...,0xaf
+|	Used to store custom hash values
+|-
+| remark,remark2,...,remark15
+|	0xf0,0xf1,...,0xff
+|	Remarks
+|}
+
+====Reference native assets====  
+{| class="wikitable"
+! Name
+! Hash
+|-
+| NEO 
+| c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b 
+|-
+| GAS 
+| 602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7 
+|}
+
+====Examples====
+
+Begin transaction to specified address
+
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb</code>
+
+
+Begin transaction of unspecified amount of NEO
+
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=neo</code>
+
+Begin transaction to specified address of 1 NEO
+
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=neo&amount=1.0</code>
+
+Begin transaction to specified address of 1 NEO with transaction attribute description = "Hello"
+
+<code>neo:AeNkbJdiMx49kBStQdDih7BzfDwyTNVRfb?asset=neo&amount=1.0&description=Hello</code>
+
+Begin transaction to specified address of 0.1 GAS. Put public key in ecdh02 attribute field to allow sender to encrypt using ECDH. Transaction attribute description = "Hello"
+
+<code>neo:AQc5mtFayAdoCK13BW1cGAzAHyo9SoUWe7?asset= gas&amount=0.1&ecdh02=02ed53ad58c838435d4dd7a4b25c1eba01384c814ca53a539405434807afbb04b4&description=Hello</code>
+
+This should be sufficient to facilitate transfer of native NEO assets safely.
+
+
+===Smart contract invocation URI===
+To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer NEP-5 token, voting, etc. what left for a user to do is to authorize/sign the transaction. 
+
+As mentioned before, generic smart contract execution is not necessarily suitable for URI's. This is because both of the security issues, and usability. A client of the URI should have 100% confidence that the URI that they will consume will have it's intended effect. Limiting it to a subset of contract operations does most of the heavy lifting. If the client wishes to be even more secure, it can whitelist its own set of contracts for each subset of supported smart contract URI's.
+
+Any addition to supported smart contract URI's should follow the exact same procedure as other NEO enhancement proposals. In order to be added as a supported smart contract URI, the operation/proposal should have the following... 
+
+# Not application specific.  
+# Well tested.    
+# Well documented and easy to consume by a client.  
+# A set of examples where the URI is useful.  
+
+If it meets these criteria than can be considered to enter the list of supported URI schema.
+
+====NEP-5 token transfer====
+
+A NEP-5 token transfer is a smart contract invocation and would have the following URI. 
+
+<code>neo:<address>?asset=<NEP5ScriptHash>[?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
+
+
+===== URI Keys=====
+{| class="wikitable"
+! Key
+! Description
+! Required
+|-
+| address
+| Valid NEO Address to transfer to.  
+| ✓
+|-
+| asset
+| Valid NEP-5 smart contract's script hash in big endian.
+| ✓
+|-
+| amount
+| amount of token being sent. e.g 1.0
+| -
+|-
+|}
+
+=====Examples=====
+Begin transaction to transfer 10 ONT to specific adderess.
+
+<code>neo:AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y?asset=ceab719b8baa2310f232ee0d277c061704541cfb&amount=10</code>
+
+Begin transaction to transfer unspecified amount of ONT to specific adderess.
+
+<code>neo:AK2nJJpJr6o664CWJKi1QRXjqeic2zRp8y?asset=ceab719b8baa2310f232ee0d277c061704541cfb</code>
+
+
+==Rationale==
+
+The URI needs to consider both ease of use for users and wallet developers as well as security implications, especially in the case of executing arbitrary smart contracts. We can make much easier security guarantees with URI's related to transfer native assets as opposed to smart contract invocation. 
+
+==Implementation==
+Reference Implementation
+
+* [https://github.com/O3Labs/NEP9-go]
+* [https://github.com/O3Labs/nep9.js]
+
+==Reference==
+The below discussion has many relevant talking points relevant to the security implications of smart contract URI's.
+
+* [https://github.com/ethereum/EIPs/issues/67]
+
