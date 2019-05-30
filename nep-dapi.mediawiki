@@ -393,7 +393,7 @@ Example
 ====getBalance====
 Return balance of a specific asset for the given account.
 
-If the asset is omited from a request to MainNet, all asset and token balances will be returned.
+If the asset is omitted from a request to MainNet, all asset and token balances will be returned.
 
 
 '''Method Interface'''
@@ -414,10 +414,7 @@ interface GetBalanceArgs {
 interface BalanceRequest {
   address: string; // Address to check balance(s)
   assets?: string|string[]; // Asset ID or script hash to check balance.
-  // Requests to "MainNet" will accept the asset symbols we well.
-  // Requests to non "MainNet" will just return asset balances for NEO and GAS
-  fetchUTXO?: boolean;
-  // Fetches to UTXO data for NEO and/or GAS if attribute is 'true'
+  fetchUTXO?: boolean; // Fetches to UTXO data for NEO and/or GAS if attribute is 'true'
 }
 </pre>
 
@@ -454,7 +451,7 @@ interface Error {
 getBalance({
   params: {
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-    assets: ['NKN']
+    assets: ['c36aee199dbba6c3f439983657558cfb67629599']
   },
 })
 .then((results: BalanceResults) => {
@@ -488,7 +485,7 @@ Single asset balance request sample
 {
   params: {
     address: 'AeysVbKWiLSuSDhg7DTzUdDyYYKfgjojru',
-    assets: ['NKN']
+    assets: ['c36aee199dbba6c3f439983657558cfb67629599']
   },
 }
 
@@ -549,7 +546,7 @@ Multiple account balances request sample
     },
     {
       address: 'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ',
-      asset: 'PHX',
+      asset: '1578103c13e39df15d0d29826d957e85d770d8c9',
     },
   ]
 }
@@ -1479,7 +1476,7 @@ interface InvokeArgs {
   // IMPORTANT: If provided, fee and attachedAssets will be ignored.
 
   triggerContractVerification?: boolean; // Adds the instruction to invoke the contract verification trigger
-  
+
   txHashAttributes?: TxHashAttribute[]; // Adds transaction attributes for the "Hash<x>" usage block
 }
 
