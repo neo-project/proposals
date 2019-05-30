@@ -399,7 +399,7 @@ If the asset is omitted from a request to MainNet, all asset and token balances 
 '''Method Interface'''
 
 <pre>
-function getBalance(args: GetBalanceArgs): Promise<BalanceResults>}>
+function getBalance(args: GetBalanceArgs): Promise<BalanceResults>
 </pre>
 
 
