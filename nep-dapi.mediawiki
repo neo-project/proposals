@@ -1346,7 +1346,7 @@ function send({
 interface SendArgs {
   fromAddress: string; // Address of the connected account to send the assets from
   toAddress: string; // Address of the receiver of the assets to be sent
-  asset: string; // Asset script hash to be sent. Accepts asset symbol only for "MainNet"
+  asset: string; // Asset script hash to be sent
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
@@ -1384,7 +1384,7 @@ interface Error {
 send({
   fromAddress: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
   toAddress: 'ATaWxfUAiBcQixNPq6TvKHEHPQum9bx79d',
-  asset: 'GAS',
+  asset: '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
   amount: '0.0001',
   remark: 'Hash puppy clothing purchase. Invoice#abc123',
   fee: '0.0001'
@@ -1422,7 +1422,7 @@ Upon receiving this request
 * Validate the inputs
 ** From address matches connected account
 ** To address is valid
-** Map asset symbol to script hash of one is provided instead of script hash
+** Validate asset exists
 ** Amount is valid value, and account has enough balance
 * If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
 * Else broadcast the RPC request
