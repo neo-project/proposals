@@ -1505,6 +1505,189 @@ Example
 </pre>
 
 
+====invokeMulti====
+Execute a multiple contract invocations in a single transaction.
+
+
+'''Method Interface'''
+
+<pre>
+function invoke({
+  invokeArgs: InvokeArguments[],
+  fee?: string,
+  assetIntentOverrides?: AssetIntentOverrides,
+  network?: string,
+  broadcastOverride?: boolean,
+  txHashAttributes?: TxHashAttribute[],
+}): Promise<InvokeOutput>
+</pre>
+
+
+'''Input arguments'''
+
+<pre>
+interface InvokeArgs {
+  invokeArgs: InvokeArguments[]; List of contract invoke inputs
+
+  fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
+  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
+
+  assetIntentOverrides?: AssetIntentOverrides;
+  // A hard override of all transaction utxo inputs and outputs.
+  // IMPORTANT: If provided, fee and attachedAssets will be ignored.
+
+  txHashAttributes?: TxHashAttribute[]; // Adds transaction attributes for the "Hash<x>" usage block
+}
+
+interface InvokeArguments {
+  scriptHash: string; // script hash of the smart contract to invoke
+  operation: string; // operation on the smart contract to call
+  args: Argument[]; // any input arguments for the operation
+  attachedAssets?: AttachedAssets;
+  triggerContractVerification?: boolean; // Adds the instruction to invoke the contract verification trigger
+}
+
+interface Argument {
+  type: ArgumentDataType;
+  value: any;
+}
+
+interface TxHashAttribute extends Argument {
+  txAttrUsage: 'Hash1'|'Hash2'|'Hash3'|'Hash4'|'Hash5'|'Hash6'|'Hash7'|'Hash8'|'Hash9'|'Hash10'|'Hash11'|'Hash12'|'Hash13'|'Hash14'|'Hash15';
+}
+
+type ArgumentDataType = 'String'|'Boolean'|'Hash160'|'Hash256'|'Integer'|'ByteArray'|'Array'|'Address';
+
+interface AttachedAssets {
+  [asset: 'NEO'|'GAS']: string;
+}
+// KEY: Asset symbol (only NEO or GAS)
+// VALUE: Parsed amount to attach
+
+interface AssetIntentOverrides {
+  inputs: AssetInput[];
+  outputs: AssetOutput[];
+}
+
+interface AssetInput {
+  txid: string;
+  index: number;
+}
+
+interface AssetOutput {
+  asset: string;
+  address: number;
+  value: string;
+}
+
+</pre>
+
+
+'''Success return value'''
+
+interface InvokeOutput {
+  txid: string; // The transaction ID of the invocation
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
+}
+
+
+'''Error return value'''
+
+<pre>
+interface Error {
+  type: string; // `NO_PROVIDER`|`CONNECTION_REFUSED`|`SEND_ERROR`|`MALFORMED_INPUT`|`CANCELED`
+  description: string;
+  data: string;
+}
+</pre>
+
+
+'''Example'''
+
+<pre>
+invokeMulti({
+  invokeArgs: [
+    {
+      scriptHash: '505663a29d83663a838eee091249abd167e928f5',
+      operation: 'storeData',
+      arguments: [
+        {
+          type: 'string',
+          value: 'hello'
+        }
+      ],
+      attachedAssets: {
+        NEO: '100',
+        GAS: '0.0001',
+      },
+      triggerContractVerification: true,
+    },
+    {
+      scriptHash: '505663a29d83663a838eee091249abd167e928f5',
+      operation: 'purchaseTicket',
+      arguments: [
+        {
+          type: 'number',
+          value: '10'
+        }
+      ],
+    }
+  ],
+  fee: '0.001',
+  network: 'TestNet',
+  broadcastOverride: false,
+  txHashAttributes: [
+    {
+      type: 'Boolean',
+      value: true,
+      txAttrUsage: 'Hash1'
+    }
+  ]
+})
+.then(({txid, nodeUrl}: InvokeOutput) => {
+  console.log('Invoke transaction success!');
+  console.log('Transaction ID: ' + txid);
+  console.log('RPC node URL: ' + nodeUrl);
+})
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+    case RPC_ERROR:
+      console.log('There was an error when broadcasting this transaction to the network.');
+      break;
+    case CANCELED:
+      console.log('The user has canceled this transaction.');
+      break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request
+* Validate and format the inputs
+** Script hashes is valid
+** Format parameters
+*** If `byteArray`, convert to appropriate hexstring based on assumed format
+* Batch invoke inputs into script, and handle assets to each invoke as outputs
+* If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
+* Else broadcast the RPC request
+* Return the transaction Id and the url of the rpc node which the tx was broadcast to
+
+Example
+<pre>
+{
+  txid: 'ed54fb38dff371be6e3f96e4880405758c07fe6dd1295eb136fe15f311e9ff77',
+  nodeUrl: 'http://seed7.ngd.network:10332',
+}:
+</pre>
+
+
 ====signMessage====
 Signs a provided messaged with an account selected by user. A randomized salt prefix is added to the input string before it is signed, and it is encased in a non-executable transaction before signed. This ensures allow compatibility with Ledger devices.
 
