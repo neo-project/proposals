@@ -1,0 +1,89 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Cross-contract Call Attack Prevention Standard
+  Author: Wyatt Mufson <wyatt@ryu.games>
+  Type: Standard
+  Status: Draft
+  Created: 2019-06-20
+</pre>
+
+==Abstract==
+
+This NEP describes a standard for cross-contract call attack prevention in digital asset smart contracts.
+
+==Motivation==
+
+The motivation for this contract comes from the lack of cross-contract call attack prevention documentation and practices in smart contract development.
+The current proposals for digital assets on the NEO blockchain do not address this issue and therefore put users' assets at risk.
+
+It was ultimately inspired by the [[https://github.com/ontio/OEPs/pull/48 | OEP-10 proposal]] I previously authored.
+
+==Specification==
+
+===Overview===
+
+This NEP introduces a process for preventing malicious contracts to invoke smart contracts conforming to this standard.
+By default, users will only be able to invoke the contract directly from their wallet.
+In order to be able to invoke the contract from another contract they will need to manually approve that second contract.
+Users will also have the ability to unapprove contracts, as well as view whether a contract has been approved.
+
+This NEP introduces three methods to be implemented within the <code>Main</code> function: <code>approveContract</code>, <code>unapproveContract</code> and <code>isApproved</code>.
+
+It also introduces an internal method, <code>RequireApproved</code> to be included within any method that changes the state.
+For example, an NEP5 contract that also follows this NEP will call <code>RequireApproved</code> at the beginning of the <code>transfer</code> method.
+
+===Public Methods===
+
+====approveContract====
+
+<pre>
+def approveContract(contractHash)
+</pre>
+
+The <code>approveContract</code> method takes one argument, the <code>contractHash</code> to approve.
+It will whitelist the smart contract with the hash <code>contractHash</code> to be used with the given smart contract following this NEP.
+<code>approveContract</code> must also only be called directly by a wallet, the owner of the contract.
+If not, this method must throw an exception.
+
+====unapproveContract====
+
+<pre>
+def unapproveContract(contractHash)
+</pre>
+
+The <code>unapproveContract</code> method takes one argument, the <code>contractHash</code>.
+It will remove the smart contract with the hash <code>contractHash</code> from the whitelist for the given smart contract following this NEP.
+<code>unapproveContract</code> must also only be called directly by a wallet, the owner of the contract.
+If not, this method must throw an exception.
+
+====isApproved====
+
+<pre>
+def isApproved(contractHash)
+</pre>
+
+The <code>isApproved</code> method takes one argument, the <code>contractHash</code>.
+It returns whether the smart contract with the hash <code>contractHash</code> is in the whitelist for the contract following this NEP.
+
+===Internal Methods===
+
+====RequireApproved====
+
+<pre>
+def RequireApproved()
+</pre>
+
+The <code>RequireApproved</code> method takes no arguments.
+If the results of <code>GetCallingScriptHash()</code> and <code>GetEntryScriptHash()</code> do not match, then the <code>callerHash</code> must be in the whitelist for the wallet.
+If not, this method must throw an exception.
+
+==Rationale==
+
+This NEP was designed with the usability and security of digital assets on the NEO blockchain in-mind.
+The goal is to enable a new type of asset on NEO that will be optimized for use in smart contracts while maintaining the security of its users.
+Contracts following this NEO are meant to also be following a standard for other crypto assets - such as NEP5, NEP10 and NEP11.
+
+==Implementation==
+
+This NEP is implemented in [[https://github.com/WyattMufson/CrossContractApproval/blob/master/contract.py | this example contract]].
+Note that <code>notProtectedFromCCA</code> can be called by a malicious contract, while <code>protectedFromCCA</code> cannot.
