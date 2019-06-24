@@ -1765,7 +1765,7 @@ signMessage({
 Upon receiving this request
 * Present the message to the user for signing
 * Create a randomized salt value to be prefixed to the message before signing
-* Create the hexstring to be signed. '010001f0' + <length of salt+message in hex> + salt + message + '0000'
+* Create the hexstring to be signed. '010001f0' + {length of salt+message in hex} + salt + message + '0000'
 * Sign the hexstring value once the user confirms
 * Return to dapp
 
