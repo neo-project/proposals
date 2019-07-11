@@ -36,11 +36,11 @@ A wallet file in JSON format has the following basic structure:
 }
 </pre>
 
-<code>name</code> is a label that the user has made to the wallet file.
+<code>name</code> is a label that the user has given to the wallet.
 
 <code>version</code> is currently fixed at <code>1.0</code> and will be used for functional upgrades in the future.
 
-<code>scrypt</code> is a ScryptParameters object which describe the parameters of SCrypt algorithm used for encrypting and decrypting the private keys in the wallet.
+<code>scrypt</code> is a ScryptParameters object which describes the parameters of the SCrypt algorithm used for encrypting and decrypting the private keys in the wallet.
 
 <code>accounts</code> is an array of Account objects which describe the details of each account in the wallet.
 
@@ -82,13 +82,13 @@ Account object has the following structure:
 
 <code>address</code> is the base58 encoded address of the account.
 
-<code>label</code> is a label that the user has made to the account.
+<code>label</code> is a label that the user has given to the account.
 
 <code>isDefault</code> indicates whether the account is the default change account.
 
-<code>lock</code> indicates whether the account is locked by user. The client shouldn't spend the funds in a locked account.
+<code>lock</code> indicates whether the account is locked by the user. The client shouldn't spend the funds in a locked account.
 
-<code>key</code> is the private key of the account in the NEP-2 format. This field can be <code>null</code> (for watch-only address or non-standard address).
+<code>key</code> is the private key of the account in NEP-2 format. This field can be <code>null</code> (for watch-only address or non-standard address).
 
 <code>contract</code> is a Contract object which describes the details of the contract. This field can be <code>null</code> (for watch-only address).
 
@@ -108,7 +108,7 @@ Contract object has the following structure:
 
 <code>script</code> is the script code of the contract. This field can be <code>null</code> if the contract has been deployed to the blockchain.
 
-<code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the contract function. For more information about Parameter object, see the descriptions in [[nep-3.mediawiki|NEP-3: NeoContract ABI]].
+<code>parameters</code> is an array of Parameter objects which describe the details of each parameter of the contract function. For more information about the Parameter object, see the descriptions in [[nep-3.mediawiki|NEP-3: NeoContract ABI]].
 
 <code>deployed</code> indicates whether the contract has been deployed to the blockchain.
 
@@ -118,5 +118,5 @@ All old-format wallets should be able to be converted to this new JSON format ea
 
 ==Implementation==
 
-*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Implementations/Wallets/NEP6/NEP6Wallet.cs
-*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/src/wallet/Wallet.js
+*neo-project/neo: https://github.com/neo-project/neo/blob/master/neo/Wallets/NEP6/NEP6Wallet.cs 
+*CityOfZion/neon-js: https://github.com/CityOfZion/neon-js/blob/master/packages/neon-core/src/wallet/Wallet.ts 
