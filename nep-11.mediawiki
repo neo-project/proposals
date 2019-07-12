@@ -182,6 +182,24 @@ If not, this method SHOULD <code>throw</code> an exception.
 
 The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Schema":
 
+The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
+
+The "data" URI scheme is defined in [https://tools.ietf.org/html/rfc2397 RFC 2397].
+
+====properties====
+
+<pre>
+public static string properties(byte[] tokenid)
+</pre>
+
+Returns a serialized NVM object containing immutable on-chain properties for the given NFT.
+The NVM object must conform to the "NEO NFT Metadata JSON Schema".
+
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+====NEO NFT Metadata JSON Schema===
+
 <pre>
 {
   "title": "Asset Metadata",
@@ -203,23 +221,10 @@ The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Sc
 }
 </pre>
 
+The schema must contain a <code>title</code>, <code>type</code> and <code>properties</code>.
+
 Any custom fields can be included in the JSON file.
-
-The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
-
-The "data" URI scheme is defined in [https://tools.ietf.org/html/rfc2397 RFC 2397].
-
-====properties====
-
-<pre>
-public static string properties(byte[] tokenid)
-</pre>
-
-Returns a serialized NVM object containing immutable on-chain properties for the given NFT.
-The NVM object must conform to the "NEO NFT Metadata JSON Schema":
-
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
-If not, this method SHOULD <code>throw</code> an exception.
+Each field contains a <code>type</code> and <code>description</code>.
 
 ===Events===
 
