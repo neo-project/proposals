@@ -203,8 +203,7 @@ The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Sc
 }
 </pre>
 
-The field <code>name</code> in the JSON is required, while other fields are optional.
-Custom fields can also be included in the JSON file.
+Any custom fields can be included in the JSON file.
 
 The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
 
