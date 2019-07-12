@@ -59,7 +59,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [https://github.com/neo-project/proposals/pull/41 11]
 | Non-fungible Token Standard
-| Joe Stewart, Shane Mann
+| Joe Stewart, Shane Mann, Wyatt Mufson
 | Standard
 | Accepted
 |-
@@ -75,45 +75,45 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| 
+|
 | Dynamic Sharding
-| 
+|
 | Standard
 | Stub
 |-
-| 
+|
 | Compact Block Relay
-| 
+|
 | Standard
 | Stub
 |-
-| 
+|
 | Peer Authentication
-| 
+|
 | Standard
 | Stub
 |-
-| 
+|
 | Aggregate Signature
-| 
+|
 | Standard
 | Stub
 |-
-| 
+|
 | Homomorphic Encryption
-| 
+|
 | Standard
 | Stub
 |-
-| 
+|
 | Zero-knowledge proof
-| 
+|
 | Standard
 | Stub
 |-
-| 
+|
 | Stealth Addresses
-| 
+|
 | Standard
 | Stub
 |}

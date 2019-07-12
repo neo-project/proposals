@@ -1,7 +1,7 @@
 <pre>
   NEP: 11
   Title: Non-Fungible Token Standard
-  Author: Joe Stewart <hal0x2328@splyse.tech>, Shane Mann <fetter@splyse.tech>
+  Author: Joe Stewart <hal0x2328@splyse.tech>, Shane Mann <fetter@splyse.tech>, Wyatt Mufson <wyatt@ryu.games>
   Type: Standard
   Status: Accepted
   Created: 2018-04-18
@@ -13,7 +13,11 @@ This NEP defines a standard non-fungible token system for the NEO Smart Economy.
 
 ==Motivation==
 
-NFTs are required to track, exchange and enforce ownership of digital assets. A non-fungible token (NFT) can be thought of like a property deed - each one is unique and carries some non-mutable information (e.g. the physical address of the property). Other information, such as the owner of the property, can be changed. Also, we provide a built-in optional divisibility within each non-fungible asset. This allows for high value objects to be tokenized more effectively.
+NFTs are required to track, exchange and enforce ownership of digital assets.
+A non-fungible token (NFT) can be thought of like a property deed - each one is unique and carries some non-mutable information (e.g. the physical address of the property).
+Other information, such as the owner of the property, can be changed.
+Also, we provide a built-in optional divisibility within each non-fungible asset.
+This allows for high value objects to be tokenized more effectively.
 
 ==Specification==
 
@@ -25,9 +29,9 @@ NFTs are required to track, exchange and enforce ownership of digital assets. A 
 public static string name()
 </pre>
 
-Returns the name of the token. e.g. <code>"MyNFT"</code>. 
+Returns the name of the token. e.g. <code>"MyNFT"</code>.
 
-This method MUST always return the same value every time it is invoked. 
+This method MUST always return the same value every time it is invoked.
 
 ====symbol====
 
@@ -35,9 +39,10 @@ This method MUST always return the same value every time it is invoked.
 public static string symbol()
 </pre>
 
-Returns a short string symbol of the token managed in this contract. e.g. <code>"MNFT"</code>. This symbol SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English). 
+Returns a short string symbol of the token managed in this contract. e.g. <code>"MNFT"</code>.
+This symbol SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English).
 
-This method MUST always return the same value every time it is invoked. 
+This method MUST always return the same value every time it is invoked.
 
 ====totalSupply====
 
@@ -59,15 +64,7 @@ If the token managed in this contract is indivisible, the function SHOULD return
 
 If the function returns a non-zero value, all of the ''OPTIONAL'' methods in this standard MUST be implemented.
 
-This method MUST always return the same value every time it is invoked. 
-
-====tokens====
-
-<pre>
-public static enumerator tokens()
-</pre>
-
-Returns an <code>enumerator</code> that contains all the tokens that have been issued in this contract.
+This method MUST always return the same value every time it is invoked.
 
 ====transfer====
 
@@ -75,17 +72,21 @@ Returns an <code>enumerator</code> that contains all the tokens that have been i
 public static bool transfer(byte[] to, byte[] tokenid)
 </pre>
 
-Transfers token with id <code>tokenid</code> to address <code>to</code>.
+This transfer method is for non-divisible NFTs <code>decimals() == 0</code>.
+It transfers the token with id <code>tokenid</code> to address <code>to</code>.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>to</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>to</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the token that will be transferred has more than one owner.
 
-If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the token is sent to the owner himself.
+If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the token is sent to the owner.
 
-The function SHOULD check whether the owner address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+The function SHOULD check whether the owner address equals the caller contract hash.
+If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
 
 If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
 
@@ -95,21 +96,25 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 public static bool transfer(byte[] from, byte[] to, BigInteger amount, byte[] tokenid)
 </pre>
 
-''OPTIONAL'': This method MUST be implemented if <code>decimals() > 0</code>.
+This transfer method is for divisible NFTs <code>decimals() > 0</code>.
 
-Transfers an <code>amount</code> of tokens with id <code>tokenid</code> from address <code>from</code> to address <code>to</code>.
+It transfers an <code>amount</code> of tokens with id <code>tokenid</code> from address <code>from</code> to address <code>to</code>.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
 
-The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses.
+If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> SHOULD be greater than or equal to <code>0</code> and SHOULD be less than or equal to <code>pow(10, decimals())</code>. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>amount</code> SHOULD be greater than or equal to <code>0</code> and SHOULD be less than or equal to <code>pow(10, decimals())</code>.
+If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
 
-If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or the token is sent to the owner himself.
+If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or the token is sent to the owner.
 
-The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+The function SHOULD check whether the <code>from</code> address equals the caller contract hash.
+If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
 
 If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
 
@@ -123,7 +128,8 @@ public static enumerator ownerOf(byte[] tokenid)
 
 Returns an <code>enumerator</code> that contains all the co-owners that own the specified token.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
 
 ====tokenURI====
 
@@ -131,9 +137,11 @@ The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SH
 public static string tokenURI(byte[] tokenid)
 </pre>
 
-Returns a distinct Uniform Resource Identifier (URI) for a given asset. URIs are defined in [https://tools.ietf.org/html/rfc3986 RFC 3986].
+Returns a distinct Uniform Resource Identifier (URI) for a given asset.
+URIs are defined in [https://tools.ietf.org/html/rfc3986 RFC 3986].
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
 
 The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Schema":
 
@@ -158,7 +166,8 @@ The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Sc
 }
 </pre>
 
-The field <code>name</code> in the JSON is required, while other fields are optional. Custom fields can also be included in the JSON file.
+The field <code>name</code> in the JSON is required, while other fields are optional.
+Custom fields can also be included in the JSON file.
 
 The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
 
@@ -167,26 +176,38 @@ The "data" URI scheme is defined in [https://tools.ietf.org/html/rfc2397 RFC 239
 ====balanceOf====
 
 <pre>
+public static BigInteger balanceOf(byte[] owner)
+</pre>
+
+Returns the total amount of NFTs owned by the specified address.
+
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+<pre>
 public static BigInteger balanceOf(byte[] owner, byte[] tokenid)
 </pre>
 
-Returns the balance of the specified token for the specified owner's account.
+If the second parameter <code>tokenid</code> is also provided, this method returns the balance of the specified token for the specified owner's account.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>owner</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
 
 If the <code>owner</code> is an unused address, or it's not the owner of the specified token, this method SHOULD return <code>0</code>.
 
-====tokensOfOwner====
+====tokensOf====
 
 <pre>
-public static enumerator tokensOfOwner(byte[] owner)
+public static enumerator tokensOf(byte[] owner)
 </pre>
 
 Returns an <code>enumerator</code> that contains all the tokens owned by the specified address.
 
-The parameter <code>owner</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
 
 ===Events===
 
