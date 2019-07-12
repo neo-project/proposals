@@ -131,48 +131,6 @@ Returns an <code>enumerator</code> that contains all the co-owners that own the 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
-====tokenURI====
-
-<pre>
-public static string tokenURI(byte[] tokenid)
-</pre>
-
-Returns a distinct Uniform Resource Identifier (URI) for a given asset.
-URIs are defined in [https://tools.ietf.org/html/rfc3986 RFC 3986].
-
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
-If not, this method SHOULD <code>throw</code> an exception.
-
-The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Schema":
-
-<pre>
-{
-  "title": "Asset Metadata",
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Identifies the asset to which this NFT represents"
-    },
-    "description": {
-      "type": "string",
-      "description": "Describes the asset to which this NFT represents"
-    },
-    "image": {
-      "type": "string",
-      "description": "A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
-    }
-  }
-}
-</pre>
-
-The field <code>name</code> in the JSON is required, while other fields are optional.
-Custom fields can also be included in the JSON file.
-
-The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
-
-The "data" URI scheme is defined in [https://tools.ietf.org/html/rfc2397 RFC 2397].
-
 ====balanceOf====
 
 <pre>
@@ -207,6 +165,61 @@ public static enumerator tokensOf(byte[] owner)
 Returns an <code>enumerator</code> that contains all the tokens owned by the specified address.
 
 The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+====tokenURI====
+
+<pre>
+public static string tokenURI(byte[] tokenid)
+</pre>
+
+Returns a distinct Uniform Resource Identifier (URI) for a given asset.
+URIs are defined in [https://tools.ietf.org/html/rfc3986 RFC 3986].
+This URI contains mutable properties for the given NFT.
+
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The URI MUST point to a JSON file that conforms to the "NEO NFT Metadata JSON Schema":
+
+<pre>
+{
+  "title": "Asset Metadata",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Identifies the asset to which this NFT represents"
+    },
+    "description": {
+      "type": "string",
+      "description": "Describes the asset to which this NFT represents"
+    },
+    "image": {
+      "type": "string",
+      "description": "A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
+    }
+  }
+}
+</pre>
+
+The field <code>name</code> in the JSON is required, while other fields are optional.
+Custom fields can also be included in the JSON file.
+
+The supported scheme of the returned URI MUST be one of the following: <code>http</code>, <code>https</code>, <code>data</code>.
+
+The "data" URI scheme is defined in [https://tools.ietf.org/html/rfc2397 RFC 2397].
+
+====properties====
+
+<pre>
+public static string properties(byte[] tokenid)
+</pre>
+
+Returns a serialized NVM object containing immutable on-chain properties for the given NFT.
+The NVM object must conform to the "NEO NFT Metadata JSON Schema":
+
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 ===Events===
