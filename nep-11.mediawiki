@@ -236,6 +236,4 @@ A token contract which creates new tokens MUST trigger a <code>Transfer</code> e
 
 A token contract which burns tokens MUST trigger a <code>Transfer</code> event with the <code>to</code> address set to <code>null</code> when tokens are burned.
 
-==Rationale==
-
 ==Implementation==
