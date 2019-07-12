@@ -167,6 +167,19 @@ Returns an <code>enumerator</code> that contains all the tokens owned by the spe
 The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
 
+The returned tokens should be in the following format:
+<pre>
+{
+  "id": <ID>,
+  "uri": tokenURI(<ID>),
+  "properties": properties(<ID>),
+  ...
+}
+</pre>
+
+It must have the fields <code>id</code>, <code>uri</code> and <code>properties</code>.
+It can contain other dApp-specific fields.
+
 ====tokenURI====
 
 <pre>
