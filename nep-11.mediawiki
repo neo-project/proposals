@@ -175,7 +175,7 @@ public static string tokenURI(byte[] tokenid)
 
 Returns a distinct Uniform Resource Identifier (URI) for a given asset.
 URIs are defined in [https://tools.ietf.org/html/rfc3986 RFC 3986].
-This URI contains mutable properties for the given NFT.
+This URI contains optionally mutable properties for the given NFT.
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
