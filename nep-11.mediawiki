@@ -198,7 +198,7 @@ The NVM object must conform to the "NEO NFT Metadata JSON Schema".
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
-====NEO NFT Metadata JSON Schema===
+====NEO NFT Metadata JSON Schema====
 
 <pre>
 {
