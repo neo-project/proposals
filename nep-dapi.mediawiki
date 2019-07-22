@@ -1512,7 +1512,7 @@ Execute a multiple contract invocations in a single transaction.
 '''Method Interface'''
 
 <pre>
-function invoke({
+function invokeMulti({
   invokeArgs: InvokeArguments[],
   fee?: string,
   assetIntentOverrides?: AssetIntentOverrides,
@@ -1526,7 +1526,7 @@ function invoke({
 '''Input arguments'''
 
 <pre>
-interface InvokeArgs {
+interface InvokeMultiArgs {
   invokeArgs: InvokeArguments[]; List of contract invoke inputs
 
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
@@ -1586,7 +1586,7 @@ interface AssetOutput {
 
 '''Success return value'''
 
-interface InvokeOutput {
+interface InvokeMultiOutput {
   txid: string; // The transaction ID of the invocation
   nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
   signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
