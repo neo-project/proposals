@@ -413,7 +413,7 @@ interface GetBalanceArgs {
 
 interface BalanceRequest {
   address: string; // Address to check balance(s)
-  assets?: string|string[]; // Asset ID or script hash to check balance.
+  assets?: string[]; // Asset IDs or script hashes to check balance.
   fetchUTXO?: boolean; // Fetches to UTXO data for NEO and/or GAS if attribute is 'true'
 }
 </pre>
@@ -546,7 +546,7 @@ Multiple account balances request sample
     },
     {
       address: 'AbKNY45nRDy6B65YPVz1B6YXiTnzRqU2uQ',
-      asset: '1578103c13e39df15d0d29826d957e85d770d8c9',
+      assets: ['1578103c13e39df15d0d29826d957e85d770d8c9'],
     },
   ]
 }
