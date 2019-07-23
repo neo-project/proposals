@@ -1492,6 +1492,10 @@ Upon receiving this request
 ** Script hash is valid
 ** Format parameters
 *** If `byteArray`, convert to appropriate hexstring based on assumed format
+* Set script transaction attribute 0x20 according to the following conditions
+** If triggerContractVerification is set to true, set 0x20 to scriptHash of the contract being invoked
+** If there is no fee, attachedAssets, or 'assetIntentOverrides', set 0x20 to the users address
+** If there are assetIntentOverrides but none of the inputs belong to the user address, set 0x20 to user address
 * If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
 * Else broadcast the RPC request
 * Return the transaction Id and the url of the rpc node which the tx was broadcast to
@@ -1675,6 +1679,10 @@ Upon receiving this request
 ** Format parameters
 *** If `byteArray`, convert to appropriate hexstring based on assumed format
 * Batch invoke inputs into script, and handle assets to each invoke as outputs
+* Set script transaction attribute 0x20 according to the following conditions
+** If triggerContractVerification is set to true, set 0x20 to scriptHash of the contract being invoked
+** If there is no fee, attachedAssets, or 'assetIntentOverrides', set 0x20 to the users address
+** If there are assetIntentOverrides but none of the inputs belong to the user address, set 0x20 to user address
 * If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
 * Else broadcast the RPC request
 * Return the transaction Id and the url of the rpc node which the tx was broadcast to
