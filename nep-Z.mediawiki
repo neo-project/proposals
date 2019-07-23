@@ -10,17 +10,17 @@
 
 ==Abstract==
 
-This NEP outlines a security token standard for NEO Smart Economy that will provide an international interaction mechanism for tokenized securities. Templates and examples are also provided for the developer community.
+This NEP outlines a security token standard for the NEO Smart Economy that will provide an international interaction mechanism for tokenized securities. Templates and examples are provided for the developer community.
 
 ==Motivation==
 
-Digital Assets have always been one of the major focuses of NEO. With the advancement of NEO 3.0, it is expected that there will be increasing demand on real world asset securitization on blockchain. There are different types of security token (ST) such as private shares, closed-end funds and real estate. A standard is necessary for ST interactions (e.g. issuance, distribution and exchange) in the ecosystem since they have the same core operating mechanism (e.g. compliance, investor profiling).
+Digital Assets have always been one of the major focuses of NEO. With the advancement of NEO 3.0, it is expected that there will be increasing demand on real world asset securitization on blockchain. There are different types of security tokens (ST), such as private shares, closed-end funds and real estate. A standard is necessary for ST interactions (e.g. issuance, distribution and exchange) in the ecosystem since they have the same core operating mechanisms (e.g. compliance, investor profiling).
 
 ==Specification==
 
-A concept of <code>Main-Sub Standard</code> is introduced. The Security Token Standard is composed of <code>Main Standard</code> and <code>Sub Standard</code> related to the <code>Main Standard</code>. The <code>Main Standard</code> needs to define all the functionalities of a kind of security token, such as managing issuer information, managing investors, managing shareholders, defining the ST and managing tranches. The <code>Sub Standard</code> is fully compatible with NEP-5 and needs to define all the functionalities of a tranche of the ST defined by the <code>Main Standard</code> (e.g. a tranche of ST having the voting right). For implementation, ST contracts conforming to <code>Main Standard</code> are called <code>Main Contracts</code>. Contracts conforming to <code>Sub Standard</code> are called <code>Sub Contracts</code>. A <code>Main Contract</code> may have multiple <code>Sub Contracts</code>. All the assets defined by <code>Sub Contracts</code> together make up the asset of a kind of ST defined by the <code>Main Contract</code>.
+A concept of <code>Main-Sub Standard</code> is introduced. The Security Token Standard is composed of a <code>Main Standard</code> and a <code>Sub Standard</code> related to the <code>Main Standard</code>. The <code>Main Standard</code> defines all of the functionalities of the security token, such as managing the issuer information, managing investors, managing shareholders, defining the ST and managing tranches. The <code>Sub Standard</code> is fully compatible with NEP-5 and defines all of the functionalities of a tranche of the ST defined by the <code>Main Standard</code> (e.g. a tranche of ST having the voting right). ST contracts conforming to the <code>Main Standard</code> are called <code>Main Contracts</code>. Contracts conforming to the <code>Sub Standard</code> are called <code>Sub Contracts</code>. A <code>Main Contract</code> may have multiple <code>Sub Contracts</code>. All the assets defined by <code>Sub Contracts</code> together make up an ST asset defined by the <code>Main Contract</code>.
 
-The definitions of methods and parameters of <code>Main-Sub Standard</code> are provided below. The categorization is base on the stage of a security token offering and application scenario.
+The definitions of methods and parameters of the <code>Main-Sub Standard</code> are provided below. The categorization is based on the stage of a security token offering and application scenario.
 
 ===Main Standard Methods===
 
@@ -34,9 +34,9 @@ Mainly for managing related documents of the issuer.
 public static bool setDocument(string name, byte[] document)
 </pre>
 
-Adds a new document to the contract storage. <code>name</code> is the key, and <code>document</code> is the value.
+Adds a new document to the contract storage. <code>name</code> is the key and <code>document</code> is the value.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
 <code>document</code> is the serialized value of a defined class <code>Document</code>. The definition of this class is outside of this standard. A sample definition is shown below (Implementations may vary):
 
@@ -50,7 +50,7 @@ class Document
 }
 </pre>
 
-This method MUST throw an exception if the document is not successfully stored.
+This method MUST <code>throw</code> an exception if the document is not successfully stored.
 
 This method MUST fire a <code>DocumentUpdated</code> event with details of the document being attached or modified.
 
@@ -72,9 +72,9 @@ public static bool removeDocument(string name)
 
 Removes an existing document from the contract with a known <code>name</code>.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-This method MUST throw an exception if the document is not successfully removed.
+This method MUST <code>throw</code> an exception if the document is not successfully removed.
 
 This method MUST emit a <code>DocumentRemoved</code> event with details of the document being attached or modified.
 
@@ -90,9 +90,9 @@ public static bool setShareholderMaxAmount(BigInteger amount)
 
 Sets the maximum number of shareholders.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 This method MUST fire the <code>ShareholderMaxAmountUpdated</code> event.
 
@@ -110,17 +110,17 @@ Returns the current number of shareholders.
 public static bool addShareholder(byte[] shareholder, bool isOriginal)
 </pre>
 
-Adds a new shareholder. The method is called after fundraising of STO closes.
+Adds a new shareholder. The method is called after the fundraising of the STO closes.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>shareholder</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>shareholder</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-If the current number of shareholders exceeds the max shareholder amount, this method SHOULD throw an exception.
+If the current number of shareholders exceeds the max shareholder amount, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the parameter <code>shareholder</code> is added before.
+The method MUST return false if the <code>shareholder</code> had already been added.
 
-If the method succeeds, it MUST fire the <code>ShareholderAdded</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>ShareholderAdded</code> event and return true.
 
 =====removeShareholder=====
 
@@ -130,13 +130,13 @@ public static bool removeShareholder(byte[] shareholder)
 
 Removes a shareholder from the contract.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>shareholder</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>shareholder</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the parameter <code>shareholder</code> is not added as a shareholder before.
+The method MUST return false if the <code>shareholder</code> had not already been added.
 
-If the method succeeds, it MUST fire the <code>ShareholderRemoved</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>ShareholderRemoved</code> event and return true.
 
 ====Investor Information====
 
@@ -150,7 +150,7 @@ public static bool setInvestorInfo(byte[] address, byte[] investor)
 
 Sets or updates investor information.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
 <code>investor</code> is the serialized value of a defined class <code>Investor</code>. The definition of this class is outside of this standard. Investor information includes name of investor, country of residence of investor, KYC information, investor type (retail or accredited) and etc. A sample definition is shown below (Implementations may vary):
 
@@ -164,9 +164,9 @@ class Investor
 }
 </pre>
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-If the method succeeds, it MUST fire the <code>InvestorInfoUpdated</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>InvestorInfoUpdated</code> event and return true.
 
 =====getInvestorInfo=====
 
@@ -176,9 +176,9 @@ public static byte[] getInvestorInfo(byte[] address)
 
 Retrieves investor information.
 
-The parameter <code>address</code> SHOULD be 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-This method SHOULD return an empty byte array if the investor information of this <code>address</code> is not added to this contract before.
+This method SHOULD return an empty byte array if the investor information for <code>address</code> had not already been added.
 
 =====removeInvestorInfo=====
 
@@ -188,13 +188,13 @@ public static bool removeInvestorInfo(byte[] address)
 
 Removes investor information.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the investor information of this <code>address</code> is not added to this contract before.
+The method MUST return false if the investor information of this <code>address</code> had not already been added.
 
-If the method succeeds, it MUST fire the <code>InvestorInfoUpdated</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>InvestorInfoUpdated</code> event and return true.
 
 =====addInvestorToWhitelist=====
 
@@ -204,13 +204,13 @@ public static bool addInvestorToWhitelist(byte[] address)
 
 Adds an investor to the trading white list. Only investors in the white list are allowed to trade.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if <code>address</code> is already in the white list.
+The method MUST return false if the <code>address</code> is already in the white list.
 
-If the method succeeds, it MUST fire the <code>WhitelistAdded</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>WhitelistAdded</code> event and return true.
 
 =====removeInvestorFromWhitelist=====
 
@@ -220,13 +220,13 @@ public static bool removeInvestorFromWhitelist(byte[] address)
 
 Removes an investor from the whitelist. Investors removed from the whitelist are no longer able to trade.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if <code>address</code> is not in the white list.
+The method MUST return false if the <code>address</code> is not in the white list.
 
-If the method succeeds, it MUST fire the <code>WhitelistRemoved</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>WhitelistRemoved</code> event and return true.
 
 =====addInvestorToBlacklist=====
 
@@ -236,13 +236,13 @@ public static bool addInvestorToBlacklist(byte[] address)
 
 Adds an investor to the trading black list. Investors in the black list are banned from trading.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if <code>address</code> is already in the black list.
+The method MUST return false if the <code>address</code> is already in the black list.
 
-If the method succeeds, it MUST fire the <code>BlacklistAdded</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>BlacklistAdded</code> event and return true.
 
 =====removeInvestorFromBlacklist=====
 
@@ -252,13 +252,13 @@ public static bool removeInvestorFromBlacklist(byte[] address)
 
 Removes an investor from blacklist. Removing investors from the black list does not mean that they are able to trade. Only investors in the white list are allowed to trade.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if <code>address</code> is not in the black list.
+The method MUST return false if the <code>address</code> is not in the black list.
 
-If the method succeeds, it MUST fire the <code>BlacklistRemoved</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>BlacklistRemoved</code> event and return true.
 
 ====Compliance====
 
@@ -268,11 +268,11 @@ If the method succeeds, it MUST fire the <code>BlacklistRemoved</code> event, an
 public static bool checkInvestorInWhitelist(byte[] address)
 </pre>
 
-Checks if an investor belongs to the whitelist (investors who passed KYC, AML and accreditation AND approved by asset owners).
+Checks if an investor is in the whitelist (investors who passed KYC, AML and accreditation AND approved by asset owners).
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the parameter <code>address</code> is not found in whitelist.
+The method MUST return false if the <code>address</code> is not in whitelist.
 
 =====checkInvestorInBlacklist=====
 
@@ -280,11 +280,11 @@ The method MUST return false if the parameter <code>address</code> is not found 
 public static bool checkInvestorInBlacklist(byte[] address)
 </pre>
 
-Checks if an investor belongs to the blacklist (investors who are banned from trading).
+Checks if an investor is in the blacklist (investors who are banned from trading).
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the parameter <code>address</code> is found in black list.
+The method MUST return false if the parameter <code>address</code> is in the black list.
 
 =====checkTransferCompliance=====
 
@@ -292,13 +292,13 @@ The method MUST return false if the parameter <code>address</code> is found in b
 public static bool checkTransferCompliance(byte[] address, BigInteger amount)
 </pre>
 
-Check if the transfer of this <code>amount</code> from this <code>address</code> is abided by compliance.
+Checks if the transfer of <code>amount</code> from the <code>address</code> is allowed by compliance.
 
-The method SHOULD be called in <code>canTransfer</code> method of a <code>Sub Contract</code>.
+The method SHOULD be called in the <code>canTransfer</code> method of a <code>Sub Contract</code>.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 ====Token management====
 
@@ -308,17 +308,17 @@ The parameter <code>amount</code> MUST be greater than or equal to 0. If not, th
 public static bool setToken(string tokenTag, byte[] scriptHash)
 </pre>
 
-Adds a specific token contract script hash with a <code>tokenTag</code> to the <code>Main Contract</code> storage as a key-value pair. <code>tokenTage</code> is the key and <code>scriptHash</code> is the value.
+Adds a specific token contract script hash with a <code>tokenTag</code> to the <code>Main Contract</code> storage as a key-value pair. <code>tokenTag</code> is the key and <code>scriptHash</code> is the value.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
 The parameter <code>tokenTag</code> represents a specific attribute of a tranche of the ST (e.g. tokenTag="a" means these tokens has no voting right while tokenTag="b" does.) and is defined by the ST issuer.
 
-The parameter <code>scriptHash</code> SHOULD be a 20-byte contract script hash. If not, this method SHOULD throw an exception.
+The parameter <code>scriptHash</code> SHOULD be a 20-byte contract script hash. If not, this method SHOULD <code>throw</code> an exception.
 
 The method MUST return false if the parameter <code>tokenTag</code> is already in the contract storage.
 
-If the method succeeds, it MUST fire the <code>TokenUpdated</code> event and return true;
+If the method succeeds, it MUST fire the <code>TokenUpdated</code> event and return true.
 
 =====getToken=====
 
@@ -338,7 +338,7 @@ public static bool removeToken(byte tokenTag)
 
 Removes a specific token with <code>tokenTag</code> from the contract.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
 The method MUST return false if the parameter <code>tokenTag</code> does not exist in the contract.
 
@@ -352,7 +352,7 @@ public static BigInteger balanceOfAll(byte[] account)
 
 Returns the balance of all token tranches of the <code>account</code>.
 
-The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
 If the <code>account</code> is an unused address, this method MUST return 0.
 
@@ -392,7 +392,7 @@ MUST be triggered when the maximum number of shareholders is set.
 public static event ShareholderAdded(byte[] shareholders, bool isOriginal)
 </pre>
 
-MUST be triggered when initial shareholders and new shareholders (buyers from secondary market) are set.
+MUST be triggered when the initial shareholders and new shareholders (buyers from secondary market) are set.
 
 =====ShareholderRemoved=====
 
@@ -472,7 +472,7 @@ MUST be triggered when a token smart contract is removed from contract.
 
 ===Sub Standard Methods===
 
-The ST issuer needs to divide and assign different attributes to the assets which need to be securitized, such as shares with or without voting rights, shares with or without dividend rights. <code>Sub Contracts</code> are created based on those assets with different attributes and are related to the <code>Main Contract</code>. Those <code>Sub Contracts</code> are NEP-5 compatible and extended with necessary APIs.
+The ST issuer needs to divide and assign different attributes to the assets which need to be securitized, such as shares with or without voting rights, shares with or without dividend rights. <code>Sub Contracts</code> are created based on those assets with different attributes and are related to the <code>Main Contract</code>. Those <code>Sub Contracts</code> are NEP-5 compatible and can be extended with any necessary APIs.
 
 ====NEP-5 Methods====
 
@@ -524,7 +524,7 @@ public static BigInteger balanceOf(byte[] account)
 
 Returns the token balance of the <code>account</code>.
 
-The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
 If the <code>account</code> is an unused address, this method MUST return 0.
 
@@ -536,15 +536,15 @@ public static bool transfer(byte[] from, byte[] to, BigInteger amount)
 
 Transfers an amount of tokens from the <code>from</code> account to the <code>to</code> account.
 
-The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD throw an exception.
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 The method MUST return false if the <code>from</code> account does not have enough tokens to spend.
 
 If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return true, even if the amount is 0, or from and to are the same address.
 
-The method SHOULD check whether the from address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the method SHOULD use the SYSCALL Neo.Runtime.CheckWitness to verify the transfer.
+The method SHOULD check whether the from address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the method SHOULD use the <code>SYSCALL Neo.Runtime.CheckWitness</code> to verify the transfer.
 
 If the to address is a deployed contract, the method SHOULD check the payable flag of this contract to decide whether it should transfer the tokens to this contract.
 
@@ -576,13 +576,13 @@ Returns a detailed desription of this tranche of token, mainly about the assets 
 public static byte canTransfer(byte[] from, byte[] to, BigInteger amount)
 </pre>
 
-Returns a status code on transfer status. This method is used for checking the validity of transactions by means of compliance protocol. After all the checking rules are passed, a success status code is returned. Otherwise, a specific error status code will be returned for caller to get the reason of failure.
+Returns a status code of the transfer status. This method is used for checking the validity of transactions by means of the compliance protocol. After all the checking rules are passed, a success status code is returned. Otherwise, a specific error status code will be returned for caller to get the reason of failure.
 
 This method SHOULD call <code>checkTransferCompliancee</code> in the <code>Main Contract</code> as one of the checking rules.
 
-The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD throw an exception.
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 =====mintToken=====
 
@@ -592,15 +592,15 @@ public static bool mintToken(byte[] account, BigInteger amount)
 
 Mints specific amount of token for the <code>account</code>.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameters <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameters <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 The method MUST return false if the <code>account</code> is not in the whitelist.
 
-If the method succeeds, it MUST fire the <code>TokenMinted</code> and <code>Transfer</code> events, and MUST return true.
+If the method succeeds, it MUST fire the <code>TokenMinted</code> and <code>Transfer</code> events and return true.
 
 =====burnToken=====
 
@@ -610,15 +610,15 @@ public static bool burnToken(byte[] account, BigInteger amount)
 
 Burns specific amount of token from the <code>account</code>.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 The method MUST return false if the <code>account</code> is not in the whitelist.
 
-If the method succeeds, it MUST fire the <code>TokenBurned</code> and <code>Transfer</code> events, and MUST return true.
+If the method succeeds, it MUST fire the <code>TokenBurned</code> and <code>Transfer</code> events and return true.
 
 =====revertTransfer=====
 
@@ -628,17 +628,17 @@ public static bool revertTransfer(byte[] txid, byte[] from, byte[] to, BigIntege
 
 Reverts the specific transfer according to <code>txid</code>. The <code>amount</code> may be different from the amount in the transaction of <code>txid</code>.
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
-The parameters <code>txid</code> SHOULD be transaction id byte array. If not, this method SHOULD throw an exception.
+The parameters <code>txid</code> SHOULD be transaction id byte array. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD throw an exception.
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD throw an exception.
+The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
 The method MUST return false if the parameters <code>from</code> and <code>to</code> are not in the whitelist.
 
-If the method succeeds, it MUST fire the <code>Transfer</code> event and <code>RevertTransfer</code> event, and MUST return true.
+If the method succeeds, it MUST fire the <code>Transfer</code> event and <code>RevertTransfer</code> event and return true.
 
 =====freezeTransfers=====
 
@@ -648,7 +648,7 @@ public static void freezeTransfers()
 
 Freezes all transfer transactions. (e.g. sets the <code>IsFreezed</code> flag to true.)
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
 If the method succeeds, it MUST fire the <code>TransfersFreezed</code> event.
 
@@ -658,9 +658,9 @@ If the method succeeds, it MUST fire the <code>TransfersFreezed</code> event.
 public static void unfreezeTransfers()
 </pre>
 
-Unfreeze all transfer transactions. (e.g. sets the <code>IsFreezed</code> flag to false.)
+Unfreezes all transfer transactions. (e.g. sets the <code>IsFreezed</code> flag to false.)
 
-Only contract owner can call this method.
+Only the contract owner can call this method.
 
 If the method succeeds, it MUST fire the <code>TransfersUnfreezed</code> event.
 
