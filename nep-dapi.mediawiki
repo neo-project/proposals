@@ -1,5 +1,5 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 12
   Title: Unified dApp API for wallet providers
   Author: Nick Fujita <nickfujita@gmail.com>, Matus Zamborsky <zamborsky@gmail.com>
   Type: Standard
