@@ -109,6 +109,4 @@ A token contract which burns tokens MUST trigger a <code>transfer</code> event w
 
 ==Implementation==
 
-*Woolong: https://github.com/lllwvlvwlll/Woolong
-
-*ICO Template: https://github.com/neo-project/examples/tree/master/ICO_Template
+*neo-python: https://github.com/CityOfZion/neo-boa/blob/master/boa_test/example/demo/NEP5.py
