@@ -176,7 +176,7 @@ The returned tokens should be in the following format:
 }
 </pre>
 
-It must have the fields <code>id</code>, <code>uri</code> and <code>properties</code>.
+It must have the fields <code>id</code> and <code>properties</code>.
 It can contain other dApp-specific fields.
 
 ====properties====
