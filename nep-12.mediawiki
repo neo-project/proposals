@@ -44,7 +44,7 @@ Additionally, since there are a significant amount of overlap in the protocols b
 
 '''Provider Request Handling'''
 
-Implementation details of per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
+Implementation details per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
 
 ===Read Methods===
 
