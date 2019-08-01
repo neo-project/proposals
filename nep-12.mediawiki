@@ -2097,9 +2097,12 @@ Wallet provider implementations:
 
 ===O3===
 [https://o3.network O3 Wallet]
+
 [https://docs.o3.network/neoDapi/ dAPI Documentation]
+
 [https://github.com/O3Labs/o3-dapi/tree/master/packages/neo Client JS Package (NPM/CDN)]
 
 ===NEL===
 [https://github.com/NewEconoLab/TeemoWallet TeemoWallet]
+
 [https://dapi.nel.group dAPI Documentation]
