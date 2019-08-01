@@ -2091,9 +2091,7 @@ INSUFFICIENT_FUNDS -> Thrown when the action does not have a sufficient balance
 
 This protocol will allow dApp developers to create applications that interact with the NEO blockchain without having to be concerned about managing a full wallet within their application or the details related to handing transaction creation or broadcasting. This will also allow dApps to allow users to transact in a secure fashion that does not require sharing of their private key.
 
-==Implementations==
-
-Wallet provider implementations:
+==Wallet Provider Implementations==
 
 ===O3===
 [https://o3.network O3 Wallet]
@@ -2106,3 +2104,27 @@ Wallet provider implementations:
 [https://github.com/NewEconoLab/TeemoWallet TeemoWallet]
 
 [https://dapi.nel.group dAPI Documentation]
+
+==dApp Client Integrations==
+
+[https://switcheo.exchange/markets/NEX_NEO?ref=o3.network Switcheo]
+
+[https://store.neoeconomy.io/?ref=o3 NEO Economy Store]
+
+[http://dgamemaker.io/presale/ Decentralized Game Maker]
+
+[https://neo.alchemint.io/o3 Alchemint]
+
+[https://www.ftwlotto.com/?provider=o3 FTW]
+
+[https://neo.blocklords.io/?referalLink=AYWoyNjQwpLr1Ni7EC4HR5mQfrrRtqyPi4-1455 BLOCKLORDS]
+
+[https://blockchaincuties.com/neopresalestore?utm_source=o3wallet&utm_medium=referral BlockChain Cuties]
+
+[https://swap.o3.app/ O3 Swap]
+
+[https://utxo-manager.o3.app/ UTXO Manager]
+
+[https://buy.o3.network/ O3 Fiat Gateway]
+
+[https://neodapitestbed.o3.app/ NEO dAPI Testbed]
