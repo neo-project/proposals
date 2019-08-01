@@ -2103,7 +2103,7 @@ This protocol will allow dApp developers to create applications that interact wi
 ===NEL===
 [https://github.com/NewEconoLab/TeemoWallet TeemoWallet]
 
-[https://dapi.nel.group dAPI Documentation]
+[https://dapi.nel.group/en/#neo-dapi-introduction dAPI Documentation]
 
 ==dApp Client Integrations==
 
