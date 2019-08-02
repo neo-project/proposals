@@ -162,22 +162,10 @@ If the <code>owner</code> is an unused address, or it's not the owner of the spe
 public static enumerator tokensOf(byte[] owner)
 </pre>
 
-Returns an <code>enumerator</code> that contains all the tokens owned by the specified address.
+Returns an <code>enumerator</code> that contains all of the token ids owned by the specified address.
 
 The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
-
-The returned tokens should be in the following format:
-<pre>
-{
-  "id": <ID>,
-  "properties": properties(<ID>),
-  ...
-}
-</pre>
-
-It must have the fields <code>id</code> and <code>properties</code>.
-It can contain other dApp-specific fields.
 
 ====properties====
 
@@ -200,15 +188,19 @@ If not, this method SHOULD <code>throw</code> an exception.
   "properties": {
     "name": {
       "type": "string",
-      "description": "Identifies the asset to which this NFT represents"
+      "description": "Identifies the asset to which this NFT represents."
     },
     "description": {
       "type": "string",
-      "description": "Describes the asset to which this NFT represents"
+      "description": "Describes the asset to which this NFT represents."
     },
     "image": {
       "type": "string",
-      "description": "A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
+      "description": "Optional. A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
+    },
+    "tokenURI": {
+      "type": "string",
+      "description": "Optional. A distinct URI for a given asset."
     }
   }
 }
