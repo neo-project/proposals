@@ -314,7 +314,7 @@ Example
 
 
 ====getPublicKey====
-Return the public key of the Account that is currently connected to the dApp.
+Return the public key, in hexstring format, of the Account that is currently connected to the dApp.
 
 
 '''Method Interface'''
@@ -334,7 +334,7 @@ None
 <pre>
 interface Account {
   address: string; // Address of the connected account
-  publicKey: string; // Public key of the connected account
+  publicKey: string; // Public key of the connected account, in hexstring format
 }
 </pre>
 
@@ -379,7 +379,7 @@ getPublicKey()
 '''Provider Request Handling'''
 
 Upon receiving this request, return:
-- The address and public key of account currently selected by the user in the wallet interface
+- The address and public key of account currently selected by the user in the wallet interface, in hexstring format
 
 Example
 <pre>
