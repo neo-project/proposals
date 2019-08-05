@@ -1722,7 +1722,7 @@ interface SignedMessage {
   publicKey: string; // Public key of account that signed message
   message: string; // Original message signed
   salt: string; // Salt added to original message as prefix, before signing
-  data; string; // Signed message
+  data: string; // Signed message
 }
 </pre>
 
