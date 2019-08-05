@@ -1093,7 +1093,6 @@ interface TransactionInputArgs {
 <pre>
 export interface ApplicationLog {
   txid: string;
-  blockindex: number;
   executions: ExecutionDetails[];
 }
 
