@@ -1006,7 +1006,7 @@ getTransaction({
   network: 'TestNet'
 })
 .then((result: Object) => {
-  console.log('Transaction details: ' + JSON.stringigy(result));
+  console.log('Transaction details: ' + JSON.stringify(result));
 })
 .catch(({type: string, description: string, data: any}) => {
   switch(type) {
