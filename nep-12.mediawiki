@@ -671,7 +671,7 @@ Upon receiving this request
 Example
 <pre>
 {
-  result: 'hello world'
+  result: '68656c6c6f20776f726c64'
 }
 </pre>
 
