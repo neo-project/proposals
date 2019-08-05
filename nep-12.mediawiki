@@ -1098,7 +1098,7 @@ export interface ApplicationLog {
 
 interface ExecutionDetails {
   trigger: string;
-  contract: string;
+  contract: string; // Transaction execution Script Hash
   vmstate: string;
   gas_consumed: string;
   stack: Argument[];
@@ -1106,7 +1106,7 @@ interface ExecutionDetails {
 }
 
 interface Notification {
-  contract: string;
+  contract: string; // Contract Hash where the transaction execution notice is located
   state: {
     type: 'Array';
     value: Argument[];
