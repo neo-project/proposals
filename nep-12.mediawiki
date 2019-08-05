@@ -606,7 +606,7 @@ function getStorage({ scriptHash: string, key: string, network?: string }): Prom
 
 <pre>
 interface GetStorageArgs {
-  scriptHash: string; // script hash of the smart contract to invoke a read on
+  scriptHash: string; // script hash of the smart contract to invoke a read on, in hexstring format
   key: string; // key of the storage value to retrieve from the contract
   network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
 }
