@@ -256,7 +256,7 @@ None
 
 <pre>
 interface Account {
-  address: string; // Address of the connected account
+  address: string; // Address of the connected account, Base58 string format
   label?: string; // A label the users has set to identify their wallet
 }
 </pre>
@@ -333,7 +333,7 @@ None
 
 <pre>
 interface Account {
-  address: string; // Address of the connected account
+  address: string; // Address of the connected account, Base58 string format
   publicKey: string; // Public key of the connected account, in hexstring format
 }
 </pre>
