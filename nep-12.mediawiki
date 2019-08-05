@@ -1407,11 +1407,11 @@ interface AttachedAssets {
 // VALUE: Parsed amount to attach
 
 interface AssetIntentOverrides {
-  inputs: AssetInput[];
+  inputs: UTXOAssetInput[];
   outputs: AssetOutput[];
 }
 
-interface AssetInput {
+interface UTXOAssetInput {
   txid: string;
   index: number;
 }
