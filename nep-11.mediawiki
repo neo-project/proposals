@@ -179,8 +179,9 @@ The NVM object must conform to the "NEO NFT Metadata JSON Schema".
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
-====Metadata JSON Schema====
+====NEO NFT Metadata JSON Schema====
 
+Following is a description of the JSON Schema:
 <pre>
 {
   "title": "Asset Metadata",
@@ -200,9 +201,27 @@ If not, this method SHOULD <code>throw</code> an exception.
     },
     "tokenURI": {
       "type": "string",
-      "description": "Optional. A distinct URI for a given asset."
+      "description": "Optional. A distinct URI for a given asset that adheres to RFC 3986"
     }
   }
+}
+</pre>
+
+Given this schema, the simplest json object that can be constructed is the following:
+<pre>
+{
+   "name": "Slime 1",
+   "description": "A slime"
+}
+</pre>
+
+And if all the properties are included:
+<pre>
+{
+   "name": "Slime 2",
+   "description": "A slime",
+   "image": "{some image URI}",
+   "tokenURI": "{some URI}"
 }
 </pre>
 
