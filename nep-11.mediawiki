@@ -16,7 +16,7 @@ This NEP defines a standard non-fungible token system for the NEO Smart Economy.
 NFTs are required to track, exchange and enforce ownership of digital assets.
 A non-fungible token (NFT) can be thought of like a property deed - each one is unique and carries some non-mutable information (e.g. the physical address of the property).
 Other information, such as the owner of the property, can be changed.
-Also, we provide a built-in optional divisibility within each non-fungible asset.
+Also, we provide built-in optional divisibility within each non-fungible asset.
 This allows for high value objects to be tokenized more effectively.
 
 ==Specification==
@@ -50,7 +50,7 @@ This method MUST always return the same value every time it is invoked.
 public static BigInteger totalSupply()
 </pre>
 
-Returns the total token supply deployed in the system.
+Returns the total token supply currently in the system.
 
 ====decimals====
 
