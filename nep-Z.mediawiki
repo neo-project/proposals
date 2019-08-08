@@ -646,11 +646,11 @@ If the method succeeds, it MUST fire the <code>Transfer</code> event and <code>R
 public static void freezeTransfers()
 </pre>
 
-Freezes all transfer transactions. (e.g. sets the <code>IsFreezed</code> flag to true.)
+Freezes all transfer transactions. (e.g. sets the <code>IsFrozen</code> flag to true.)
 
 Only the contract owner can call this method.
 
-If the method succeeds, it MUST fire the <code>TransfersFreezed</code> event.
+If the method succeeds, it MUST fire the <code>TransfersFrozen</code> event.
 
 =====unfreezeTransfers=====
 
@@ -658,11 +658,11 @@ If the method succeeds, it MUST fire the <code>TransfersFreezed</code> event.
 public static void unfreezeTransfers()
 </pre>
 
-Unfreezes all transfer transactions. (e.g. sets the <code>IsFreezed</code> flag to false.)
+Unfreezes all transfer transactions. (e.g. sets the <code>IsFrozen</code> flag to false.)
 
 Only the contract owner can call this method.
 
-If the method succeeds, it MUST fire the <code>TransfersUnfreezed</code> event.
+If the method succeeds, it MUST fire the <code>TransfersUnfrozen</code> event.
 
 ===Sub Standard Events===
 
@@ -706,18 +706,18 @@ public static event RevertTransfer(byte[] txid, byte[] from, byte[] to, BigInteg
 
 MUST be triggered when a transfer is reverted.
 
-=====TransfersFreezed=====
+=====TransfersFrozen=====
 
 <pre>
-public static event TransfersFreezed()
+public static event TransfersFrozen()
 </pre>
 
 MUST be triggered when freezeTransfers is called.
 
-=====TransfersUnfreezed=====
+=====TransfersUnfrozen=====
 
 <pre>
-public static event TransfersUnfreezed()
+public static event TransfersUnfrozen()
 </pre>
 
 MUST be triggered when unfreezeTransfers is called.
