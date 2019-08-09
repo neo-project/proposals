@@ -930,6 +930,85 @@ Example
 </pre>
 
 
+====getBlockHeight====
+Get the height of the current block.
+
+
+'''Method Interface'''
+
+<pre>
+function getBlockHeight({
+  network?: string
+}): Promise<{result: BlockHeight}>
+</pre>
+
+
+'''Input arguments'''
+
+<pre>
+interface GetBlockHeightInputArgs {
+  network?: string;
+}
+</pre>
+
+
+'''Success return value'''
+
+<pre>
+interface BlockHeight {
+  result: number // Block height
+}
+</pre>
+
+
+'''Error return value'''
+
+<pre>
+interface Error {
+  type: string;
+  description: string;
+  data: string;
+}
+</pre>
+
+
+'''Example'''
+
+<pre>
+getBlockHeight({
+  network: 'TestNet'
+})
+.then((res: {result: number}) => {
+  console.log('Block height: ' + res.result);
+})
+.catch(({type: string, description: string, data: any}) => {
+  switch(type) {
+    case NO_PROVIDER:
+      console.log('No provider available.');
+      break;
+   case RPC_ERROR:
+    console.log('There was an error when broadcasting this transaction to the network.');
+    break;
+  }
+});
+</pre>
+
+
+'''Provider Request Handling'''
+
+Upon receiving this request
+* Broadcast the RPC request
+* Return the RPC response results
+
+
+Example
+<pre>
+{
+  "result": 2619690
+}
+</pre>
+
+
 ====getTransaction====
 Get information about a specific transaction.
 
