@@ -46,6 +46,10 @@ Additionally, since there are a significant amount of overlap in the protocols b
 
 Implementation details per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
 
+''Wallet Provider dAPI Client Integration Package Versioning```
+
+Providers of client packages for dApps shall provide versioned integration packages which facilitate the communication of these messages back to supported wallet providers. It is crutial that these packages be versioned in order to protect the dApps from potential future updates to the interface. In this way, a dApp should be able to use a fixed version of the dAPI method interfaces as long as it's supported by the wallet provider. Wallet providers should look to provide support for legacy version of client packages provided starting from the time the spec for this NEP has been finalized and merged.
+
 ===Read Methods===
 
 ====getProvider====
