@@ -26,7 +26,7 @@ While there may be several options for 3rd party wallet providers that will help
 
 ===Wallet providers===
 
-Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Wallet providers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplicate an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted by both the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have an unified interface for such transactions, providers could spend more time on making their individual services better for their users.
+Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Wallet providers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplicate an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted by both the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers could spend more time on making their individual services better for their users.
 
 The current list of wallet providers that can benefit from the use of this protocol are currently:
 * NEL Chrome extension
@@ -35,25 +35,25 @@ The current list of wallet providers that can benefit from the use of this proto
 * NEX Chrome extension
 * O3 dApps browser
 
-Each wallet provider has their own value proposition to it's users beyond the interface from this protocol itself, so it seems that formalizing it would be a net positive for all.
+Each wallet provider has its own value proposition to its users beyond the interface from this protocol itself, so it seems that formalizing it would be a net positive for all.
 
-Additionally, since there are a significant amount of overlap in the protocols between NEO and Ontology for sending assets, and interacting with contract on NeoVM, this proposal is a joint effort with [https://github.com/ontio/OEPs/pull/8 OEP6]. Since there are differences in the two platforms, the result of these proposals will not be identical, nor should they be, but getting as much overlap as possible will help to simplify cross-chain interactions for both platforms.
+Additionally, since there is a significant amount of overlap in the protocols between NEO and Ontology for sending assets, and interacting with a contract on NeoVM, this proposal is a joint effort with [https://github.com/ontio/OEPs/pull/8 OEP6]. Since there are differences in the two platforms, the result of these proposals will not be identical, nor should they be, but getting as much overlap as possible will help to simplify cross-chain interactions for both platforms.
 
 
 ==Specification==
 
 '''Provider Request Handling'''
 
-Implementation details per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transaction on their behalf, or a certain subset of transaction types. Below are basic guidelines for general handling of requests from dApps via the protocol interface.
+Implementation details per dApp domain handling will be left to the discretion of the wallet provider. Providers can choose to allow users to trust certain dApps to automatically execute transactions on their behalf, or a certain subset of transaction types. Below are basic guidelines for the general handling of requests from dApps via the protocol interface.
 
 ''Wallet Provider dAPI Client Integration Package Versioning```
 
-Providers of client packages for dApps shall provide versioned integration packages which facilitate the communication of these messages back to supported wallet providers. It is crutial that these packages be versioned in order to protect the dApps from potential future updates to the interface. In this way, a dApp should be able to use a fixed version of the dAPI method interfaces as long as it's supported by the wallet provider. Wallet providers should look to provide support for legacy version of client packages provided starting from the time the spec for this NEP has been finalized and merged.
+Providers of client packages for dApps shall provide versioned integration packages which facilitate the communication of these messages back to supported wallet providers. It is crucial that these packages be versioned in order to protect the dApps from potential future updates to the interface. In this way, a dApp should be able to use a fixed version of the dAPI method interfaces as long as it's supported by the wallet provider. Wallet providers should look to provide support for legacy versions of client packages provided starting from the time the spec for this NEP has been finalized and merged.
 
 ===Read Methods===
 
 ====getProvider====
-Returns information about the  dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
+Returns information about the dAPI provider, including who this provider is, the version of their dAPI, and the NEP that the interface is compatible with.
 
 
 '''Method Interface'''
@@ -228,8 +228,8 @@ getNetworks()
 '''Provider Request Handling'''
 
 Upon receiving this request, return:
-- The list of NEO networks that the wallet is able to connect to. The return values will be used by the dapp developer to communicate to which network they would like their request to be directed to. The wallet provider will be responsible for the logistics of which node to submit any request to for each network alias provided.
-- The wallet provider is to also return the default network that the wallet UI is currently set to by user.
+- The list of NEO networks that the wallet is able to connect to. The return values will be used by the dApp developer to communicate to which network they would like their request to be directed to. The wallet provider will be responsible for the logistics of which node to submit any request to for each network alias provided.
+- The wallet provider is to also return the default network that the wallet UI is currently set to by the user.
 
 Example
 <pre>
@@ -306,7 +306,7 @@ getAccount()
 '''Provider Request Handling'''
 
 Upon receiving this request, return:
-- The address and label of account currently selected by the user in the wallet interface
+- The address and label of the account currently selected by the user in the wallet interface
 
 Example
 <pre>
@@ -383,7 +383,7 @@ getPublicKey()
 '''Provider Request Handling'''
 
 Upon receiving this request, return:
-- The address and public key of account currently selected by the user in the wallet interface, in hexstring format
+- The address and public key of the account currently selected by the user in the wallet interface, in hexstring format
 
 Example
 <pre>
@@ -412,7 +412,7 @@ function getBalance(args: GetBalanceArgs): Promise<BalanceResults>
 <pre>
 interface GetBalanceArgs {
   params: BalanceRequest|BalanceRequest[];
-  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string - Network to submit this request to. If omitted, it will default to the network the wallet is currently set to.
 }
 
 interface BalanceRequest {
@@ -592,7 +592,7 @@ Multiple account balances request sample
 '''Provider Request Handling'''
 
 Upon receiving this request, fetch the latest balance(s) for each given account, for the specific asset if applicable.
-Typechecking will be required on the input argument, as it can be eather a single BalanceRequest object, or an array of BalanceRequest objects. In the case where a specific asset is not provided to check the balance for, the wallet provider will fetch balances for all assets and tokens for that account.
+Typechecking will be required on the input argument, as it can be either a single BalanceRequest object or an array of BalanceRequest objects. In the case where a specific asset is not provided to check the balance for, the wallet provider will fetch balances for all assets and tokens for that account.
 
 
 ====getStorage====
@@ -612,7 +612,7 @@ function getStorage({ scriptHash: string, key: string, network?: string }): Prom
 interface GetStorageArgs {
   scriptHash: string; // script hash of the smart contract to invoke a read on, in hexstring format
   key: string; // key of the storage value to retrieve from the contract
-  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string - Network to submit this request to. If omitted, it will default to the network the wallet is currently set to.
 }
 </pre>
 
@@ -702,7 +702,7 @@ interface InvokeReadArgs {
   scriptHash: string; // script hash of the smart contract to invoke a read on
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
-  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string - Network to submit this request to. If omitted, it will default to the network the wallet is currently set to.
 }
 
 interface Argument {
@@ -1342,7 +1342,7 @@ interface SendArgs {
   amount: string; // The parsed amount of the asset to be sent
   remark?: string; // (Optional) Description of the transaction to be made
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
-  network?: string; //  Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string; //  Network to submit this request to. If omitted, it will default to the network the wallet is currently set to.
   broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
 }
 </pre>
@@ -1353,7 +1353,7 @@ interface SendArgs {
 <pre>
 interface SendOutput {
   txid: string; // The transaction ID of the send invocation
-  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if the transaction is broadcast by a wallet provider
   signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
 }
 </pre>
@@ -1415,7 +1415,7 @@ Upon receiving this request
 ** From address matches connected account
 ** To address is valid
 ** Validate asset exists
-** Amount is valid value, and account has enough balance
+** Amount is a valid value, and account has enough balance
 * If the "broadcastOverride" input argument is set to True, return the serialized signed transaction to the dApp
 * Else broadcast the RPC request
 * Return the transaction Id and the url of the rpc node which the tx was broadcast to
@@ -1459,7 +1459,7 @@ interface InvokeArgs {
   operation: string; // operation on the smart contract to call
   args: Argument[]; // any input arguments for the operation
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
-  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string - Network to submit this request to. If omitted, it will default to the network the wallet is currently set to.
   attachedAssets?: AttachedAssets;
   broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
 
@@ -1512,7 +1512,7 @@ interface AssetOutput {
 
 interface InvokeOutput {
   txid: string; // The transaction ID of the invocation
-  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if the transaction is broadcast by a wallet provider
   signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
 }
 
@@ -1616,7 +1616,7 @@ interface InvokeMultiArgs {
   invokeArgs: InvokeArguments[]; List of contract invoke inputs
 
   fee?: string; // (Optional) The parsed amount of network fee (in GAS) to include with transaction
-  network?: string - Network to submit this request to. If omitted, will default to network the wallet is currently set to.
+  network?: string - Network to submit this request to. If omitted, it will default to the network the wallet is currently set to.
   broadcastOverride?: boolean; // In the case that the dApp would like to be responsible for broadcasting the signed transaction rather than the wallet provider
 
   assetIntentOverrides?: AssetIntentOverrides;
@@ -1674,7 +1674,7 @@ interface AssetOutput {
 
 interface InvokeMultiOutput {
   txid: string; // The transaction ID of the invocation
-  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if transaction is broadcast by wallet provider
+  nodeUrl?: string; // The node which the transaction was broadcast to. Returned if the transaction is broadcast by a wallet provider
   signedTx?: string; // The serialized signed transaction. Only returned if the broadcastOverride input argument was set to True
 }
 
@@ -1760,7 +1760,7 @@ Upon receiving this request
 ** Script hashes is valid
 ** Format parameters
 *** If `byteArray`, convert to appropriate hexstring based on assumed format
-* Batch invoke inputs into script, and handle assets to each invoke as outputs
+* Batch invoke inputs into script and handle assets to each invoke as outputs
 * Set script transaction attribute 0x20 according to the following conditions
 ** If triggerContractVerification is set to true, set 0x20 to scriptHash of the contract being invoked
 ** If there is no fee, attachedAssets, or 'assetIntentOverrides', set 0x20 to the users address
@@ -1857,7 +1857,7 @@ Upon receiving this request
 * Create a randomized salt value to be prefixed to the message before signing
 * Create the hexstring to be signed. '010001f0' + {length of salt+message in hex} + salt + message + '0000'
 * Sign the hexstring value once the user confirms
-* Return to dapp
+* Return to dApp
 
 For more details, please see:
 [https://docs.switcheo.network/#signing-messages-for-neo]
@@ -1873,7 +1873,7 @@ Example
 </pre>
 
 ====deploy====
-Will deploy a compiled smart contract to the blockchain with the provided input parameters. The GAS cost for deploying the contract will be calculated by the provider, and displayed to the user upon tx acceptance or rejection.
+Will deploy a compiled smart contract to the blockchain with the provided input parameters. The GAS cost for deploying the contract will be calculated by the provider and displayed to the user upon tx acceptance or rejection.
 
 
 '''Method Interface'''
@@ -2018,7 +2018,7 @@ enum Event {
 
 =====READY=====
 
-On a READY event, the callback will fire with a single argument with information about the wallet provider. At any time a READY event listener is added, it will immidiately be called if the provider is already in a ready state. This provides a single flow for dapp developers since this listener should start any and all interactions with the dapi protocol.
+On a READY event, the callback will fire with a single argument with information about the wallet provider. At any time a READY event listener is added, it will immediately be called if the provider is already in a ready state. This provides a single flow for dApp developers since this listener should start any and all interactions with the dAPI protocol.
 <pre>
 interface Provider {
   name: string;
@@ -2030,7 +2030,7 @@ interface Provider {
 
 =====ACCOUNT_CHANGED=====
 
-On a ACCOUNT_CHANGED event, the callback will fire with a single argument of the new account. This occurs when an account is already connected to the dapp, and the user has changed the connected account from the dapi provider side.
+On a ACCOUNT_CHANGED event, the callback will fire with a single argument of the new account. This occurs when an account is already connected to the dApp, and the user has changed the connected account from the dAPI provider side.
 <pre>
 interface Account {
   address: string; // Address of the connected account
@@ -2039,7 +2039,7 @@ interface Account {
 </pre>
 
 =====CONNECTED=====
-On a CONNECTED event, the user has approved the connection of the dapp with one of their accounts. This will fire the first time any of one of the following methods are called from the dapp: getAccount, invoke, send.
+On a CONNECTED event, the user has approved the connection of the dApp with one of their accounts. This will fire the first time any of one of the following methods are called from the dApp: getAccount, invoke, send.
 
 <pre>
 interface Account {
@@ -2051,7 +2051,7 @@ interface Account {
 
 =====DISCONNECTED=====
 
-On a DISCONNECTED event, the account connected to the dapp via the dapi provider has been disconnected (logged out).
+On a DISCONNECTED event, the account connected to the dApp via the dAPI provider has been disconnected (logged out).
 
 
 =====NETWORK_CHANGED=====
@@ -2102,7 +2102,7 @@ Example:
 
 =====TRANSACTION_CONFIRMED=====
 
-On a TRANSACTION_CONFIRMED event, a previously broadcast transaction via the dapi has been confirmed by the blockchain.
+On a TRANSACTION_CONFIRMED event, a previously broadcast transaction via the dAPI has been confirmed by the blockchain.
 
 <pre>
 interface BlockHeightChanged {
@@ -2148,7 +2148,7 @@ enum Event {
 
 ===Error handling===
 
-All methods return a promise which will result in a resolve or reject. In the case of a rejection, the return argument will be an object formatted with standard fields for the type of error, a brief description, and any raw error data.
+All methods return a promise which will resolve or reject. In the case of a rejection, the return argument will be an object formatted with standard fields for the type of error, a brief description, and any raw error data.
 
 <pre>
 interface Error {
@@ -2161,10 +2161,10 @@ interface Error {
 Common error definitions
 <pre>
 NO_PROVIDER -> Thrown when there is no interface capable of interacting with NEO blockchain
-CONNECTION_DENIED -> Thrown when API provider refuses to execute a transaction (e.g. trying to execute a transaction on an unavialable network)
+CONNECTION_DENIED -> Thrown when API provider refuses to execute a transaction (e.g. trying to execute a transaction on an unavailable network)
 RPC_ERROR -> Thrown when a command relying on RPC connection to a network node fails
 MALFORMED_INPUT -> Thrown when an input such as the address is not a valid NEO address
-CANCELED -> Thrown when a user cancels, or refuses the dapps request
+CANCELED -> Thrown when a user cancels or refuses the dApp's request
 INSUFFICIENT_FUNDS -> Thrown when the action does not have a sufficient balance
 </pre>
 
