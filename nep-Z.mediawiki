@@ -196,67 +196,67 @@ The method MUST return false if the investor information of this <code>address</
 
 If the method succeeds, it MUST fire the <code>InvestorInfoUpdated</code> event and return true.
 
-=====addInvestorToWhitelist=====
+=====addInvestorsToWhitelist=====
 
 <pre>
-public static bool addInvestorToWhitelist(byte[] address)
+public static bool addInvestorsToWhitelist(byte[][] addresses)
 </pre>
 
-Adds an investor to the trading white list. Only investors in the white list are allowed to trade.
+Adds investors to the trading white list. Only investors in the white list are allowed to trade.
 
 Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>addresses</code> SHOULD be a 20-byte address array. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the <code>address</code> is already in the white list.
+The method MUST return false if the <code>addresses</code> is already in the white list.
 
 If the method succeeds, it MUST fire the <code>WhitelistAdded</code> event and return true.
 
-=====removeInvestorFromWhitelist=====
+=====removeInvestorsFromWhitelist=====
 
 <pre>
-public static bool removeInvestorFromWhitelist(byte[] address)
+public static bool removeInvestorsFromWhitelist(byte[][] addresses)
 </pre>
 
-Removes an investor from the whitelist. Investors removed from the whitelist are no longer able to trade.
+Removes investors from the whitelist. Investors removed from the whitelist are no longer able to trade.
 
 Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>addresses</code> SHOULD be a 20-byte address array. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the <code>address</code> is not in the white list.
+The method MUST return false if the <code>addresses</code> is not in the white list.
 
 If the method succeeds, it MUST fire the <code>WhitelistRemoved</code> event and return true.
 
-=====addInvestorToBlacklist=====
+=====addInvestorsToBlacklist=====
 
 <pre>
-public static bool addInvestorToBlacklist(byte[] address)
+public static bool addInvestorsToBlacklist(byte[][] addresses)
 </pre>
 
-Adds an investor to the trading black list. Investors in the black list are banned from trading.
+Adds investors to the trading black list. Investors in the black list are banned from trading.
 
 Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>addresses</code> SHOULD be a 20-byte address array. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the <code>address</code> is already in the black list.
+The method MUST return false if the <code>addresses</code> is already in the black list.
 
 If the method succeeds, it MUST fire the <code>BlacklistAdded</code> event and return true.
 
-=====removeInvestorFromBlacklist=====
+=====removeInvestorsFromBlacklist=====
 
 <pre>
-public static bool removeInvestorFromBlacklist(byte[] address)
+public static bool removeInvestorsFromBlacklist(byte[][] addresses)
 </pre>
 
-Removes an investor from blacklist. Removing investors from the black list does not mean that they are able to trade. Only investors in the white list are allowed to trade.
+Removes investors from blacklist. Removing investors from the black list does not mean that they are able to trade. Only investors in the white list are allowed to trade.
 
 Only the contract owner can call this method.
 
-The parameter <code>address</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>addresses</code> SHOULD be a 20-byte address array. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the <code>address</code> is not in the black list.
+The method MUST return false if the <code>addresses</code> is not in the black list.
 
 If the method succeeds, it MUST fire the <code>BlacklistRemoved</code> event and return true.
 
@@ -389,7 +389,7 @@ MUST be triggered when the maximum number of shareholders is set.
 =====ShareholderAdded=====
 
 <pre>
-public static event ShareholderAdded(byte[] shareholders, bool isOriginal)
+public static event ShareholderAdded(byte[] shareholder, bool isOriginal)
 </pre>
 
 MUST be triggered when the initial shareholders and new shareholders (buyers from secondary market) are set.
@@ -423,34 +423,34 @@ MUST be triggered when investor information is removed.
 =====WhitelistAdded=====
 
 <pre>
-public static event WhitelistAdded(bytes[] address)
+public static event WhitelistAdded(bytes[][] addresses)
 </pre>
 
-MUST be triggered when a new investor is added to the whitelist.
+MUST be triggered when new investors are added to the whitelist.
 
 =====WhitelistRemoved=====
 
 <pre>
-public static event WhitelistRemoved(bytes[] address)
+public static event WhitelistRemoved(bytes[][] addresses)
 </pre>
 
-MUST be triggered when an investor is removed from the whitelist.
+MUST be triggered when investors are removed from the whitelist.
 
 =====BlacklistAdded=====
 
 <pre>
-public static event BlacklistAdded(bytes[] address)
+public static event BlacklistAdded(bytes[][] addresses)
 </pre>
 
-MUST be triggered when an investor is added to the black list.
+MUST be triggered when investors are added to the black list.
 
 =====BlacklistRemoved=====
 
 <pre>
-public static event BlacklistRemoved(bytes[] address)
+public static event BlacklistRemoved(bytes[][] addresses)
 </pre>
 
-MUST be triggered when an investor is removed from the black list.
+MUST be triggered when investors are removed from the black list.
 
 ====Token Management Events====
 
@@ -578,47 +578,51 @@ public static byte canTransfer(byte[] from, byte[] to, BigInteger amount)
 
 Returns a status code of the transfer status. This method is used for checking the validity of transactions by means of the compliance protocol. After all the checking rules are passed, a success status code is returned. Otherwise, a specific error status code will be returned for caller to get the reason of failure.
 
-This method SHOULD call <code>checkTransferCompliancee</code> in the <code>Main Contract</code> as one of the checking rules.
+This method SHOULD call <code>checkTransferCompliance</code> in the <code>Main Contract</code> as one of the checking rules.
 
 The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
 
 The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
-=====mintToken=====
+=====mint=====
 
 <pre>
-public static bool mintToken(byte[] account, BigInteger amount)
+public static bool mint(byte[][] accounts, BigInteger[] amounts, uint[] lockupPeriods )
 </pre>
 
-Mints specific amount of token for the <code>account</code>.
+Mints specific amount of token for the <code>accounts</code>.
 
 Only the contract owner can call this method.
 
-The parameters <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameters <code>accounts</code> SHOULD be a 20-byte address array. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
+The elements of the parameter <code>amounts</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the <code>account</code> is not in the whitelist.
+The elements of the parameter <code>lockupPeriods</code> MUST be greater than or equal to 0 of each element. If not, this method SHOULD <code>throw</code> an exception.
 
-If the method succeeds, it MUST fire the <code>TokenMinted</code> and <code>Transfer</code> events and return true.
+The method MUST return false if the elements of  <code>accounts</code> is not in the whitelist.
 
-=====burnToken=====
+If the method succeeds, it MUST fire the <code>Minted</code> and <code>Transfer</code> events and return true.
+
+=====burn=====
 
 <pre>
-public static bool burnToken(byte[] account, BigInteger amount)
+public static bool burn(byte[][] accounts, BigInteger[] amounts, uint[] lockupPeriods)
 </pre>
 
 Burns specific amount of token from the <code>account</code>.
 
 Only the contract owner can call this method.
 
-The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>accounts</code> SHOULD be a 20-byte address array. If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>amount</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
+The elements of the parameter <code>amounts</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
-The method MUST return false if the <code>account</code> is not in the whitelist.
+The elements of the parameter <code>lockupPeriods</code> MUST be greater than or equal to 0. If not, this method SHOULD <code>throw</code> an exception.
 
-If the method succeeds, it MUST fire the <code>TokenBurned</code> and <code>Transfer</code> events and return true.
+The method MUST return false if the elements of <code>accounts</code> is not in the whitelist.
+
+If the method succeeds, it MUST fire the <code>Burned</code> and <code>Transfer</code> events and return true.
 
 =====revertTransfer=====
 
@@ -682,18 +686,18 @@ A token contract which burns tokens MUST trigger a transfer event with the to ad
 
 ====Events Added====
 
-=====TokenMinted=====
+=====Minted=====
 
 <pre>
-public static event TokenMinted(byte[] account, BigInteger amount)
+public static event Minted(byte[][] accounts, BigInteger[] amounts, uint[] lockupPeriods)
 </pre>
 
 MUST be triggered when tokens are minted to corresponding investors.
 
-=====TokenBurned=====
+=====Burned=====
 
 <pre>
-public static event TokenBurned(byte[] account, BigInteger amount)
+public static event Burned(byte[][] accounts, BigInteger[] amounts, uint[] lockupPeriods)
 </pre>
 
 MUST be triggered when tokens are burned from corresponding investors.
