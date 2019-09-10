@@ -65,7 +65,7 @@ Method object has the following structure:
 
 <code>returnType</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>InteropInterface</code>, <code>Void</code>.
 
-<code>readOnly</code> is <code>Boolean</code> which describe if the method require write access to the storage or not.
+<code>readOnly</code> is <code>Boolean</code> which describe if the method require write access to the storage or not. Also, syscalls like <code>Neo.Native.Deploy</code>, <code>Neo.Contract.Create</code>, <code>Neo.Contract.Update</code> or <code>Contract.Destroy</code> will be banned if <code>readOnly</code> is True.
 
 ===Event===
 
