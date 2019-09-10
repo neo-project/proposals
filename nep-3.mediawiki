@@ -166,7 +166,7 @@ It is strongly recommended that each contract have the following entry point:
     }
   ],
   "returnType": "Any",
-  "readOnly": "Boolean"
+  "readOnly": "false"
 }
 </pre>
 
