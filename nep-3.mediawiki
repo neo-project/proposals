@@ -32,13 +32,7 @@ The NeoContract ABI is defined by JSON format, which has the following basic str
 <pre>
 {
   "hash": "0x562851057d8afbc08fabc8c438d7cc771aef2195",
-  "entryPoint": 
-    {
-    "name": "Main",
-    "parameters": [],
-    "returnType": "Boolean",
-    "readOnly": "Boolean",
-    },
+  "entryPoint": {},
   "methods": [],
   "events": []
 }
