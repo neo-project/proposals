@@ -32,7 +32,7 @@ The NeoContract ABI is defined by JSON format, which has the following basic str
 <pre>
 {
   "hash": "0x562851057d8afbc08fabc8c438d7cc771aef2195",
-  "entrypoint": "main",
+  "entryPoint": {},
   "methods": [],
   "events": []
 }
@@ -40,7 +40,7 @@ The NeoContract ABI is defined by JSON format, which has the following basic str
 
 <code>hash</code> is the script hash of the contract. It is encoded as a hexadecimal string in big-endian.
 
-<code>entrypoint</code> is a Method object which describe the details of the entrypoint of the contract.
+<code>entryPoint</code> is a Method object which describe the details of the entrypoint of the contract.
 
 <code>methods</code> is an array of Method objects which describe the details of each method in the contract.
 
