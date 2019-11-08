@@ -1,0 +1,66 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Confidential Token Standard
+  Author: Albert Acebrón <neo@albert.sh> 
+  Type: <>
+  Status: Draft
+  Created: 2019-06-27
+</pre>
+
+==Abstract==
+
+This NEP proposes a token standard that enables confidential transactions in which the amounts transacted are hidden.
+
+==Motivation==
+
+In NEO, all transactions are public, meaning that once an account is linked with an identity all its financials movements are eternally exposed, destroying any expectation of privacy. This conflicts with the requirements of several systems and financial instruments, making it impossible to use the NEO blockchain for certain types of use-cases where privacy , especially forward privacy, is important.
+The token system proposed in this NEP alleviates this problem by hiding the amounts of tokens being transacted so that, while it'll still be possible to know when a transaction took place and who were the parties involved in it, it won't be possible to know how many tokens have been sent, making the balances of all the accounts in the system private.
+
+==Specification==
+
+===Overview===
+
+This standard is based on an UTXO model for token transactions, in which transaction validity is verified by proving that the sum of all inputs minus all outputs is positive (**validity requirement**). What makes this token different from other UTXO-based tokens is the fact that all input and output amounts are encrypted, as well as the sum of these, which is calculated using homomorphic encryption and checked against the validity requirement via a range proof. Also, a range proof needs to be provided for each of the outputs to prove that none of them are negative numbers.
+The union of homomorphic encryption with range proofs allows anyone to verify the validity of the transactions without revealing at any point what are the amounts being transacted, therefore achieving confidentiality.
+
+===Methods===
+
+**totalSupply**, **name**, **symbol** and **decimals** are inherited from [NEP-5](https://github.com/neo-project/proposals/blob/master/nep-5.mediawiki).
+
+====transfer====
+
+<pre>
+public static bool transfer(byte[] proof)
+</pre>
+
+Transfers an <code>amount</code> of tokens from the <code>from</code> account to the <code>to</code> account.
+
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
+
+Returns true if the proof verifies the **validity requirement** and false if it does not.
+
+====getTransactions====
+
+<pre>
+public static byte[] getTransactions(byte[] account)
+</pre>
+
+Returns all the transactions in which <code>account</code> has taken part of.
+
+The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+
+==Rationale==
+
+Explanations of the design decisions as well as the proofs of the privacy guarantees of this system can be found in the [AZTEC whitepaper](https://github.com/AztecProtocol/AZTEC/blob/master/AZTEC.pdf).
+
+==Backwards Compatibility==
+
+This NEP only introduces a new type of token and therefore does not break compatibility with previous versions.
+
+==Acknowledgements==
+
+This NEP is based on the AZTEC Protocol, without which it wouldn't be possible.
+
+==Implementation==
+
+To be done.
