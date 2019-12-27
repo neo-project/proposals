@@ -49,6 +49,16 @@ Returns all the transactions in which <code>account</code> has taken part of.
 
 The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
+===Events===
+
+====transfer====
+
+<pre>
+public static event transfer(byte[] proof)
+</pre>
+
+MUST trigger when tokens are transferred, including zero value transfers.
+
 ==Rationale==
 
 Explanations of the design decisions as well as the proofs of the privacy guarantees of this system can be found in the [AZTEC whitepaper](https://github.com/AztecProtocol/AZTEC/blob/master/AZTEC.pdf).
