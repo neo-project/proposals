@@ -5,6 +5,7 @@
   Type: Standard
   Status: Final
   Created: 2018-04-17
+  Superseded-By: smartcontractstandard
 </pre>
 
 ==Abstract==
