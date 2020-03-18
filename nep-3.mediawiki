@@ -62,7 +62,7 @@ Method object has the following structure:
 
 <code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the method.
 
-<code>returntype</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>InteropInterface</code>, <code>Void</code>.
+<code>returntype</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>, <code>Void</code>.
 
 ===Event===
 
@@ -92,7 +92,7 @@ Parameter object has the following structure:
 
 <code>name</code> is the name of the parameter, which can be any valid identifier.
 
-<code>type</code> indicates the type of the parameter. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>InteropInterface</code>.
+<code>type</code> indicates the type of the parameter. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>.
 
 ===ParameterType===
 
@@ -128,6 +128,9 @@ ParameterType enum has the following values:
 |-
 | Array
 | An array of objects. The type of elements can be any value of ParameterType.
+|-
+| Map
+| A map of objects. The type of elements can be any value of ParameterType.
 |-
 | InteropInterface
 | An interface which is returned by interop services.
