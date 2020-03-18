@@ -100,13 +100,13 @@ Contract object has the following structure:
 
 <pre>
 {
-  "script": "21036dc4bf8f0405dcf5d12a38487b359cb4bd693357a387d74fc438ffc7757948b0ac",
+  "script": "EQwhApA7KlqNvp36EY0mwnWg4DpLrytVrtblzKrbrJpaTRhGEQtBMHOzuw==",
   "parameters": [],
   "deployed": false
 }
 </pre>
 
-<code>script</code> is the script code of the contract. This field can be <code>null</code> if the contract has been deployed to the blockchain.
+<code>script</code> is the script code of the contract in base64 format. This field can be <code>null</code> if the contract has been deployed to the blockchain.
 
 <code>parameters</code> is an array of Parameter objects which describe the details of each parameter of the contract function. For more information about the Parameter object, see the descriptions in [[nep-3.mediawiki|NEP-3: NeoContract ABI]].
 
