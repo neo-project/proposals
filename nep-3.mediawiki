@@ -130,7 +130,7 @@ ParameterType enum has the following values:
 | An array of objects. The type of elements can be any value of ParameterType.
 |-
 | Map
-| A map of objects. The type of elements can be any value of ParameterType.
+| A map of objects. The type of elements inside the key/value collection can be any value of ParameterType.
 |-
 | InteropInterface
 | An interface which is returned by interop services.
