@@ -70,7 +70,7 @@ Account object has the following structure:
 
 <pre>
 {
-  "address": "AQLASLtT6pWbThcSCYU1biVqhMnzhTgLFq",
+  "address": "NQoGRJ2DP26zVD4evJ2XgdqU4rwnN9HEAE",
   "label": "MyAddress",
   "isDefault": true,
   "lock": false,
