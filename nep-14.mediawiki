@@ -9,9 +9,7 @@
 
 ==Abstract==
 
-When a smart contract is deployed, it must explicitly declare the features and permissions it will use. When it is running, it will be limited by its declared list of features and permissions, and cannot make any behavior beyond the scope of the list.
-
-This NEP describes the Manifest standards for NEO smart contracts.
+A Manifest is a file containing metadata for a group of accompanying files. For example, the files of a computer program may have a manifest describing name, trust information, permissions required for execution. 
 
 ==Motivation==
 
