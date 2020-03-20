@@ -45,16 +45,16 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
 
 The <code>groups</code> field is an array of Group objects which represent a set of mutually trusted contracts. A contract will trust and allow any contract in the same group to invoke it, and the user interface will not give any warnings.
 
-A group is identified by a public key and must be accompanied by a signature for the contract hash to prove that the contract is indeed included in the group.
+A <code>group</code> is identified by a public key and must be accompanied by a signature for the contract hash to prove that the contract is indeed included in the group.
 
 <pre>
 {
-  "pubKey": "028e92a0f582bd3517497eff1a9beb41821991b8589bfcba20c2f40746f5c170a1",
-  "signature": "f6dbce908e291f5d8a81450292a3674f48ef8079306d613b3783dc263287704a0ef48f47679aa12b7d5e598fdb52d63ca7566afbe0e239437191d05698837e3b"
+  "pubKey": "0333b24ee50a488caa5deec7e021ff515f57b7993b93b45d7df901e23ee3004916",
+  "signature": "bAhbpx1J8eIPLb5\u002BfvDIRQTbX0doilPxQO\u002BQKS\u002B3fpgyjTwV73UPrv0qsb6I3ZuQjfCA7xoePl5rU508B7k\u002B7w=="
 }
 </pre>
 
-Where <code>pubKey</code> represents the public key of the group and signature is the signature of the contract hash.
+Where <code>pubKey</code> represents the public key of the group and <code>signature</code> is the signature of the contract hash encoded in Base64.
 
 ===Features===
 
@@ -90,9 +90,9 @@ The definition of the <code>Permission</code> object is as follows:
 
 The <code>contract</code> field indicates the contract to be invoked. It can be a hash of a contract, a public key of a group, or a wildcard <code>*</code>.
 
-If it specifies a hash of a contract, then the contract will be invoked; If it specifies a public key of a group, then any contract in this group will be invoked; If it specifies a wildcard *, then any contract will be invoked.
+If it specifies a hash of a contract, then the contract will be invoked; If it specifies a public key of a group, then any contract in this group will be invoked; If it specifies a wildcard <code>*</code>, then any contract will be invoked.
 
-The <code>methods</code> field is an array containing a set of methods to be called. It can also be assigned with a wildcard <code>*</code>. If it is a wildcard <code>*</code>, then it means that any method can be called.
+The <code>methods</code> field is an array containing a set of methods to be called. It can also be assigned with a wildcard <code>*</code>, which means that any method can be called.
 
 If a contract invokes a contract or method that is not declared in the manifest at runtime, the invocation will fail.
 
