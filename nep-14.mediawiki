@@ -11,6 +11,8 @@
 
 A Manifest is a file containing metadata for a group of accompanying files. For example, the files of a computer program may have a manifest describing name, trust information, permissions required for execution. 
 
+This NEP describes the Manifest standards for NEO smart contracts.
+
 ==Motivation==
 
 There should be a way to expose the access control over the contract. To achieve this, we need a mechanism for describing the features and permissions of smart contracts. With NeoContract Manifest, developers can have clear recognition about the contract and easily create programs to invoke the contract.
