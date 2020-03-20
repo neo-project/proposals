@@ -77,7 +77,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [[nep-14.mediawiki|14]]
 | NeoContract Manifest
-| Erik Zhang, shargon, Vitor Nazário Coelho, Li Jianying
+| Erik Zhang, shargon, Vitor Nazário Coelho, Igor Machado Coelho, Li Jianying
 | Standard
 | Final
 |-
