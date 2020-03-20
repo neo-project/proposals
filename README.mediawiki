@@ -75,6 +75,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [[nep-14.mediawiki|14]]
+| NeoContract Manifest
+| Erik Zhang, shargon, Vitor Nazário Coelho, Li Jianying
+| Standard
+| Final
+|-
 | 
 | Dynamic Sharding
 | 
