@@ -49,7 +49,7 @@ A NEP can also be assigned status "Deferred". The NEP author or editor can assig
 
 A NEP can also be "Rejected". Perhaps after all is said and done it was not a good idea. It is still important to have a record of this fact.
 
-NEPs can also be superseded by a different NEP, rendering the original obsolete.
+NEPs can also be superseded by a different NEP, rendering the original obsolete. More specifically, if we need to remove or add functionalities in NEPs, we should create a new NEP to replace the original one.
 
 The possible paths of the status of NEPs are as follows:
 
