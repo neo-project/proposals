@@ -27,12 +27,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [[nep-3.mediawiki|3]]
-| NeoContract ABI
-| Erik Zhang
-| Standard
-| Final
-|-
 | [[nep-5.mediawiki|5]]
 | Token Standard
 | Tyler Adams, luodanwg, tanyuan, Alan Fong
@@ -75,11 +69,17 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [[nep-14.mediawiki|14]]
+| [https://github.com/neo-project/proposals/pull/119 14]
+| NeoContract ABI
+| Erik Zhang
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/114 15]
 | NeoContract Manifest
 | Erik Zhang, Fernando Díaz Toledano, Vitor Nazário Coelho, Igor Machado Coelho, Li Jianying
 | Standard
-| Final
+| Accepted
 |-
 | 
 | Dynamic Sharding
