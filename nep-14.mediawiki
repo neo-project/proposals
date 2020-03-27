@@ -1,5 +1,5 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 14
   Title: NeoContract ABI
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
