@@ -32,12 +32,15 @@ The NeoContract ABI is defined by JSON format, which has the following basic str
 <pre>
 {
   "hash": "0x562851057d8afbc08fabc8c438d7cc771aef2195",
+  "entrypoint": "main",
   "methods": [],
   "events": []
 }
 </pre>
 
 <code>hash</code> is the script hash of the contract. It is encoded as a hexadecimal string in big-endian.
+
+<code>entrypoint</code> is a Method object which describe the details of the entrypoint of the contract.
 
 <code>methods</code> is an array of Method objects which describe the details of each method in the contract.
 
@@ -50,7 +53,6 @@ Method object has the following structure:
 <pre>
 {
   "name": "transfer",
-  "offset": 0,
   "parameters": [],
   "returntype": "Boolean"
 }
@@ -58,11 +60,9 @@ Method object has the following structure:
 
 <code>name</code> is the name of the method, which can be any valid identifier.
 
-<code>offset</code> is the offset of this method in the script.
-
 <code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the method.
 
-<code>returntype</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>, <code>Void</code>.
+<code>returntype</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>InteropInterface</code>, <code>Void</code>.
 
 ===Event===
 
@@ -92,7 +92,7 @@ Parameter object has the following structure:
 
 <code>name</code> is the name of the parameter, which can be any valid identifier.
 
-<code>type</code> indicates the type of the parameter. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>.
+<code>type</code> indicates the type of the parameter. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>InteropInterface</code>.
 
 ===ParameterType===
 
@@ -129,9 +129,6 @@ ParameterType enum has the following values:
 | Array
 | An array of objects. The type of elements can be any value of ParameterType.
 |-
-| Map
-| A map of objects. The type of elements inside the key/value collection can be any value of ParameterType.
-|-
 | InteropInterface
 | An interface which is returned by interop services.
 |-
@@ -141,3 +138,26 @@ ParameterType enum has the following values:
 | Void
 | Void means that the method has no return value. This value cannot be the type of a parameter.
 |}
+
+===EntryPoint===
+
+It is strongly recommended that each contract have the following entry point:
+
+<pre>
+{
+  "name": "main",
+  "parameters": [
+    {
+      "name": "operation",
+      "type": "String"
+    },
+    {
+      "name": "args",
+      "type": "Array"
+    }
+  ],
+  "returntype": "Any"
+}
+</pre>
+
+In this way, the caller can easily access the methods through the entry point, specifying the name of the method to be invoked with the first parameter, and specifying the parameters of the method with the second parameter.
