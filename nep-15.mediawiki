@@ -1,10 +1,11 @@
 <pre>
-  NEP: 14
+  NEP: 15
   Title: NeoContract Manifest
   Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com> 
   Type: Standard
-  Status: Final
+  Status: Accepted
   Created: 2020-03-20
+  Requires: 14
 </pre>
 
 ==Abstract==
@@ -73,7 +74,7 @@ The <code>payable</code> field is a boolean value indicating whether the contrac
 
 ===ABI===
 
-For technical details of ABI, please refer to [https://github.com/neo-project/proposals/blob/master/nep-3.mediawiki NEP-3: NeoContract ABI].
+For technical details of ABI, please refer to [https://github.com/neo-project/proposals/pull/119 NEP-14: NeoContract ABI].
 
 ===Permissions===
 
