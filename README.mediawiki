@@ -75,6 +75,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [https://github.com/neo-project/proposals/pull/114 15]
+| NeoContract Manifest
+| Erik Zhang, Fernando Díaz Toledano, Vitor Nazário Coelho, Igor Machado Coelho, Li Jianying
+| Standard
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
