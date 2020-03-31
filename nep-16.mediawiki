@@ -1,0 +1,50 @@
+<pre>
+  NEP: 16
+  Title: NeoContract NEF
+  Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com> 
+  Type: Standard
+  Status: Accepted
+  Created: 2020-03-31
+</pre>
+
+==Abstract==
+
+A NEF is a file meeting the standard format for a valid NEO executable file. It provides the basic information about the script, including the compiler, version, along with the checksum for data verification.
+
+This NEP describes the NEF standards for NEO smart contracts.
+
+==Motivation==
+
+Although we use neo-vm as the virtual machine currently, we should have other scripts in the future. A standard definition for the executable file format can guarantee both the feasibility of other vm code and the validity of the script file.
+
+==Specification==
+
+In the field definitions below, we provide both the definitions of the fields as well as the corresponding functions.
+
+==Fields==
+
+A nef file can be divided into three parts, that is, the file header (Magic, Compiler, Version, ScriptHash), Checksum and Script.
+
+===Magic===
+
+Magic header of the file. It has a constant value of `0x3346454E` in `4` bytes, standing for the NEO Executable Format 3 or NEF3 for short.
+
+===Compiler===
+
+Identifies the compiler used with the length of `32` bytes.
+
+===Version===
+
+Identifies the version of the compiler. It consists of four attributes, namely Mayor, Minor, Build, Revision, with the total size of `16` bytes.
+
+===ScriptHash===
+
+The scriptHash for the script with the length of `20` bytes. It is used to check the script consistency.
+
+===Checksum===
+
+Used to verify the integrity and accuracy of the file with the length of `4` bytes. When deserializing a nef file, the header will be used to compute the checksum with the Sha256 algorithm. If the result is equal to the checksum field, then we can assert that the file is valid.
+
+===Script===
+
+The script of the payload with the `variable` length. 
