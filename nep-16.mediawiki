@@ -1,7 +1,7 @@
 <pre>
   NEP: 16
   Title: NeoContract NEF
-  Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com> 
+  Author: Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>, Igor Machado Coelho <igormachado@gmail.com>
   Type: Standard
   Status: Accepted
   Created: 2020-03-31
@@ -39,7 +39,7 @@ Identifies the version of the compiler. It consists of four attributes, namely M
 
 ===ScriptHash===
 
-The scriptHash for the script with the length of `20` bytes. It is used to check the script consistency.
+The hash for the script with the length of `20` bytes. It is calculated by using SHA256 and RIPEMD160 algorithm to check the script consistency.
 
 ===Checksum===
 
