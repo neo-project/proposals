@@ -81,6 +81,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [https://github.com/neo-project/proposals/pull/121 16]
+| NEO Executable Format (NEF)
+| Fernando Díaz Toledano, Erik Zhang, Igor Machado Coelho, Li Jianying, Vitor Nazário Coelho
+| Standard
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
