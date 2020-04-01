@@ -1,7 +1,7 @@
 <pre>
   NEP: 16
   Title: NEO Executable Format (NEF)
-  Author: Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com>
+  Author: Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>
   Type: Standard
   Status: Accepted
   Created: 2020-03-31
