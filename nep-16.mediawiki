@@ -11,7 +11,7 @@
 
 A NEF is a file meeting the standard format for a valid NEO executable file. It provides the basic information about the script, including the compiler, version, along with the checksum for data verification.
 
-This NEP describes the NEF standards for NEO smart contracts.
+This NEP describes the NEF standard for NEO smart contracts.
 
 ==Motivation==
 
