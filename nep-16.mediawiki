@@ -39,7 +39,7 @@ Identifies the version of the compiler. It consists of four attributes, namely M
 
 ===ScriptHash===
 
-The hash for the script with the length of `20` bytes. It is calculated by using SHA256 and RIPEMD160 algorithm to check the script consistency.
+The hash of the script with a length of `20` bytes. It is calculated by performing a SHA256 over the `script` data followed by creating a RIPEMD160 hash over the previous output  to check the script consistency.
 
 ===Checksum===
 
