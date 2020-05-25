@@ -47,4 +47,4 @@ The checksum field is used to verify the integrity and accuracy of the file. The
 
 ===Script===
 
-Stores the raw VM opcodes. The data should be serialised using the variable length format as described in the [documentation](https://docs.neo.org/developerguide/en/articles/conventions.html#variable-length-types).
+Stores the raw VM opcodes. The data should be serialised using the variable length format as described in the [https://docs.neo.org/developerguide/en/articles/conventions.html#variable-length-types documentation].
