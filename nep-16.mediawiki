@@ -35,7 +35,7 @@ A UTF-8 encoded `string` representing the human readable name of the compiler us
 
 ===Version===
 
-Identifies the version of the compiler. It consists of four attributes, namely Mayor, Minor, Build, Revision, with the total size of `16` bytes.
+Identifies the version of the compiler. It consists of four attributes, namely Major, Minor, Build, Revision, with the total size of `16` bytes. Each attribute is a signed 32 bit integer. 
 
 ===ScriptHash===
 
