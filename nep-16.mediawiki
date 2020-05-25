@@ -43,7 +43,7 @@ The hash for the script with the length of `20` bytes. It is calculated by using
 
 ===Checksum===
 
-Used to verify the integrity and accuracy of the file with the length of `4` bytes. When deserializing a nef file, the header will be used to compute the checksum with the Sha256 algorithm. If the result is equal to the checksum field, then we can assert that the file is valid.
+The checksum field is used to verify the integrity and accuracy of the file. The checksum is created by hashing the `header` using the SHA256 algorithm and taking the first 4 bytes of the hash result.
 
 ===Script===
 
