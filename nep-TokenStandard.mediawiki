@@ -1,0 +1,162 @@
+<pre>
+  NEP:
+  Title: Extended Token Standard
+  Author: Steven Liu <liurendong@neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2020-05-25
+</pre>
+
+==Abstract==
+
+This NEP defines an extended token standard for the Neo Smart Economy. The extended standard interface for contracts that manage multiple type of tokens including Non-Fungible tokens and Fungible tokens, which are minted with NEO based mortgage.
+
+==Motivation==
+
+Non-Fungible tokens (NFT) have been popular in the crypto word for a while. Since the wide usage of NFT in the collectibles, game items, digital art, event tickets, the simple NFT standard NEP-11 limits the functionality of transferring multiple tokens in one transaction. In addition, in some case, user have to use the non-fungible token and fungible token together. On the other hand, minting NFT without valued mortgage is pointless. Because non-divisible NEO token is Governing Token for the Neo Smart Economy, it adds the value to the minted NFT.
+
+==Specification==
+
+===Methods===
+
+====transfer====
+<pre>
+public static bool transfer(byte[] from, byte[] to, byte[] tokenId, BigInteger value)
+</pre>
+
+The transfer method transfers the token with <code>tokenId</code> to address to.
+
+If the token type of this <code>tokenId</code> is NFT, it will change the ownership of <code>from</code> to <code>to</code>.
+If the onwership of this NFT is not <code>from</code>, this method SHOULD throw an exception.
+
+If the token type of this <code>tokenId</code> is fungible token, it will transfer <code>value</code> number of this fungible token to the account <code>to</code>. If the number of this fungible token of <code>from</code> account is smaller than <code>value</code>, this method SHOULD throw an exception.
+
+If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the token is sent to the owner.
+
+If the transfer is not processed, the function SHOULD return <code>false</code>.
+
+
+====batchTransfer====
+<pre>
+public static bool batchTransfer(byte[] from, byte[] to, byte[][] tokenIds, BigInteger[] values)
+</pre>
+The transfer method transfers a list of token with <code>tokenIds</code> to
+address to.
+
+If one of the token type of these <code>tokenIds</code> is NFT, it will change the ownership of <code>from</code> to <code>to</code>.
+If the onwership of this NFT is not <code>from</code>, this method SHOULD throw an exception.
+
+If one of the token type of these <code>tokenIds</code> is fungible token, it will transfer <code>value</code> number of this fungible token to the account <code>to</code>. If the number of this fungible token of <code>from</code> account is smaller than <code>value</code>, this method SHOULD throw an exception.
+
+If the method succeeds, it MUST fire the <code>TransferBatch</code> event, and MUST return <code>true</code>, even if the token is sent to the owner.
+
+If the transfer is not processed, the function SHOULD return <code>false</code>.
+
+
+====balanceOf====
+<pre>
+public static BigInteger balanceOf(byte[] account, byte[] tokenId)
+</pre>
+Returns the token balance of the account if the token type is Fungible Token. If the token type is Non-Fungible token, this method SHOULD return <code>1</code> if the account is the owner of this NFT, otherwise it SHOULD return <code>0</code>.
+
+The parameter account SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+
+If the account is an unused address, this method MUST return <code>0</code>.
+
+
+====tokensOf====
+<pre>
+public static enumerator tokensOf(byte[] owner)
+</pre>
+Returns an enumerator that contains all of the token ids owned by the specified address.
+
+The parameter owner SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+
+====ownerOf====
+<pre>
+public static byte[] ownerOf(byte[] tokenId)
+</pre>
+Returns an account address  that own the specified NFT.
+
+The parameter tokenId SHOULD be a valid NFT. If not, this method SHOULD throw an exception.
+
+
+====properties====
+<pre>
+public static string properties(byte[] tokenId)
+</pre>
+
+Returns a serialized NVM object containing the properties for the given NFT. The NVM object must conform to the [https://github.com/neo-project/proposals/blob/61e53a07a319c537c57c988cbcb216ea75de0f89/nep-11.mediawiki#neo-nft-metadata-json-schema NEO NFT Metadata JSON Schema].
+
+The parameter <code>tokenId</code> SHOULD be a valid index of that NFT type. If not, this method SHOULD throw an exception.
+
+====mintNonFungible====
+<pre>
+public static bool mintNonFungible(byte[] type, byte[] to)
+</pre>
+
+Mint a NFT to an address.
+
+The user who invoke this function MUST be the creator of this type of NFT. If not, this method SHOULD throw an exception.
+
+The invocation of mintNonFungible function SHOULD have at least one <code>NEO</code> as mortgage
+If not, this method SHOULD throw an exception.
+
+The parameter <code>type</code> SHOULD be a valid NFT type.  If not, this method SHOULD throw an exception.
+
+The parameter <code>to</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+
+If the method succeeds, it MUST fire the Transfer event, and MUST return true.
+
+If the Mint is not processed, the function SHOULD return <code>false</code>.
+
+====mintFungible====
+<pre>
+public static bool mintFungible(byte[] type, byte[] to,  BigInteger amount)
+</pre>
+Mint an <code>amount</code> of Fungible Token to an address.
+
+The user who invoke this function MUST be the creator of this type of Fungible Token . If not, this method SHOULD throw an exception.
+
+The parameter <code>type</code> SHOULD be a valid FT type.  If not, this method SHOULD throw an exception.
+
+The parameter <code>to</code> SHOULD be a 20-byte address. If not, this method SHOULD throw an exception.
+
+If the method succeeds, it MUST fire the Transfer event, and MUST return true.
+
+If the Mint is not processed, the function SHOULD return false.
+
+====burnNonFungible====
+<pre>
+public static bool burnNonFungible(byte[] from, byte[] tokenId)
+</pre>
+Burn a NFT with <code>tokenId</code> from account <code>from</code>. The parameter <code>tokenId</code> SHOULD be a valid index of that NFT type. If not, this method SHOULD throw an exception.
+
+The account who burns this NFT will get the corresponding <code>NEO</code> mortgage
+
+
+====burnFungible====
+<pre>
+public static bool burnFungible(byte[] from, byte[] tokenId, BigInteger amount)
+</pre>
+Burn <code>amount<code> of fungible token with <code>tokenId</code> from account <code>from</code>. The parameter <code>tokenId</code> SHOULD be a valid index of that fungible token type. If not, this method SHOULD throw an exception.
+
+
+
+===Events===
+====Transfer====
+<pre>
+public static event Transfer(byte[] from, byte[] to, byte[] tokenId, BigInteger value)
+</pre>
+MUST trigger when tokens are transferred, including zero value transfers.
+
+A token contract which mints new tokens MUST trigger a <code>Transfer</code> event with the from address set to null when tokens are minted.
+
+A token contract which burns tokens MUST trigger a <code>Transfer</code> event with the to address set to null when tokens are burned.
+
+
+====TransferBatch====
+<pre>
+public static event TransferBatch(byte[] from, byte[] to, byte[][] tokenIds, BigInteger[] values)
+</pre>
+MUST trigger when a list of tokens are transferred, including zero value transfers.
