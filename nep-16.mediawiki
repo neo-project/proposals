@@ -43,7 +43,7 @@ The hash of the script with a length of `20` bytes. It is calculated by performi
 
 ===Checksum===
 
-The checksum field is used to verify the integrity and accuracy of the file. The checksum is created by hashing the `header` using double SHA256 algorithm and taking the first 4 bytes of the hash result.
+The checksum field is used to verify the integrity and accuracy of the file. The checksum is created by hashing the `header` twice, using the SHA256 algorithm, and taking the first 4 bytes of the final hash result.
 
 ===Script===
 
