@@ -37,7 +37,8 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
   "permissions": [],
   "trusts": [], 
   "safemethods": [],
-  "extra": {}
+  "extra": {},
+  "supportedstandards": []
 }
 
 </pre>
@@ -112,3 +113,7 @@ If a method is marked as safe, the user interface will not give any warnings whe
 ===Extra===
 
 The <code>extra</code> field describes the custom user data, such as name, code version, author, description, etc.
+
+===SupportedStandards===
+
+The <code>supportedstandards</code> field describes the [https://github.com/bettybao1209/proposals/blob/master/nep-10.mediawiki NEP-10] values.
