@@ -33,12 +33,12 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
 {
   "groups": [],
   "features": {},
+  "supportedstandards": [],
   "abi": {},
   "permissions": [],
   "trusts": [], 
   "safemethods": [],
-  "extra": {},
-  "supportedstandards": []
+  "extra": {}
 }
 
 </pre>
@@ -72,6 +72,10 @@ The <code>features</code> field describes what features are available for the co
 The <code>storage</code> field is a boolean value indicating whether the contract has a storage. The value true means that it has, and false means not.
 
 The <code>payable</code> field is a boolean value indicating whether the contract accepts transfers. The value true means that it accepts, and false means not.
+
+===SupportedStandards===
+
+The <code>supportedstandards</code> field describes the [https://github.com/bettybao1209/proposals/blob/master/nep-10.mediawiki NEP-10] values.
 
 ===ABI===
 
@@ -113,7 +117,3 @@ If a method is marked as safe, the user interface will not give any warnings whe
 ===Extra===
 
 The <code>extra</code> field describes the custom user data, such as name, code version, author, description, etc.
-
-===SupportedStandards===
-
-The <code>supportedstandards</code> field describes the [https://github.com/bettybao1209/proposals/blob/master/nep-10.mediawiki NEP-10] values.
