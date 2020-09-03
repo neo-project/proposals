@@ -132,7 +132,7 @@ public static bool burnNonFungible(byte[] from, byte[] tokenId)
 </pre>
 Burn a NFT with <code>tokenId</code> from account <code>from</code>. The parameter <code>tokenId</code> SHOULD be a valid index of that NFT type. If not, this method SHOULD throw an exception.
 
-The account who burns this NFT will get the corresponding <code>Nep5</code> collateral
+The account who burns this NFT will get the corresponding <code>Nep5</code> collateral.
 
 
 ====burnFungible====
