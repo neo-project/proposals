@@ -9,11 +9,11 @@
 
 ==Abstract==
 
-This NEP defines an extended token standard for the Neo Smart Economy. The extended standard interface for contracts that manage multiple type of tokens including Non-Fungible tokens and Fungible tokens, which are minted with NEO based mortgage.
+This NEP defines an extended token standard for the Neo Smart Economy. The extended standard interface for contracts that manage multiple type of tokens including Non-Fungible tokens and Fungible tokens, which are minted with Nep5 based collateral.
 
 ==Motivation==
 
-Non-Fungible tokens (NFT) have been popular in the crypto word for a while. Since the wide usage of NFT in the collectibles, game items, digital art, event tickets, the simple NFT standard NEP-11 limits the functionality of transferring multiple tokens in one transaction. In addition, in some case, user have to use the non-fungible token and fungible token together. On the other hand, minting NFT without valued mortgage is pointless. Because non-divisible NEO token is Governing Token for the Neo Smart Economy, it adds the value to the minted NFT.
+Non-Fungible tokens (NFT) have been popular in the crypto word for a while. Since the wide usage of NFT in the collectibles, game items, digital art, event tickets, the simple NFT standard NEP-11 limits the functionality of transferring multiple tokens in one transaction. In addition, in some case, user have to use the non-fungible token and fungible token together. On the other hand, minting NFT without valued collateral is pointless. The Nep5 token adds the value to the minted NFT.
 
 ==Specification==
 
@@ -99,7 +99,7 @@ Mint a NFT to an address.
 
 The user who invoke this function MUST be the creator of this type of NFT. If not, this method SHOULD throw an exception.
 
-The invocation of mintNonFungible function SHOULD have at least one <code>NEO</code> as mortgage
+The invocation of mintNonFungible function SHOULD have sent <code>Nep5</code> as collateral. 
 If not, this method SHOULD throw an exception.
 
 The parameter <code>type</code> SHOULD be a valid NFT type.  If not, this method SHOULD throw an exception.
@@ -132,14 +132,14 @@ public static bool burnNonFungible(byte[] from, byte[] tokenId)
 </pre>
 Burn a NFT with <code>tokenId</code> from account <code>from</code>. The parameter <code>tokenId</code> SHOULD be a valid index of that NFT type. If not, this method SHOULD throw an exception.
 
-The account who burns this NFT will get the corresponding <code>NEO</code> mortgage
+The account who burns this NFT will get the corresponding <code>Nep5</code> collateral
 
 
 ====burnFungible====
 <pre>
 public static bool burnFungible(byte[] from, byte[] tokenId, BigInteger amount)
 </pre>
-Burn <code>amount<code> of fungible token with <code>tokenId</code> from account <code>from</code>. The parameter <code>tokenId</code> SHOULD be a valid index of that fungible token type. If not, this method SHOULD throw an exception.
+Burn <code>amount</code> of fungible token with <code>tokenId</code> from account <code>from</code>. The parameter <code>tokenId</code> SHOULD be a valid index of that fungible token type. If not, this method SHOULD throw an exception.
 
 
 
