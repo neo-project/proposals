@@ -72,13 +72,13 @@ ASSERT<br>
 When limited to *two parallel operations*, 'minimum_balance_amount' can be calculated as:
 
 <code>
-current_balance - maximum of all parallel output transfer values
+minimum_balance_amount = current_balance - maximum of all parallel output transfer values
 </code>
 
 On general, it can be safely calculated as:
 
 <code>
-current_balance - sum of all parallel output transfer values
+minimum_balance_amount = current_balance - sum of all parallel output transfer values
 </code>
 
 Some notes:
