@@ -88,6 +88,7 @@ from returning wrong values on user balance. Note that: if Strict Mode is adopte
 if consensus nodes agree on the precise asset amount at that specific time**.
 Also note that Strict Mode **strongly forbids** parallel operations on a specific account, since network will reject the second
 transaction as soon as balance has changed (thus requiring operations to be performed one at a time).
+Finally, note that this mode also prevents **unintentional double-spending on malfunction/out-of-sync wallets**.
 
 Flexible Mode can be adopted on other scenarios where parallel operations are required, since only minimum balance is required
 at the moment of the operation. However, if massive operations are performed on the same account, including situations where balance
