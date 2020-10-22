@@ -1,0 +1,122 @@
+<pre>
+  NEP: XYZ
+  Title: Solid State Transfers
+  Author: Igor Machado Coelho <igormachado@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>, Fernando Díaz Toledano <shargon@gmail.com>, "Who Else? Join Us!" <you@you.com>
+  Type: Standard
+  Status: Draft
+  Created: 2019-07-18
+  Requires: NEP-5
+</pre>
+
+==Abstract==
+
+This document describes the Solid State Transfers (SST) standard, which is a Verification Script
+capable of providing public assertions regarding user assets, including minimum and precise balance.
+This allows for wallets and explorers to implement extra asset security mechanisms in a straightforward manner.
+
+==Motivation==
+
+The Witness system of Neo Blockchain allows up-front verification of user claims, in the format of a Verification Script.
+Typically, this is used to provide authentication for NEP-5 contracts, including authorization for NEP-5 asset transfers.
+We propose to attach extra Witnesses named Solid State Transfers adding extra claims about the user, 
+such as precise balance and minimum balance at the moment transaction is put in a block.
+This allows, explorers and wallets to easily verify correctness of balance at any moment in time, regardless of any other
+storage verification technology. 
+
+The main motivation for this standard is to allow extra security checks during blockchain verification phase, simplifing the development
+and tests of diverse Neo clients in different programming languages.
+This is complementary to any other proposed state verification technology, and it is valid for both Neo2 and Neo3 protocols.
+
+==Specification==
+
+Recall that NEP-5 asset transfers are performed by operation "tranfer":
+
+<pre>
+public static bool transfer(byte[] from, byte[] to, BigInteger amount)
+</pre>
+
+Also recall that user balance is obtained by operation "balanceOf":
+
+<pre>
+public static BigInteger balanceOf(byte[] account)
+</pre>
+
+We propose two balance verification modes:
+- strict mode: witness is only valid if user has *exactly* the informed balance (before asset transfer)
+- flexible mode: witness is valid if user has *at least* the informed balance (before asset transfer)
+
+Strict Mode can be implemented as the following Verification Script (with empty Invocation part):
+
+```
+PUSH_VALUE exact_balance_amount
+execute operation "balanceOf"
+EQUALS
+ASSERT
+```
+
+Flexible Mode can be implemented as the following Verification Script (with empty Invocation part):
+
+```
+PUSH_VALUE minimum_balance_amount
+execute operation "balanceOf"
+GEQ
+ASSERT
+```
+
+Popular user wallets are *strongly recommended* to adopt Strict Mode, since this prevents poorly implemented nodes
+from returning wrong values on user balance. Note that: if Strict Mode is adopted, user transaction will **only be executed
+if consensus nodes agree on the precise asset amount at that specific time**.
+Also note that Strict Mode **strongly forbids** parallel operations on a specific account, since network will reject the second
+transaction as soon as balance has changed (thus requiring operations to be performed one at a time).
+
+Flexible Mode can be adopted on other scenarios where parallel operations are required, since only minimum balance is required
+at the moment of the operation. However, if massive operations are performed on the same account, including situations where balance
+may be drastically reduced or increased in short periods of time, it is recommended to **NOT ADOPT** this standard.
+
+Note that any user **is still able to protect its assets**, by simply transfering assets to itself.
+
+==Rationale==
+
+The Strict Mode is able to provide *permanent evidence* that some user posesses a certain amount of NEP-5 tokens, in that moment of time.
+Since Verification Scripts have this purpose, and no Verification is allowed to fail in the blockchain, this can be considered a very secure
+approach of recording one's balance history in time.
+
+The same reasoning is valid for Flexible Mode, although one may still not know (in a direct manner) the precise assets in account (only minimum value).
+It is important to mention that this standard only helps users to **directly know** the information, without requiring any other complete blockchain processing
+method (that typically takes longer to validate).
+
+We believe that the cost of adding extra bytes as witnesses will not cause any harm to the blockchain, and on the contrary, will give so many other benefits 
+to both Neo users and software developers, increasing accountability and testing power.
+
+==Backwards Compatibility==
+
+This NEP is compatible with any other existing NEP, and can be easily implemented in both Neo2 and Neo3 protocols.
+
+==Test Cases==
+
+Examples for Strict Mode:
+
+- In wallet, load user account balance with 100 tokens
+- Perform transfer of 60 tokens and include SST requiring equality to "100"
+- Verification Script should return True
+
+- In wallet, load user account balance with 100 tokens
+- Perform transfer of 60 tokens and include SST requiring equality to "0"
+- Verification Script should return False
+
+Examples for Flexible Mode:
+
+- In wallet, load user account balance with 100 tokens
+- Simulataneously, perform transfer of 35 tokens and include SST requiring greater than "60"
+- Simulataneously, perform transfer of 40 tokens and include SST requiring greater than "60"
+- Verification Script should return True, regardless of execution order
+
+- In wallet, load user account balance with 100 tokens
+- Perform transfer of 40 tokens and include SST requiring greater than "65"
+- Perform transfer of 35 tokens and include SST requiring greater than "65"
+- Verification Script should return False, if executing in this exact order, and True, otherwise
+
+
+==Implementation==
+
+Ongoing implementation on Neo: https://github.com/neo-project/neo/pull/2013
