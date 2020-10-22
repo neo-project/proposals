@@ -28,6 +28,7 @@ and tests of diverse Neo clients in different programming languages.
 This is complementary to any other proposed state verification technology, and it is valid for both Neo2 and Neo3 protocols.
 
 We propose two SST modes, called Strict and Flexible.
+Strict uses "==" operation, while Flexible uses ">=".
 On practice, this means saying:
 
 * I'm going to transfer you X units of this token, and *I EXACTLY have Y units of this token* (strict)
