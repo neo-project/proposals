@@ -54,25 +54,19 @@ We propose two balance verification modes:
 Strict Mode can be implemented as the following Verification Script (with empty Invocation part):
 
 <code>
-PUSH_VALUE exact_balance_amount
-
-execute operation "balanceOf"
-
-EQUALS
-
-ASSERT
+PUSH_VALUE exact_balance_amount<br>
+execute operation "balanceOf"<br>
+EQUALS<br>
+ASSERT<br>
 </code>
 
 Flexible Mode can be implemented as the following Verification Script (with empty Invocation part):
 
 <code>
-PUSH_VALUE minimum_balance_amount
-
-execute operation "balanceOf"
-
-GEQ
-
-ASSERT
+PUSH_VALUE minimum_balance_amount<br>
+execute operation "balanceOf"<br>
+GEQ<br>
+ASSERT<br>
 </code>
 
 When limited to *two parallel operations*, 'minimum_balance_amount' can be calculated as:
@@ -99,7 +93,7 @@ Flexible Mode can be adopted on other scenarios where parallel operations are re
 at the moment of the operation. However, if massive operations are performed on the same account, including situations where balance
 may be drastically reduced or increased in short periods of time, it is recommended to **NOT ADOPT** this standard.
 
-Note that any user **is still able to protect its assets**, by simply transfering assets to itself.
+Note that any user **is still able to protect its assets**, by simply **transfering assets to itself** using SST, after receiving them from anywhere.
 
 ==Rationale==
 
