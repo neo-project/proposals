@@ -27,9 +27,15 @@ The main motivation for this standard is to allow extra security checks during b
 and tests of diverse Neo clients in different programming languages.
 This is complementary to any other proposed state verification technology, and it is valid for both Neo2 and Neo3 protocols.
 
+We propose two SST modes, called Strict and Flexible.
+On practice, this means saying:
+
+* I'm going to transfer you X units of this token, and *I EXACTLY have Y units of this token* (strict)
+* I'm going to transfer you X units of this token, and *I have AT LEAST Y units of this token* (flexible)
+
 ==Specification==
 
-Recall that NEP-5 asset transfers are performed by operation "tranfer":
+Recall that NEP-5 asset transfers are performed by operation "transfer":
 
 <pre>
 public static bool transfer(byte[] from, byte[] to, BigInteger amount)
@@ -49,8 +55,11 @@ Strict Mode can be implemented as the following Verification Script (with empty 
 
 <code>
 PUSH_VALUE exact_balance_amount
+
 execute operation "balanceOf"
+
 EQUALS
+
 ASSERT
 </code>
 
@@ -58,8 +67,11 @@ Flexible Mode can be implemented as the following Verification Script (with empt
 
 <code>
 PUSH_VALUE minimum_balance_amount
+
 execute operation "balanceOf"
+
 GEQ
+
 ASSERT
 </code>
 
