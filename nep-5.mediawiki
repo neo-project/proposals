@@ -99,7 +99,7 @@ The function SHOULD check whether the <code>from</code> address equals the calle
 
 If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
 
-The function MUST call <code>onPayment</code> method with the flag <code>IfExists</code> and the arguments <code>from</code>, <code>to</code>, <code>amount</code>.
+The function MUST call <code>onPayment</code> method AFTER emit the <code>Transfer</code> notification, this call need the flag <code>IfExists</code> and the arguments <code>from</code>, <code>to</code>, <code>amount</code>.
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
 
