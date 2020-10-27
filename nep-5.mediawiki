@@ -1,7 +1,7 @@
 <pre>
   NEP: 5
   Title: Token Standard
-  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>, Jaime Kindelan <srbelane@gmail.com>
+  Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>, Jaime Kindelán <srbelane@gmail.com>
   Type: Standard
   Status: Final
   Created: 2017-08-10
