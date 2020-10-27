@@ -71,6 +71,14 @@ The parameter <code>account</code> SHOULD be a 20-byte address. If not, this met
 
 If the <code>account</code> is an unused address, this method MUST return <code>0</code>.
 
+====onPayment====
+
+This method is optional, it will be called during NEP5 transfers in order to ensure that the smart contract know how to deal with the token.
+
+<pre>
+public static event onPayment(byte[] from, byte[] to, BigInteger amount)
+</pre>
+
 ====transfer====
 
 <pre>
@@ -90,6 +98,8 @@ If the method succeeds, it MUST fire the <code>transfer</code> event, and MUST r
 The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
 
 If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
+
+The function MUST call <code>onPayment</code> method with the flag <code>IfExists</code> and the arguments <code>from</code>, <code>to</code>, <code>amount</code>.
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
 
