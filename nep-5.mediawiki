@@ -76,7 +76,7 @@ If the <code>account</code> is an unused address, this method MUST return <code>
 This method is optional, it will be called during NEP5 transfers in order to ensure that the smart contract know how to deal with the token, if don't this method SHOULD <code>throw</code> an exception.
 
 <pre>
-public static void onPayment(byte[] from, byte[] to, BigInteger amount)
+public static void onPayment(BigInteger amount)
 </pre>
 
 ====transfer====
@@ -99,7 +99,7 @@ The function SHOULD check whether the <code>from</code> address equals the calle
 
 If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
 
-The function MUST call <code>onPayment</code> method AFTER fire the <code>Transfer</code> event. This call need the flag <code>IfExists</code> and the arguments <code>from</code>, <code>to</code>, <code>amount</code>.
+The function MUST call <code>onPayment</code> method AFTER fire the <code>Transfer</code> event. This call need the flag <code>IfExists</code> and the <code>amount</code> argument.
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
 
