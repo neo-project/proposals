@@ -65,9 +65,9 @@ Method object has the following structure:
 
 <code>returntype</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>, <code>Void</code>.
 
-The method <code>_initialize</code> will be generated if static variables are defined in smart contracts. It will be executed automatically BEFORE other methods in contracts are called by using syscall <code>System.Contract.Call</code> and <code>System.Contract.CallEx</code>.
+The method <code>_initialize</code> will be generated if static variables are defined in smart contracts. It will be executed automatically to initialize the static variable BEFORE other methods in contracts are called by using syscall <code>System.Contract.Call</code> and <code>System.Contract.CallEx</code>.
 
-The method <code>_deploy</code> is defined by users which can only be called by the system when using the syscall <code>System.Contract.Create</code> and <code>System.Contract.Update</code>. The <code>update</code> argument should be FALSE for deploying the contract and be TRUE for updating.  
+The method <code>_deploy</code> is defined by users which will be called by the system AFTER the contract is deployed or updated by using the syscall <code>System.Contract.Create</code> and <code>System.Contract.Update</code>. The <code>update</code> argument should be FALSE for deploying the contract and be TRUE for updating.  
 
 <pre>
 public static void _deploy(bool update)
