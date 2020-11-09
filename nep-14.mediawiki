@@ -65,6 +65,8 @@ Method object has the following structure:
 
 <code>returntype</code> indicates the return type of the method. It can be one of the following values: <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>, <code>Void</code>.
 
+Remarkably, <code>_initialize</code> is the method generated automatically if static variables are defined in smart contracts which cannot be invoked by users. <code>_deploy</code> is the method defined by users which will be invoked automatically when deploying or updating the contract. 
+
 ===Event===
 
 Event object has the following structure:
