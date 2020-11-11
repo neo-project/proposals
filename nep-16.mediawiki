@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-A NEF is a file meeting the standard format for a valid NEO executable file. It provides the basic information about the script, including the compiler, version, along with the checksum for data verification.
+A <code>NefFile</code> is a file meeting the standard format for a valid NEO executable file. It provides the basic information about the script, including the compiler and version.
 
 This NEP describes the NEF standard for NEO smart contracts.
 
@@ -21,30 +21,52 @@ Although we use neo-vm as the virtual machine currently, we should have other sc
 
 In the field definitions below, we provide both the definitions of the fields as well as the corresponding functions.
 
-==Fields==
+==NefFile Structure==
 
-A nef file can be divided into three parts, that is, the file header (Magic, Compiler, Version, ScriptHash), Checksum and Script.
+A <code>nef</code> file consists of a single <code>NefFile</code> structure:
 
-===Magic===
+{| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
+!<nowiki>#</nowiki>
+!size
+!item
+|-
+| 1
+| 4 bytes
+| magic
+|-
+| 2
+| 32 bytes
+| compile
+|-
+| 3
+| 16 bytes
+| version
+|-
+| 4
+| var bytes
+| abi
+|-
+| 5
+| var bytes
+| script
+|}
 
-Magic header of the file. It has a constant value of `0x3346454E` in `4` bytes, standing for the NEO Executable Format 3 or NEF3 for short.
+===magic===
 
-===Compiler===
+The <code>magic</code> item supplies the magic number identifying the <code>NEF3</code> file format; it has the value <code>0x3346454E</code>.
 
-A UTF-8 encoded `string` representing the human readable name of the compiler used to create the data in the `script` field. Its length is limited to 32 bytes. The name is right side padded by zero's if shorter than 32 bytes.
+===compiler===
 
-===Version===
+The <code>compile</code> is a UTF-8 encoded <code>string</code> representing the human readable name of the compiler used to create the data in the <code>script</code> item. Its length is limited to 32 bytes. The name is right side padded by zero's if shorter than 32 bytes.
 
-Identifies the version of the compiler. It consists of four attributes, namely Major, Minor, Build, Revision, with the total size of `16` bytes. Each attribute is a signed 32 bit integer. 
+===version===
 
-===ScriptHash===
+The value of <code>version</code> item is determined by a major version number M, a minor version number m, a build number x and a revision number y, each of which is a signed four-byte quantity. Thus we can denote the version of its <code>NefFile</code> as M.m.x.y.
 
-The hash of the script with a length of `20` bytes. It is calculated by performing a SHA256 over the `script` data followed by creating a RIPEMD160 hash over the previous output  to check the script consistency.
+===abi===
 
-===Checksum===
+The <code>abi</code> item gives a complete description of an application binary interface (ABI) of the smart contract. The format of the <code>ABI</code> structure is defined in the [https://github.com/neo-project/proposals/pull/119/files].
 
-The checksum field is used to verify the integrity and accuracy of the file. The checksum is created by hashing the `header` twice, using the SHA256 algorithm, and taking the first 4 bytes of the final hash result.
+===script===
 
-===Script===
-
-Stores the raw VM opcodes. The data should be serialised using the variable length format as described in the [https://docs.neo.org/developerguide/en/articles/conventions.html#variable-length-types documentation].
+The value of <code>script</code> stores the raw VM opcodes. The data should be serialised using the variable length format as described in the [https://docs.neo.org/developerguide/en/articles/conventions.html#variable-length-types documentation].
