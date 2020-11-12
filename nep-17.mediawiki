@@ -58,7 +58,7 @@ public static BigInteger balanceOf(byte[] account)
 
 Returns the token balance of the <code>account</code>.
 
-The parameter <code>account</code> SHOULD be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
+The parameter <code>account</code> MUST be a 20-byte address. If not, this method SHOULD <code>throw</code> an exception.
 
 If the <code>account</code> is an unused address, this method MUST return <code>0</code>.
 
@@ -70,7 +70,7 @@ public static bool transfer(byte[] from, byte[] to, BigInteger amount)
 
 Transfers an <code>amount</code> of tokens from the <code>from</code> account to the <code>to</code> account.
 
-The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
+The parameters <code>from</code> and <code>to</code> MUST be 20-byte addresses. If not, this method SHOULD <code>throw</code> an exception.
 
 The parameter <code>amount</code> MUST be greater than or equal to <code>0</code>. If not, this method SHOULD <code>throw</code> an exception.
 
@@ -82,7 +82,7 @@ The function SHOULD check whether the <code>from</code> address equals the calle
 
 If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
 
-If the transfer is not processed, the function SHOULD return <code>false</code>.
+If the transfer is not processed, the function MUST return <code>false</code>.
 
 The function MUST call <code>onPayment</code> method AFTER fire the <code>Transfer</code> event if the receiver is a deployed contract. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
 
