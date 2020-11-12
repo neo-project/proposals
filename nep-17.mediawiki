@@ -80,8 +80,6 @@ If the method succeeds, it MUST fire the <code>transfer</code> event, and MUST r
 
 The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
 
-If the <code>to</code> address is a deployed contract, the function SHOULD check the <code>payable</code> flag of this contract to decide whether it should transfer the tokens to this contract.
-
 If the transfer is not processed, the function MUST return <code>false</code>.
 
 The function MUST call <code>onPayment</code> method AFTER fire the <code>Transfer</code> event if the receiver is a deployed contract. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
