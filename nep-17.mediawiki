@@ -1,7 +1,7 @@
 <pre>
   NEP: 17
   Title: Token Standard
-  Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Igor Machado Coelho <igor.machado@gmail.com>, Jaime Kindelan <jaime@red4sec.com>, Roman Khimo <roman@nspcc.ru>, Vitor Nazário Coelho <vncoelho@gmail.com>
+  Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Igor Machado Coelho <igor.machado@gmail.com>, Jaime Kindelan <jaime@red4sec.com>, Roman Khimov <roman@nspcc.ru>, Vitor Nazário Coelho <vncoelho@gmail.com>
   Type: Standard
   Status: Draft
   Created: 2020-11-12
