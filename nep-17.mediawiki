@@ -25,7 +25,11 @@ In the method definitions below, we provide both the definitions of the function
 ====symbol====
 
 <pre>
-public static string symbol()
+{
+	"name": "symbol",
+	"parameters": [],
+	"returntype": "String"
+}
 </pre>
 
 Returns a short string representing symbol of the token managed in this contract. e.g. <code>"MYT"</code>. This string MUST be valid ASCII, MUST NOT contain whitespace or control characters, SHOULD be limited to uppercase Latin alphabet (i.e. the 26 letters used in English) and SHOULD be short (3-8 characters is recommended).
@@ -35,7 +39,11 @@ This method MUST always return the same value every time it is invoked.
 ====decimals====
 
 <pre>
-public static byte decimals()
+{
+	"name": "decimals",
+	"parameters": [],
+	"returntype": "Integer"
+}
 </pre>
 
 Returns the number of decimals used by the token - e.g. <code>8</code>, means to divide the token amount by <code>100,000,000</code> to get its user representation.
@@ -45,7 +53,11 @@ This method MUST always return the same value every time it is invoked.
 ====totalSupply====
 
 <pre>
-public static BigInteger totalSupply()
+{
+	"name": "totalSupply",
+	"parameters": [],
+	"returntype": "Integer"
+}
 </pre>
 
 Returns the total token supply deployed in the system.
@@ -53,7 +65,16 @@ Returns the total token supply deployed in the system.
 ====balanceOf====
 
 <pre>
-public static BigInteger balanceOf(byte[] account)
+{
+	"name": "balanceOf",
+	"parameters": [
+		{
+			"name": "account",
+			"type": "Hash160"
+		}
+	],
+	"returntype": "Integer"
+}
 </pre>
 
 Returns the token balance of the <code>account</code>.
@@ -65,7 +86,24 @@ If the <code>account</code> is an unused address, this method MUST return <code>
 ====transfer====
 
 <pre>
-public static bool transfer(byte[] from, byte[] to, BigInteger amount)
+{
+	"name": "transfer",
+	"parameters": [
+		{
+			"name": "from",
+			"type": "Hash160"
+		},
+		{
+			"name": "to",
+			"type": "Hash160"
+		},
+		{
+			"name": "amount",
+			"type": "Integer"
+		}
+	],
+	"returntype": "Boolean"
+}
 </pre>
 
 Transfers an <code>amount</code> of tokens from the <code>from</code> account to the <code>to</code> account.
@@ -86,6 +124,16 @@ If the receiver is a deployed contract, the function MUST call <code>onPayment</
 
 <pre>
 public static void onPayment(BigInteger amount)
+{
+	"name": "onPayment",
+	"parameters": [
+		{
+			"name": "amount",
+			"type": "Integer"
+		}
+	],
+	"returntype": "Void"
+}
 </pre>
 
 ===Events===
@@ -93,7 +141,23 @@ public static void onPayment(BigInteger amount)
 ====Transfer====
 
 <pre>
-public static event Transfer(byte[] from, byte[] to, BigInteger amount)
+{
+	"name": "Transfer",
+	"parameters": [
+		{
+			"name": "from",
+			"type": "Hash160"
+		},
+		{
+			"name": "to",
+			"type": "Hash160"
+		},
+		{
+			"name": "amount",
+			"type": "Integer"
+		}
+	]
+}
 </pre>
 
 MUST trigger when tokens are transferred, including zero value transfers and self-transfers.
