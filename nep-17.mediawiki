@@ -82,7 +82,7 @@ The function SHOULD check whether the <code>from</code> address equals the calle
 
 If the transfer is not processed, the function MUST return <code>false</code>.
 
-The function MUST call <code>onPayment</code> method AFTER fire the <code>Transfer</code> event if the receiver is a deployed contract. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
+If the receiver is a deployed contract, the function MUST call <code>onPayment</code> method on receiver contract AFTER firing the <code>Transfer</code> event. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
 
 <pre>
 public static void onPayment(BigInteger amount)
