@@ -28,7 +28,7 @@ In the method definitions below, we provide both the definitions of the function
 public static string symbol()
 </pre>
 
-Returns a short string symbol of the token managed in this contract. e.g. <code>"MYT"</code>. This symbol SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English).
+Returns a short string representing symbol of the token managed in this contract. e.g. <code>"MYT"</code>. This string MUST be valid ASCII, MUST NOT contain whitespace or control characters, SHOULD be limited to uppercase Latin alphabet (i.e. the 26 letters used in English) and SHOULD be short (3-8 characters is recommended).
 
 This method MUST always return the same value every time it is invoked.
 
