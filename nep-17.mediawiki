@@ -26,9 +26,9 @@ In the method definitions below, we provide both the definitions of the function
 
 <pre>
 {
-	"name": "symbol",
-	"parameters": [],
-	"returntype": "String"
+  "name": "symbol",
+  "parameters": [],
+  "returntype": "String"
 }
 </pre>
 
@@ -40,9 +40,9 @@ This method MUST always return the same value every time it is invoked.
 
 <pre>
 {
-	"name": "decimals",
-	"parameters": [],
-	"returntype": "Integer"
+  "name": "decimals",
+  "parameters": [],
+  "returntype": "Integer"
 }
 </pre>
 
@@ -54,9 +54,9 @@ This method MUST always return the same value every time it is invoked.
 
 <pre>
 {
-	"name": "totalSupply",
-	"parameters": [],
-	"returntype": "Integer"
+  "name": "totalSupply",
+  "parameters": [],
+  "returntype": "Integer"
 }
 </pre>
 
@@ -66,14 +66,14 @@ Returns the total token supply deployed in the system.
 
 <pre>
 {
-	"name": "balanceOf",
-	"parameters": [
-		{
-			"name": "account",
-			"type": "Hash160"
-		}
-	],
-	"returntype": "Integer"
+  "name": "balanceOf",
+  "parameters": [
+    {
+      "name": "account",
+      "type": "Hash160"
+    }
+  ],
+  "returntype": "Integer"
 }
 </pre>
 
@@ -87,22 +87,22 @@ If the <code>account</code> is an unused address, this method MUST return <code>
 
 <pre>
 {
-	"name": "transfer",
-	"parameters": [
-		{
-			"name": "from",
-			"type": "Hash160"
-		},
-		{
-			"name": "to",
-			"type": "Hash160"
-		},
-		{
-			"name": "amount",
-			"type": "Integer"
-		}
-	],
-	"returntype": "Boolean"
+  "name": "transfer",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    }
+  ],
+  "returntype": "Boolean"
 }
 </pre>
 
@@ -125,14 +125,14 @@ If the receiver is a deployed contract, the function MUST call <code>onPayment</
 <pre>
 public static void onPayment(BigInteger amount)
 {
-	"name": "onPayment",
-	"parameters": [
-		{
-			"name": "amount",
-			"type": "Integer"
-		}
-	],
-	"returntype": "Void"
+  "name": "onPayment",
+  "parameters": [
+    {
+      "name": "amount",
+      "type": "Integer"
+    }
+  ],
+  "returntype": "Void"
 }
 </pre>
 
@@ -142,21 +142,21 @@ public static void onPayment(BigInteger amount)
 
 <pre>
 {
-	"name": "Transfer",
-	"parameters": [
-		{
-			"name": "from",
-			"type": "Hash160"
-		},
-		{
-			"name": "to",
-			"type": "Hash160"
-		},
-		{
-			"name": "amount",
-			"type": "Integer"
-		}
-	]
+  "name": "Transfer",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    }
+  ]
 }
 </pre>
 
