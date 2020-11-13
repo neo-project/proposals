@@ -51,7 +51,7 @@ Method object has the following structure:
 <pre>
 {
   "name": "transfer",
-  "offset": 0,
+  "offset": "0",
   "parameters": [],
   "returntype": "Boolean"
 }
@@ -84,7 +84,7 @@ The method <code>_deploy</code> is defined by users which will be automatically 
   "returntype": "Void"
 }
 </pre>
-where the <code>update</code> argument should be set to FALSE for registration or TRUE for update.
+where the value of <code>offset</code> varies according to the code; the <code>update</code> argument is set to FALSE for registration and TRUE for update.
 
 ===Event===
 
