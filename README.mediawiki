@@ -27,12 +27,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [[nep-5.mediawiki|5]]
-| Token Standard
-| Tyler Adams, luodanwg, tanyuan, Alan Fong
-| Standard
-| Final
-|-
 | [[nep-6.mediawiki|6]]
 | Wallet Standard
 | Erik Zhang
@@ -78,6 +72,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | [https://github.com/neo-project/proposals/pull/121 16]
 | NEO Executable Format (NEF)
 | Fernando Díaz Toledano, Erik Zhang, Igor Machado Coelho, Li Jianying, Vitor Nazário Coelho
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/126 17]
+| Token Standard
+| Erik Zhang
 | Standard
 | Accepted
 |-
