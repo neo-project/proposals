@@ -100,6 +100,10 @@ If the <code>account</code> is an unused address, this method MUST return <code>
     {
       "name": "amount",
       "type": "Integer"
+    },
+    {
+      "name": "data",
+      "type": "Any"
     }
   ],
   "returntype": "Boolean"
@@ -120,7 +124,7 @@ The function SHOULD check whether the <code>from</code> address equals the calle
 
 If the transfer is not processed, the function MUST return <code>false</code>.
 
-If the receiver is a deployed contract, the function MUST call <code>onPayment</code> method on receiver contract AFTER firing the <code>Transfer</code> event. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
+If the receiver is a deployed contract, the function MUST call <code>onPayment</code> method on receiver contract with the <code>data</code> parameter from <code>transfer</code> AFTER firing the <code>Transfer</code> event. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
 
 <pre>
 {
@@ -133,6 +137,10 @@ If the receiver is a deployed contract, the function MUST call <code>onPayment</
     {
       "name": "amount",
       "type": "Integer"
+    },
+    {
+      "name": "data",
+      "type": "Any"
     }
   ],
   "returntype": "Void"
