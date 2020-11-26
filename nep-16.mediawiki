@@ -23,7 +23,7 @@ In the field definitions below, we provide both the definitions of the fields as
 
 ==NefFile Structure==
 
-A <code>nef</code> file consists of a single <code>NefFile</code> structure:
+A <code>nef</code> file consists of a stream of 8-bit bytes. Multibyte data items are always stored in little-endian order, where the low bytes come first. Its structure is described further below.
 
 {| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
 !<nowiki>#</nowiki>
@@ -36,19 +36,19 @@ A <code>nef</code> file consists of a single <code>NefFile</code> structure:
 |-
 | 2
 | 32 bytes
-| compile
+| compiler
 |-
 | 3
 | 16 bytes
 | version
 |-
 | 4
-| var bytes
-| abi
+| variable bytes
+| script
 |-
 | 5
-| var bytes
-| script
+| 4 bytes
+| checksum
 |}
 
 ===magic===
@@ -57,16 +57,16 @@ The <code>magic</code> item supplies the magic number identifying the <code>NEF3
 
 ===compiler===
 
-The <code>compile</code> is a UTF-8 encoded <code>string</code> representing the human readable name of the compiler used to create the data in the <code>script</code> item. Its length is limited to 32 bytes. The name is right side padded by zero's if shorter than 32 bytes.
+The <code>compiler</code> is a UTF-8 encoded <code>string</code> representing the compiler used to create the data in the <code>script</code> item. It is a fixed-length item, which is padded to force alignment on 32-byte boundary.
 
 ===version===
 
-The value of <code>version</code> item is determined by a major version number M, a minor version number m, a build number x and a revision number y, each of which is a signed four-byte quantity. Thus we can denote the version of its <code>NefFile</code> as M.m.x.y.
-
-===abi===
-
-The <code>abi</code> item gives a complete description of an application binary interface (ABI) of the smart contract. The format of the <code>ABI</code> structure is defined in the [https://github.com/neo-project/proposals/pull/119/files].
+The value of <code>version</code> item is determined by a major version number M, a minor version number m, a build number x and a revision number y, each of which is a signed 4-byte quantity. Thus we can denote the version of its <code>NefFile</code> as M.m.x.y.
 
 ===script===
 
 The value of <code>script</code> stores the raw VM opcodes. The data should be serialised using the variable length format as described in the [https://docs.neo.org/developerguide/en/articles/conventions.html#variable-length-types documentation].
+
+===checksum===
+
+The <code>checksum</code> item is used not only to ensure a corrupt-free transmission, but also to ensure that the file has not been tampered with. It is computed by using the SHA256 algorithm to hash the serialised `NefFile` excluding `checksum` twice, and converting the result into a 32-bit unsigned integer.
