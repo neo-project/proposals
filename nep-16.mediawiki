@@ -39,7 +39,7 @@ A <code>nef</code> file consists of a stream of 8-bit bytes. Multibyte data item
 | compiler
 |-
 | 3
-| 16 bytes
+| 32 bytes
 | version
 |-
 | 4
@@ -61,7 +61,7 @@ The <code>compiler</code> is a UTF-8 encoded <code>string</code> representing th
 
 ===version===
 
-The value of <code>version</code> item is determined by a major version number M, a minor version number m, a build number x and a revision number y, each of which is a signed 4-byte quantity. Thus we can denote the version of its <code>NefFile</code> as M.m.x.y.
+The compiler <code>version</code> is represented using a 32-byte string encoded in UTF-8. It must be padded with padding bytes to make it up to the required length if shorter than 32 bytes.
 
 ===script===
 
