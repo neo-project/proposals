@@ -27,12 +27,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [[nep-5.mediawiki|5]]
-| Token Standard
-| Tyler Adams, luodanwg, tanyuan, Alan Fong
-| Standard
-| Final
-|-
 | [[nep-6.mediawiki|6]]
 | Wallet Standard
 | Erik Zhang
@@ -42,12 +36,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | [[nep-9.mediawiki|9]]
 | URI Scheme
 | Andrei, Apisit
-| Standard
-| Final
-|-
-| [[nep-10.mediawiki|10]]
-| Composite Smart Contracts
-| Michael Herman
 | Standard
 | Final
 |-
@@ -78,6 +66,18 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | [https://github.com/neo-project/proposals/pull/114 15]
 | NeoContract Manifest
 | Erik Zhang, Fernando Díaz Toledano, Vitor Nazário Coelho, Igor Machado Coelho, Li Jianying
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/121 16]
+| NEO Executable Format (NEF)
+| Fernando Díaz Toledano, Erik Zhang, Igor Machado Coelho, Li Jianying, Vitor Nazário Coelho
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/126 17]
+| Token Standard
+| Erik Zhang
 | Standard
 | Accepted
 |-

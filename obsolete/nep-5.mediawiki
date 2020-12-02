@@ -3,8 +3,9 @@
   Title: Token Standard
   Author: Tyler Adams <lllwvlvwlll@gmail.com>, luodanwg <luodan.wg@gmail.com>, tanyuan <tanyuan666@gmail.com>, Alan Fong <anfn@umich.edu>
   Type: Standard
-  Status: Final
+  Status: Obsolete
   Created: 2017-08-10
+  Superseded-By: 17
 </pre>
 
 ==Abstract==
