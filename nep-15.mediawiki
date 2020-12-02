@@ -31,8 +31,8 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
 <pre>
 
 {
+  "name":"",
   "groups": [],
-  "features": {},
   "supportedstandards": [],
   "abi": {},
   "permissions": [],
@@ -42,6 +42,10 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
 }
 
 </pre>
+
+===name===
+
+The <code>name</code> is the name of the contract, which can be any valid identifier.
 
 ===Groups===
 
@@ -57,21 +61,6 @@ A <code>group</code> is identified by a public key and must be accompanied by a 
 </pre>
 
 Where <code>pubKey</code> represents the public key of the group and <code>signature</code> is the signature of the contract hash encoded in Base64.
-
-===Features===
-
-The <code>features</code> field describes what features are available for the contract.
-
-<pre>
-{
-  "storage": true,
-  "payable": true
-}
-</pre>
-
-The <code>storage</code> field is a boolean value indicating whether the contract has a storage. The value true means that it has, and false means not.
-
-The <code>payable</code> field is a boolean value indicating whether the contract accepts transfers. The value true means that it accepts, and false means not.
 
 ===SupportedStandards===
 
