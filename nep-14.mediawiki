@@ -49,6 +49,7 @@ Method object has the following structure:
 {
   "name": "transfer",
   "offset": 0,
+  "safe": false,
   "parameters": [],
   "returntype": "Boolean"
 }
@@ -57,6 +58,8 @@ Method object has the following structure:
 <code>name</code> is the name of the method, which can be any valid identifier.
 
 <code>offset</code> is the offset of this method in the script.
+
+<code>safe</code> indicates if it's safe to call this method. If a method is marked as safe, the user interface will not give any warnings when it is called by any other contract.
 
 <code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the method.
 
