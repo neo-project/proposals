@@ -37,7 +37,6 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
   "abi": {},
   "permissions": [],
   "trusts": [], 
-  "safemethods": [],
   "extra": {}
 }
 
@@ -96,12 +95,6 @@ If a contract invokes a contract or method that is not declared in the manifest 
 The <code>trusts</code> field is an array containing a set of contract hashes or group public keys. It can also be assigned with a wildcard <code>*</code>. If it is a wildcard <code>*</code>, then it means that it trusts any contract.
 
 If a contract is trusted, the user interface will not give any warnings when called by the contract.
-
-===Safemethods===
-
-The <code>safemethods</code> field is an array containing a set of method names. It can also be assigned with a wildcard <code>*</code>. If it is a wildcard <code>*</code>, then it means that all methods of the contract are safe.
-
-If a method is marked as safe, the user interface will not give any warnings when it is called by any other contract.
 
 ===Extra===
 
