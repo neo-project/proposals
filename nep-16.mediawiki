@@ -43,10 +43,14 @@ A <code>nef</code> file consists of a stream of 8-bit bytes. Multibyte data item
 | version
 |-
 | 4
+| 4 bytes
+| Reserve
+|-
+| 5
 | variable bytes
 | script
 |-
-| 5
+| 6
 | 4 bytes
 | checksum
 |}
@@ -62,6 +66,10 @@ The <code>compiler</code> is a UTF-8 encoded <code>string</code> representing th
 ===version===
 
 The compiler <code>version</code> is represented using a 32-byte string encoded in UTF-8. It must be padded with padding bytes to make it up to the required length if shorter than 32 bytes.
+
+===reserve===
+
+All bits of the <code>reserve</code> item are reserved for future use. They should be set to zero in generated nef files and should be ignored by Neo Virtual Machine implementations.
 
 ===script===
 
