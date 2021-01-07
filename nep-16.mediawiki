@@ -25,35 +25,25 @@ In the field definitions below, we provide both the definitions of the fields as
 
 A <code>nef</code> file consists of a stream of 8-bit bytes. Multibyte data items are always stored in little-endian order, where the low bytes come first. Its structure is described further below.
 
-{| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
-!<nowiki>#</nowiki>
-!size
-!item
-|-
-| 1
-| 4 bytes
-| magic
-|-
-| 2
-| 32 bytes
-| compiler
-|-
-| 3
-| 32 bytes
-| version
-|-
-| 4
-| 4 bytes
-| Reserve
-|-
-| 5
-| variable bytes
-| script
-|-
-| 6
-| 4 bytes
-| checksum
-|}
+<pre>
+nef_file
+{
+  4-byte  magic;
+  32-byte compiler;
+  32-byte version;
+  2-byte reserve;
+  method_token{
+    20-byte hash;
+    var-byte method;
+    2-byte parametersCount;
+    1-byte hasReturnValue;
+    1-byte callFlags;
+  } tokens[];
+  2-byte reserve;
+  var-byte script;
+  4-byte checksum;
+}
+</pre>
 
 ===magic===
 
@@ -69,7 +59,50 @@ The compiler <code>version</code> is represented using a 32-byte string encoded 
 
 ===reserve===
 
-All bits of the <code>reserve</code> item are reserved for future use. They should be set to zero in generated nef files and should be ignored by Neo Virtual Machine implementations.
+All bits of the <code>reserve</code> item are reserved for future use and must be set to zero in generated nef files.
+
+===tokens===
+
+Each entry in the <code>tokens</code> item must be a <code>method_token</code> structure giving a necessary description of a method in this contract.
+
+====hash====
+
+====method====
+
+The <code>method</code> item is used to represent constant string values of the method name. It has s single-byte length prefix and up to 32 byte string contents encoded in UTF-8.
+====parametersCount====
+
+The <code>parametersCount</code> denotes the number of formal parameters of the method.
+
+====hasReturnValue====
+
+The <code>hasReturnValue</code> item is a boolean value that indicates whether the method has return value or not.
+
+====callFlags====
+
+The value of the <code>callFlags</code> item is a mask of flags used to denote the calling permission to the method. The Interpretation of each flag, when set, is specified in the following table:
+
+{|
+!Flag Name !!Value !!Interpretation
+|-
+| None || 0 || called without other permissions
+|-
+| ReadStates || 0b00000001 || allow to read the storage 
+|-
+| WriteStates || 0b00000010 || allow to write the storage
+|-
+| AllowCall || 0b00000100 || allow to call methods in other contracts
+|-
+| AllowNotify || 0b00001000 || allow to send the notification
+|-
+| States || 0b00000011 ||  allow to read and write the storage
+|-
+| ReadOnly || 0b00000101 || allow to read the storage and call methods in other contracts
+|-
+| All || 0b00001111 || equipped with all permissions above
+|}
+
+All bits of the <code>callFlags</code> item not assigned in the table are reserved for future use. They should be set to zero in generated <code>nef</code> files.
 
 ===script===
 
@@ -77,4 +110,4 @@ The value of <code>script</code> stores the raw VM opcodes. The data should be s
 
 ===checksum===
 
-The <code>checksum</code> item is used not only to ensure a corrupt-free transmission, but also to ensure that the file has not been tampered with. It is computed by using the SHA256 algorithm to hash the serialised `NefFile` excluding `checksum` twice, and converting the result into a 32-bit unsigned integer.
+The <code>checksum</code> item is used not only to ensure a corrupt-free transmission, but also to ensure that the file has not been tampered with. It is computed by using the SHA256 algorithm to hash the serialised <code>nef</code> file excluding <code>checksum</code> twice, and converting the result into a 32-bit unsigned integer, which must be identical with the last four bytes of the <code>nef</code> file.
