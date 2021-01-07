@@ -9,13 +9,13 @@
 
 ==Abstract==
 
-A <code>NefFile</code> is a file meeting the standard format for a valid NEO executable file. It provides the basic information about the script, including the compiler and version.
+Compiled code to be executed by the Neo virtual machine is represented using a binary format, typically stored in a file, known as the <code>nef</code> file format. The <code>nef</code> file contains Neo bytecodes, as well as other ancillary information such as byte ordering and compiler used.
 
 This NEP describes the NEF standard for NEO smart contracts.
 
 ==Motivation==
 
-Although we use neo-vm as the virtual machine currently, we should have other scripts in the future. A standard definition for the executable file format can guarantee both the feasibility of other vm code and the validity of the script file.
+For the sake of security, we need to place strong syntactic and structural constraints on the executable file. With the <code>nef</code> file format, we can guarantee both the validity and functionality of the compiled file.
 
 ==Specification==
 
