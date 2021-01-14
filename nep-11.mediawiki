@@ -52,6 +52,9 @@ Returns the number of decimals used by the token - e.g. <code>8</code>, means to
 
 If the token managed in this contract is indivisible, the function SHOULD return <code>0</code>.
 
+If this method returns <code>0</code>, the "Non-divisible NFT methods" must be implemented.
+Otherwise, the "Divisible NFT methods" must be implemented.
+
 This method MUST always return the same value every time it is invoked.
 
 ====tokensOf====
