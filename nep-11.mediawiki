@@ -121,13 +121,14 @@ And if all the properties are included:
 }
 </pre>
 
+===Non-divisible NFT methods===
+
 ====transfer====
 
 <pre>
 public static bool transfer(byte[] to, byte[] tokenid)
 </pre>
 
-This transfer method is for non-divisible NFTs <code>decimals() == 0</code>.
 It transfers the token with id <code>tokenid</code> to address <code>to</code>.
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
@@ -147,11 +148,35 @@ If the <code>to</code> address is a deployed contract, the function SHOULD check
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
 
+====ownerOf====
+
+<pre>
+public static byte[] ownerOf(byte[] tokenid)
+</pre>
+
+Returns the owner of the specified token.
+
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+====balanceOf====
+
+<pre>
+public static BigInteger balanceOf(byte[] owner)
+</pre>
+
+Returns the total amount of NFTs owned by the specified address.
+
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+===Divisible NFT methods===
+
+====transfer====
+
 <pre>
 public static bool transfer(byte[] from, byte[] to, BigInteger amount, byte[] tokenid)
 </pre>
-
-This transfer method is for divisible NFTs <code>decimals() > 0</code>.
 
 It transfers an <code>amount</code> of tokens with id <code>tokenid</code> from address <code>from</code> to address <code>to</code>.
 
@@ -178,10 +203,10 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 ====ownerOf====
 
 <pre>
-public static enumerator ownerOf(byte[] tokenid)
+public static iterator ownerOf(byte[] tokenid)
 </pre>
 
-Returns an <code>enumerator</code> that contains all the co-owners that own the specified token.
+Returns an <code>iterator</code> that contains all the co-owners that own the specified token.
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
@@ -189,19 +214,11 @@ If not, this method SHOULD <code>throw</code> an exception.
 ====balanceOf====
 
 <pre>
-public static BigInteger balanceOf(byte[] owner)
-</pre>
-
-Returns the total amount of NFTs owned by the specified address.
-
-The parameter <code>owner</code> SHOULD be a 20-byte address.
-If not, this method SHOULD <code>throw</code> an exception.
-
-<pre>
 public static BigInteger balanceOf(byte[] owner, byte[] tokenid)
 </pre>
 
-If the second parameter <code>tokenid</code> is also provided, this method returns the balance of the specified token for the specified owner's account.
+If the second parameter <code>tokenid</code> is also provided, this method returns the balance of the specified token for the specified <code>owner</code>'s account.
+If the <code>tokenid</code> is <code>null</code>, the sum of all tokens held by the <code>owner</code> is returned.
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
