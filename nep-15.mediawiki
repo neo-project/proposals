@@ -46,7 +46,7 @@ The <code>name</code> is the name of the contract, which can be any valid identi
 
 The <code>groups</code> field is an array of <code>Group</code> objects which represent a set of mutually trusted contracts. A contract will trust and allow any contract in the same group to invoke it, and the user interface will not give any warnings.
 
-The <code>supportedstandards</code> field describes the [https://github.com/bettybao1209/proposals/blob/master/nep-10.mediawiki NEP-10] values.
+The <code>supportedstandards</code> field describes the [[obsolete/nep-1.mediawiki|NEP-10]] values.
 
 The <code>abi</code> field describes which methods and events are included in the contract and how other contracts interact with them. For technical details of ABI, please refer to [https://github.com/neo-project/proposals/pull/119 NEP-14: NeoContract ABI].
 
