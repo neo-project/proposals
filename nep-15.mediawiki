@@ -42,15 +42,23 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
 
 </pre>
 
-===name===
-
 The <code>name</code> is the name of the contract, which can be any valid identifier.
 
-===Groups===
+The <code>groups</code> field is an array of <code>Group</code> objects which represent a set of mutually trusted contracts. A contract will trust and allow any contract in the same group to invoke it, and the user interface will not give any warnings.
 
-The <code>groups</code> field is an array of Group objects which represent a set of mutually trusted contracts. A contract will trust and allow any contract in the same group to invoke it, and the user interface will not give any warnings.
+The <code>supportedstandards</code> field describes the [https://github.com/bettybao1209/proposals/blob/master/nep-10.mediawiki NEP-10] values.
 
-A <code>group</code> is identified by a public key and must be accompanied by a signature for the contract hash to prove that the contract is indeed included in the group.
+The <code>abi</code> field describes which methods and events are included in the contract and how other contracts interact with them. For technical details of ABI, please refer to [https://github.com/neo-project/proposals/pull/119 NEP-14: NeoContract ABI].
+
+The <code>permissions</code> field is an array containing a set of <code>Permission</code> objects. It describes which contracts may be invoked and which methods are called.
+
+The <code>trusts</code> field is an array containing a set of contract hashes or group public keys. It can also be assigned with a wildcard <code>*</code>. If it is a wildcard <code>*</code>, then it means that it trusts any contract. If a contract is trusted, the user interface will not give any warnings when called by the contract.
+
+The <code>extra</code> field describes the custom user data, such as name, code version, author, description, etc.
+
+===Group===
+
+A <code>Group</code> is identified by a public key and must be accompanied by a signature for the contract hash to prove that the contract is indeed included in the group.
 
 <pre>
 {
@@ -61,17 +69,7 @@ A <code>group</code> is identified by a public key and must be accompanied by a 
 
 Where <code>pubKey</code> represents the public key of the group and <code>signature</code> is the signature of the contract hash encoded in Base64.
 
-===SupportedStandards===
-
-The <code>supportedstandards</code> field describes the [https://github.com/bettybao1209/proposals/blob/master/nep-10.mediawiki NEP-10] values.
-
-===ABI===
-
-For technical details of ABI, please refer to [https://github.com/neo-project/proposals/pull/119 NEP-14: NeoContract ABI].
-
-===Permissions===
-
-The <code>permissions</code> field is an array containing a set of <code>Permission</code> objects. It describes which contracts may be invoked and which methods are called.
+===Permission===
 
 The definition of the <code>Permission</code> object is as follows:
 
@@ -89,13 +87,3 @@ If it specifies a hash of a contract, then the contract will be invoked; If it s
 The <code>methods</code> field is an array containing a set of methods to be called. It can also be assigned with a wildcard <code>*</code>, which means that any method can be called.
 
 If a contract invokes a contract or method that is not declared in the manifest at runtime, the invocation will fail.
-
-===Trusts===
-
-The <code>trusts</code> field is an array containing a set of contract hashes or group public keys. It can also be assigned with a wildcard <code>*</code>. If it is a wildcard <code>*</code>, then it means that it trusts any contract.
-
-If a contract is trusted, the user interface will not give any warnings when called by the contract.
-
-===Extra===
-
-The <code>extra</code> field describes the custom user data, such as name, code version, author, description, etc.
