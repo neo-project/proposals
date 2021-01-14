@@ -23,16 +23,6 @@ This allows for high value objects to be tokenized more effectively.
 
 ===Methods===
 
-====name====
-
-<pre>
-public static string name()
-</pre>
-
-Returns the name of the token. e.g. <code>"MyNFT"</code>.
-
-This method MUST always return the same value every time it is invoked.
-
 ====symbol====
 
 <pre>
