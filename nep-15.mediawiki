@@ -56,6 +56,8 @@ The <code>trusts</code> field is an array containing a set of contract hashes or
 
 The <code>extra</code> field describes the custom user data, such as name, code version, author, description, etc.
 
+The extension name of the manifest file should be <code>.manifest.json</code>.
+
 ===Group===
 
 A <code>Group</code> is identified by a public key and must be accompanied by a signature for the contract hash to prove that the contract is indeed included in the group.
