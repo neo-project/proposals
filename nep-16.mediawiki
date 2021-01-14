@@ -45,6 +45,8 @@ nef_file
 }
 </pre>
 
+The extension name of the NEF file should be <code>.nef</code>.
+
 ===magic===
 
 The <code>magic</code> item supplies the magic number identifying the <code>NEF3</code> file format; it has the value <code>0x3346454E</code>.
