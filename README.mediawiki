@@ -83,43 +83,43 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | 
 | Dynamic Sharding
-|
+| 
 | Standard
 | Stub
 |-
-|
+| 
 | Compact Block Relay
-|
+| 
 | Standard
 | Stub
 |-
-|
+| 
 | Peer Authentication
-|
+| 
 | Standard
 | Stub
 |-
-|
+| 
 | Aggregate Signature
-|
+| 
 | Standard
 | Stub
 |-
-|
+| 
 | Homomorphic Encryption
-|
+| 
 | Standard
 | Stub
 |-
-|
+| 
 | Zero-knowledge proof
-|
+| 
 | Standard
 | Stub
 |-
-|
+| 
 | Stealth Addresses
-|
+| 
 | Standard
 | Stub
 |}
