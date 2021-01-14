@@ -60,10 +60,12 @@ This method MUST always return the same value every time it is invoked.
 ====tokensOf====
 
 <pre>
-public static enumerator tokensOf(byte[] owner)
+public static iterator tokensOf(byte[] owner)
 </pre>
 
-Returns an <code>enumerator</code> that contains all of the token ids owned by the specified address.
+Returns an <code>iterator</code> that contains all of the token ids owned by the specified address.
+
+If the <code>owner</code> is <code>null</code>, all of the tokens minted by the contract should be returned.
 
 The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
