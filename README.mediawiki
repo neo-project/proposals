@@ -41,7 +41,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 |-
 | [https://github.com/neo-project/proposals/pull/41 11]
 | Non-fungible Token Standard
-| Joe Stewart, Shane Mann
+| Joe Stewart, Shane Mann, Wyatt Mufson, Erik Zhang
 | Standard
 | Accepted
 |-
