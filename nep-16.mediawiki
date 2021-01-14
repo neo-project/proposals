@@ -63,9 +63,11 @@ All bits of the <code>reserve</code> item are reserved for future use and must b
 
 ===tokens===
 
-Each entry in the <code>tokens</code> item must be a <code>method_token</code> structure giving a necessary description of a method in this contract.
+Each entry in the <code>tokens</code> item must be a <code>method_token</code> structure giving a necessary description of a method invoked by this contract.
 
 ====hash====
+
+The <code>hash</code> item represents the hash of the static contract with the length of 20 bytes, indicating which contract the method belongs to.
 
 ====method====
 
@@ -94,12 +96,6 @@ The value of the <code>callFlags</code> item is a mask of flags used to denote t
 | AllowCall || 0b00000100 || allow to call methods in other contracts
 |-
 | AllowNotify || 0b00001000 || allow to send the notification
-|-
-| States || 0b00000011 ||  allow to read and write the storage
-|-
-| ReadOnly || 0b00000101 || allow to read the storage and call methods in other contracts
-|-
-| All || 0b00001111 || equipped with all permissions above
 |}
 
 All bits of the <code>callFlags</code> item not assigned in the table are reserved for future use. They should be set to zero in generated <code>nef</code> files.
