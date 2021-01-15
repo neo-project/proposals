@@ -1,7 +1,7 @@
 <pre>
   NEP: 16
   Title: NEO Executable Format (NEF)
-  Author: Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>
+  Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>
   Type: Standard
   Status: Accepted
   Created: 2020-03-31
@@ -21,7 +21,7 @@ For the sake of security, we need to place strong syntactic and structural const
 
 In the field definitions below, we provide both the definitions of the fields as well as the corresponding functions.
 
-==NefFile Structure==
+===NefFile Structure===
 
 A <code>nef</code> file consists of a stream of 8-bit bytes. Multibyte data items are always stored in little-endian order, where the low bytes come first. Its structure is described further below.
 
@@ -45,44 +45,44 @@ nef_file
 }
 </pre>
 
-The extension name of the NEF file should be <code>.nef</code>.
+The extension name of the <code>nef</code> file should be <code>.nef</code>.
 
-===magic===
+====magic====
 
 The <code>magic</code> item supplies the magic number identifying the <code>NEF3</code> file format; it has the value <code>0x3346454E</code>.
 
-===compiler===
+====compiler====
 
 The <code>compiler</code> is a UTF-8 encoded <code>string</code> representing the compiler used to create the data in the <code>script</code> item. It is a fixed-length item, which is padded to force alignment on 32-byte boundary.
 
-===version===
+====version====
 
 The compiler <code>version</code> is represented using a 32-byte string encoded in UTF-8. It must be padded with padding bytes to make it up to the required length if shorter than 32 bytes.
 
-===reserve===
+====reserve====
 
 All bits of the <code>reserve</code> item are reserved for future use and must be set to zero in generated nef files.
 
-===tokens===
+====tokens====
 
 Each entry in the <code>tokens</code> item must be a <code>method_token</code> structure giving a necessary description of a method invoked by this contract.
 
-====hash====
+=====hash=====
 
 The <code>hash</code> item represents the hash of the static contract with the length of 20 bytes, indicating which contract the method belongs to.
 
-====method====
+=====method=====
 
 The <code>method</code> item is used to represent constant string values of the method name. It has s single-byte length prefix and up to 32 byte string contents encoded in UTF-8.
-====parametersCount====
+=====parametersCount=====
 
 The <code>parametersCount</code> denotes the number of formal parameters of the method.
 
-====hasReturnValue====
+=====hasReturnValue=====
 
 The <code>hasReturnValue</code> item is a boolean value that indicates whether the method has return value or not.
 
-====callFlags====
+=====callFlags=====
 
 The value of the <code>callFlags</code> item is a mask of flags used to denote the calling permission to the method. The Interpretation of each flag, when set, is specified in the following table:
 
@@ -102,10 +102,10 @@ The value of the <code>callFlags</code> item is a mask of flags used to denote t
 
 All bits of the <code>callFlags</code> item not assigned in the table are reserved for future use. They should be set to zero in generated <code>nef</code> files.
 
-===script===
+====script====
 
 The value of <code>script</code> stores the raw VM opcodes. The data should be serialised using the variable length format as described in the [https://docs.neo.org/developerguide/en/articles/conventions.html#variable-length-types documentation].
 
-===checksum===
+====checksum====
 
 The <code>checksum</code> item is used not only to ensure a corrupt-free transmission, but also to ensure that the file has not been tampered with. It is computed by using the SHA256 algorithm to hash the serialised <code>nef</code> file excluding <code>checksum</code> twice, and converting the result into a 32-bit unsigned integer, which must be identical with the last four bytes of the <code>nef</code> file.
