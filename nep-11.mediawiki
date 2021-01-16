@@ -222,8 +222,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 public static BigInteger balanceOf(byte[] owner, byte[] tokenid)
 </pre>
 
-If the second parameter <code>tokenid</code> is also provided, this method returns the balance of the specified token for the specified <code>owner</code>'s account.
-If the <code>tokenid</code> is <code>null</code>, the sum of all tokens held by the <code>owner</code> is returned.
+This method returns the balance of the specified token for the specified <code>owner</code>'s account.
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
