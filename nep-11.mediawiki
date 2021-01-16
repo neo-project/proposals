@@ -34,14 +34,6 @@ This symbol SHOULD be short (3-8 characters is recommended), with no whitespace 
 
 This method MUST always return the same value every time it is invoked.
 
-====totalSupply====
-
-<pre>
-public static BigInteger totalSupply()
-</pre>
-
-Returns the total token supply currently in the system.
-
 ====decimals====
 
 <pre>
@@ -56,6 +48,25 @@ If this method returns <code>0</code>, the "Non-divisible NFT methods" must be i
 Otherwise, the "Divisible NFT methods" must be implemented.
 
 This method MUST always return the same value every time it is invoked.
+
+====totalSupply====
+
+<pre>
+public static BigInteger totalSupply()
+</pre>
+
+Returns the total token supply currently in the system.
+
+====balanceOf====
+
+<pre>
+public static BigInteger balanceOf(byte[] owner)
+</pre>
+
+Returns the total amount of NFTs owned by the specified address.
+
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
 
 ====tokensOf====
 
@@ -162,17 +173,6 @@ public static byte[] ownerOf(byte[] tokenid)
 Returns the owner of the specified token.
 
 The parameter <code>tokenid</code> SHOULD be a valid NFT.
-If not, this method SHOULD <code>throw</code> an exception.
-
-====balanceOf====
-
-<pre>
-public static BigInteger balanceOf(byte[] owner)
-</pre>
-
-Returns the total amount of NFTs owned by the specified address.
-
-The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
 
 ===Divisible NFT methods===
