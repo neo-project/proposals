@@ -93,7 +93,7 @@ Parameter object has the following structure:
 
 <code>name</code> is the name of the parameter, which can be any valid identifier.
 
-<code>type</code> indicates the type of the parameter. It can be one of the following values: <code>Any</code>, <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>, <code>Void</code>.
+<code>type</code> indicates the type of the parameter. It can be one of the following values: <code>Any</code>, <code>Signature</code>, <code>Boolean</code>, <code>Integer</code>, <code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>, <code>PublicKey</code>, <code>String</code>, <code>Array</code>, <code>Map</code>, <code>InteropInterface</code>.
 
 ===ParameterType===
 
