@@ -76,66 +76,8 @@ public static iterator tokensOf(byte[] owner)
 
 Returns an <code>iterator</code> that contains all of the token ids owned by the specified address.
 
-If the <code>owner</code> is <code>null</code>, all of the tokens minted by the contract should be returned.
-
 The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
-
-====properties====
-
-<pre>
-public static string properties(byte[] tokenid)
-</pre>
-
-Returns a serialized NVM object containing the properties for the given NFT.
-The NVM object must conform to the "NEO NFT Metadata JSON Schema".
-
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
-If not, this method SHOULD <code>throw</code> an exception.
-
-Following is a description of the JSON Schema:
-<pre>
-{
-  "title": "Asset Metadata",
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Identifies the asset to which this NFT represents."
-    },
-    "description": {
-      "type": "string",
-      "description": "Describes the asset to which this NFT represents."
-    },
-    "image": {
-      "type": "string",
-      "description": "Optional. A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
-    },
-    "tokenURI": {
-      "type": "string",
-      "description": "Optional. A distinct URI for a given asset that adheres to RFC 3986"
-    }
-  }
-}
-</pre>
-
-Given this schema, the simplest json object that can be constructed is the following:
-<pre>
-{
-   "name": "Slime 1",
-   "description": "A slime"
-}
-</pre>
-
-And if all the properties are included:
-<pre>
-{
-   "name": "Slime 2",
-   "description": "A slime",
-   "image": "{some image URI}",
-   "tokenURI": "{some URI}"
-}
-</pre>
 
 ===Non-divisible NFT methods===
 
@@ -231,6 +173,72 @@ The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
 
 If the <code>owner</code> is an unused address, or it's not the owner of the specified token, this method SHOULD return <code>0</code>.
+
+===Optional methods===
+
+====tokens====
+
+<pre>
+public static iterator tokens()
+</pre>
+
+Returns an <code>iterator</code> that contains all of the tokens minted by the contract.
+
+====properties====
+
+<pre>
+public static string properties(byte[] tokenid)
+</pre>
+
+Returns a serialized NVM object containing the properties for the given NFT.
+The NVM object must conform to the "NEO NFT Metadata JSON Schema".
+
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+Following is a description of the JSON Schema:
+<pre>
+{
+  "title": "Asset Metadata",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Identifies the asset to which this NFT represents."
+    },
+    "description": {
+      "type": "string",
+      "description": "Describes the asset to which this NFT represents."
+    },
+    "image": {
+      "type": "string",
+      "description": "Optional. A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
+    },
+    "tokenURI": {
+      "type": "string",
+      "description": "Optional. A distinct URI for a given asset that adheres to RFC 3986"
+    }
+  }
+}
+</pre>
+
+Given this schema, the simplest json object that can be constructed is the following:
+<pre>
+{
+   "name": "Slime 1",
+   "description": "A slime"
+}
+</pre>
+
+And if all the properties are included:
+<pre>
+{
+   "name": "Slime 2",
+   "description": "A slime",
+   "image": "{some image URI}",
+   "tokenURI": "{some URI}"
+}
+</pre>
 
 ===Events===
 
