@@ -142,7 +142,7 @@ The function SHOULD return <code>false</code> if the token that will be transfer
 
 If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the token is sent to the owner.
 
-If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract AFTER firing the <code>Transfer</code> event. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
+If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract AFTER firing the <code>Transfer</code> event.
 
 The function SHOULD check whether the owner address equals the caller contract hash.
 If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
@@ -213,7 +213,7 @@ The function SHOULD return <code>false</code> if the <code>from</code> account b
 
 If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or the token is sent to the owner.
 
-If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract AFTER firing the <code>Transfer</code> event. If the receiver doesn't want to receive this transfer it MUST call <code>ABORT</code>.
+If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract AFTER firing the <code>Transfer</code> event.
 
 The function SHOULD check whether the <code>from</code> address equals the caller contract hash.
 If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
@@ -373,7 +373,7 @@ And if all the properties are included:
 }
 </pre>
 
-If a contract is to receive NFTs, it must implement the receiver method. Transferring NFTs to any contract that does not implement the receiver method will cause the transaction to fail.
+If a contract is to receive NFTs, it must implement the receiver method. Transferring NFTs to any contract that does not implement the receiver method will cause the transaction to fail. If the receiver doesn't want to receive this transfer it MUST abort the execution.
 
 The meaning of the parameters of the <code>onNEP11Payment</code> method is consistent with that of <code>transfer</code>. 
 
