@@ -371,6 +371,7 @@ And if all the properties are included:
   ],
   "returntype": "Void"
 }
+</pre>
 
 If a contract is to receive NFTs, it must implement the receiver method. Transferring NFTs to any contract that does not implement the receiver method will cause the transaction to fail.
 
