@@ -26,7 +26,11 @@ This allows for high value objects to be tokenized more effectively.
 ====symbol====
 
 <pre>
-public static string symbol()
+{
+  "name": "symbol",
+  "parameters": [],
+  "returntype": "String"
+}
 </pre>
 
 Returns a short string symbol of the token managed in this contract. e.g. <code>"MNFT"</code>.
@@ -37,7 +41,11 @@ This method MUST always return the same value every time it is invoked.
 ====decimals====
 
 <pre>
-public static byte decimals()
+{
+  "name": "decimals",
+  "parameters": [],
+  "returntype": "Integer"
+}
 </pre>
 
 Returns the number of decimals used by the token - e.g. <code>8</code>, means to divide the token amount by <code>100,000,000</code> to get its user representation.
@@ -52,7 +60,11 @@ This method MUST always return the same value every time it is invoked.
 ====totalSupply====
 
 <pre>
-public static BigInteger totalSupply()
+{
+  "name": "totalSupply",
+  "parameters": [],
+  "returntype": "Integer"
+}
 </pre>
 
 Returns the total token supply currently in the system.
@@ -60,7 +72,16 @@ Returns the total token supply currently in the system.
 ====balanceOf====
 
 <pre>
-public static BigInteger balanceOf(byte[] owner)
+{
+  "name": "balanceOf",
+  "parameters": [
+    {
+      "name": "owner",
+      "type": "Hash160"
+    }
+  ],
+  "returntype": "Integer"
+}
 </pre>
 
 Returns the total amount of NFTs owned by the specified address.
@@ -71,7 +92,16 @@ If not, this method SHOULD <code>throw</code> an exception.
 ====tokensOf====
 
 <pre>
-public static iterator tokensOf(byte[] owner)
+{
+  "name": "tokensOf",
+  "parameters": [
+    {
+      "name": "owner",
+      "type": "Hash160"
+    }
+  ],
+  "returntype": "InteropInterface<iterator>"
+}
 </pre>
 
 Returns an <code>iterator</code> that contains all of the token ids owned by the specified address.
@@ -84,15 +114,28 @@ If not, this method SHOULD <code>throw</code> an exception.
 ====transfer====
 
 <pre>
-public static bool transfer(byte[] to, byte[] tokenid)
+{
+  "name": "transfer",
+  "parameters": [
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Boolean"
+}
 </pre>
 
 It transfers the token with id <code>tokenid</code> to address <code>to</code>.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>to</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>to</code> SHOULD be a 20-byte address.
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the token that will be transferred has more than one owner.
@@ -107,7 +150,16 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 ====ownerOf====
 
 <pre>
-public static byte[] ownerOf(byte[] tokenid)
+{
+  "name": "ownerOf",
+  "parameters": [
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Hash160"
+}
 </pre>
 
 Returns the owner of the specified token.
@@ -120,18 +172,39 @@ If not, this method SHOULD <code>throw</code> an exception.
 ====transfer====
 
 <pre>
-public static bool transfer(byte[] from, byte[] to, BigInteger amount, byte[] tokenid)
+{
+  "name": "transfer",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Boolean"
+}
 </pre>
 
 It transfers an <code>amount</code> of tokens with id <code>tokenid</code> from address <code>from</code> to address <code>to</code>.
-
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
-If not, this method SHOULD <code>throw</code> an exception.
 
 The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses.
 If not, this method SHOULD <code>throw</code> an exception.
 
 The parameter <code>amount</code> SHOULD be greater than or equal to <code>0</code> and SHOULD be less than or equal to <code>pow(10, decimals())</code>.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>tokenid</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
@@ -146,7 +219,16 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 ====ownerOf====
 
 <pre>
-public static iterator ownerOf(byte[] tokenid)
+{
+  "name": "ownerOf",
+  "parameters": [
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "InteropInterface<iterator>"
+}
 </pre>
 
 Returns an <code>iterator</code> that contains all the co-owners that own the specified token.
@@ -157,7 +239,20 @@ If not, this method SHOULD <code>throw</code> an exception.
 ====balanceOf====
 
 <pre>
-public static BigInteger balanceOf(byte[] owner, byte[] tokenid)
+{
+  "name": "balanceOf",
+  "parameters": [
+    {
+      "name": "owner",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Integer"
+}
 </pre>
 
 This method returns the balance of the specified token for the specified <code>owner</code>'s account.
@@ -175,7 +270,11 @@ If the <code>owner</code> is an unused address, or it's not the owner of the spe
 ====tokens====
 
 <pre>
-public static iterator tokens()
+{
+  "name": "tokens",
+  "parameters": [],
+  "returntype": "InteropInterface<iterator>"
+}
 </pre>
 
 Returns an <code>iterator</code> that contains all of the tokens minted by the contract.
@@ -183,7 +282,16 @@ Returns an <code>iterator</code> that contains all of the tokens minted by the c
 ====properties====
 
 <pre>
-public static string properties(byte[] tokenid)
+{
+  "name": "properties",
+  "parameters": [
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Array"
+}
 </pre>
 
 Returns a serialized NVM object containing the properties for the given NFT.
@@ -241,7 +349,27 @@ And if all the properties are included:
 ====Transfer====
 
 <pre>
-public static event Transfer(byte[] from, byte[] to, BigInteger amount, byte[] tokenid)
+{
+  "name": "Transfer",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenid",
+      "type": "ByteString"
+    }
+  ]
+}
 </pre>
 
 MUST trigger when tokens are transferred, including zero value transfers.
