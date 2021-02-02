@@ -109,8 +109,6 @@ Returns an <code>iterator</code> that contains all of the token ids owned by the
 The parameter <code>owner</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
 
-===Non-divisible NFT methods===
-
 ====transfer====
 
 <pre>
@@ -148,6 +146,8 @@ The function SHOULD check whether the owner address equals the caller contract h
 If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
+
+===Non-divisible NFT methods===
 
 ====ownerOf====
 
