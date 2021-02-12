@@ -336,8 +336,7 @@ Following is a description of the JSON Schema:
 Given this schema, the simplest json object that can be constructed is the following:
 <pre>
 {
-   "name": "Slime 1",
-   "description": "A slime"
+   "name": "Slime 1"
 }
 </pre>
 
