@@ -1,0 +1,47 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Neo Address Resolution
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2021-02-13
+</pre>
+
+==Abstract==
+
+This NEP describes a standard for storing Neo addresses in TXT records.
+The wallet and client should use the method described in this NEP to store and resolve the TXT record of the domain name, so that users can use the NNS domain name to transfer assets or use dapps.
+
+==Motivation==
+
+NNS currently provides regular DNS service to allow users to add A, CNAME, TXT and AAAA records for domain names.
+However, we do not provide direct support for Neo addresses in NNS.
+We need a way to map domain names in NNS to Neo addresses to support complex application scenarios.
+
+==Specification==
+
+[https://tools.ietf.org/html/rfc1464 RFC 1464] describes the general syntax of a TXT attribute:
+
+<pre>
+"<attribute name>=<attribute value>"
+</pre>
+
+We use <code>address</code> as the attribute name of the Neo address:
+
+<pre>
+"address=<Neo address>"
+</pre>
+
+The following TXT record map the domain name to the Neo address <code>NUVPACMnKFhpuHjsRjhUvXz1XhqfGZYVtY</code>:
+
+<pre>
+"address=NUVPACMnKFhpuHjsRjhUvXz1XhqfGZYVtY"
+</pre>
+
+==Rationale==
+
+A dapp can add a Neo address to its domain name to allow users to send assets, or allow the front end to use the domain name to call the contract.
+
+The user can set a domain name for his address, so that his transaction party is difficult to be deceived by a fake address, and it can also reduce the chance of wrong transfer.
+
+==Implementation==
