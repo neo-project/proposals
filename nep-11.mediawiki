@@ -120,7 +120,7 @@ If not, this method SHOULD <code>throw</code> an exception.
       "type": "Hash160"
     },
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -128,12 +128,12 @@ If not, this method SHOULD <code>throw</code> an exception.
 }
 </pre>
 
-It transfers the token with id <code>tokenid</code> to address <code>to</code>.
+It transfers the token with id <code>tokenId</code> to address <code>to</code>.
 
 The parameter <code>to</code> SHOULD be a 20-byte address.
 If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the token that will be transferred has more than one owner.
@@ -156,7 +156,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
   "name": "ownerOf",
   "parameters": [
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -166,7 +166,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 
 Returns the owner of the specified token.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 ===Divisible NFT methods===
@@ -190,7 +190,7 @@ If not, this method SHOULD <code>throw</code> an exception.
       "type": "Integer"
     },
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -198,7 +198,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 }
 </pre>
 
-It transfers an <code>amount</code> of tokens with id <code>tokenid</code> from address <code>from</code> to address <code>to</code>.
+It transfers an <code>amount</code> of tokens with id <code>tokenId</code> from address <code>from</code> to address <code>to</code>.
 
 The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses.
 If not, this method SHOULD <code>throw</code> an exception.
@@ -206,7 +206,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 The parameter <code>amount</code> SHOULD be greater than or equal to <code>0</code> and SHOULD be less than or equal to <code>pow(10, decimals())</code>.
 If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
@@ -227,7 +227,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
   "name": "ownerOf",
   "parameters": [
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -237,7 +237,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 
 Returns an <code>iterator</code> that contains all the co-owners that own the specified token.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 ====balanceOf====
@@ -251,7 +251,7 @@ If not, this method SHOULD <code>throw</code> an exception.
       "type": "Hash160"
     },
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -261,7 +261,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 
 This method returns the balance of the specified token for the specified <code>owner</code>'s account.
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 The parameter <code>owner</code> SHOULD be a 20-byte address.
@@ -290,7 +290,7 @@ Returns an <code>iterator</code> that contains all of the tokens minted by the c
   "name": "properties",
   "parameters": [
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -301,7 +301,7 @@ Returns an <code>iterator</code> that contains all of the tokens minted by the c
 Returns a serialized NVM object containing the properties for the given NFT.
 The NVM object must conform to the "NEO NFT Metadata JSON Schema".
 
-The parameter <code>tokenid</code> SHOULD be a valid NFT.
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
 If not, this method SHOULD <code>throw</code> an exception.
 
 Following is a description of the JSON Schema:
@@ -367,7 +367,7 @@ And if all the properties are included:
       "type": "Integer"
     },
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ],
@@ -400,7 +400,7 @@ The meaning of the parameters of the <code>onNEP11Payment</code> method is consi
       "type": "Integer"
     },
     {
-      "name": "tokenid",
+      "name": "tokenId",
       "type": "ByteString"
     }
   ]
