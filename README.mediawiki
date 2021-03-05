@@ -81,6 +81,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [https://github.com/neo-project/proposals/pull/133 18]
+| Neo Address Resolution
+| Erik Zhang
+| Standard
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
