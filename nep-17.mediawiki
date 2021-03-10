@@ -27,6 +27,7 @@ In the method definitions below, we provide both the definitions of the function
 <pre>
 {
   "name": "symbol",
+  "safe": true,
   "parameters": [],
   "returntype": "String"
 }
@@ -41,6 +42,7 @@ This method MUST always return the same value every time it is invoked.
 <pre>
 {
   "name": "decimals",
+  "safe": true,
   "parameters": [],
   "returntype": "Integer"
 }
@@ -55,6 +57,7 @@ This method MUST always return the same value every time it is invoked.
 <pre>
 {
   "name": "totalSupply",
+  "safe": true,
   "parameters": [],
   "returntype": "Integer"
 }
@@ -67,6 +70,7 @@ Returns the total token supply deployed in the system.
 <pre>
 {
   "name": "balanceOf",
+  "safe": true,
   "parameters": [
     {
       "name": "account",
@@ -88,6 +92,7 @@ If the <code>account</code> is an unused address, this method MUST return <code>
 <pre>
 {
   "name": "transfer",
+  "safe": false,
   "parameters": [
     {
       "name": "from",
