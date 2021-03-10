@@ -28,6 +28,7 @@ This allows for high value objects to be tokenized more effectively.
 <pre>
 {
   "name": "symbol",
+  "safe": true,
   "parameters": [],
   "returntype": "String"
 }
@@ -43,6 +44,7 @@ This method MUST always return the same value every time it is invoked.
 <pre>
 {
   "name": "decimals",
+  "safe": true,
   "parameters": [],
   "returntype": "Integer"
 }
@@ -62,6 +64,7 @@ This method MUST always return the same value every time it is invoked.
 <pre>
 {
   "name": "totalSupply",
+  "safe": true,
   "parameters": [],
   "returntype": "Integer"
 }
@@ -74,6 +77,7 @@ Returns the total token supply currently in the system.
 <pre>
 {
   "name": "balanceOf",
+  "safe": true,
   "parameters": [
     {
       "name": "owner",
@@ -94,6 +98,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 <pre>
 {
   "name": "tokensOf",
+  "safe": true,
   "parameters": [
     {
       "name": "owner",
@@ -114,6 +119,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 <pre>
 {
   "name": "transfer",
+  "safe": false,
   "parameters": [
     {
       "name": "to",
@@ -154,6 +160,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 <pre>
 {
   "name": "ownerOf",
+  "safe": true,
   "parameters": [
     {
       "name": "tokenId",
@@ -176,6 +183,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 <pre>
 {
   "name": "transfer",
+  "safe": false,
   "parameters": [
     {
       "name": "from",
@@ -225,6 +233,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 <pre>
 {
   "name": "ownerOf",
+  "safe": true,
   "parameters": [
     {
       "name": "tokenId",
@@ -245,6 +254,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 <pre>
 {
   "name": "balanceOf",
+  "safe": true,
   "parameters": [
     {
       "name": "owner",
@@ -276,6 +286,7 @@ If the <code>owner</code> is an unused address, or it's not the owner of the spe
 <pre>
 {
   "name": "tokens",
+  "safe": true,
   "parameters": [],
   "returntype": "InteropInterface<iterator>"
 }
@@ -288,6 +299,7 @@ Returns an <code>iterator</code> that contains all of the tokens minted by the c
 <pre>
 {
   "name": "properties",
+  "safe": true,
   "parameters": [
     {
       "name": "tokenId",
