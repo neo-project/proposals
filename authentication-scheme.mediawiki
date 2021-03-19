@@ -1,0 +1,154 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Authentication Scheme
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2021-03-19
+</pre>
+
+==Abstract==
+
+This NEP describes a scheme for third-party applications to authenticate users based on NEO.
+The third-party applications mentioned here can be any type of application, including Dapps, websites, games, etc.
+
+==Motivation==
+
+Usually, an application saves user data on its own server. The authenticated user can modify the corresponding data through application-defined logic.
+Traditional Internet applications usually use an authentication scheme based on username and password, which is not suitable for blockchain.
+This authentication scheme allows third-party applications to authenticate users based on digital signatures.
+In this way, NEO users can log in to any third-party application that supports this scheme without registering, and allow applications to share user data on the blockchain.
+
+==Specification==
+
+The authentication process is divided into two steps.
+In the first step, the server sends a challenge payload to the client to request authentication.
+In the second step, the client sends the response payload to the server to complete the authentication.
+The payloads are transmitted in the form of JSON.
+
+===Challenge payload===
+
+<pre>
+{
+  "grant_type": "signature",
+  "allowed_algorithms": ["ECDSA-P256"],
+  "network": 5195086,
+  "nonce": "13458238842203010919",
+  "timestamp": 1616131368
+}
+</pre>
+
+====grant_type====
+
+This field should be fixed to <code>"signature"</code> and can be extended in the future to support more authentication schemes.
+
+====allowed_algorithms====
+
+An array containing the signature algorithms allowed by the server.
+
+The client should use one of the algorithms to sign the response data.
+If none of the algorithms are supported by the client, the authentication fails.
+
+====network====
+
+The magic number of the network.
+Indicates which network this authentication will be applied to.
+
+====nonce====
+
+A 64-bit unsigned integer used to identify this authentication.
+
+The server should record the expiration time of the nonce and check it when the response is received.
+The expiration time is recommended to be 5 minutes.
+
+====timestamp====
+
+The timestamp of the server.
+This timestamp is used by the client to check whether the local time is synchronized with the server.
+
+If the local time of the client is not synchronized with the server, the authentication may fail.
+In this case, the client should first synchronize the time or prompt the user.
+
+===Response payload===
+
+<pre>
+{
+  "algorithm": "ECDSA-P256",
+  "pubkey": "0355912bc4e61c9715c5912397ea53a5ac6c103c4893fbd9c2a9f3be13b7a3e29d",
+  "address": "NfMFWYxaUUQy9SYo6AhRiGmRxfPxe9Edj7",
+  "nonce": "13458238842203010919",
+  "timestamp": 1616131369,
+  "signature": "BAS7Ljufj3vrhOrTAi21D/5Cf62n4r64Suf/do8dq/OCMHiLJl+hLJeMFZwTajVjhcpFLz6FuSEp13vvEqWf1w=="
+}
+</pre>
+
+====algorithm====
+
+The algorithm used by the client to sign the response data.
+It should be one of the values in the <code>allowed_algorithms</code> sent by the server.
+
+If the algorithm used by the client is not supported by the server, the authentication fails.
+
+====pubkey====
+
+The public key used to verify the signature.
+It must correspond to the <code>address</code>, otherwise the authentication fails.
+
+====address====
+
+The address of the user to be authenticated.
+It must correspond to the <code>pubkey</code>, otherwise the authentication fails.
+
+====nonce====
+
+A 64-bit unsigned integer used to identify this authentication.
+This value must be exactly the same as the <code>nonce</code> sent by the server.
+
+When the server receives the response, it should check whether the nonce has expired.
+If the nonce has expired or not exists, the authentication fails.
+
+====timestamp====
+
+The timestamp of the client.
+This timestamp is used by the server to determine the time of the signature to prevent replay attacks.
+
+====signature====
+
+The signature of the response data.
+It should be encoded in base64.
+
+===Response data to sign===
+
+{| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
+!Name
+!Type
+!Offset
+!Size
+!Description
+|-
+| network
+| uint32
+| 0
+| 4
+| The magic number of the network
+|-
+| nonce
+| uint64
+| 4
+| 8
+| The nonce sent by the server
+|-
+| timestamp
+| uint32
+| 12
+| 4
+| The timestamp of the client
+|-
+| hash
+| uint160
+| 16
+| 20
+| The script hash of the user's address
+|}
+
+==Implementation==
