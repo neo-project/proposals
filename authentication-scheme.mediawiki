@@ -34,7 +34,8 @@ The payloads are transmitted in the form of JSON.
   "allowed_algorithms": ["ECDSA-P256"],
   "network": 5195086,
   "nonce": "13458238842203010919",
-  "timestamp": 1616131368
+  "timestamp": 1616131368,
+  "callback": "https://someurl.com/callback"
 }
 </pre>
 
@@ -68,6 +69,12 @@ This timestamp is used by the client to check whether the local time is synchron
 
 If the local time of the client is not synchronized with the server, the authentication may fail.
 In this case, the client should first synchronize the time or prompt the user.
+
+====callback====
+
+''Optional''. An url that used to send the response payload.
+
+When a <code>callback</code> is provided, the response payload is sent to the <code>callback</code> url in HTTP POST method.
 
 ===Response payload===
 
