@@ -33,7 +33,7 @@ The NeoContract Manifest is defined by JSON format, which has the following basi
 {
   "name": "",
   "groups": [],
-  "features": [],
+  "features": {},
   "supportedstandards": [],
   "abi": {},
   "permissions": [],
@@ -47,7 +47,7 @@ The <code>name</code> is the name of the contract, which can be any valid identi
 
 The <code>groups</code> field is an array of <code>Group</code> objects which represent a set of mutually trusted contracts. A contract will trust and allow any contract in the same group to invoke it, and the user interface will not give any warnings.
 
-The <code>features</code> field will be used for future expansion and should always be an empty array for now.
+The <code>features</code> field will be used for future expansion and should always be an empty object for now.
 
 The <code>supportedstandards</code> field describes the [[obsolete/nep-10.mediawiki|NEP-10]] values.
 
