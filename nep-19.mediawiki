@@ -50,6 +50,6 @@ In the method definitions below, we provide both the definitions of the function
 
 Updating a smart contract MUST have <code>nefFile</code> and <code>manifest.json</code>.
 
-The parameters <code>data</code> can be any type of supported parameters for additional purpose.
+The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
 
 The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
