@@ -1,0 +1,54 @@
+<pre>
+  NEP:
+  Title: Contract Update Standard
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2021-04-19
+  Replaces: 5
+</pre>
+
+
+==Abstract==
+
+This proposal outlines a method standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract update.
+
+==Motivation==
+
+As the NEO blockchain scales, Smart Contract Update will become increasingly important.  Without a standard <code>update</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This standard can unify all contracts to implement the same update method with the same types of parameters.
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+===Methods===
+
+====update====
+
+<pre>
+{
+  "name": "update",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "nefFile",
+      "type": "ByteArray"
+    },
+    {
+      "name": "manifest",
+      "type": "String"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+Updating a smart contract MUST have nefFile and manifest.json.
+
+The parameters <code>data</code> can be any type of supported parameters.
+
+The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
