@@ -1,7 +1,7 @@
 <pre>
   NEP:
-  Title: Contract Update Standard
-  Author: Owen Zhang <zhangzhihong@ngd.neo.org>
+  Title: Contract Basic Methods Standard
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>
   Type: Standard
   Status: Draft
   Created: 2021-04-19
@@ -10,19 +10,50 @@
 
 
 
+
 ==Abstract==
 
-This proposal outlines a method standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract update.
+This proposal outlines a basic method standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update and destroy.
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Update will become increasingly important.  Without a standard <code>update</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This standard can unify all contracts to implement the same update method with the same types of parameters.
+As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without standard for <code>_deploy</code>, <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This standard can unify all contracts to implement the same basic methods with the same types of parameters.
 
 ==Specification==
 
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
 
 ===Methods===
+
+====_deploy====
+
+<pre>
+{
+  "name": "_deploy",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "data",
+      "type": "Any"
+    },
+    {
+      "name": "update",
+      "type": "Boolean"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+This is an optional function which will be automatically executed when contract first deployed.
+
+The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
+
+<code>update</code> returns if it's the initial deployment of this contract. The function SHOULD check whether <code>update</code> returns true. If not, continue execution. If true, return.
+
+The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+
+At the end of this function MUST trigger an <code>InitialDeploy</code> event to show success state if it's executed successfully.
 
 ====update====
 
@@ -53,3 +84,68 @@ Updating a smart contract MUST have <code>nefFile</code> and <code>manifest.json
 The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
 
 The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+
+====destroy====
+
+<pre>
+{
+  "name": "destroy",
+  "safe": false,
+  "parameters": [],
+  "returntype": "Void"
+}
+</pre>
+
+This function can delete all the storage of this contract.
+
+At the end of this function MUST trigger a <code>destroy</code> event to show success state if it's executed successfully.
+
+===Events===
+
+====InitialDeploy====
+
+<pre>
+{
+  "name": "InitialDeploy",
+  "parameters": [
+    {
+      "name": "success",
+      "type": "Boolean"
+    }
+  ]
+}
+</pre>
+
+MUST trigger an <code>InitialDeploy</code> event at the end of <code>_deploy</code> method and set it to be <code>true</code> .
+
+====Update====
+
+<pre>
+{
+  "name": "Update",
+  "parameters": [
+    {
+      "name": "success",
+      "type": "Boolean"
+    }
+  ]
+}
+</pre>
+
+MUST trigger a <code>Update</code> event at the end of <code>update</code> method and set it to be <code>true</code> .
+
+====Destroy====
+
+<pre>
+{
+  "name": "Destroy",
+  "parameters": [
+    {
+      "name": "success",
+      "type": "Boolean"
+    }
+  ]
+}
+</pre>
+
+MUST trigger a <code>Destroy</code> event at the end of <code>destroy</code> method and set it to be <code>true</code> .
