@@ -1,8 +1,8 @@
 <pre>
   NEP:
-  Title: Contract Basic Methods Standard
+  Title: Contract Basic Methods Guideline
   Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>
-  Type: Standard
+  Type: Informational
   Status: Draft
   Created: 2021-04-19
   Replaces: 0
@@ -11,13 +11,14 @@
 
 
 
+
 ==Abstract==
 
-This proposal outlines a basic method standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update and destroy.
+This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update and destroy.
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without standard for <code>_deploy</code>, <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This standard can unify all contracts to implement the same basic methods with the same types of parameters.
+As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without guideline for <code>_deploy</code>, <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
 
 ==Specification==
 
