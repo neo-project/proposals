@@ -1,12 +1,13 @@
 <pre>
   NEP:
   Title: Contract Basic Methods Guideline
-  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>
   Type: Informational
   Status: Draft
   Created: 2021-04-19
   Replaces: 0
 </pre>
+
 
 
 
