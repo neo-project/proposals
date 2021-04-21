@@ -55,8 +55,6 @@ The parameter <code>data</code> can be any type of supported parameters for addi
 
 The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
 
-At the end of this function MUST trigger an <code>InitialDeploy</code> event to show success state if it's executed successfully.
-
 ====update====
 
 <pre>
@@ -97,57 +95,6 @@ The function SHOULD check whether the <code>signer</code> address equals the <co
   "returntype": "Void"
 }
 </pre>
-
 This function can delete all the storage of this contract.
 
-At the end of this function MUST trigger a <code>destroy</code> event to show success state if it's executed successfully.
-
-===Events===
-
-====InitialDeploy====
-
-<pre>
-{
-  "name": "InitialDeploy",
-  "parameters": [
-    {
-      "name": "success",
-      "type": "Boolean"
-    }
-  ]
-}
-</pre>
-
-MUST trigger an <code>InitialDeploy</code> event at the end of <code>_deploy</code> method and set it to be <code>true</code> .
-
-====Update====
-
-<pre>
-{
-  "name": "Update",
-  "parameters": [
-    {
-      "name": "success",
-      "type": "Boolean"
-    }
-  ]
-}
-</pre>
-
-MUST trigger a <code>Update</code> event at the end of <code>update</code> method and set it to be <code>true</code> .
-
-====Destroy====
-
-<pre>
-{
-  "name": "Destroy",
-  "parameters": [
-    {
-      "name": "success",
-      "type": "Boolean"
-    }
-  ]
-}
-</pre>
-
-MUST trigger a <code>Destroy</code> event at the end of <code>destroy</code> method and set it to be <code>true</code> .
+The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
