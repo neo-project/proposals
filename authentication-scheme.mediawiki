@@ -32,7 +32,8 @@ The payloads are transmitted in the form of JSON.
 
 <pre>
 {
-  "grant_type": "signature",
+  "action": "Authentication",
+  "grant_type": "Signature",
   "allowed_algorithms": ["ECDSA-P256"],
   "network": 5195086,
   "nonce": "13458238842203010919",
@@ -41,9 +42,13 @@ The payloads are transmitted in the form of JSON.
 }
 </pre>
 
+=====action=====
+
+This field should be fixed to <code>"Authentication"</code> and can be extended in the future to support more actions.
+
 =====grant_type=====
 
-This field should be fixed to <code>"signature"</code> and can be extended in the future to support more authentication schemes.
+This field should be fixed to <code>"Signature"</code> and can be extended in the future to support more authentication schemes.
 
 =====allowed_algorithms=====
 
