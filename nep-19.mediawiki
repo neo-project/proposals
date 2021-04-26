@@ -96,3 +96,6 @@ The function SHOULD check whether the <code>signer</code> address equals the <co
 This function can delete all the storage of this contract.
 
 The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+
+If any token is in this contract asset, they MUST be transferred to another address before <code>destroy</code>.
+
