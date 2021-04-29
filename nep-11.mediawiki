@@ -439,4 +439,4 @@ A token contract which burns tokens MUST trigger a <code>Transfer</code> event w
 
 ==Implementation==
 
-https://github.com/neo-project/neo/blob/master/src/neo/SmartContract/Native/NonfungibleToken.cs
+https://github.com/neo-project/neo-devpack-dotnet/blob/master/src/Neo.SmartContract.Framework/Nep11Token.cs
