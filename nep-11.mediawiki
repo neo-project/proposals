@@ -3,7 +3,7 @@
   Title: Non-Fungible Token Standard
   Author: Joe Stewart <hal0x2328@splyse.tech>, Shane Mann <fetter@splyse.tech>, Wyatt Mufson <wyatt@ryu.games>, Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2018-04-18
 </pre>
 
