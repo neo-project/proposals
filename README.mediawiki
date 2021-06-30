@@ -39,11 +39,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/130 11]
+| [[nep-11.mediawiki|11]]
 | Non-fungible Token Standard
 | Joe Stewart, Shane Mann, Wyatt Mufson, Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [https://github.com/neo-project/proposals/pull/69 12]
 | dApp Platform Provider Interface
