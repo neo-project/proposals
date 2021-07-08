@@ -1,0 +1,116 @@
+<pre>
+  NEP: <to be assigned>
+  Title: NEOVMDump
+  Author: lights<lightsever@hotmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2018-05-30
+</pre>
+
+==Abstract==
+
+该标准提出一个统一的NEOVM Dump文件的格式
+
+==Motivation==
+
+因为NEO智能合约是在节点上执行，为了能够了解调试智能合约的具体执行情况，可以将NeoVM的执行过程Dump下来。再由另外的回放工具显示出来，
+此处我们将NeoVM的交易过程Dump的文件格式提出一个标准
+
+==Implementation==
+
+可以在NEOCLI或者NEOGUI中进行修改，将通过本节点发出的交易 或者全部交易进行Dump，这不是本标准定义的。
+
+本标准将一次NeoVM AppEngine执行的过程 Dump为一个文件
+在一笔交易中可能有多次AppEngine执行，比如每个鉴权有一次，应用合约执行有一次，还有其它的触发器，通常调试需求最大的为应用合约执行
+
+该文件对AppEngine执行的LoadScript过程，StepInfo过程每一条opcode的执行，每一条opcode导致的计算栈变化进行了dump。
+
+回放工具可以根据这些信息回放每一次NeoVM AppEngine执行的细节，根据这些细节可以完全还原节点执行合约的过程，以达到调试合约的目标。
+
+==文件格式说明==
+采用Json格式，dump文件巨大，json之后建议使用llvm压缩算法进行压缩然后保存压缩后数据的hexstring，方便网络传输
+
+整个json文件
+{
+ "script":ScriptObject , //ScriptObject是DumpLoadScript的Json对象
+ "VMState": string,      //虚拟机停机结果，正常为"HALT, BREAK",还有fault，gas超支等
+}
+
+ScriptObject
+{
+    "hash":string,    //scripthash
+    "ops":OpObject[]   //Opcode对象数组，是每一条指令的详情
+}
+
+OpObject
+{
+    "addr": int,   //opcode地址
+    "op": string,   //opcode名字
+    "stack": string[],  //对计算栈的影响记录
+     [可选]"result":{[id:string]:any},  //如果对计算栈插入了新的数据，则有result部分，记录新的数据时什么
+     [可选]"subscript":ScriptObject    //子合约，主要是appcall 操作时，会嵌套新的合约对象 
+}
+
+stack 说明
+
+如下：当op为dup时，对计算栈的操作就是一个peek，一个push，全部dump下来
+							"addr": 19,
+							"op": "DUP",
+							"stack": [
+								"Peek",
+								"Push"
+							],
+因为最后一个操作是push，所以result就会有值
+
+result 说明
+
+result 对象只有一个项目，key为string，表达插入数据的类型 比如 Integer String ByteArray
+value 不确定，如果是单独的值就是一个string，如果是Array就是一个嵌套结构
+
+例一
+
+							"result": {
+								"Integer": "2"
+							}
+
+例二
+
+"result": {
+								"Array": [{
+										"ByteArray": "6665653233313839613637343439393438366233303339656332663939316532"
+									},
+									{
+										"ByteArray": "7b2276706e4e616d65223a22736f756c76696c6c65222c226164647265737346726f6d223a2241617453686d6e5946485473676e7659486d33563267577a463650374e436838514b222c2266726f6d5032704964223a2238453635303143384338313944453135434531363534323438324138454443424645323943324136443430334538353143394241443531454532313834333743313346364644413333464238222c2261646472657373546f223a22414a5a6743706e654d3453756879486769734b734d7257614e57686f775841435333222c22746f5032704964223a2244343839464543363431423138343544464330304630364531364434353032353534364142373935313543303135343332413239323235333642313441433131423133374537463744464646222c22716c63223a2231222c227472616e73537461747573223a747275652c2274797065223a2233227d"
+									}
+								]
+
+==文件示例==
+[
+    {
+	"name": "Main",
+	"addr": "0000",
+	"map": ["0003-24", "0004-27", "0049-30", "0099-32", "00AB-16707566", "00B3-33", "00B4-34", "00F6-35", "0101-37", "0102-37", "010D-68"]
+    },
+    {
+	"name": "GetTrueByte",
+	"addr": "0116",
+	"map": ["0120-71", "012A-74", "0152-75", "0161-76"]
+    },
+    {
+	"name": "NnsRegistry",
+	"addr": "016A",
+	"map": []
+    },
+    {
+	"name": "testRegistry",
+	"addr": "016A",
+	"map": ["0182-81", "01E3-84", "01F2-85"]
+    },
+    ......
+]
+
+==实现示例==
+https://www.cnblogs.com/crazylights/p/8962202.html  //使用方法说明
+https://github.com/NewEconoLab/neondebug    //回放工具
+https://github.com/NewEconoLab/neo-gui-nel    //dump工具
+
