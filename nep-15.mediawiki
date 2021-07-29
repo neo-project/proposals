@@ -3,7 +3,7 @@
   Title: NeoContract Manifest
   Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com> 
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2020-03-20
   Requires: 14
 </pre>
