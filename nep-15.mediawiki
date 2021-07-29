@@ -1,0 +1,94 @@
+<pre>
+  NEP: 15
+  Title: NeoContract Manifest
+  Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com> 
+  Type: Standard
+  Status: Final
+  Created: 2020-03-20
+  Requires: 14
+</pre>
+
+==Abstract==
+
+A Manifest is a file containing metadata for a group of accompanying files. For example, the files of a computer program may have a manifest describing name, trust information, permissions required for execution. 
+
+This NEP describes the Manifest standards for NEO smart contracts.
+
+==Motivation==
+
+There should be a way to expose the access control over the contract. To achieve this, we need a mechanism for describing the features and permissions of smart contracts. With NeoContract Manifest, developers can have clear recognition about the contract and easily create programs to invoke the contract.
+
+==Rationale==
+
+We assume the Manifest is strongly typed, known at compilation time and static. No introspection mechanism will be provided. We assert that all contracts will have the interface definitions of any contracts they call available at compile-time.
+
+==Specification==
+
+===Manifest===
+
+The NeoContract Manifest is defined by JSON format, which has the following basic structure, where some of the top-level objects can have any number of child objects:
+
+<pre>
+
+{
+  "name": "",
+  "groups": [],
+  "features": {},
+  "supportedstandards": [],
+  "abi": {},
+  "permissions": [],
+  "trusts": [], 
+  "extra": {}
+}
+
+</pre>
+
+The <code>name</code> is the name of the contract, which can be any valid identifier.
+
+The <code>groups</code> field is an array of <code>Group</code> objects which represent a set of mutually trusted contracts. A contract will trust and allow any contract in the same group to invoke it, and the user interface will not give any warnings.
+
+The <code>features</code> field will be used for future expansion and should always be an empty object for now.
+
+The <code>supportedstandards</code> field describes the [[obsolete/nep-10.mediawiki|NEP-10]] values.
+
+The <code>abi</code> field describes which methods and events are included in the contract and how other contracts interact with them. For technical details of ABI, please refer to [https://github.com/neo-project/proposals/pull/119 NEP-14: NeoContract ABI].
+
+The <code>permissions</code> field is an array containing a set of <code>Permission</code> objects. It describes which contracts may be invoked and which methods are called.
+
+The <code>trusts</code> field is an array containing a set of contract hashes or group public keys. It can also be assigned with a wildcard <code>*</code>. If it is a wildcard <code>*</code>, then it means that it trusts any contract. If a contract is trusted, the user interface will not give any warnings when called by the contract.
+
+The <code>extra</code> field describes the custom user data, such as name, code version, author, description, etc.
+
+The extension name of the manifest file should be <code>.manifest.json</code>.
+
+===Group===
+
+A <code>Group</code> is identified by a public key and must be accompanied by a signature for the contract hash to prove that the contract is indeed included in the group.
+
+<pre>
+{
+  "pubKey": "0333b24ee50a488caa5deec7e021ff515f57b7993b93b45d7df901e23ee3004916",
+  "signature": "bAhbpx1J8eIPLb5\u002BfvDIRQTbX0doilPxQO\u002BQKS\u002B3fpgyjTwV73UPrv0qsb6I3ZuQjfCA7xoePl5rU508B7k\u002B7w=="
+}
+</pre>
+
+Where <code>pubKey</code> represents the public key of the group and <code>signature</code> is the signature of the contract hash encoded in Base64.
+
+===Permission===
+
+The definition of the <code>Permission</code> object is as follows:
+
+<pre>
+{
+  "contract": "hash | group | *",
+  "methods": [] | "*"
+}
+</pre>
+
+The <code>contract</code> field indicates the contract to be invoked. It can be a hash of a contract, a public key of a group, or a wildcard <code>*</code>.
+
+If it specifies a hash of a contract, then the contract will be invoked; If it specifies a public key of a group, then any contract in this group will be invoked; If it specifies a wildcard <code>*</code>, then any contract will be invoked.
+
+The <code>methods</code> field is an array containing a set of methods to be called. It can also be assigned with a wildcard <code>*</code>, which means that any method can be called.
+
+If a contract invokes a contract or method that is not declared in the manifest at runtime, the invocation will fail.

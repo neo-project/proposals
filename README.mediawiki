@@ -63,11 +63,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/114 15]
+| [[nep-15.mediawiki|15]]
 | NeoContract Manifest
 | Erik Zhang, Fernando Díaz Toledano, Vitor Nazário Coelho, Igor Machado Coelho, Li Jianying
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-16.mediawiki|16]]
 | NEO Executable Format (NEF)
