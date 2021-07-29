@@ -3,7 +3,7 @@
   Title: Token Standard
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2020-11-12
   Replaces: 5
 </pre>
