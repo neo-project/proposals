@@ -3,7 +3,7 @@
   Title: Dynamic Contract Invocation
   Author: localhuman, unignorant
   Type: Standard
-  Status: Replaced
+  Status: Obsolete
   Created: 2017-11-06
   Superseded-By: 8
 </pre>

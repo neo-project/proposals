@@ -1,0 +1,442 @@
+<pre>
+  NEP: 11
+  Title: Non-Fungible Token Standard
+  Author: Joe Stewart <hal0x2328@splyse.tech>, Shane Mann <fetter@splyse.tech>, Wyatt Mufson <wyatt@ryu.games>, Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Final
+  Created: 2018-04-18
+</pre>
+
+==Abstract==
+
+This NEP defines a standard non-fungible token system for the NEO Smart Economy.
+
+==Motivation==
+
+NFTs are required to track, exchange and enforce ownership of digital assets.
+A non-fungible token (NFT) can be thought of like a property deed - each one is unique and carries some non-mutable information (e.g. the physical address of the property).
+Other information, such as the owner of the property, can be changed.
+Also, we provide built-in optional divisibility within each non-fungible asset.
+This allows for high value objects to be tokenized more effectively.
+
+==Specification==
+
+===Common methods===
+
+====symbol====
+
+<pre>
+{
+  "name": "symbol",
+  "safe": true,
+  "parameters": [],
+  "returntype": "String"
+}
+</pre>
+
+Returns a short string symbol of the token managed in this contract. e.g. <code>"MNFT"</code>.
+This symbol SHOULD be short (3-8 characters is recommended), with no whitespace characters or new-lines and SHOULD be limited to the uppercase latin alphabet (i.e. the 26 letters used in English).
+
+This method MUST always return the same value every time it is invoked.
+
+====decimals====
+
+<pre>
+{
+  "name": "decimals",
+  "safe": true,
+  "parameters": [],
+  "returntype": "Integer"
+}
+</pre>
+
+Returns the number of decimals used by the token - e.g. <code>8</code>, means to divide the token amount by <code>100,000,000</code> to get its user representation.
+
+If the token managed in this contract is indivisible, the function SHOULD return <code>0</code>.
+
+If this method returns <code>0</code>, the "Non-divisible NFT methods" must be implemented.
+Otherwise, the "Divisible NFT methods" must be implemented.
+
+This method MUST always return the same value every time it is invoked.
+
+====totalSupply====
+
+<pre>
+{
+  "name": "totalSupply",
+  "safe": true,
+  "parameters": [],
+  "returntype": "Integer"
+}
+</pre>
+
+Returns the total token supply currently in the system.
+
+====balanceOf====
+
+<pre>
+{
+  "name": "balanceOf",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "owner",
+      "type": "Hash160"
+    }
+  ],
+  "returntype": "Integer"
+}
+</pre>
+
+Returns the total amount of NFTs owned by the specified address.
+
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+====tokensOf====
+
+<pre>
+{
+  "name": "tokensOf",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "owner",
+      "type": "Hash160"
+    }
+  ],
+  "returntype": "InteropInterface<iterator>"
+}
+</pre>
+
+Returns an <code>iterator</code> that contains all of the token ids owned by the specified address.
+
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+====transfer====
+
+<pre>
+{
+  "name": "transfer",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Boolean"
+}
+</pre>
+
+It transfers the token with id <code>tokenId</code> to address <code>to</code>.
+
+The parameter <code>to</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The function SHOULD return <code>false</code> if the token that will be transferred has more than one owner.
+
+If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the token is sent to the owner.
+
+If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract with the <code>data</code> parameter from <code>transfer</code> AFTER firing the <code>Transfer</code> event.
+
+The function SHOULD check whether the owner address equals the caller contract hash.
+If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+
+If the transfer is not processed, the function SHOULD return <code>false</code>.
+
+===Non-divisible NFT methods===
+
+====ownerOf====
+
+<pre>
+{
+  "name": "ownerOf",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Hash160"
+}
+</pre>
+
+Returns the owner of the specified token.
+
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+===Divisible NFT methods===
+
+====transfer====
+
+<pre>
+{
+  "name": "transfer",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Boolean"
+}
+</pre>
+
+It transfers an <code>amount</code> of tokens with id <code>tokenId</code> from address <code>from</code> to address <code>to</code>.
+
+The parameters <code>from</code> and <code>to</code> SHOULD be 20-byte addresses.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>amount</code> SHOULD be greater than or equal to <code>0</code> and SHOULD be less than or equal to <code>pow(10, decimals())</code>.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The function SHOULD return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
+
+If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or the token is sent to the owner.
+
+If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract with the <code>data</code> parameter from <code>transfer</code> AFTER firing the <code>Transfer</code> event.
+
+The function SHOULD check whether the <code>from</code> address equals the caller contract hash.
+If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+
+If the transfer is not processed, the function SHOULD return <code>false</code>.
+
+====ownerOf====
+
+<pre>
+{
+  "name": "ownerOf",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "InteropInterface<iterator>"
+}
+</pre>
+
+Returns an <code>iterator</code> that contains all the co-owners that own the specified token.
+
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+====balanceOf====
+
+<pre>
+{
+  "name": "balanceOf",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "owner",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Integer"
+}
+</pre>
+
+This method returns the balance of the specified token for the specified <code>owner</code>'s account.
+
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+The parameter <code>owner</code> SHOULD be a 20-byte address.
+If not, this method SHOULD <code>throw</code> an exception.
+
+If the <code>owner</code> is an unused address, or it's not the owner of the specified token, this method SHOULD return <code>0</code>.
+
+===Optional methods===
+
+====tokens====
+
+<pre>
+{
+  "name": "tokens",
+  "safe": true,
+  "parameters": [],
+  "returntype": "InteropInterface<iterator>"
+}
+</pre>
+
+Returns an <code>iterator</code> that contains all of the tokens minted by the contract.
+
+====properties====
+
+<pre>
+{
+  "name": "properties",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Map"
+}
+</pre>
+
+Returns a serialized NVM object containing the properties for the given NFT.
+The NVM object must conform to the "NEO NFT Metadata JSON Schema".
+
+The parameter <code>tokenId</code> SHOULD be a valid NFT.
+If not, this method SHOULD <code>throw</code> an exception.
+
+Following is a description of the JSON Schema:
+<pre>
+{
+  "title": "Asset Metadata",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Identifies the asset to which this NFT represents."
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional. Describes the asset to which this NFT represents."
+    },
+    "image": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional. A URI pointing to a resource with mime type image/* representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."
+    },
+    "tokenURI": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional. A distinct URI for a given asset that adheres to RFC 3986"
+    }
+  }
+}
+</pre>
+
+Given this schema, the simplest json object that can be constructed is the following:
+<pre>
+{
+   "name": "Slime 1"
+}
+</pre>
+
+And if all the properties are included:
+<pre>
+{
+   "name": "Slime 2",
+   "description": "A slime",
+   "image": "{some image URI}",
+   "tokenURI": "{some URI}"
+}
+</pre>
+
+===Receiver methods===
+
+====onNEP11Payment====
+
+<pre>
+{
+  "name": "onNEP11Payment",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+If a contract is to receive NFTs, it must implement the receiver method. Transferring NFTs to any contract that does not implement the receiver method will cause the transaction to fail. If the receiver doesn't want to receive this transfer it MUST abort the execution.
+
+The meaning of the parameters of the <code>onNEP11Payment</code> method is consistent with that of <code>transfer</code>. 
+
+===Events===
+
+====Transfer====
+
+<pre>
+{
+  "name": "Transfer",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    }
+  ]
+}
+</pre>
+
+MUST trigger when tokens are transferred, including zero value transfers.
+
+A token contract which creates new tokens MUST trigger a <code>Transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
+
+A token contract which burns tokens MUST trigger a <code>Transfer</code> event with the <code>to</code> address set to <code>null</code> when tokens are burned.
+
+==Implementation==
+
+https://github.com/neo-project/neo-devpack-dotnet/blob/master/src/Neo.SmartContract.Framework/Nep11Token.cs
