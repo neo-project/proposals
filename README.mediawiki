@@ -69,11 +69,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/121 16]
+| [[nep-16.mediawiki|16]]
 | NEO Executable Format (NEF)
 | Fernando Díaz Toledano, Erik Zhang, Igor Machado Coelho, Li Jianying, Vitor Nazário Coelho
 | Standard
-| Accepted
+| Final
 |-
 | [[nep-17.mediawiki|17]]
 | Token Standard
