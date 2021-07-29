@@ -39,11 +39,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/41 11]
+| [[nep-11.mediawiki|11]]
 | Non-fungible Token Standard
-| Joe Stewart, Shane Mann
+| Joe Stewart, Shane Mann, Wyatt Mufson, Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [https://github.com/neo-project/proposals/pull/69 12]
 | dApp Platform Provider Interface
@@ -57,11 +57,11 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/119 14]
+| [[nep-14.mediawiki|14]]
 | NeoContract ABI
 | Erik Zhang
 | Standard
-| Accepted
+| Final
 |-
 | [https://github.com/neo-project/proposals/pull/114 15]
 | NeoContract Manifest
@@ -69,14 +69,20 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/121 16]
+| [[nep-16.mediawiki|16]]
 | NEO Executable Format (NEF)
 | Fernando Díaz Toledano, Erik Zhang, Igor Machado Coelho, Li Jianying, Vitor Nazário Coelho
 | Standard
-| Accepted
+| Final
 |-
-| [https://github.com/neo-project/proposals/pull/126 17]
+| [[nep-17.mediawiki|17]]
 | Token Standard
+| Erik Zhang
+| Standard
+| Final
+|-
+| [https://github.com/neo-project/proposals/pull/133 18]
+| Neo Address Resolution
 | Erik Zhang
 | Standard
 | Accepted
