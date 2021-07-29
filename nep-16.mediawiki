@@ -104,3 +104,7 @@ The value of <code>script</code> stores the raw VM opcodes. The data should be s
 ====checksum====
 
 The <code>checksum</code> item is used not only to ensure a corrupt-free transmission, but also to ensure that the file has not been tampered with. It is computed by using the SHA256 algorithm to hash the serialised <code>nef</code> file excluding <code>checksum</code> twice, and converting the result into a 32-bit unsigned integer, which must be identical with the last four bytes of the <code>nef</code> file.
+
+==Implementation==
+
+https://github.com/neo-project/neo/blob/master/src/neo/SmartContract/NefFile.cs
