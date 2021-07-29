@@ -3,7 +3,7 @@
   Title: NEO Executable Format (NEF)
   Author: Erik Zhang <erik@neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Igor Machado Coelho <igormachado@gmail.com>, Li Jianying <lightsever@hotmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2020-03-31
 </pre>
 
