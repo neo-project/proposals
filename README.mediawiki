@@ -45,12 +45,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/48 13]
-| Source Mapping for NeoVM
-| Sérgio Flores, Ricardo Prado, Alex Fragapane, Alex DiCarlo, Li Jianying
-| Standard
-| Accepted
-|-
 | [[nep-14.mediawiki|14]]
 | NeoContract ABI
 | Erik Zhang
@@ -78,6 +72,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | [https://github.com/neo-project/proposals/pull/133 18]
 | Neo Address Resolution
 | Erik Zhang
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/140 19]
+| Debug Info Specification
+| Harry Pierson
 | Standard
 | Accepted
 |-
