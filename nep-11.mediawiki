@@ -21,6 +21,10 @@ This allows for high value objects to be tokenized more effectively.
 
 ==Specification==
 
+===Standard format===
+
+Must be `NEP-11`,  other format such like lower cases are forbidden.
+
 ===Common methods===
 
 ====symbol====
