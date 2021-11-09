@@ -49,7 +49,7 @@ The <code>groups</code> field is an array of <code>Group</code> objects which re
 
 The <code>features</code> field will be used for future expansion and should always be an empty object for now.
 
-The <code>supportedstandards</code> field describes which standard it supports, such like <code>NEP</code> or <code>RFC</code>. It must be an array. The format must be all in upper cases which has "-" between standard type and standard number. For example: <code>"supportedstandards": ["NEP-11", "NEP-17", "RFC-1"]</code>.
+The <code>supportedstandards</code> field describes which standard it supports, such like <code>NEP</code> or <code>RFC</code>. It must be an array. In order for the smart contracts or other clients to understand correctly, all NEPs must be capitalized, and the NEP and the number must be connected with <code>-</code>. For example: <code>"supportedstandards": ["NEP-11", "NEP-17", "RFC 1035"]</code>.
 
 The <code>abi</code> field describes which methods and events are included in the contract and how other contracts interact with them. For technical details of ABI, please refer to [https://github.com/neo-project/proposals/pull/119 NEP-14: NeoContract ABI].
 
