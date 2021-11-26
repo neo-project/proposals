@@ -51,6 +51,10 @@ export enum Network {
     TESTNET = 877933390
 }
 
+export type EventName =
+    "accountschanged" |
+    "networkchanged";
+
 export type ContractParameterType =
     "Any" |
     "Boolean" |
@@ -348,8 +352,8 @@ export interface IDapiProvider {
     website: string;
 
     // Events
-    on(event: "accountschanged", listener: () => void): void;
-    on(event: "networkchanged", listener: () => void): void;
+    on(event: EventName, listener: () => void): void;
+    removeListener(event: EventName, listener: () => void): void;
 
     // Methods
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
