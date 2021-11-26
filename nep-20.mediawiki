@@ -40,6 +40,10 @@ export type UInt256 = string;
 
 export type ECPoint = string;
 
+export type Integer = string;
+
+export type HexString = string;
+
 export enum Network {
     MAINNET = 860833102,
     TESTNET = 877933390
@@ -193,7 +197,7 @@ export type OracleResponseCode =
 
 export interface OracleResponse extends TransactionAttribute {
     type: "OracleResponse";
-    id: bigint;
+    id: number;
     code: OracleResponseCode;
     result?: Base64Encoded;
 }
@@ -202,12 +206,12 @@ export type Transaction = {
     hash: UInt256;
     size: number;
     blockHash: UInt256;
-    blockTime: bigint;
+    blockTime: number;
     confirmations: number;
     version: number;
     nonce: number;
-    systemFee: bigint;
-    networkFee: bigint;
+    systemFee: Integer;
+    networkFee: Integer;
     validUntilBlock: number;
     sender: UInt160;
     signers: Signer[];
@@ -223,8 +227,8 @@ export type Block = {
     version: number;
     previousBlockHash: UInt256;
     merkleRoot: UInt256;
-    time: bigint;
-    nonce: bigint;
+    time: number;
+    nonce: HexString;
     index: number;
     primary: number;
     nextConsensus: UInt160;
@@ -266,7 +270,7 @@ export type ApplicationLog = {
         trigger: TriggerType;
         vmstate: VMState;
         exception?: string;
-        gasconsumed: bigint;
+        gasconsumed: Integer;
         stack: Argument[];
         notifications: Notification[];
     }[];
@@ -275,13 +279,13 @@ export type ApplicationLog = {
 export type Token = {
     symbol: string;
     decimals: number;
-    totalSupply: bigint;
+    totalSupply: Integer;
 }
 
 export type InvokeResult = {
     script: Base64Encoded;
     state: VMState;
-    gasconsumed: bigint;
+    gasconsumed: Integer;
     exception?: string;
     stack: Argument[];
 }
@@ -354,7 +358,7 @@ export interface IDapiProvider {
     call(hash: UInt160, operation: string, args: Argument[], signers: Signer[]): Promise<InvokeResult>;
     getAccounts(): Promise<Account[]>;
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
-    getBalance(asset: UInt160, account?: UInt160): Promise<bigint>;
+    getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
     getBlock(hash: UInt256): Promise<Block>;
     getBlock(index: number): Promise<Block>;
     getBlockCount(): Promise<number>;
@@ -362,7 +366,7 @@ export interface IDapiProvider {
     getTokenInfo(hash: UInt160): Promise<Token>;
     getTransaction(txid: UInt256): Promise<Transaction>;
     invoke(hash: UInt160, operation: string, args: Argument[], signers: Signer[]): Promise<UInt256>;
-    send(asset: UInt160, amount: bigint, to: UInt160, from?: UInt160): Promise<UInt256>;
+    send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
 }
 </pre>
