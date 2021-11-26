@@ -385,10 +385,15 @@ export type ErrorType =
     "RPC_ERROR" |           // An exception was thrown by the RPC server.
     "UNKNOWN";              // An unknown error has occurred.
 
-export type Error = { // All possible reasons returned by the onrejected callback of promises.
+export interface Error {
     type: ErrorType;
     message: string;
-    details?: any;
+    detail?: any;
+}
+
+export interface FailedError extends Error {
+    type: "FAILED";
+    detail: InvocationResult;
 }
 </pre>
 
