@@ -354,7 +354,7 @@ export interface IDapiProvider {
     on(event: "ready", listener: (provider: IDapiProvider) => void): void; // When the event is triggered, it also triggers the "Neo.DapiProvider.ready" event of the window object.
 
     // Methods
-    authentication(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
+    authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
     call(hash: UInt160, operation: string, args: Argument[], signers: Signer[]): Promise<InvokeResult>;
     getAccounts(): Promise<Account[]>;
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
