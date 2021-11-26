@@ -284,7 +284,15 @@ export type Token = {
     totalSupply: Integer;
 }
 
-export type InvokeResult = {
+export type InvocationArguments = {
+    hash: UInt160;
+    operation: string;
+    args: Argument[];
+    signers?: Signer[];
+    suggestedSystemFee?: Integer;
+}
+
+export type InvocationResult = {
     script: Base64Encoded;
     state: VMState;
     gasconsumed: Integer;
@@ -344,7 +352,7 @@ export interface IDapiProvider {
 
     // Methods
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
-    call(hash: UInt160, operation: string, args: Argument[], signers: Signer[]): Promise<InvokeResult>;
+    call(hash: UInt160, operation: string, ...args: Argument[]): Promise<InvocationResult>;
     getAccounts(): Promise<Account[]>;
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
     getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
@@ -354,7 +362,7 @@ export interface IDapiProvider {
     getStorage(hash: UInt160, key: Base64Encoded): Promise<Base64Encoded>;
     getTokenInfo(hash: UInt160): Promise<Token>;
     getTransaction(txid: UInt256): Promise<Transaction>;
-    invoke(hash: UInt160, operation: string, args: Argument[], signers: Signer[]): Promise<UInt256>;
+    invoke(invocations: InvocationArguments[]): Promise<UInt256>;
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
 }
