@@ -341,7 +341,6 @@ export interface IDapiProvider {
     // Events
     on(event: "accountschanged", listener: () => void): void;
     on(event: "networkchanged", listener: () => void): void;
-    on(event: "ready", listener: (provider: IDapiProvider) => void): void; // When the event is triggered, it also triggers the "Neo.DapiProvider.ready" event of the window object.
 
     // Methods
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
@@ -380,6 +379,18 @@ export type Error = { // All possible reasons returned by the onrejected callbac
     message: string;
     details?: any;
 }
+</pre>
+
+===How to obtain an instance of IDapiProvider interface?===
+
+In order for dapps to have a unified method of obtaining <code>IDapiProvider</code> instances, all providers must trigger the <code>Neo.DapiProvider.ready</code> event of the <code>window</code> object when they are ready.
+
+The front end of the dapp can listen to the event and obtain the <code>IDapiProvider</code> instance from the <code>detail</code> property of the event.
+
+<pre>
+window.addEventListener("Neo.DapiProvider.ready", e => {
+    var provider = e.detail.provider;
+});
 </pre>
 
 ==Rationale==
