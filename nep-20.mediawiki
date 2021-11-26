@@ -302,6 +302,7 @@ export type InvocationResult = {
 
 export type ContractParametersContext = {
     type: "Neo.Network.P2P.Payloads.Transaction";
+    hash: UInt256;
     data: Base64Encoded;
     items: Record<UInt160, {
         script: Base64Encoded;
@@ -363,6 +364,8 @@ export interface IDapiProvider {
     getTokenInfo(hash: UInt160): Promise<Token>;
     getTransaction(txid: UInt256): Promise<Transaction>;
     invoke(invocations: InvocationArguments[]): Promise<UInt256>;
+    makeTransaction(invocations: InvocationArguments[]): Promise<ContractParametersContext>;
+    relay(context: ContractParametersContext): Promise<UInt256>;
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
 }
