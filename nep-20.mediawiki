@@ -336,6 +336,7 @@ export type ErrorType =
 export type Error = { // All possible reasons returned by the onrejected callback of promises.
     type: ErrorType;
     message: string;
+    details?: any;
 }
 
 export interface IDapiProvider {
