@@ -29,6 +29,8 @@ Each wallet provider, when deciding on supporting dApps to utilize their service
 
 ==Specification==
 
+===Types===
+
 <pre>
 export type Base64Encoded = string;
 
@@ -321,24 +323,11 @@ export type AuthenticationResponsePayload = {
     timestamp: number;
     signature: Base64Encoded;
 }
+</pre>
 
-export type ErrorType =
-    "UNSUPPORTED" |         // The requested feature or operation is not supported.
-    "INVALID" |             // The input data is in an invalid format.
-    "NOTFOUND" |            // The requested data doesn't exist.
-    "FAILED" |              // The contract execution failed.
-    "TIMEOUT" |             // The requested operation was cancelled due to timeout.
-    "CANCELED" |            // The requested operation was cancelled by the user.
-    "INSUFFICIENT_FUNDS" |  // The requested operation failed due to insufficient balance.
-    "RPC_ERROR" |           // An exception was thrown by the RPC server.
-    "UNKNOWN";              // An unknown error has occurred.
+===Interfaces===
 
-export type Error = { // All possible reasons returned by the onrejected callback of promises.
-    type: ErrorType;
-    message: string;
-    details?: any;
-}
-
+<pre>
 export interface IDapiProvider {
     // Properties
     compatibility: string[];
@@ -369,6 +358,27 @@ export interface IDapiProvider {
     invoke(hash: UInt160, operation: string, args: Argument[], signers: Signer[]): Promise<UInt256>;
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
+}
+</pre>
+
+===Errors===
+
+<pre>
+export type ErrorType =
+    "UNSUPPORTED" |         // The requested feature or operation is not supported.
+    "INVALID" |             // The input data is in an invalid format.
+    "NOTFOUND" |            // The requested data doesn't exist.
+    "FAILED" |              // The contract execution failed.
+    "TIMEOUT" |             // The requested operation was cancelled due to timeout.
+    "CANCELED" |            // The requested operation was cancelled by the user.
+    "INSUFFICIENT_FUNDS" |  // The requested operation failed due to insufficient balance.
+    "RPC_ERROR" |           // An exception was thrown by the RPC server.
+    "UNKNOWN";              // An unknown error has occurred.
+
+export type Error = { // All possible reasons returned by the onrejected callback of promises.
+    type: ErrorType;
+    message: string;
+    details?: any;
 }
 </pre>
 
