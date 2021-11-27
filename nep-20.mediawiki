@@ -292,8 +292,6 @@ export type InvocationArguments = {
     hash: UInt160;
     operation: string;
     args: Argument[];
-    signers?: Signer[];
-    suggestedSystemFee?: Integer;
 }
 
 export type InvocationResult = {
@@ -357,6 +355,7 @@ export interface IDapiProvider {
 
     // Methods
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
+    call(invocation: InvocationArguments): Promise<InvocationResult>;
     call(hash: UInt160, operation: string, ...args: Argument[]): Promise<InvocationResult>;
     getAccounts(): Promise<Account[]>;
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
@@ -367,8 +366,8 @@ export interface IDapiProvider {
     getStorage(hash: UInt160, key: Base64Encoded): Promise<Base64Encoded>;
     getTokenInfo(hash: UInt160): Promise<Token>;
     getTransaction(txid: UInt256): Promise<Transaction>;
-    invoke(invocations: InvocationArguments[]): Promise<UInt256>;
-    makeTransaction(invocations: InvocationArguments[]): Promise<ContractParametersContext>;
+    invoke(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<UInt256>;
+    makeTransaction(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<ContractParametersContext>;
     relay(context: ContractParametersContext): Promise<UInt256>;
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
