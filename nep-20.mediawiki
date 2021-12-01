@@ -356,7 +356,6 @@ export interface IDapiProvider {
     // Methods
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
     call(invocation: InvocationArguments): Promise<InvocationResult>;
-    call(hash: UInt160, operation: string, ...args: Argument[]): Promise<InvocationResult>;
     getAccounts(): Promise<Account[]>;
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
     getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
