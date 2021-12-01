@@ -403,6 +403,14 @@ export interface FailedError extends Error {
 
 In order for dapps to have a unified method of obtaining <code>IDapiProvider</code> instances, all providers must trigger the <code>Neo.DapiProvider.ready</code> event of the <code>window</code> object when they are ready.
 
+<pre>
+window.dispatchEvent(new CustomEvent("build", {
+    detail: {
+        provider: provider
+    }
+}));
+</pre>
+
 The front end of the dapp can listen to the event and obtain the <code>IDapiProvider</code> instance from the <code>detail</code> property of the event.
 
 <pre>
