@@ -32,67 +32,84 @@ Each wallet provider, when deciding on supporting dApps to utilize their service
 ===Types===
 
 <pre>
+// Represents a piece of data encoded as a base64 string.
 export type Base64Encoded = string;
 
+// Represents a N3 address.
+// Example: "NSiVJYZej4XsxG5CUpdwn7VRQk8iiiDMPM"
 export type Address = string;
 
+// A 160-bit hash represented by a hexadecimal string.
+// Example: "0x682cca3ebdc66210e5847d7f8115846586079d4a"
 export type UInt160 = string;
 
+// A 256-bit hash represented by a hexadecimal string.
+// Example: "0x1f4d1defa46faa5e7b9b8d3f79a06bec777d7c26c4aa5f6f5899a291daa87c15"
 export type UInt256 = string;
 
+// Represents an ECC public key.
+// Example: "03b209fd4f53a7170ea4444e0cb0a6bb6a53c2bd016926989cf85f9b0fba17a70c"
 export type ECPoint = string;
 
+// A large integer of any length expressed as a string.
 export type Integer = string;
 
+// Represents a piece of data encoded as a hexadecimal string.
 export type HexString = string;
 
+// An enumeration representing the N3 network.
 export enum Network {
-    MAINNET = 860833102,
-    TESTNET = 877933390
+    MAINNET = 860833102, // Represents the N3 main network.
+    TESTNET = 877933390  // Represents the N3 test network.
 }
 
+// Represents the name of the event in IDapiProvider.
 export type EventName =
-    "accountschanged" |
-    "networkchanged";
+    "accountschanged" | // Triggered when the accounts in the wallet change.
+    "networkchanged";   // Triggered when the user switches the current network.
 
+// Represents the type of ContractParameter.
 export type ContractParameterType =
-    "Any" |
-    "Boolean" |
-    "Integer" |
-    "ByteArray" |
-    "String" |
-    "Hash160" |
-    "Hash256" |
-    "PublicKey" |
-    "Signature" |
-    "Array" |
-    "Map" |
-    "InteropInterface" |
-    "Void";
+    "Any" |              // Indicates that the parameter can be of any type.
+    "Boolean" |          // Indicates that the parameter is of Boolean type.
+    "Integer" |          // Indicates that the parameter is an integer.
+    "ByteArray" |        // Indicates that the parameter is a byte array.
+    "String" |           // Indicates that the parameter is a string.
+    "Hash160" |          // Indicates that the parameter is a 160-bit hash.
+    "Hash256" |          // Indicates that the parameter is a 256-bit hash.
+    "PublicKey" |        // Indicates that the parameter is a public key.
+    "Signature" |        // Indicates that the parameter is a signature.
+    "Array" |            // Indicates that the parameter is an array.
+    "Map" |              // Indicates that the parameter is a map.
+    "InteropInterface" | // Indicates that the parameter is an interoperable interface.
+    "Void";              // It can be only used as the return type of a method, meaning that the method has no return value.
 
-export type Parameter = {
-    name?: string;
-    type: ContractParameterType;
+// Represents a parameter of a contract method.
+export type ContractParameter = {
+    name?: string;               // The name of the parameter.
+    type: ContractParameterType; // The type of the parameter.
 }
 
+// Represents an account in a wallet.
 export type Account = {
-    hash: UInt160;
-    label?: string;
-    isDefault: boolean;
-    contract?: {
-        script?: Base64Encoded;
-        parameters: Parameter[];
-        deployed: boolean;
+    hash: UInt160;      // The script hash of the account.
+    label?: string;     // The label of the account.
+    isDefault: boolean; // Indicates whether the account is the default account.
+    contract?: {        // The contract of the account.
+        script?: Base64Encoded;          // The verification script of the contract.
+        parameters: ContractParameter[]; // The parameters of the verification script.
+        deployed: boolean;               // Indicates whether the contract is deployed on the blockchain.
     };
 }
 
+// Represents the scope of a witness.
 export type WitnessScope =
-    "None" |
-    "CalledByEntry" |
-    "CustomContracts" |
-    "CustomGroups" |
-    "WitnessRules" |
-    "Global" |
+    "None" |            // Indicates that no contract was witnessed. Only sign the transaction.
+    "CalledByEntry" |   // Indicates that the calling contract must be the entry contract.
+    "CustomContracts" | // Custom hash for contract-specific.
+    "CustomGroups" |    // Custom pubkey for group members.
+    "WitnessRules" |    // Indicates that the current context must satisfy the specified rules.
+    "Global" |          // This allows the witness in all contexts (default Neo2 behavior).
     "CalledByEntry, CustomContracts" |
     "CalledByEntry, CustomGroups" |
     "CalledByEntry, WitnessRules" |
@@ -105,19 +122,21 @@ export type WitnessScope =
     "CustomContracts, CustomGroups, WitnessRules" |
     "CalledByEntry, CustomContracts, CustomGroups, WitnessRules";
 
+// Represents the type of WitnessCondition.
 export type WitnessConditionType =
-    "Boolean" |
-    "Not" |
-    "And" |
-    "Or" |
-    "ScriptHash" |
-    "Group" |
-    "CalledByEntry" |
-    "CalledByContract" |
-    "CalledByGroup";
+    "Boolean" |          // Indicates that the condition will always be met or not met.
+    "Not" |              // Reverse another condition.
+    "And" |              // Indicates that all conditions must be met.
+    "Or" |               // Indicates that any of the conditions meets.
+    "ScriptHash" |       // Indicates that the condition is met when the current context has the specified script hash.
+    "Group" |            // Indicates that the condition is met when the current context has the specified group.
+    "CalledByEntry" |    // Indicates that the condition is met when the current context is the entry point or is called by the entry point.
+    "CalledByContract" | // Indicates that the condition is met when the current context is called by the specified contract.
+    "CalledByGroup";     // Indicates that the condition is met when the current context is called by the specified group.
 
+// Represents the condition of a WitnessRule.
 export interface WitnessCondition {
-    type: WitnessConditionType;
+    type: WitnessConditionType; // The type of the condition.
 }
 
 export interface BooleanCondition extends WitnessCondition {
@@ -340,42 +359,99 @@ export type AuthenticationResponsePayload = {
 
 <pre>
 export interface IDapiProvider {
+
     // Properties
+
+    // Indicates the standards supported by this provider.
+    // Example: ["NEP-11", "NEP-17"]
     compatibility: string[];
+
+    // Additional data for the provider.
     extra: any;
+
+    // The name of the provider.
     name: string;
+
+    // Indicates the network currently in use.
     network: Network;
+
+    // Indicates the networks supported by this provider.
     supportedNetworks: Network[];
+
+    // The version of the provider.
+    // Example: "1.0.0"
     version: string;
+
+    // The website of the provider.
     website: string;
 
+
     // Events
+
+    // Adds an event handler for the specified event.
     on(event: EventName, listener: () => void): void;
+
+    // Removes an event handler for the specified event.
     removeListener(event: EventName, listener: () => void): void;
 
+
     // Methods
+
+    // Requests for authentication. Usually used to log in to a website.
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
+
+    // Calls a contract offchain and get the execution result.
     call(invocation: InvocationArguments): Promise<InvocationResult>;
+
+    // Gets all accounts in the current wallet.
     getAccounts(): Promise<Account[]>;
+
+    // Gets the application log of the specified transaction.
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
+
+    // Gets the balance of the specified account. If `account` is omitted, the sum of all account balances in the current wallet should be returned.
     getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
+
+    // Gets the block of the specified hash.
     getBlock(hash: UInt256): Promise<Block>;
+
+    // Gets the block of the specified index.
     getBlock(index: number): Promise<Block>;
+
+    // Gets the count of blocks in the blockchain.
     getBlockCount(): Promise<number>;
+
+    // Gets the specified storage entry.
     getStorage(hash: UInt160, key: Base64Encoded): Promise<Base64Encoded>;
+
+    // Gets the information of the specified token.
     getTokenInfo(hash: UInt160): Promise<Token>;
+
+    // Gets the transaction of the specified hash.
     getTransaction(txid: UInt256): Promise<Transaction>;
+
+    // Calls one or more contracts onchain and returns the hash of the transaction.
     invoke(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<UInt256>;
+
+    // Calls one or more contracts onchain and return the transaction without relaying.
     makeTransaction(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<ContractParametersContext>;
+    
+    // Relays a transaction and returns the hash of it.
     relay(context: ContractParametersContext): Promise<UInt256>;
+
+    // Sends assets to an account and returns the hash of the transaction. If `from` is omitted, the wallet should automatically select an account or prompt the user to select one.
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
+
+    // Signs the transaction with the current wallet. Usually used for multi-signature transactions.
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
+
 }
 </pre>
 
 ===Errors===
 
 <pre>
+// The type of the Error.
 export type ErrorType =
     "UNSUPPORTED" |         // The requested feature or operation is not supported.
     "INVALID" |             // The input data is in an invalid format.
@@ -387,10 +463,11 @@ export type ErrorType =
     "RPC_ERROR" |           // An exception was thrown by the RPC server.
     "UNKNOWN";              // An unknown error has occurred.
 
+// The reason passed to the `onRejected` callback of the promises.
 export interface Error {
-    type: ErrorType;
-    message: string;
-    detail?: any;
+    type: ErrorType; // The type of the error.
+    message: string; // The message of the error.
+    detail?: any;    // Additional data for the error.
 }
 
 export interface FailedError extends Error {
