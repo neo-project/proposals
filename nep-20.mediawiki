@@ -57,11 +57,10 @@ export type Integer = string;
 // Represents a piece of data encoded as a hexadecimal string.
 export type HexString = string;
 
-// An enumeration representing the N3 network.
-export enum Network {
-    MAINNET = 860833102, // Represents the N3 main network.
-    TESTNET = 877933390  // Represents the N3 test network.
-}
+// Represents the N3 network.
+// MAINNET: 860833102
+// TESTNET: 877933390
+export type Network = number;
 
 // Represents the name of the event in IDapiProvider.
 export type EventName =
