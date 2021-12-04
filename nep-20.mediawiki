@@ -416,7 +416,8 @@ export interface IDapiProvider {
     // Gets the application log of the specified transaction.
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
 
-    // Gets the balance of the specified account. If `account` is omitted, the sum of all account balances in the current wallet should be returned.
+    // Gets the balance of the specified account.
+    // If `account` is omitted, the sum of all account balances in the current wallet should be returned.
     getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
 
     // Gets the block of the specified hash.
@@ -446,11 +447,17 @@ export interface IDapiProvider {
     // Relays a transaction and returns the hash of it.
     relay(context: ContractParametersContext): Promise<UInt256>;
 
-    // Sends assets to an account and returns the hash of the transaction. If `from` is omitted, the wallet should automatically select an account or prompt the user to select one.
+    // Sends assets to an account and returns the hash of the transaction.
+    // If `from` is omitted, the wallet should automatically select an account or prompt the user to select one.
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
 
     // Signs the transaction with the current wallet. Usually used for multi-signature transactions.
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
+    
+    // Signs the message with the specified account.
+    // If `salt` is omitted, no salt will be used.
+    // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
+    signMessage(message: Base64Encoded, salt?: Base64Encoded, account?: UInt160);
 
 }
 </pre>
