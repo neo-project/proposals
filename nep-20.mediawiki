@@ -306,10 +306,12 @@ export type Token = {
     totalSupply: Integer;
 }
 
+// Provides the necessary arguments for a contract call.
 export type InvocationArguments = {
-    hash: UInt160;
-    operation: string;
-    args: Argument[];
+    hash: UInt160;         // The hash of the contract to be called.
+    operation: string;     // The operation of the contract to be called.
+    args?: Argument[];     // The arguments for the call.
+    abortOnFail?: boolean; // Indicates whether the entire transaction should fail when the contract returns `false`.
 }
 
 export type InvocationResult = {
