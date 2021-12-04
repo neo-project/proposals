@@ -405,58 +405,74 @@ export interface IDapiProvider {
     // Methods
 
     // Requests for authentication. Usually used to log in to a website.
+    // Possible errors: UNSUPPORTED, INVALID, TIMEOUT, CANCELED.
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
 
     // Calls a contract offchain and get the execution result.
+    // Possible errors: INVALID, RPC_ERROR.
     call(invocation: InvocationArguments): Promise<InvocationResult>;
 
     // Gets all accounts in the current wallet.
     getAccounts(): Promise<Account[]>;
 
     // Gets the application log of the specified transaction.
+    // Possible errors: INVALID, RPC_ERROR.
     getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
 
     // Gets the balance of the specified account.
     // If `account` is omitted, the sum of all account balances in the current wallet should be returned.
+    // Possible errors: INVALID, NOTFOUND, FAILED, RPC_ERROR.
     getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
 
     // Gets the block of the specified hash.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
     getBlock(hash: UInt256): Promise<Block>;
 
     // Gets the block of the specified index.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
     getBlock(index: number): Promise<Block>;
 
     // Gets the count of blocks in the blockchain.
+    // Possible errors: RPC_ERROR.
     getBlockCount(): Promise<number>;
 
     // Gets the specified storage entry.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
     getStorage(hash: UInt160, key: Base64Encoded): Promise<Base64Encoded>;
 
     // Gets the information of the specified token.
+    // Possible errors: INVALID, NOTFOUND, FAILED, RPC_ERROR.
     getTokenInfo(hash: UInt160): Promise<Token>;
 
     // Gets the transaction of the specified hash.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
     getTransaction(txid: UInt256): Promise<Transaction>;
 
     // Calls one or more contracts onchain and returns the hash of the transaction.
+    // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
     invoke(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<UInt256>;
 
     // Calls one or more contracts onchain and return the transaction without relaying.
+    // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
     makeTransaction(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<ContractParametersContext>;
     
     // Relays a transaction and returns the hash of it.
+    // Possible errors: INVALID, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
     relay(context: ContractParametersContext): Promise<UInt256>;
 
     // Sends assets to an account and returns the hash of the transaction.
     // If `from` is omitted, the wallet should automatically select an account or prompt the user to select one.
+    // Possible errors: INVALID, NOTFOUND, FAILED, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
     send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
 
     // Signs the transaction with the current wallet. Usually used for multi-signature transactions.
+    // Possible errors: UNSUPPORTED, INVALID, NOTFOUND, TIMEOUT, CANCELED.
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
     
     // Signs the message with the specified account.
     // The algorithm used is ECDsa with SHA256.
     // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
+    // Possible errors: INVALID, NOTFOUND, TIMEOUT, CANCELED.
     signMessage(message: Base64Encoded, account?: UInt160): Promise<{ signature: Base64Encoded; account: UInt160; pubkey: ECPoint }>;
 
 }
