@@ -455,9 +455,10 @@ export interface IDapiProvider {
     sign(context: ContractParametersContext): Promise<ContractParametersContext>;
     
     // Signs the message with the specified account.
+    // The algorithm used is ECDsa with SHA256.
     // If `salt` is omitted, no salt will be used.
     // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
-    signMessage(message: Base64Encoded, salt?: Base64Encoded, account?: UInt160);
+    signMessage(message: Base64Encoded, salt?: Base64Encoded, account?: UInt160): Base64Encoded;
 
 }
 </pre>
