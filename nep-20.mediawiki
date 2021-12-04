@@ -457,7 +457,7 @@ export interface IDapiProvider {
     // Signs the message with the specified account.
     // The algorithm used is ECDsa with SHA256.
     // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
-    signMessage(message: Base64Encoded, account?: UInt160): { signature: Base64Encoded; account: UInt160; pubkey: ECPoint };
+    signMessage(message: Base64Encoded, account?: UInt160): Promise<{ signature: Base64Encoded; account: UInt160; pubkey: ECPoint }>;
 
 }
 </pre>
