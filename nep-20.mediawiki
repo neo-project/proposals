@@ -57,6 +57,10 @@ export type Integer = string;
 // Represents a piece of data encoded as a hexadecimal string.
 export type HexString = string;
 
+// Represents a version.
+// Example: "1.0.0"
+export type Version = string;
+
 // Represents the N3 network.
 // MAINNET: 860833102
 // TESTNET: 877933390
@@ -366,6 +370,9 @@ export interface IDapiProvider {
     // Indicates the standards supported by this provider.
     // Example: ["NEP-11", "NEP-17"]
     compatibility: string[];
+    
+    // The version of the Dapi. It must currently be "1.0".
+    dapiVersion: Version;
 
     // Additional data for the provider.
     extra: any;
@@ -380,8 +387,7 @@ export interface IDapiProvider {
     supportedNetworks: Network[];
 
     // The version of the provider.
-    // Example: "1.0.0"
-    version: string;
+    version: Version;
 
     // The website of the provider.
     website: string;
