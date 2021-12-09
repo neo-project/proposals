@@ -81,7 +81,13 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/145 20]
+| [https://github.com/neo-project/proposals/pull/134 20]
+| Authentication Scheme
+| Erik Zhang
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/145 21]
 | Dapi for N3
 | Erik Zhang
 | Standard
