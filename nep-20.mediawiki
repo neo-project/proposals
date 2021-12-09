@@ -1,9 +1,9 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 20
   Title: Authentication Scheme
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2021-03-19
 </pre>
 
@@ -35,7 +35,7 @@ The payloads are transmitted in the form of JSON.
   "action": "Authentication",
   "grant_type": "Signature",
   "allowed_algorithms": ["ECDSA-P256"],
-  "network": 5195086,
+  "networks": [860833102],
   "nonce": "13458238842203010919",
   "timestamp": 1616131368,
   "callback": "https://someurl.com/callback"
@@ -57,10 +57,9 @@ An array containing the signature algorithms allowed by the server.
 The client should use one of the algorithms to sign the response data.
 If none of the algorithms are supported by the client, the authentication fails.
 
-=====network=====
+=====networks=====
 
-The magic number of the network.
-Indicates which network this authentication will be applied to.
+The magic number of the supported networks. Indicates which networks this authentication will be applied to.
 
 =====nonce=====
 
@@ -88,6 +87,7 @@ When a <code>callback</code> is provided, the response payload is sent to the <c
 <pre>
 {
   "algorithm": "ECDSA-P256",
+  "network": 860833102,
   "pubkey": "0355912bc4e61c9715c5912397ea53a5ac6c103c4893fbd9c2a9f3be13b7a3e29d",
   "address": "NfMFWYxaUUQy9SYo6AhRiGmRxfPxe9Edj7",
   "nonce": "13458238842203010919",
@@ -102,6 +102,11 @@ The algorithm used by the client to sign the response data.
 It should be one of the values in the <code>allowed_algorithms</code> sent by the server.
 
 If the algorithm used by the client is not supported by the server, the authentication fails.
+
+=====network=====
+
+The magic number of the network.
+It must be one of the <code>networks</code> in the challenge payload, otherwise the authentication fails.
 
 =====pubkey=====
 
