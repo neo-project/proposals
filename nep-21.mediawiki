@@ -1,5 +1,5 @@
 <pre>
-  NEP: 20
+  NEP: 21
   Title: Dapi for N3
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
@@ -345,13 +345,14 @@ export type AuthenticationChallengePayload = {
     action: "Authentication";
     grant_type: "Signature";
     allowed_algorithms: ["ECDSA-P256"];
-    network: Network;
+    networks: Network[];
     nonce: string;
     timestamp: number;
 }
 
 export type AuthenticationResponsePayload = {
     algorithm: "ECDSA-P256";
+    network: Network;
     pubkey: ECPoint;
     address: Address;
     nonce: string;
