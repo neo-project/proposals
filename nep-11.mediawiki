@@ -178,7 +178,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 
 Returns the owner of the specified token.
 
-The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long)..
+The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long).
 If not, this method SHOULD <code>throw</code> an exception.
 
 ===Divisible NFT methods===
@@ -223,7 +223,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 The parameter <code>amount</code> SHOULD be greater than or equal to <code>0</code> and SHOULD be less than or equal to <code>pow(10, decimals())</code>.
 If not, this method SHOULD <code>throw</code> an exception.
 
-The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long)..
+The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long).
 If not, this method SHOULD <code>throw</code> an exception.
 
 The function SHOULD return <code>false</code> if the <code>from</code> account balance does not have enough tokens to spend.
@@ -280,7 +280,7 @@ If not, this method SHOULD <code>throw</code> an exception.
 
 This method returns the balance of the specified token for the specified <code>owner</code>'s account.
 
-The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long)..
+The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long).
 If not, this method SHOULD <code>throw</code> an exception.
 
 The parameter <code>owner</code> SHOULD be a 20-byte address.
@@ -322,7 +322,7 @@ Returns an <code>iterator</code> that contains all of the tokens minted by the c
 Returns a serialized NVM object containing the properties for the given NFT.
 The NVM object must conform to the "NEO NFT Metadata JSON Schema".
 
-The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long)..
+The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long).
 If not, this method SHOULD <code>throw</code> an exception.
 
 Following is a description of the JSON Schema:
