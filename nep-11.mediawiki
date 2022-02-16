@@ -255,7 +255,7 @@ If the transfer is not processed, the function SHOULD return <code>false</code>.
 
 Returns an <code>iterator</code> that contains all the co-owners that own the specified token.
 
-The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long)..
+The parameter <code>tokenId</code> SHOULD be a valid NFT ID (64 or less bytes long).
 If not, this method SHOULD <code>throw</code> an exception.
 
 ====balanceOf====
