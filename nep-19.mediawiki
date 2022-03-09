@@ -33,7 +33,7 @@ The debug info contains the following information. Note, the format is defined i
 There is no requirement that this format be implemented in TypeScript.
 The full specification of this format is specified in the neo-debug-info.schema.json file
 
-<code>
+<syntaxhighlight lang="typescript">
 interface DebugInformatiom {
     hash: string; // hex-encoded UInt160
     documents: string[]; // file paths
@@ -65,7 +65,7 @@ type MethodName = string // format: "{namespace},{display-name}
 type Variable = string; // format: "{name},{TypeName}(,{slotIndex})?
 
 type SequencePoint = string; // format: "{address}[{document-index}]{start-line}:{start-column}-{end-line}:{end-column}"
-</code>
+</syntaxhighlight>
 
 === TypeName ===
 
