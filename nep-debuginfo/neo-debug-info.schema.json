@@ -3,10 +3,7 @@
     "title": "Neo Smart Contract Debug Information",
     "type": "object",
     "required": [
-        "hash",
-        "documents",
-        "methods",
-        "events"
+        "hash"
     ],
     "properties": {
         "hash": {
@@ -31,11 +28,7 @@
                 "required": [
                     "id",
                     "name",
-                    "range",
-                    "params",
-                    "return",
-                    "variables",
-                    "sequence-points"
+                    "range"
                 ],
                 "properties": {
                     "id": {
