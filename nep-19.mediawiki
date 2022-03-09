@@ -1,6 +1,6 @@
 <pre>
-  NEP: <to be assigned>
-  Title: NEO N3 Debug Info Specification
+  NEP: 19
+  Title: Neo Contract Debug Info Specification
   Author: Harry Pierson (harrypierson@hotmail.com)
   Type: Standard
   Status: Draft
