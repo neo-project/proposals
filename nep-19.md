@@ -203,13 +203,9 @@ If omitted, this property defaults to an empty array.
 
 #### `events`
 
-This field stores an array of Event types, each representing an event in the contract. 
-
-Event types have the following fields:
-
-* id: a unique string representing the method.
-* name: a Method name with the method's name and optional namespace
-* params: a collection of Variable instances representing the notification arguments associated with this method
+This property stores an array of Event types as described above. Each Event object represents a parameters
+of a contract notification that may be fired during contract execution. If omitted, this property defaults
+to an empty array.
 
 ## Backwards Compatibility
 
