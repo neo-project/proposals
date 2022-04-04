@@ -30,6 +30,7 @@ nef_file
 {
   4-byte  magic;
   64-byte compiler;
+  var-byte source;
   2-byte reserve;
   method_token{
     20-byte hash;
@@ -53,6 +54,10 @@ The <code>magic</code> item supplies the magic number identifying the <code>NEF3
 ====compiler====
 
 The <code>compiler</code> is a UTF-8 encoded <code>string</code> representing the compiler used to create the data in the <code>script</code> item. It should indicate the name and the version of the compiler, which must be padded to make it up to the required length if shorter than 64 bytes.
+
+====source====
+
+The field <code>source</code> is related with the location of the source code.
 
 ====reserve====
 
