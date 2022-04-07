@@ -31,7 +31,7 @@ nef_file
   4-byte  magic;
   64-byte compiler;
   var-byte source;
-  2-byte reserve;
+  1-byte reserve;
   method_token{
     20-byte hash;
     var-byte method;
