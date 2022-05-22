@@ -209,3 +209,7 @@ release of the N3 Debugger.
 
 Details regarding older versions of the debug info format is available in the 
 [https://github.com/ngdenterprise/design-notes/blob/master/NDX-DN11%20-%20NEO%20Debug%20Info%20Specification.md original Design Note].
+
+== Implementation ==
+
+NCCS: https://github.com/neo-project/neo-devpack-dotnet/blob/e9b00b7284819699a522c2d94ec22ef1d5e5be8a/src/Neo.Compiler.CSharp/CompilationContext.cs#L330-L362
