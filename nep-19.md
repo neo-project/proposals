@@ -36,7 +36,7 @@ compiled contract binary and contract manifest. Emitting debug information is op
 Smart Contract Debugger will be limited to disassembly level debugging without it.
 
 Debug info is stored in JSON format, described informally below and specified via the
-[neo-debug-info.schema.json](./nep-debuginfo/neo-debug-info.schema.json) file.
+[neo-debug-info.schema.json](./nep-19/neo-debug-info.schema.json) file.
 The debug info is stored in a file with the same base name as the contract binary with the extension
 `.debug.json`. The debug info can be optionally compressed using standard Zip compression. When compressed,
 the debug info archive must have single `.debug.json` file and the archive itself must have an `.nefdbgnfo`
@@ -44,7 +44,7 @@ extension.
 
 > Note, the format is defined in this specification using TypeScript for readability. There is no requirement
   that this format be implemented in TypeScript. The full specification of this format is specified in
-  [neo-debug-info.schema.json](./nep-debuginfo/neo-debug-info.schema.json).
+  [neo-debug-info.schema.json](./nep-19/neo-debug-info.schema.json).
 
 The debug info has the following structure. Note, for space optimization, several string properties contain
 multiple pieces of information encoded as a string. Those encodings are indicated in comments in the code below.
