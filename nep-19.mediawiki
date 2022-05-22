@@ -1,9 +1,9 @@
 <pre>
   NEP: 19
-  Title: Neo N3 Contract Debug Info Specification
+  Title: Debug Info Specification
   Author: Harry Pierson (harrypierson@hotmail.com)
   Type: Standard
-  Status: Accepted
+  Status: Final
   Created: 2019-09-02
 </pre>
 
