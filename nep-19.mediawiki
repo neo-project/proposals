@@ -119,7 +119,7 @@ index has a single comma (i.e. "varName,varType") while a Variable with index ha
 
 MemberName types are used to store the name and optional namespace of a type member such as a method or event.
 MemberName namespace is optional, but the comma separator is not. For encoding members with no namespace, the
-MemberName string MUST start with a comma (i.e. `',SomeName'`).
+MemberName string MUST start with a comma (i.e. ",SomeName").
 
 === Method ===
 
@@ -140,11 +140,11 @@ properties will default to having an empty array of the collection in question.
 A sequence point contains six integers encoded into a single string
 
 * address: This is an integer representing the location in the contract script of the sequence point.
-* document-index: This is an index into the `documents` array indicating the source code file containing the sequence point. `documents` array is described below.
+* document-index: This is an index into the documents array indicating the source code file containing the sequence point. documents array is described below.
 * start-line: This is the line in the source code file that is associated with the sequence point
 * start-column: This is the column of the line specified above in the source code file associated with the sequence point. Note, this value can be zero for languages that don't support mapping sequence points to segments within a line
-* end-line: for languages that support multi-line code expressions, this is the last line of the source code associated with the sequence point. For single-line expressions, this will be the same as `start-line`
-* end-column: for languages that support multi-line code expressions, this is column within `end-line` that marks the end of the sequence point code expression. Like `start-column`, it can be zero. Sequence points that have the same start/end line and zero for both start/end column will render the sequence point as the full line specified.
+* end-line: for languages that support multi-line code expressions, this is the last line of the source code associated with the sequence point. For single-line expressions, this will be the same as start-line
+* end-column: for languages that support multi-line code expressions, this is column within end-line that marks the end of the sequence point code expression. Like start-column, it can be zero. Sequence points that have the same start/end line and zero for both start/end column will render the sequence point as the full line specified.
 
 The six integers of a single sequence point are string encoded using this pattern:
 
@@ -187,7 +187,7 @@ If omitted, this property defaults to an empty array.
 ==== methods ====
 
 This property stores an array of Method types as described above. Each Method object represents a method in the
-contract. Both private and public methods from the contract should be represented in the `methods` array.
+contract. Both private and public methods from the contract should be represented in the methods array.
 If omitted, this property defaults to an empty array.
 
 ==== events ====
@@ -203,8 +203,8 @@ format for debug info. That format was incompatible with the format described in
 but never shipped a production release. Production releases of the Neo Legacy debugger use a
 slightly different version of the format described in this document.
 
-The Neo N3 Debugger initially shipped during preview without the DebugInformation `static-variables`
-property or the `slotIndex` Variable value. These were added as optional fields before production
+The Neo N3 Debugger initially shipped during preview without the DebugInformation static-variables
+property or the slotIndex Variable value. These were added as optional fields before production
 release of the N3 Debugger. 
 
 Details regarding older versions of the debug info format is available in the 
