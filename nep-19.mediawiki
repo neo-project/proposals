@@ -48,14 +48,13 @@ The full specification of this format is specified in "neo-debug-info.schema.jso
 The debug info has the following structure. Note, for space optimization, several string properties contain
 multiple pieces of information encoded as a string. Those encodings are indicated in comments in the code below.
 
-<syntaxhighlight lang="typescript">
-type TypeName = string; // format: ContractParamterType enum value
+  type TypeName = string; // format: ContractParamterType enum value
 
-type MemberName = string // format: "{namespace},{display-name}
+  type MemberName = string // format: "{namespace},{display-name}
 
-type Variable = string; // format: "{name},{TypeName}(,{slotIndex})?
+  type Variable = string; // format: "{name},{TypeName}(,{slotIndex})?
 
-interface Method {
+  interface Method {
     id: string;
     name: MemberName; 
     range: string; // format: "{start-address}-{end-address}
@@ -63,22 +62,21 @@ interface Method {
     return?: TypeName;
     variables?: Variable[]; 
     "sequence-points"?: string[]; // format: "{address}[{document-index}]{start-line}:{start-column}-{end-line}:{end-column}"
-}
+  }
 
-interface Event {
+  interface Event {
     id: string;
     name: MemberName; 
     params?: Variable[]; 
-}
+  }
 
-interface DebugInformation {
+  interface DebugInformation {
     hash: string; // hex-encoded UInt160
     documents?: string[]; // file paths
     events?: Event[];
     methods?: Method[];
     "static-variables"?: Variable[]; 
-}
-</syntaxhighlight>
+  }
 
 === TypeName ===
 
@@ -150,9 +148,7 @@ A sequence point contains six integers encoded into a single string
 
 The six integers of a single sequence point are string encoded using this pattern:
 
-<syntaxhighlight>
-{address}[{document-index}]{start-line}:{start-column}-{end-line}:{end-column}
-</syntaxhighlight>
+  {address}[{document-index}]{start-line}:{start-column}-{end-line}:{end-column}
 
 === Event ===
 
