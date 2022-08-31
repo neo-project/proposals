@@ -53,7 +53,7 @@
 |                                                              |      |                                                              |
 |                                                              |      | The parameter <code>data</code> can be any type of supported parameters for additional message purpose. |
 |                                                              |      |                                                              |
-|                                                              |      | <code>update</code> returns if it's the initial deployment of this contract. The function SHOULD check whether <code>update</code> returns true. If not, continue execution. If true, return. |
+|                                                              |      | <code>update</code> returns if it's the initial deployment of this contract. |
 |                                                              |      |                                                              |
 |                                                              |      | **====\**update\**====**                                     |
 |                                                              |      |                                                              |
