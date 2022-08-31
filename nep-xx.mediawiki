@@ -49,7 +49,7 @@
 |                                                              |      | }                                                            |
 |                                                              |      | </pre>                                                       |
 |                                                              |      |                                                              |
-|                                                              |      | This is an optional function which will be automatically executed when contract first deployed. |
+|                                                              |      | This is an optional function which will be automatically executed when a contract is first deployed or updated. |
 |                                                              |      |                                                              |
 |                                                              |      | The parameter <code>data</code> can be any type of supported parameters for additional message purpose. |
 |                                                              |      |                                                              |
