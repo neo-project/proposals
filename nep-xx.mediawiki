@@ -79,7 +79,7 @@
 |                                                              |      | }                                                            |
 |                                                              |      | </pre>                                                       |
 |                                                              |      |                                                              |
-|                                                              |      | Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code>. |
+|                                                              |      | Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code> or <code>both</code>. |
 |                                                              |      |                                                              |
 |                                                              |      | The parameter <code>data</code> can be any type of supported parameters for additional message purpose. |
 |                                                              |      |                                                              |
