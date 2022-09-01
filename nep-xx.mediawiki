@@ -1,103 +1,101 @@
-|                                                              |      |                                                              |
-| ------------------------------------------------------------ | ---- | ------------------------------------------------------------ |
-| <pre>                                                        |      |                                                              |
-|                                                              |      | NEP:                                                         |
-|                                                              |      | Title: Contract Basic Methods Guideline                      |
-|                                                              |      | Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org> |
-|                                                              |      | Type: Informational                                          |
-|                                                              |      | Status: Draft                                                |
-|                                                              |      | Created: 2021-04-19                                          |
-|                                                              |      | Replaces: 0                                                  |
-|                                                              |      | </pre>                                                       |
-|                                                              |      |                                                              |
-|                                                              |      |                                                              |
-|                                                              |      |                                                              |
-|                                                              |      |                                                              |
-|                                                              |      |                                                              |
-|                                                              |      |                                                              |
-|                                                              |      | **==\**Abstract\**==**                                       |
-|                                                              |      |                                                              |
-|                                                              |      | This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update and destroy. |
-|                                                              |      |                                                              |
-|                                                              |      | **==\**Motivation\**==**                                     |
-|                                                              |      |                                                              |
-|                                                              |      | As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without guideline for <code>_deploy</code>, <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity. |
-|                                                              |      |                                                              |
-|                                                              |      | **==\**Specification\**==**                                  |
-|                                                              |      |                                                              |
-|                                                              |      | In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters. |
-|                                                              |      |                                                              |
-|                                                              |      | **===\**Methods\**===**                                      |
-|                                                              |      |                                                              |
-|                                                              |      | **====\**_deploy\**====**                                    |
-|                                                              |      |                                                              |
-|                                                              |      | <pre>                                                        |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "_deploy",                                           |
-|                                                              |      | "safe": false,                                               |
-|                                                              |      | "parameters": [                                              |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "data",                                              |
-|                                                              |      | "type": "Any"                                                |
-|                                                              |      | },                                                           |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "update",                                            |
-|                                                              |      | "type": "Boolean"                                            |
-|                                                              |      | }                                                            |
-|                                                              |      | ],                                                           |
-|                                                              |      | "returntype": "Void"                                         |
-|                                                              |      | }                                                            |
-|                                                              |      | </pre>                                                       |
-|                                                              |      |                                                              |
-|                                                              |      | This is an optional function which will be automatically executed when a contract is first deployed or updated. |
-|                                                              |      |                                                              |
-|                                                              |      | The parameter <code>data</code> can be any type of supported parameters for additional message purpose. |
-|                                                              |      |                                                              |
-|                                                              |      | <code>update</code> returns if it's the initial deployment of this contract. |
-|                                                              |      |                                                              |
-|                                                              |      | **====\**update\**====**                                     |
-|                                                              |      |                                                              |
-|                                                              |      | <pre>                                                        |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "update",                                            |
-|                                                              |      | "safe": false,                                               |
-|                                                              |      | "parameters": [                                              |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "nefFile",                                           |
-|                                                              |      | "type": "ByteArray"                                          |
-|                                                              |      | },                                                           |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "manifest",                                          |
-|                                                              |      | "type": "String"                                             |
-|                                                              |      | },                                                           |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "data",                                              |
-|                                                              |      | "type": "Any"                                                |
-|                                                              |      | }                                                            |
-|                                                              |      | ],                                                           |
-|                                                              |      | "returntype": "Void"                                         |
-|                                                              |      | }                                                            |
-|                                                              |      | </pre>                                                       |
-|                                                              |      |                                                              |
-|                                                              |      | Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code> or <code>both</code>. |
-|                                                              |      |                                                              |
-|                                                              |      | The parameter <code>data</code> can be any type of supported parameters for additional message purpose. |
-|                                                              |      |                                                              |
-|                                                              |      | The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. |
-|                                                              |      |                                                              |
-|                                                              |      | **====\**destroy\**====**                                    |
-|                                                              |      |                                                              |
-|                                                              |      | <pre>                                                        |
-|                                                              |      | {                                                            |
-|                                                              |      | "name": "destroy",                                           |
-|                                                              |      | "safe": false,                                               |
-|                                                              |      | "parameters": [],                                            |
-|                                                              |      | "returntype": "Void"                                         |
-|                                                              |      | }                                                            |
-|                                                              |      | </pre>                                                       |
-|                                                              |      | This function can delete all the storage of this contract.   |
-|                                                              |      |                                                              |
-|                                                              |      | The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. |
-|                                                              |      |                                                              |
-|                                                              |      | If any token is in this contract asset, they MUST be transferred to another address before <code>destroy</code>. |
-|                                                              |      |                                                              |
+<pre>
+  NEP:
+  Title: Contract Basic Methods Guideline
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>
+  Type: Informational
+  Status: Draft
+  Created: 2021-04-19
+  Replaces: 0
+</pre>
+
+
+
+
+
+
+==Abstract==
+
+This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update and destroy.
+
+==Motivation==
+
+As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without guideline for <code>_deploy</code>, <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
+
+==Specification==
+
+In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+
+===Methods===
+
+====_deploy====
+
+<pre>
+{
+  "name": "_deploy",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "data",
+      "type": "Any"
+    },
+    {
+      "name": "update",
+      "type": "Boolean"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+This is an optional function which will be automatically executed when a contract is first deployed or updated.
+
+The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
+
+<code>update</code> returns if it's the initial deployment of this contract.
+
+====update====
+
+<pre>
+{
+  "name": "update",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "nefFile",
+      "type": "ByteArray"
+    },
+    {
+      "name": "manifest",
+      "type": "String"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code> or <code>both</code>.
+
+The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
+
+The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+
+====destroy====
+
+<pre>
+{
+  "name": "destroy",
+  "safe": false,
+  "parameters": [],
+  "returntype": "Void"
+}
+</pre>
+This function can delete all the storage of this contract.
+
+The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+
+If any token is in this contract asset, they MUST be transferred to another address before <code>destroy</code>.
+
