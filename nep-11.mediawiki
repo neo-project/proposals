@@ -18,6 +18,7 @@ A non-fungible token (NFT) can be thought of like a property deed - each one is 
 Other information, such as the owner of the property, can be changed.
 Also, we provide built-in optional divisibility within each non-fungible asset.
 This allows for high value objects to be tokenized more effectively.
+We also support royalty information which is for royalty payments across NFT marketplaces.
 
 ==Specification==
 
@@ -290,6 +291,42 @@ If the <code>owner</code> is an unused address, or it's not the owner of the spe
 
 ===Optional methods===
 
+====royaltyInfo====
+
+<pre>
+{
+  "name": "royaltyInfo",
+  "safe": true,
+  "parameters": [],
+  "returntype": "Array"
+}
+</pre>
+
+Returns a JSON Array which includes <code>receiver</code> and <code>royaltyAmount</code>.
+
+MUST follow the JSON Array below:
+<pre>
+[
+        {
+            "name": "royaltyRecipient",
+            "type": "Hash160"
+        },
+        {
+            "name": "royaltyAmount",
+            "type": "Integer"
+        }
+]
+</pre>
+
+<code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
+<code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 10000 (x/10000). For example: "75000" for 7.5%.
+
+This method is not for initial sale or mint, it's only for secondary martketplaces.
+
+Marketplaces that support this method MAY implement any method of calculating or transferring royalties to the royalty recipient.
+
+Marketplaces that support this method MUST emit the event, <code>ReceivedRoyalties</code>, after sending a payment.
+
 ====tokens====
 
 <pre>
@@ -437,6 +474,37 @@ MUST trigger when tokens are transferred, including zero value transfers.
 A token contract which creates new tokens MUST trigger a <code>Transfer</code> event with the <code>from</code> address set to <code>null</code> when tokens are created.
 
 A token contract which burns tokens MUST trigger a <code>Transfer</code> event with the <code>to</code> address set to <code>null</code> when tokens are burned.
+
+===Optional Events===
+
+====ReceivedRoyalties====
+
+<pre>
+{
+  "name": "ReceivedRoyalties",
+  "parameters": [
+    {
+      "name": "royaltyRecipient",
+      "type": "Hash160"
+    },
+    {
+      "name": "buyer",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    }
+  ]
+}
+</pre>
+
+<code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
+MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
 
 ==Implementation==
 
