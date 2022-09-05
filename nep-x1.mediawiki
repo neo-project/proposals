@@ -1,0 +1,89 @@
+<pre>
+  NEP: Undefined
+  Title: NFT Royalty Standard
+  Author: Owen Zhang<zhangzhihong@ngd.neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2022-09-05
+</pre>
+
+==Abstract==
+
+This NEP defines a global standard to get royalty payment information for non-fungible tokens (NFTs) to enable support for royalty payments across all NFT marketplaces in the NEO Smart Economy.
+
+==Motivation==
+
+Need support royalty information which is not only for royalty payments across NFT marketplaces, but also good to protect creative copyright. Currently, no standard for creators to declare loyalty to all marketplaces in their NFTs. They have to discuss the loyalty with different marketplaces, otherwise these marketplaces which haven't touched with the creators can't get royalty details and have to define the loyalty in their marketplace contract by themselves. This standard is compatible with [https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki NEP-11]. 
+
+==Specification==
+
+===Common methods===
+
+====royaltyInfo====
+
+<pre>
+{
+  "name": "royaltyInfo",
+  "safe": true,
+  "parameters": [],
+  "returntype": "Array"
+}
+</pre>
+
+Returns a JSON Array which includes <code>receiver</code> and <code>royaltyAmount</code>.
+
+MUST follow the JSON Array below:
+<pre>
+[		
+        {
+            "name": "royaltyRecipient",
+            "type": "Hash160"
+        },
+        {
+            "name": "royaltyAmount",
+            "type": "Integer"
+        }
+]
+</pre>
+
+<code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
+<code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 10000 (x/10000). For example: "75000" for 7.5%.
+
+This method is not for initial sale or mint, it's only for secondary martketplaces.
+
+Marketplaces that support this method MAY implement any method of calculating or transferring royalties to the royalty recipient.
+
+Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyalties</code>, after sending a payment.
+
+===Events===
+
+====ReceivedRoyalties====
+
+<pre>
+{
+  "name": "ReceivedRoyalties",
+  "parameters": [
+    {
+      "name": "royaltyRecipient",
+      "type": "Hash160"
+    },
+    {
+      "name": "buyer",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    }
+  ]
+}
+</pre>
+
+<code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
+MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
+
+
