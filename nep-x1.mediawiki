@@ -19,7 +19,26 @@ Need support royalty information which is not only for royalty payments across N
 
 ===Common methods===
 
+====isGlobalRoyalty====
+
+<pre>
+{
+  "name": "isGlobalRoyalty",
+  "safe": true,
+  "parameters": [],
+  "returntype": "Boolean"
+}
+</pre>
+
+This founction shows if this contract has <code>global royalty</code> or <code>specific royalty</code> to different tokenId. 
+
+If return <code>true</code>, then it has global royalty.  All tokenId MUST implement the same royalty amount.
+
+If return <code>false</code>, then it has specific royalty. MUST store specific royalty amount for each tokenId.
+
 ====royaltyInfo====
+
+If <code>globalRoyalty</code> return true, this function should be:
 
 <pre>
 {
@@ -30,24 +49,39 @@ Need support royalty information which is not only for royalty payments across N
 }
 </pre>
 
-Returns a JSON Array which includes <code>receiver</code> and <code>royaltyAmount</code>.
+If <code>globalRoyalty</code> return false, this function should be:
+
+<pre>
+{
+  "name": "royaltyInfo",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Array"
+}
+</pre>
+
+Returns a JSON Array which includes <code>royaltyRecipient</code> and <code>royaltyAmount</code>.
 
 MUST follow the JSON Array below:
 <pre>
-[		
-        {
-            "name": "royaltyRecipient",
-            "type": "Hash160"
-        },
-        {
-            "name": "royaltyAmount",
-            "type": "Integer"
-        }
+[
+    {
+        "name":"royaltyRecipient",
+        "type":"Hash160"
+    },
+    {
+        "name":"royaltyAmount",
+        "type":"Integer"
+    }
 ]
 </pre>
-
 <code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
-<code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 10000 (x/10000). For example: "75000" for 7.5%.
+<code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 100 (x/100). For example: "1000" for 10%.
 
 This method is not for initial sale or mint, it's only for secondary martketplaces.
 
@@ -57,12 +91,16 @@ Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyal
 
 ===Events===
 
-====ReceivedRoyalties====
+====RoyaltiesTransferred====
 
 <pre>
 {
   "name": "ReceivedRoyalties",
   "parameters": [
+    {
+      "name": "contractHash",
+      "type": "Hash160"
+    },
     {
       "name": "royaltyRecipient",
       "type": "Hash160"
