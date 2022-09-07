@@ -32,9 +32,9 @@ Need support royalty information which is not only for royalty payments across N
 
 This founction shows if this contract has <code>global royalty</code> or <code>specific royalty</code> to different tokenId. 
 
-If return <code>true</code>, then it has global royalty.  All tokenId MUST implement the same royalty amount.
+If return <code>true</code>, then it has global royalty.  All tokenId MUST implement the same static royalty amount.
 
-If return <code>false</code>, then it has specific royalty. MUST store specific royalty amount for each tokenId.
+If return <code>false</code>, then it has specific royalty. MUST store specific royalty amount for each tokenId, static or dynamic, either is OK .
 
 ====royaltyInfo====
 
@@ -54,11 +54,15 @@ If <code>isGlobalRoyalty</code> return false, this function should be:
 <pre>
 {
   "name": "royaltyInfo",
-  "safe": true,
+  "safe": false,
   "parameters": [
     {
       "name": "tokenId",
       "type": "ByteString"
+    },
+    {
+      "name": "salePrice",
+      "type": "Integer"
     }
   ],
   "returntype": "Array"
@@ -80,12 +84,18 @@ MUST follow the JSON Array below:
     }
 ]
 </pre>
+
 <code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
+
 <code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 100 (x/100). For example: "1000" for 10%.
 
 This method is not for initial sale or mint, it's only for secondary martketplaces.
 
 Marketplaces that support this method MAY implement any method of calculating or transferring royalties to the royalty recipient.
+
+Marketplaces MUST pay the royalty in the same unit of exchange as that of the <code>salePrice</code> passed to royaltyInfo(). For example, if the sale price is in NEO, then the royalty payment must also be paid in NEO, and if the sale price is in GAS, then the royalty payment must also be paid in GAS.
+
+The royaltyInfo() function MUST NOT ignore the <code>salePrice</code>, <code>royaltyAmount</code> MAY be dynamic due to <code>salePrice</code> and time. 
 
 Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyalties</code>, after sending a payment.
 
