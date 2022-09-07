@@ -38,7 +38,7 @@ If return <code>false</code>, then it has specific royalty. MUST store specific 
 
 ====royaltyInfo====
 
-If <code>globalRoyalty</code> return true, this function should be:
+If <code>isGlobalRoyalty</code> return true, this function should be:
 
 <pre>
 {
@@ -49,7 +49,7 @@ If <code>globalRoyalty</code> return true, this function should be:
 }
 </pre>
 
-If <code>globalRoyalty</code> return false, this function should be:
+If <code>isGlobalRoyalty</code> return false, this function should be:
 
 <pre>
 {
