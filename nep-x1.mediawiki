@@ -89,7 +89,7 @@ MUST follow the JSON Array below:
 
 <code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 100 (x/100). For example: "1000" for 10%.
 
-This method is not for initial sale or mint, it's only for secondary martketplaces.
+This function is not for initial sale or mint, it's only for secondary marketplaces.
 
 Marketplaces that support this method MAY implement any method of calculating or transferring royalties to the royalty recipient.
 
@@ -105,7 +105,7 @@ Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyal
 
 <pre>
 {
-  "name": "ReceivedRoyalties",
+  "name": "RoyaltiesTransferred",
   "parameters": [
     {
       "name": "contractHash",
