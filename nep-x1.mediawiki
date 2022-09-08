@@ -30,7 +30,7 @@ Need support royalty information which is not only for royalty payments across N
 }
 </pre>
 
-This founction shows if this contract has <code>global royalty</code> or <code>specific royalty</code> to different tokenId. 
+This function shows if this contract has <code>global royalty</code> or <code>specific royalty</code> to different tokenId. 
 
 If return <code>true</code>, then it has global royalty.  All tokenId MUST implement the same static royalty amount.
 
