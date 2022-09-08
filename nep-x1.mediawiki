@@ -54,7 +54,7 @@ If <code>isGlobalRoyalty</code> return false, this function should be:
 <pre>
 {
   "name": "royaltyInfo",
-  "safe": false,
+  "safe": true,
   "parameters": [
     {
       "name": "tokenId",
