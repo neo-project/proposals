@@ -19,37 +19,7 @@ Need support royalty information which is not only for royalty payments across N
 
 ===Common methods===
 
-====isGlobalRoyalty====
-
-<pre>
-{
-  "name": "isGlobalRoyalty",
-  "safe": true,
-  "parameters": [],
-  "returntype": "Boolean"
-}
-</pre>
-
-This function shows if this contract has <code>global royalty</code> or <code>specific royalty</code> to different tokenId. 
-
-If return <code>true</code>, then it has global royalty.  All tokenId MUST implement the same static royalty amount.
-
-If return <code>false</code>, then it has specific royalty. MUST store specific royalty amount for each tokenId, static or dynamic, either is OK .
-
 ====royaltyInfo====
-
-If <code>isGlobalRoyalty</code> return true, this function should be:
-
-<pre>
-{
-  "name": "royaltyInfo",
-  "safe": true,
-  "parameters": [],
-  "returntype": "Array"
-}
-</pre>
-
-If <code>isGlobalRoyalty</code> return false, this function should be:
 
 <pre>
 {
@@ -69,9 +39,8 @@ If <code>isGlobalRoyalty</code> return false, this function should be:
 }
 </pre>
 
-Returns a JSON Array which includes <code>royaltyRecipient</code> and <code>royaltyAmount</code>.
+Returns a NeoVM Array stack item with two elements inside as below:
 
-MUST follow the JSON Array below:
 <pre>
 [
     {
