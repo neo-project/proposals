@@ -39,7 +39,7 @@ Need support royalty information which is not only for royalty payments across N
 }
 </pre>
 
-Returns a NeoVM Array stack item with two elements inside as below:
+Returns a NeoVM Array stack item with two elements inside as this:
 
 <pre>
 [
