@@ -19,7 +19,7 @@ This proposal outlines a basic method guideline for the NEO blockchain that will
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without guideline for <code>_deploy</code>, <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
+As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without guideline for <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
 
 ==Specification==
 
@@ -47,11 +47,11 @@ In the method definitions below, we provide both the definitions of the function
 }
 </pre>
 
-This is an optional function which will be automatically executed when a contract is first deployed or updated.
+This is an optional function which will be automatically executed by ContractManagement contract when a contract is first deployed or updated.
 
-The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
+The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose. It's the same <code>data</code> that is accepted by Deploy() and Update() in ContractManagement contract.
 
-<code>update</code> returns if it's the initial deployment of this contract.
+<code>update</code> is true when contract is updated via <code>update()<code> and it's false on initial deployment via <code>_deploy()<code>.
 
 ====update====
 
@@ -77,9 +77,9 @@ The parameter <code>data</code> can be any type of supported parameters for addi
 }
 </pre>
 
-Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code> or <code>both</code>.
+Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code> or <code>both</code>. It will be passed to <code>_deploy</code>.
 
-The parameter <code>data</code> can be any type of supported parameters for additional message purpose.
+The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose.
 
 The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
 
@@ -96,6 +96,7 @@ The function SHOULD check whether the <code>signer</code> address equals the <co
 This function can delete all the storage of this contract.
 
 The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+This <code>owner</code> means the <code>20-byte address</code> which has authority to update, deploy this contract or do any customized operation.
 
 If any token is in this contract asset, they MUST be transferred to another address before <code>destroy</code>.
 
