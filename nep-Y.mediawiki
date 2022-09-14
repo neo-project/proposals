@@ -78,8 +78,9 @@ Experimental codes can be used by node implementations if they're documented,
 however clients can't rely on the meaning of these codes if the version of the
 node changes or if they connect to a different node implementation. New
 proposals can set new ranges or specific codes as long as they don't conflict
-with this specification. All the other codes are reserved for future use and
-MUST NOT be used by compliant implementations.
+with this specification. All the remaining error codes (not listed in this
+specification or JSON-RPC 2.0)  are reserved for future use and MUST NOT be
+used by compliant implementations.
 
 ====Missing items====
 
