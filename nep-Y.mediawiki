@@ -94,7 +94,7 @@ MUST NOT be used by compliant implementations.
 |-
 | -103 || Unknown transaction|| Call that accepts as a parameter or searches for a transaction as a part of its job can't find it.
 |-
-| -104 || Unknown storage item|| Call that looks for an item in the storage can't find it.
+| -104 || Unknown storage item|| Call that looks for an item in the storage as part of its job can't find it.
 |-
 | -105 || Unknown script container|| Call that accepts as a parameter or searches for a script container (a block or transaction) as a part of its job can't find it (this error generalizes -101 and -103 in cases where it's needed).
 |-
