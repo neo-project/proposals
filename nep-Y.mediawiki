@@ -55,7 +55,7 @@ in the <code>data</code> response field.
 
 ====Groups====
 
-Error codes are grouped. Each call can use any appropriate groups and codes as
+Error codes are grouped. Each call can use any appropriate group and code as
 long as they fit the purpose.
 
 {|
