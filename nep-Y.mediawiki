@@ -53,6 +53,9 @@ used only when call parameters are syntactically incorrect and servers
 SHOULD give additional data like offending parameter number and why it's wrong
 in the <code>data</code> response field.
 
+If several codes can be used in some situations implementations SHOULD pick
+the most specific one.
+
 ====Groups====
 
 Error codes are grouped. Each call can use any appropriate group and code as
