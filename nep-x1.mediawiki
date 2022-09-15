@@ -39,20 +39,61 @@ Need support royalty information which is not only for royalty payments across N
 }
 </pre>
 
-Returns a NeoVM Array stack item with two elements inside as this:
+Returns a NeoVM Array stack item with single or multi array, each array still has two elements, for example:
+
+Single royaltyRecipient
 
 <pre>
 [
-    {
-        "name":"royaltyRecipient",
-        "type":"Hash160"
-    },
-    {
-        "name":"royaltyAmount",
-        "type":"Integer"
-    }
+    [
+        {
+            "name":"royaltyRecipient",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount",
+            "type":"Integer"
+        }
+    ]
 ]
-</pre>
+<pre>
+
+Multi royaltyRecipient
+
+<pre>
+[
+    [
+        {
+            "name":"royaltyRecipient1",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount1",
+            "type":"Integer"
+        }
+    ],
+    [
+        {
+            "name":"royaltyRecipient2",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount2",
+            "type":"Integer"
+        }
+    ],
+    [
+        {
+            "name":"royaltyRecipient3",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount3",
+            "type":"Integer"
+        }
+    ]
+]
+<pre>
 
 <code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
 
@@ -102,5 +143,4 @@ Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyal
 
 <code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
 MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
-
-
+Each <code>royaltyRecipient</code> has 1 events. That means if 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> event MUST be triggered.
