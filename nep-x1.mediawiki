@@ -1,7 +1,7 @@
 <pre>
   NEP: Undefined
   Title: NFT Royalty Standard
-  Author: Owen Zhang<zhangzhihong@ngd.neo.org>
+  Author: Owen Zhang<zhangzhihong@ngd.neo.org>, Vincent Geneste<vincentgeneste@gmail.com>
   Type: Standard
   Status: Draft
   Created: 2022-09-05
