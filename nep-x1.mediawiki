@@ -142,5 +142,7 @@ Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyal
 </pre>
 
 <code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
+
 MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
-Each <code>royaltyRecipient</code> has 1 events. That means if 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> event MUST be triggered.
+
+Each <code>royaltyRecipient</code> has 1 events. That means if 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> events MUST be triggered.
