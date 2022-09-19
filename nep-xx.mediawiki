@@ -51,7 +51,7 @@ This is an optional function which will be automatically executed by ContractMan
 
 The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose. It's the same <code>data</code> that is accepted by Deploy() and Update() in ContractManagement contract.
 
-<code>update</code> is true when contract is updated via <code>update()<code> and it's false on initial deployment via <code>_deploy()<code>.
+<code>update</code> is true when contract is updated via <code>update()</code> and it's false on initial deployment via <code>_deploy()</code>.
 
 ====update====
 
