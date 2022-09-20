@@ -21,6 +21,17 @@ In the method definitions below, we provide both the definitions of the function
 
 ===Methods===
 
+====_initialize====
+
+It's an internal function which will be compiled into Abi file if any function is using initialize statement. These functions which have initialize statement will be executed first when loading contract. The format should be [InitialValue(Value, ContractParameterType)], here's an example.
+
+<pre>
+[InitialValue("NdUL5oDPD159KeFpD5A9zw5xNF1xLX6nLT", ContractParameterType.Hash160)]
+private static readonly UInt160 owner = default;
+</pre>
+
+The <code>owner</code> here will be initialized as <code>"NdUL5oDPD159KeFpD5A9zw5xNF1xLX6nLT"</code> everytime when the contract be executed.
+
 ====_deploy====
 
 <pre>
