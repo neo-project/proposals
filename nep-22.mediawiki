@@ -1,17 +1,11 @@
 <pre>
-  NEP:
+  NEP: 22
   Title: Contract Basic Methods Guideline
   Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>
   Type: Informational
-  Status: Draft
+  Status: Accepted
   Created: 2021-04-19
-  Replaces: 0
 </pre>
-
-
-
-
-
 
 ==Abstract==
 
@@ -99,4 +93,3 @@ The function SHOULD check whether the <code>signer</code> address equals the <co
 This <code>owner</code> means the <code>20-byte address</code> which has authority to update, deploy this contract or do any customized operation.
 
 If any token is in this contract asset, they MUST be transferred to another address before <code>destroy</code>.
-
