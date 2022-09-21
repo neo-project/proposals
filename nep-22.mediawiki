@@ -58,6 +58,23 @@ The parameter <code>data</code> can be any type of supported parameters for cont
 
 <code>update</code> is true when contract is updated via <code>update()</code> and it's false on initial deployment via <code>_deploy()</code>.
 
+====verify====
+
+<pre>
+{
+  "name": "verify",
+  "safe": false,
+  "parameters": [],
+  "returntype": "bool"
+}
+</pre>
+
+If this contract address is included in the transaction signature, it MUST apply this. This method will be triggered as a VerificationTrigger to verify that the signature is correct.. Here's an example:
+
+<code>public static bool Verify() => Runtime.CheckWitness(Owner);</code>
+
+This method needs to be called when withdrawing token from the contract.
+
 ====update====
 
 <pre>
