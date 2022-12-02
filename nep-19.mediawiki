@@ -105,6 +105,7 @@ The Version 2 type model includes six concrete ContractTypes.
 * Struct: Represents a named, heterogenous collection of typed fields
 * Array: Represents a homogenous collection of typed objects
 * Map: Represents a typed mapping of key type to value type
+* Iterator: Represents a collection traversal type
 
 ==== Unspecified ContractType ====
 
@@ -184,7 +185,7 @@ Structs are serialized as the MemberName namespace and name, separated by a peri
 is serialized as '''#Neo.Block''' where a user defined type would be something like '''Some.Namespace.TheTypeName'''.
 
 <blockquote>
-Note, while serialized MemberNames separate namespace from name with a comma, serialized ContractTypes are
+Note,https://github.com/neo-project/neo-devpack-dotnet/pull/770ized MemberNames separate namespace from name with a comma, serialized ContractTypes are
 used in comma separated strings, so the comma has to be replaced with some other character. At this time,
 there is no forseen need to separate a struct name from its namespace at all. If there was such a need, using
 the segment of the name following the final period seems reasonable. However, if a need arises, some other
@@ -215,6 +216,27 @@ value type. Maps of Maps (i.e. '''#Map<#Integer:#Map<#String,#Address>>''') are 
 Maps are serialized as '''#Map<{key type}:{value type}>'''. Note, the colon character is used to separate type
 arguments since comma are used as a separator elsewhere. If the map type arguments are omitted (i.e. '''#Map<>'''),
 '''#Map<#ByteArray,#Unspecified>''' is used as the default.
+
+==== Iterator ContractType ====
+
+This contract type represents a type for traversing a homogenous collection of items. It is represented in Neo
+by the Iterator type. Neo iterators have two methods: '''Next''' which is used to traverse the container (returning
+a boolean to indicate if there are more elements in the collection) and '''Value''' whcih returns the current 
+value in the collection being iterated.
+
+An Iterator ContractType has a single type argument, specify the type contained within the array. If the types
+of the items in the collection being iterated may not be consistent, Unspecified can be specified as the type argument.
+
+Iterator ContractType is serialized as '''#Iterator<{collection item ContractType}>'''. If the iterator
+item type is omitted (i.e. '''#Iterator<>'''), Unspecified is used as the default. Iterators may contain
+any other ContractType, including other iterators (i.e. '''#Iterator<#Iterator<#String>>''' is allowed).
+
+Note, Neo Iterators are primarily used to traverse contract storage. Storage iterators can iterate over storage keys,
+storage values or key/value pairs. When traversing storage key/value pairs, the return type is a struct containing both
+the key and its assoicated value. There is no built in type to represent a key/value pair. If the developer specifies
+they are traversing the key/value pairs in contract storage, the associated compiler needs to emit the struct
+definition for the key/value pairs being traversed.
+
 
 === ContractParameterType Model (Version 1) ===
 
