@@ -12,17 +12,17 @@
 
 An Application Binary Interface (ABI) is the interface between two program modules, one of which is often a library and/or operating system and the other one is usually an application created by a regular programmer.
 
-This NEP describes the ABI standards for NEO smart contracts.
+This NEP describes the ABI standards for Neo smart contracts.
 
 ==Motivation==
 
-NEO smart contract system is designed to be mutually invocable between contracts. To achieve this, we need a mechanism for exposing the interface of smart contracts. With NeoContract ABI, developers can easily create programs to invoke smart contracts or write clients that automatically access contract functionalities.
+Neo smart contract system is designed to be mutually invocable between contracts. To achieve this, we need a mechanism for exposing the interface of smart contracts. With NeoContract ABI, developers can easily create programs to invoke smart contracts or write clients that automatically access contract functionalities.
 
 ==Rationale==
 
 We assume the Application Binary Interface (ABI) is strongly typed, known at compilation time and static. No introspection mechanism will be provided. We assert that all contracts will have the interface definitions of any contracts they call available at compile-time.
 
-This specification does not address contracts whose interface is dynamic or otherwise known only at run-time. Should these cases become important they can be adequately handled as facilities built within the NEO ecosystem.
+This specification does not address contracts whose interface is dynamic or otherwise known only at run-time. Should these cases become important they can be adequately handled as facilities built within the Neo ecosystem.
 
 ==Specification==
 
