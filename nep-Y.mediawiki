@@ -1,11 +1,11 @@
 <pre>
-  NEP: 14
+  NEP: <to be assigned>
   Title: NeoContract ABI
-  Author: Erik Zhang <erik@neo.org>
+  Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
   Type: Standard
-  Status: Final
-  Created: 2020-03-25
-  Replaces: 3
+  Status: Draft
+  Created: 2022-12-08
+  Replaces: 14
 </pre>
 
 ==Abstract==
