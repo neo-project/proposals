@@ -18,6 +18,13 @@ This NEP describes the ABI standards for Neo smart contracts.
 
 Neo smart contract system is designed to be mutually invocable between contracts. To achieve this, we need a mechanism for exposing the interface of smart contracts. With NeoContract ABI, developers can easily create programs to invoke smart contracts or write clients that automatically access contract functionalities.
 
+This NEP is a compatible extension of the previous one, NEP-14. Some complex
+data types required more data for ABI to be useful for automatic SDK/wrapper
+code generation. For example, parameter of "Array" type could be a structure
+with three fields of "ByteArray", "Hash160" and "Integer" types or an array of
+"Integer" values. These cases couldn't be differentiated both for method
+parameters and return values with NEP-14, while this proposal fixes it.
+
 ==Rationale==
 
 We assume the Application Binary Interface (ABI) is strongly typed, known at compilation time and static. No introspection mechanism will be provided. We assert that all contracts will have the interface definitions of any contracts they call available at compile-time.
@@ -33,13 +40,16 @@ The NeoContract ABI is defined by JSON format, which has the following basic str
 <pre>
 {
   "methods": [],
-  "events": []
+  "events": [],
+  "namedtypes": {}
 }
 </pre>
 
 <code>methods</code> is an array of Method objects which describe the details of each method in the contract.
 
 <code>events</code> is an array of Event objects which describe the details of each event in the contract.
+
+<code>namedtypes</code> is an object with each member having a name (a string identifier of this type) and a value of ExtendedType object.
 
 ===Method===
 
@@ -51,7 +61,8 @@ Method object has the following structure:
   "offset": 0,
   "safe": false,
   "parameters": [],
-  "returntype": "Boolean"
+  "returntype": "Boolean",
+  "extendedreturntype": {}
 }
 </pre>
 
@@ -64,6 +75,8 @@ Method object has the following structure:
 <code>parameters</code> is an array of Parameter objects which describe the details of each parameter in the method.
 
 <code>returntype</code> indicates the return type of the method. It can have any value of the ParameterType enumeration defined below.
+
+<code>extendedreturntype</code> is an ExtendedType object used to provide additional type data if needed, this field can be omitted.
 
 ===Event===
 
@@ -94,6 +107,9 @@ Parameter object has the following structure:
 <code>name</code> is the name of the parameter, which can be any valid identifier.
 
 <code>type</code> indicates the type of the parameter. It can have any value of the ParameterType enumeration defined below, except for <code>Void</code>.
+
+Parameter may also have all of the ExtendedType fields embedded in the same
+object if that allows to provide additional type data.
 
 ===ParameterType===
 
@@ -128,17 +144,185 @@ ParameterType enum has the following values:
 | A string which is encoded in UTF-8.
 |-
 | Array
-| An array of objects. The type of elements can be any value of ParameterType.
+| An array of objects. The type of elements can be any value of ParameterType, unless some more specific type is specified with ExtendedType data.
 |-
 | Map
-| A map of objects. The type of elements inside the key/value collection can be any value of ParameterType.
+| A map of objects. The type of elements inside the key/value collection can be any value of ParameterType, unless some more specific types are specified with ExtendedType data.
 |-
 | InteropInterface
-| An interface which is returned by interop services.
+| An interface which is returned by interop services. More specific type can be specified with ExtendedType data.
 |-
 | Any
 | Any means that the method will return a value of uncertain type.
 |-
 | Void
-| Void means that the method has no return value. This value cannot be the type of a parameter.
+| Void means that the method has no return value. This value cannot be the type of a method parameter.
 |}
+
+===ExtendedType===
+
+Extended type data is a set of fields that can be used as an object for named
+types and <code>extendedreturntype</code> or embedded into Parameter object
+(the object below is not a valid ExtendedType specification, rather it
+represents all possible fields).
+
+<pre>
+{
+  "type": "Integer",
+  "namedtype": "name",
+  "interface": "IIterator",
+  "key": "Integer",
+  "value": {},
+  "fields": []
+}
+</pre>
+
+<code>type</code> indicates the base type of the return value/parameter. It can have any value of the ParameterType enumeration defined above.
+
+<code>namedtype</code> is used to refer to one of the types defined in the
+<code>namedtypes</code> object of Contract, so <code>namedtypes</code> MUST
+contain a field named <code>name</code> . This field is only used for
+structures (ordered set of named values of diffent types), if used other
+fields MUST NOT be set, except for the <code>type</code> which MUST be an
+<code>Array</code>. Value string MUST start with a letter and can contain
+alphanumeric characters and dots. It MUST NOT be longer than 64 characters.
+
+<code>interface</code> is only used in conjuction with the
+<code>InteropInterface</code> <code>type</code> and MUST NOT be used for other
+types, when used it specifies which interop interface is used. The only valid
+defined value for it is "IIterator" which means an iterator object. When used
+it MUST be accompanied with the <code>value</code> object that specifies the
+type of each individual element returned from the iterator.
+
+<code>key</code> is only used along with the <code>Map</code>
+<code>type</code> (MUST NOT be used for other types) and can have
+<code>Signature</code>, <code>Boolean</code>, <code>Integer</code>,
+<code>Hash160</code>, <code>Hash256</code>, <code>ByteArray</code>,
+<code>PublicKey</code> or <code>String</code> value, that is all the basic
+types that can be used as a map key.
+
+<code>value</code> is used for <code>Array</code>,
+<code>InteropInterface</code> and <code>Map</code> types (<code>type</code>
+field) and MUST NOT be used with other base types. When used for
+<code>Array</code> it contains the type of an individual element of an array
+(ordered set of values of one type). If used for <code>InteropInterface</code>
+it contains the type of an individual iterator's value. If used for
+<code>Map</code> it contains map value type. If this field is used,
+<code>fields</code> MUST NOT be present.
+
+<code>fields</code> is used for <code>Array</code> <code>type</code> and when
+used it means that the type is a structure (ordered set of named values of
+diffent types), which has its fields defined directly here (unlike
+<code>namedtype</code> which is just a reference to
+<code>namedtypes</code>). It's an array with each member being a
+Parameter. <code>fields</code> MUST NOT be used in method parameter or return
+value definitions (these MUST use <code>namedtype</code> referring to a valid
+type specified in the <code>namedtypes</code> object).
+
+==Backwards Compatibility==
+
+This NEP is completely backwards-compatible with NEP-14 when new fields are
+ignored, old fields and their meaning remain intact.
+
+==Test Cases==
+
+This is an example of the method definition that takes structure, array and
+map parameters, returning an iterator with structured element type.
+
+<pre>
+{
+   "methods" : [
+      {
+         "returntype" : "InteropInterface",
+         "offset" : 0,
+         "safe" : true,
+         "extendedreturntype" : {
+            "value" : {
+               "type" : "Array",
+               "namedtype" : "package.Structure"
+            },
+            "type" : "InteropInterface",
+            "interface" : "IIterator"
+         },
+         "name" : "m",
+         "parameters" : [
+            {
+               "type" : "Array",
+               "namedtype" : "local.Structure",
+               "name" : "structParam"
+            },
+            {
+               "value" : {
+                  "type" : "Hash160"
+               },
+               "type" : "Array",
+               "name" : "arrayOfHash160"
+            },
+            {
+               "name" : "mapParam",
+               "value" : {
+                  "type" : "Integer"
+               },
+               "type" : "Map",
+               "key" : "Hash160"
+            }
+         ]
+      }
+   ],
+   "events" : [],
+   "namedtypes" : {
+      "local.Structure" : {
+         "fields" : [
+            {
+               "name" : "IntField",
+               "type" : "Integer"
+            },
+            {
+               "name" : "Hash256Field",
+               "type" : "Hash256"
+            },
+            {
+               "name" : "ArrayOfArraysOfBooleans",
+               "type" : "Array",
+               "value" : {
+                  "value" : {
+                     "type" : "Boolean"
+                  },
+                  "type" : "Array"
+               }
+            },
+            {
+               "type" : "Array",
+               "name" : "StructureField",
+               "namedtype" : "package.Structure"
+            }
+         ],
+         "type" : "Array"
+      },
+      "package.Structure" : {
+         "type" : "Array",
+         "fields" : [
+            {
+               "key" : "Hash160",
+               "type" : "Map",
+               "value" : {
+                  "value" : {
+                     "type" : "Integer"
+                  },
+                  "type" : "Array"
+               },
+               "name" : "MapHash160ToArrayOfIntegers"
+            },
+            {
+               "type" : "String",
+               "name" : "StringField"
+            },
+            {
+               "name" : "ByteArrayField",
+               "type" : "ByteArray"
+            }
+         ]
+      }
+   }
+}
+</pre>
