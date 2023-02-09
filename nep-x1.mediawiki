@@ -112,7 +112,7 @@ Marketplaces MUST pay the royalty in the same unit of exchange as that of the <c
 
 The royaltyInfo() function MUST NOT ignore the <code>salePrice</code>, <code>royaltyAmount</code> MAY be dynamic due to <code>salePrice</code> and time. 
 
-Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyalties</code>, after sending a payment.
+Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTransferred</code>, after sending a payment.
 
 ===Events===
 
@@ -145,7 +145,6 @@ Marketplaces that support this standard MUST emit the event, <code>ReceivedRoyal
   ]
 }
 </pre>
-
 <code>royaltyToken</code> MUST be the same address as that in <code>royaltyInfo</code> method.
 
 <code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
