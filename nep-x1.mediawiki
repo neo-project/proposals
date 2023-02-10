@@ -61,7 +61,7 @@ Single royaltyRecipient
         }
     ]
 ]
-<pre>
+</pre>
 
 Multi royaltyRecipient
 
@@ -98,7 +98,7 @@ Multi royaltyRecipient
         }
     ]
 ]
-<pre>
+</pre>
 
 <code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
 
@@ -145,6 +145,7 @@ Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTran
   ]
 }
 </pre>
+
 <code>royaltyToken</code> MUST be the same address as that in <code>royaltyInfo</code> method.
 
 <code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
