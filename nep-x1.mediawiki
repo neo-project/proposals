@@ -17,6 +17,8 @@ Need support royalty information which is not only for royalty payments across N
 
 ==Specification==
 
+NEP-11 compliant contracts MAY implement this NEP for royalties to provide a standard method of specifying royalty payment information.
+
 ===Common methods===
 
 ====royaltyInfo====
@@ -100,9 +102,13 @@ Multi royaltyRecipient
 ]
 </pre>
 
+<code>royaltyToken</code> is the token hash for royalty payment.
+
+<code>salePrice</code> MUST be amount without decimals.
+
 <code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
 
-<code>royaltyAmount</code>  Must be a percentage fixed point with a scaling factor of 100 (x/100). For example: "1000" for 10%.
+<code>royaltyAmount</code>  MUST be the royalty amount without decimals rather than a percentage so there's no dispute between marketplaces about how much is the calculated result. 
 
 This function is not for initial sale or mint, it's only for secondary marketplaces.
 
