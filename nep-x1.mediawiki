@@ -13,7 +13,7 @@ This NEP defines a global standard to get royalty payment information for non-fu
 
 ==Motivation==
 
-Need support royalty information which is not only for royalty payments across NFT marketplaces, but also good to protect creative copyright. Currently, no standard for creators to declare loyalty to all marketplaces in their NFTs. They have to discuss the loyalty with different marketplaces, otherwise these marketplaces which haven't touched with the creators can't get royalty details and have to define the loyalty in their marketplace contract by themselves. This standard is compatible with [https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki NEP-11]. 
+Need support royalty information which is not only for royalty payments across NFT marketplaces, but also good to protect creative copyright. Currently, no standard for creators to declare royalty to all marketplaces in their NFTs. They have to discuss the royalty with different marketplaces, otherwise these marketplaces which haven't touched with the creators can't get royalty details and have to define the royalty in their marketplace contract by themselves. This standard is compatible with [https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki NEP-11]. 
 
 ==Specification==
 
