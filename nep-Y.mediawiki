@@ -18,7 +18,8 @@ This NEP describes the ABI standards for Neo smart contracts.
 
 Neo smart contract system is designed to be mutually invocable between contracts. To achieve this, we need a mechanism for exposing the interface of smart contracts. With NeoContract ABI, developers can easily create programs to invoke smart contracts or write clients that automatically access contract functionalities.
 
-This NEP is a compatible extension of the previous one, NEP-14. Some complex
+This NEP is a compatible extension of the previous one,
+[https://github.com/neo-project/proposals/blob/06a6b550987a74025009cf6841757f2426462697/nep-14.mediawiki NEP-14]. Some complex
 data types required more data for ABI to be useful for automatic SDK/wrapper
 code generation. For example, parameter of "Array" type could be a structure
 with three fields of "ByteArray", "Hash160" and "Integer" types or an array of
