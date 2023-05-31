@@ -24,7 +24,8 @@ data types required more data for ABI to be useful for automatic SDK/wrapper
 code generation. For example, parameter of "Array" type could be a structure
 with three fields of "ByteArray", "Hash160" and "Integer" types or an array of
 "Integer" values. These cases couldn't be differentiated both for method
-parameters and return values with NEP-14, while this proposal fixes it.
+parameters and return values with
+[https://github.com/neo-project/proposals/blob/06a6b550987a74025009cf6841757f2426462697/nep-14.mediawiki NEP-14], while this proposal fixes it.
 
 ==Rationale==
 
@@ -222,8 +223,9 @@ type specified in the <code>namedtypes</code> object).
 
 ==Backwards Compatibility==
 
-This NEP is completely backwards-compatible with NEP-14 when new fields are
-ignored, old fields and their meaning remain intact.
+This NEP is completely backwards-compatible with
+[https://github.com/neo-project/proposals/blob/06a6b550987a74025009cf6841757f2426462697/nep-14.mediawiki NEP-14]
+when new fields are ignored, old fields and their meaning remain intact.
 
 ==Test Cases==
 
