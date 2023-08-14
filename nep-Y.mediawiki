@@ -288,7 +288,7 @@ Neo-specific codes are documented here, generic JSON-RPC errors like -32602 or
 |-
 | sendrawtransaction  || -500, -501, -502, -503, -504, -505, -506, -507, -508, -509, -510, -511
 |-
-| submitblock         || -500, -501, -508, -509
+| submitblock         || -500, -501, -502, -503, -504, -505, -506, -507, -508, -509, -510, -511
 |-
 | submitoracleresponse|| -508, -602, -603, -604, -605
 |-
