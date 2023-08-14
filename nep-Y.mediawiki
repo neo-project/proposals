@@ -298,7 +298,7 @@ Neo-specific codes are documented here, generic JSON-RPC errors like -32602 or
 |-
 | validateaddress     ||
 |-
-| verifyproof         || -607
+| verifyproof         || -606, -607
 |}
 
 
