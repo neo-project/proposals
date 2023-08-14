@@ -290,7 +290,7 @@ Neo-specific codes are documented here, generic JSON-RPC errors like -32602 or
 |-
 | submitblock         || -500, -501, -508, -509
 |-
-| submitoracleresponse|| -602, -603, -604, -605
+| submitoracleresponse|| -508, -602, -603, -604, -605
 |-
 | terminatesession    || -107, -601
 |-
