@@ -210,11 +210,11 @@ Neo-specific codes are documented here, generic JSON-RPC errors like -32602 or
 |-
 | getapplicationlog   || -105
 |-
-| getblock            || -101
+| getblock            || -101, -109
 |-
 | getblockhash        || -109
 |-
-| getblockheader      || -101
+| getblockheader      || -101, -109
 |-
 | getcandidates       ||
 |-
