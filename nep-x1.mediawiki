@@ -106,7 +106,7 @@ Multi royaltyRecipient
 
 <code>salePrice</code> MUST be amount without decimals.
 
-<code>royaltyRecipient</code> is the address of who should be sent the royalty payment, SHOULD be a 20-byte address.
+<code>royaltyRecipient</code> is the address of who will be sent the royalty payment, MUST be a 20-byte address.
 
 <code>royaltyAmount</code>  MUST be the royalty amount without decimals rather than a percentage so there's no dispute between marketplaces about how much is the calculated result. 
 
