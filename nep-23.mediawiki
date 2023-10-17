@@ -1,0 +1,113 @@
+<pre>
+  NEP: 23
+  Title: NEO Meta-Transaction Proposal
+  Author: Jinghui Liao (jimmy@r3e.network)
+  Type: Standard
+  Status: Draft
+  Created: 2023-10-17
+  Requires (*optional): NEP-2
+  Replaces (*optional): <NEP number(s) if any>
+</pre>
+
+==Abstract==
+
+This proposal introduces a standardized format for meta-transactions on the NEO platform, aiming to enhance user experience by making transactions more understandable and transparent. It allows users to sign human-readable, structured data, ensuring both usability and security.
+
+==Motivation==
+
+With the increasing complexity of blockchain applications and the evolution of smart contract interactions, there's a clear need for a more user-friendly approach to transaction signing on NEO. The current protocol doesn't provide a standardized way to sign structured, human-readable data, which may lead to confusion and potential misuse. This proposal fills this gap by defining a clear and standardized format for meta-transactions.
+
+==Specification==
+
+A meta-transaction consists of structured data with fields like domain, message, nonce, sender, receiver, value, and related data. For signing, this structured data is transformed into a byte representation, which is then signed using the signer's NEO private key. Signature verification is analogous to NEO's current transaction verification methodology.
+
+=== Definitions ===
+* '''Meta-Transaction''': A transaction that contains structured data and a signature.
+* '''Domain''': A collection of data that represents the context of the meta-transaction, including networkId and version.
+* '''Signer''': An entity that produces a signature for a meta-transaction.
+
+
+=== Byte Representation ===
+For signing purposes, the structured data needs to be transformed into a byte representation. This can be achieved by serializing each field into its byte representation and concatenating them.
+
+1. '''Data Structures''':
+   * '''Domain''':
+     ** `networkId`: Integer representing the NEO network identifier.
+     ** `version`: String representing the version of the meta-transaction format.
+   * '''Message''':
+     ** `nonce`: Integer, a unique number ensuring each signature is unique.
+     ** `from`: String, address of the sender.
+     ** `to`: String, address of the receiver.
+     ** `value`: Integer, amount being transferred in smallest unit.
+     ** `script`: Bytes, script related to the transaction.
+
+2. '''Serialization Process''':
+   * Data is serialized in the order of `Domain` followed by `Message`.
+   * Convert each field into bytes:
+     ** For integers, use a fixed-size byte array.
+     ** For strings (addresses), convert from hex to bytes.
+     ** For `data`, use as is since it's already in bytes.
+   * Concatenate all fields' byte representations in the order they appear in the data structures.
+
+3. '''Output''':
+   * The result is a single byte array which is ready to be signed.
+
+=== Signing the Transaction ===
+
+The byte representation is then signed using the signer's NEO private key, utilizing the encryption methods described in NEP-2. The resulting signature is appended to the meta-transaction object.
+
+1. '''Signing Preparation''':
+   * The signer's NEO private key should be decrypted (using methods from NEP-2 if necessary) and ready.
+   * Use the byte representation from the previous step as input.
+
+2. '''Signature Process''':
+   * Sign the byte representation using ECDSA or an equivalent algorithm supported by NEO with the signer's private key.
+   * This results in a signature typically composed of two components: `r` and `s`, both fixed-size byte arrays.
+
+3. '''Appending the Signature''':
+   * The resulting signature is attached to the meta-transaction object, usually in the format:
+     ** `r`: First part of the signature.
+     ** `s`: Second part of the signature.
+   * Optionally, the `v` value, representing the recovery id, can also be appended if NEO's signing method requires it for recovery of the public key.
+
+=== Verifying the Signature ===
+
+The process for signature verification will be analogous to NEO's current transaction verification methodology. Extract the signature and public key from the meta-transaction object. Use the public key to verify that the signature matches the byte representation of the structured data.
+
+1. '''Extraction''':
+   * Extract the `r` and `s` values (and `v` if provided) from the received meta-transaction.
+   * If only the signature is provided, use the ECDSA recover method to obtain the signer's public key.
+
+2. '''Recreate Byte Representation''':
+   * Serialize the structured data from the received meta-transaction to get its byte representation.
+
+3. '''Verification Process''':
+   * Using ECDSA or the equivalent:
+     ** Verify that the signature (`r`, `s`, and optionally `v`) matches the byte representation when checked against the signer's public key.
+
+4. '''Outcome''':
+   * If successful, the meta-transaction is verified.
+   * Otherwise, it's deemed invalid.
+
+
+==Rationale==
+
+Taking inspiration from Ethereum's EIP-712 and NEO's encryption methods in NEP-2, this proposal aims to combine best practices from both platforms. The design choices aim to enhance user experience, increase transparency, and ensure security. The structured data format was chosen for its clarity and ease of understanding, and the signing and verification methods are rooted in established cryptographic practices.
+
+==Backwards Compatibility==
+
+This proposal introduces a new format but doesn't alter any existing transaction formats on the NEO platform. Thus, it's backward compatible with the current infrastructure. Existing systems and wallets can choose to integrate this new format without any disruption to their ongoing operations.
+
+==Test Cases==
+
+Test cases will be crucial to ensure the correct implementation of the meta-transaction format, especially when it comes to signing and verification. These tests should cover various transaction scenarios, signature generations, and validation checks.
+
+==Implementation==
+
+Implementations will be based on the defined specification and rationale. They should adhere to the structured data format, signing method, and verification process detailed in the proposal. The implementation will be completed after community consensus on the specification.
+
+== Security Considerations ==
+* '''Replay Attacks''': The nonce ensures that old meta-transactions can't be reused.
+* '''Phishing Attacks''': By making the data more human-readable, users are less likely to sign malicious transactions unknowingly.
+
+
