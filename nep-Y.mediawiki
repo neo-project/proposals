@@ -171,6 +171,8 @@ used by compliant implementations.
 |-
 ! Code !! Message            !! Meaning
 |-
+| -600 || Access denied  || Server requires authentication or has a policy not allowing request to be processed.
+|-
 | -601 || Sessions disabled  || Session support is not enabled on the server.
 |-
 | -602 || Oracle service is not running|| Service is not enabled in the configuration.
@@ -192,7 +194,8 @@ used by compliant implementations.
 
 This table is informative, compliant implementations MAY use other codes
 specified above that fit the purpose as well if they're documented. Only
-Neo-specific codes are documented here, generic JSON-RPC errors like -32602 or
+Neo-specific codes are documented here (except -600 that can be returned
+for any call), generic JSON-RPC errors like -32602 or
 -32603 can be used by any of these methods.
 
 {|
@@ -315,7 +318,7 @@ accordingly: fail, retry or wait.
 * -100 code is gone completely, it's returned for a very wide variety of different problems at the moment, so the code itself shouldn't matter much
 * -101 and -102 errors change their meaning, they're only used in <code>invokecontractverify</code> call which is not very popular
 * -300 and -301 wallet-related errors are completely compatible
-* -400 error is now -302 which may affect some applications
+* -400 error is now -302 or -600 (depending on its meaning) which may affect some applications
 * -500 error has the same meaning and is compatible
 * new codes can affect client applications that expect only old ones
 
