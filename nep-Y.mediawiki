@@ -19,7 +19,7 @@ clients.
 
 Currently different implementations of RPC servers in Neo nodes use slightly
 different set of error codes and clients can't rely on codes to distinguish
-one errors from another. Some errors were also changed on update from Legacy
+one error from another. Some errors were also changed on update from Legacy
 to N3. The overall set is also too coarse to be used effectively by clients,
 many different problems requiring different client actions end up with the
 same code, so clients have to parse error messages to react correctly which is
