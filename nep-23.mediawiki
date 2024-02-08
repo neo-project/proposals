@@ -3,7 +3,7 @@
   Title: Neo JSON-RPC error handling and codes
   Author: Anna Shaleva <shaleva.ann@nspcc.ru>, Roman Khimov <roman@nspcc.ru>
   Type: Informational
-  Status: Draft
+  Status: Final
   Created: 2022-09-12
 </pre>
 
