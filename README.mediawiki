@@ -93,6 +93,18 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [https://github.com/neo-project/proposals/pull/154 22]
+| Contract Basic Method Guideline
+| Owen Zhang, Fernando Díaz Toledano, Erik Zhang
+| Informational
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/156 23]
+| JSON-RPC error handling and codes
+| Anna Shaleva, Roman Khimov
+| Standard
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
