@@ -140,7 +140,7 @@ If you are interested in assuming ownership of a NEP, send a message asking to t
 
 The current NEP editor is
 
-*Erik Zhang (@erikzhang)
+*Fernando Díaz Toledano (@shargon)
 
 ==NEP Editor Responsibilities & Workflow==
 
