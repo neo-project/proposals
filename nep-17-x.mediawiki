@@ -1,0 +1,57 @@
+  NEP: <to be assigned>
+  Title: onNEP17Payment Callback Method Standard for NEO Smart Contracts
+  Author: Jimmy Liao <jimmy@r3e.network>
+  Type: Standard
+  Status: Draft
+  Created: <March 2, 2024>
+  
+==Abstract==
+
+This NEP proposes the `onNEP17Payment` callback method standard for NEO smart contracts, enhancing the interoperability and functionality of contracts receiving NEP-17 token transfers. The `onNEP17Payment` method allows smart contracts to execute custom logic upon receiving tokens, facilitating a wide range of decentralized finance (DeFi) operations, automated governance mechanisms, and other contract-to-contract interactions. By standardizing this callback, the NEO ecosystem can ensure that token transfers to contracts are handled consistently, enabling a more robust and developer-friendly platform.
+
+==Motivation==
+
+The introduction of NEP-17 brought a standardized token interface to the NEO blockchain, significantly improving the ecosystem's composability. However, as smart contracts evolve to become more complex and interconnected, the necessity for a standardized method to handle incoming token transfers has become apparent. Currently, the lack of a standardized callback mechanism for receiving tokens leads to fragmented and less secure implementations across contracts. The `onNEP17Payment` method addresses this gap by providing a clear and standardized way for contracts to respond to token transfers, ensuring a higher degree of interoperability and security within the NEO ecosystem.
+
+==Specification==
+
+The `onNEP17Payment` method must be implemented by smart contracts wishing to execute custom logic upon receiving NEP-17 token transfers. The method signature is as follows:
+
+<pre>
+{
+"name": "onNEP17Payment",
+"parameters": [
+{
+"name": "from",
+"type": "Hash160"
+},
+{
+"name": "amount",
+"type": "Integer"
+},
+{
+"name": "data",
+"type": "Any"
+}
+],
+"returntype": "Void"
+}
+</pre>
+
+Upon the successful transfer of NEP-17 tokens, the `onNEP17Payment` method of the receiver contract is invoked, allowing the contract to perform specified actions with the transferred tokens.
+
+==Rationale==
+
+The design of the `onNEP17Payment` method follows the principle of minimal intrusion, requiring only essential information for contracts to react to incoming transfers. The choice of parameters (`from`, `amount`, `data`) provides contracts with flexibility to adapt to various use cases, from simple logging of transfers to more complex logic such as token swaps or automated governance actions. This method was inspired by similar mechanisms in other blockchain platforms and refined through community feedback to suit the NEO ecosystem's unique needs.
+
+==Backwards Compatibility==
+
+The introduction of the `onNEP17Payment` method is backwards compatible with existing NEP-17 tokens, as it requires no changes to the token standard itself. Contracts that do not implement this method will simply not react to incoming token transfers, preserving the current behavior.
+
+==Test Cases==
+
+Test cases will be provided to demonstrate the correct invocation of the `onNEP17Payment` method under various scenarios, including transfers from both standard accounts and contracts, and with different `data` payloads.
+
+==Implementation==
+
+Preliminary implementations of the `onNEP17Payment` method will be made available in popular NEO smart contract development languages, such as C# and Python. These implementations will serve as references for developers integrating this standard into their contracts.
