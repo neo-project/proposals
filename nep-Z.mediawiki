@@ -1,0 +1,93 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Smart contract transfer callback for fungible tokens
+  Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
+  Type: Informational
+  Status: Draft
+  Created: 2024-03-03
+  Requires: 17
+</pre>
+
+==Abstract==
+
+This proposal describes the callback method used by Neo smart contracts to
+process transfers of fungible [[nep-17.mediawiki|NEP-17]] tokens to their addresses.
+
+==Motivation==
+
+While the original [[nep-17.mediawiki|NEP-17]] already defines this method, it
+lacks some details relevant specifically to the receiver contract and it doesn't
+allow for easy reference. This standard can be used in <code>supportedstandards</code>
+section of [[nep-15.mediawiki|NEP-15 manifest]] or in any other situation to
+refer to contracts able to receive [[nep-17.mediawiki|NEP-17]] tokens (but not
+necessarily being [[nep-17.mediawiki|NEP-17]] themselves). Typical use cases
+for this functionality are: depositing/staking (with contract locking and
+managing tokens according to some rules) or exchange/minting (contract accepting
+transfer to itself, but returning some different token to the sender).
+
+==Specification==
+
+Smart contracts that need to receive and own [[nep-17.mediawiki|NEP-17]] tokens
+MUST implement <code>onNEP17Payment</code> method with the following signature:
+
+<pre>
+{
+  "name": "onNEP17Payment",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+A contract that doesn't implement this method will not be able to receive
+[[nep-17.mediawiki|NEP-17]] tokens (transfers to its address will fail). This
+method is called by [[nep-17.mediawiki|NEP-17]] contracts which tokens are being
+transferred. A particular token can be obtained via the <code>System.Runtime.GetCallingScriptHash</code>
+system call. Contracts SHOULD check for this hash to match their expectations
+like allowed/accepted tokens, processing this call means that contract trusts
+the caller to implement [[nep-17.mediawiki|NEP-17]] correctly.
+
+<code>from</code> parameter specifies the sender of tokens and can be <code>null</code>
+for minted tokens.
+
+<code>amount</code> is the amount of tokens transferred to the contract.
+
+<code>data</code> is the same <code>data</code>parameter that was given to the
+[[nep-17.mediawiki|NEP-17]] <code>transfer</code> call. Contract can interpret
+it in any application-specific way including imposing any restrictions on
+accepted <code>data</code> contents.
+
+If the contract implementing this NEP can't accept the transfer (for reasons like
+unexpected token, wrong amount, forbidden sender, wrong <code>data</code>
+parameter or any other) it MUST call <code>ABORT</code> or <code>ABORTMSG</code>
+VM opcode to fail the transaction. This is the only way to ensure contract
+won't own transferred tokens, because the method doesn't return any value
+and exceptions can be handled by calling contract.
+
+==Rationale==
+
+This NEP just follows and explains [[nep-17.mediawiki|NEP-17]] semantics, no
+design decisions made here.
+
+==Backwards Compatibility==
+
+This NEP is completely compatible with [[nep-17.mediawiki|NEP-17]], the only
+extension is <code>ABORTMSG</code> that didn't exist at the time of
+[[nep-17.mediawiki|NEP-17]] creation, but it's the same thing semantically.
+
+==Implementation==
+
+ * https://github.com/nspcc-dev/neo-go/blob/8d67f17943553740fe4caa31c3e9efcf7921aba2/examples/nft-nd/nft.go#L213
+ * https://github.com/nspcc-dev/neofs-contract/blob/91962f2c5625d8aab42adde138f2411c52393382/contracts/neofs/contract.go#L237
