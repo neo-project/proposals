@@ -88,7 +88,7 @@ This method needs to be called when withdrawing token from the contract.
     },
     {
       "name": "manifest",
-      "type": "String"
+      "type": "ByteArray"
     },
     {
       "name": "data",
