@@ -86,15 +86,11 @@ design decisions made here.
 
 This NEP is completely compatible with [[nep-17.mediawiki|NEP-17]], there are
 just two extensions to it:
- * addition of <code>ABORTMSG</code> opcode that didn't exist at the time of
-   [[nep-17.mediawiki|NEP-17]] creation, but it's the same thing as
-   <code>ABORT</code> semantically.
- * explicit <code>ASSERT</code> and <code>ASSERTMSG</code> opcode allowance
-   that was not a part of [[nep-17.mediawiki|NEP-17]], but also has the same
-   function as <code>ABORT</code> for failed conditions.
+* addition of <code>ABORTMSG</code> opcode that didn't exist at the time of [[nep-17.mediawiki|NEP-17]] creation, but it's the same thing as <code>ABORT</code> semantically.
+* explicit <code>ASSERT</code> and <code>ASSERTMSG</code> opcode allowance that was not a part of [[nep-17.mediawiki|NEP-17]], but also has the same function as <code>ABORT</code> for failed conditions.
 
 ==Implementation==
 
- * https://github.com/nspcc-dev/neo-go/blob/8d67f17943553740fe4caa31c3e9efcf7921aba2/examples/nft-nd/nft.go#L213
- * https://github.com/nspcc-dev/neofs-contract/blob/91962f2c5625d8aab42adde138f2411c52393382/contracts/neofs/contract.go#L237
- * https://github.com/neoburger/code/blob/beb433288bd7b0da9d2245e2a0ae5af5309da7ed/BurgerNEO.cs#L42
+* https://github.com/nspcc-dev/neo-go/blob/8d67f17943553740fe4caa31c3e9efcf7921aba2/examples/nft-nd/nft.go#L213
+* https://github.com/nspcc-dev/neofs-contract/blob/91962f2c5625d8aab42adde138f2411c52393382/contracts/neofs/contract.go#L237
+* https://github.com/neoburger/code/blob/beb433288bd7b0da9d2245e2a0ae5af5309da7ed/BurgerNEO.cs#L42

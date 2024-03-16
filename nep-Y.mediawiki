@@ -93,12 +93,8 @@ design decisions made here.
 
 This NEP is completely compatible with [[nep-11.mediawiki|NEP-11]], there are
 just two extensions to it:
- * addition of <code>ABORTMSG</code> opcode that didn't exist at the time of
-   [[nep-11.mediawiki|NEP-11]] creation, but it's the same thing as
-   <code>ABORT</code> semantically.
- * explicit <code>ASSERT</code> and <code>ASSERTMSG</code> opcode allowance
-   that was not a part of [[nep-11.mediawiki|NEP-11]], but also has the same
-   function as <code>ABORT</code> for failed conditions.
+* addition of <code>ABORTMSG</code> opcode that didn't exist at the time of [[nep-11.mediawiki|NEP-11]] creation, but it's the same thing as <code>ABORT</code> semantically.
+* explicit <code>ASSERT</code> and <code>ASSERTMSG</code> opcode allowance that was not a part of [[nep-11.mediawiki|NEP-11]], but also has the same function as <code>ABORT</code> for failed conditions.
 
 ==Implementation==
 
