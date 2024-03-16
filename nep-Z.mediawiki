@@ -91,3 +91,4 @@ extension is <code>ABORTMSG</code> that didn't exist at the time of
 
  * https://github.com/nspcc-dev/neo-go/blob/8d67f17943553740fe4caa31c3e9efcf7921aba2/examples/nft-nd/nft.go#L213
  * https://github.com/nspcc-dev/neofs-contract/blob/91962f2c5625d8aab42adde138f2411c52393382/contracts/neofs/contract.go#L237
+ * https://github.com/neoburger/code/blob/beb433288bd7b0da9d2245e2a0ae5af5309da7ed/BurgerNEO.cs#L42
