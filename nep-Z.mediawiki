@@ -74,7 +74,8 @@ unexpected token, wrong amount, forbidden sender, wrong <code>data</code>
 parameter or any other) it MUST call <code>ABORT</code> or <code>ABORTMSG</code>
 VM opcode to fail the transaction. This is the only way to ensure contract
 won't own transferred tokens, because the method doesn't return any value
-and exceptions can be handled by calling contract.
+and exceptions can be handled by calling contract. Contact MAY also check for
+various conditions with <code>ASSERT</code> or <code>ASSERTMSG</code> opcodes.
 
 ==Rationale==
 
@@ -83,9 +84,14 @@ design decisions made here.
 
 ==Backwards Compatibility==
 
-This NEP is completely compatible with [[nep-17.mediawiki|NEP-17]], the only
-extension is <code>ABORTMSG</code> that didn't exist at the time of
-[[nep-17.mediawiki|NEP-17]] creation, but it's the same thing semantically.
+This NEP is completely compatible with [[nep-17.mediawiki|NEP-17]], there are
+just two extensions to it:
+ * addition of <code>ABORTMSG</code> opcode that didn't exist at the time of
+   [[nep-17.mediawiki|NEP-17]] creation, but it's the same thing as
+   <code>ABORT</code> semantically.
+ * explicit <code>ASSERT</code> and <code>ASSERTMSG</code> opcode allowance
+   that was not a part of [[nep-17.mediawiki|NEP-17]], but also has the same
+   function as <code>ABORT</code> for failed conditions.
 
 ==Implementation==
 
