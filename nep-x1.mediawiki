@@ -9,11 +9,11 @@
 
 ==Abstract==
 
-This NEP defines a global standard to get royalty payment information for non-fungible tokens (NFTs) to enable support for royalty payments across all NFT marketplaces in the NEO Smart Economy.
+This NEP defines a global standard to get royalty payment information for Non-Fungible Tokens (NFTs) in order to enable support for royalty payments across all NFT marketplaces in the NEO Smart Economy.
 
 ==Motivation==
 
-Need support royalty information which is not only for royalty payments across NFT marketplaces, but also good to protect creative copyright. Currently, no standard for creators to declare royalty to all marketplaces in their NFTs. They have to discuss the royalty with different marketplaces, otherwise these marketplaces which haven't touched with the creators can't get royalty details and have to define the royalty in their marketplace contract by themselves. This standard is compatible with [https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki NEP-11]. 
+There is a need for supporting royalty information, which is useful not only for royalty payments across NFT marketplaces but also good to protect creative copyright. Currently, there is no standard for creators to declare royalty to all marketplaces in their NFTs. In this sense, they have to discuss the royalty with different marketplaces, otherwise these marketplaces, which haven't touched with the creators, can't get royalty details and define the royalty in their marketplace contract by themselves. This standard is compatible with [NEP-11](https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki).
 
 ==Specification==
 
@@ -118,7 +118,7 @@ Marketplaces MUST pay the royalty in the same unit of exchange as that of the <c
 
 The royaltyInfo() function MUST NOT ignore the <code>salePrice</code>, <code>royaltyAmount</code> MAY be dynamic due to <code>salePrice</code> and time. 
 
-Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTransferred</code>, after sending a payment.
+Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTransferred</code> for each recipient, after sending a payment.
 
 ===Events===
 
