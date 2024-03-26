@@ -1,15 +1,16 @@
 <pre>
-  NEP: Undefined
+  NEP: 24
   Title: NFT Royalty Standard
   Author: Owen Zhang<zhangzhihong@ngd.neo.org>, Vincent Geneste<vincentgeneste@gmail.com>
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2022-09-05
 </pre>
 
 ==Abstract==
 
-This NEP defines a global standard to get royalty payment information for Non-Fungible Tokens (NFTs) in order to enable support for royalty payments across all NFT marketplaces in the NEO Smart Economy.
+This NEP defines a global standard to get royalty payment information for Non-Fungible Tokens (NFTs) in order to enable support for royalty payments across all NFT marketplaces in the NEO Smart Economy. 
+Reference: The NFT Standard [NEP-11](https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki)
 
 ==Motivation==
 
@@ -36,7 +37,6 @@ NEP-11 compliant contracts MAY implement this NEP for royalties to provide a sta
       "name": "royaltyToken",
       "type": "Hash160"
     },
-    }
     {
       "name": "salePrice",
       "type": "Integer"
@@ -158,4 +158,4 @@ Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTran
 
 MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
 
-Each <code>royaltyRecipient</code> has 1 events. That means if 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> events MUST be triggered.
+Each <code>royaltyRecipient</code> has 1 event. That means if there are 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> events MUST be triggered.

@@ -99,7 +99,18 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Informational
 | Accepted
 |-
-| 
+| [https://github.com/neo-project/proposals/pull/156 23]
+| RPC Errors Proposal
+| Anna Shaleva, Roman Khimov
+| Standard
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/155 24]
+| NFT Royalty Standard
+| Owen Zhang, Vincent Geneste
+| Standard
+| Accepted
+|-
 | Dynamic Sharding
 | 
 | Standard
