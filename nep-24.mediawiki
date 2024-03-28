@@ -159,3 +159,8 @@ Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTran
 MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
 
 Each <code>royaltyRecipient</code> has 1 event. That means if there are 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> events MUST be triggered.
+
+==Implementation==
+
+https://github.com/OnBlockIO/n3-tokens-contracts/blob/6b01ac3f46b18629f880dcac4e2f5bb4e7f94a37/contracts/NEP11/GhostMarket.NFT.py#L475
+
