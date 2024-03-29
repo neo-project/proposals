@@ -71,31 +71,31 @@ Multi royaltyRecipient
 [
     [
         {
-            "name":"royaltyRecipient1",
+            "name":"royaltyRecipient",
             "type":"Hash160"
         },
         {
-            "name":"royaltyAmount1",
+            "name":"royaltyAmount",
             "type":"Integer"
         }
     ],
     [
         {
-            "name":"royaltyRecipient2",
+            "name":"royaltyRecipient",
             "type":"Hash160"
         },
         {
-            "name":"royaltyAmount2",
+            "name":"royaltyAmount",
             "type":"Integer"
         }
     ],
     [
         {
-            "name":"royaltyRecipient3",
+            "name":"royaltyRecipient",
             "type":"Hash160"
         },
         {
-            "name":"royaltyAmount3",
+            "name":"royaltyAmount",
             "type":"Integer"
         }
     ]
