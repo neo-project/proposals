@@ -328,4 +328,5 @@ accordingly: fail, retry or wait.
 
 ==Implementation==
 
-<TBD>
+* https://pkg.go.dev/github.com/nspcc-dev/neo-go@v0.105.1/pkg/neorpc#pkg-constants and server in https://github.com/nspcc-dev/neo-go/tree/v0.105.1/pkg/services/rpcsrv
+* https://github.com/neo-project/neo-modules/pull/815
