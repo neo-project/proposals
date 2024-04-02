@@ -162,6 +162,8 @@ used by compliant implementations.
 | -511 || Insufficient funds || Sender doesn't have enough GAS to pay for all currently pooled transactions.
 |-
 | -512 || Invalid verification function|| Contract doesn't have a <code>verify</code> method or this method doesn't return proper value.
+|-
+| -513 || Conflicts          || There is a conflict with another transaction already in memory pool caused by one or both of them having a Conflicts attribute.
 |}
 
 ====Service and node configuration====
