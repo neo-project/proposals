@@ -99,7 +99,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Informational
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/156 23]
+| [[nep-23.mediawiki|23]]
 | JSON-RPC error handling and codes
 | Anna Shaleva, Roman Khimov
 | Informational
