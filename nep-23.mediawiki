@@ -157,7 +157,7 @@ used by compliant implementations.
 |-
 | -509 || Invalid size       || Transaction or its script is too big.
 |-
-| -510 || Expired            || Transaction's ValidUntilBlock value is already in the past.
+| -510 || Expired            || Transaction's ValidUntilBlock value is already in the past or NotValidBefore attribute value is in future.
 |-
 | -511 || Insufficient funds || Sender doesn't have enough GAS to pay for all currently pooled transactions.
 |-
