@@ -1,9 +1,9 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 25
   Title: NeoContract ABI
   Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2022-12-08
   Replaces: 14
 </pre>
