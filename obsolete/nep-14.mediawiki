@@ -3,7 +3,7 @@
   Title: NeoContract ABI
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Final
+  Status: Obsolete
   Created: 2020-03-25
   Replaces: 3
 </pre>
