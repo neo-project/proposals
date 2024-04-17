@@ -164,3 +164,5 @@ Each <code>royaltyRecipient</code> has 1 event. That means if there are 5 <code>
 
 https://github.com/OnBlockIO/n3-tokens-contracts/blob/6b01ac3f46b18629f880dcac4e2f5bb4e7f94a37/contracts/NEP11/GhostMarket.NFT.py#L475
 
+https://github.com/neo-project/neo-devpack-dotnet/blob/master/examples/Example.SmartContract.SampleRoyaltyNEP11Token/SampleRoyaltyNEP11Token.cs
+
