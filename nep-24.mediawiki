@@ -1,0 +1,168 @@
+<pre>
+  NEP: 24
+  Title: NFT Royalty Standard
+  Author: Owen Zhang<zhangzhihong@ngd.neo.org>, Vincent Geneste<vincentgeneste@gmail.com>
+  Type: Standard
+  Status: Accepted
+  Created: 2022-09-05
+</pre>
+
+==Abstract==
+
+This NEP defines a global standard to get royalty payment information for Non-Fungible Tokens (NFTs) in order to enable support for royalty payments across all NFT marketplaces in the NEO Smart Economy. 
+Reference: The NFT Standard [NEP-11](https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki)
+
+==Motivation==
+
+There is a need for supporting royalty information, which is useful not only for royalty payments across NFT marketplaces but also good to protect creative copyright. Currently, there is no standard for creators to declare royalty to all marketplaces in their NFTs. In this sense, they have to discuss the royalty with different marketplaces, otherwise these marketplaces, which haven't touched with the creators, can't get royalty details and define the royalty in their marketplace contract by themselves. This standard is compatible with [NEP-11](https://github.com/neo-project/proposals/blob/master/nep-11.mediawiki).
+
+==Specification==
+
+NEP-11 compliant contracts MAY implement this NEP for royalties to provide a standard method of specifying royalty payment information.
+
+===Common methods===
+
+====royaltyInfo====
+
+<pre>
+{
+  "name": "royaltyInfo",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "royaltyToken",
+      "type": "Hash160"
+    },
+    {
+      "name": "salePrice",
+      "type": "Integer"
+    }
+  ],
+  "returntype": "Array"
+}
+</pre>
+
+Returns a NeoVM Array stack item with single or multi array, each array still has two elements, for example:
+
+Single royaltyRecipient
+
+<pre>
+[
+    [
+        {
+            "name":"royaltyRecipient",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount",
+            "type":"Integer"
+        }
+    ]
+]
+</pre>
+
+Multi royaltyRecipient
+
+<pre>
+[
+    [
+        {
+            "name":"royaltyRecipient",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount",
+            "type":"Integer"
+        }
+    ],
+    [
+        {
+            "name":"royaltyRecipient",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount",
+            "type":"Integer"
+        }
+    ],
+    [
+        {
+            "name":"royaltyRecipient",
+            "type":"Hash160"
+        },
+        {
+            "name":"royaltyAmount",
+            "type":"Integer"
+        }
+    ]
+]
+</pre>
+
+<code>royaltyToken</code> is the token hash for royalty payment.
+
+<code>salePrice</code> MUST be amount without decimals.
+
+<code>royaltyRecipient</code> is the address of who will be sent the royalty payment, MUST be a 20-byte address.
+
+<code>royaltyAmount</code>  MUST be the royalty amount without decimals rather than a percentage so there's no dispute between marketplaces about how much is the calculated result. 
+
+This function is not for initial sale or mint, it's only for secondary marketplaces.
+
+Marketplaces that support this method MAY implement any method of calculating or transferring royalties to the royalty recipient.
+
+Marketplaces MUST pay the royalty in the same unit of exchange as that of the <code>salePrice</code> passed to royaltyInfo(). For example, if the sale price is in NEO, then the royalty payment must also be paid in NEO, and if the sale price is in GAS, then the royalty payment must also be paid in GAS.
+
+The royaltyInfo() function MUST NOT ignore the <code>salePrice</code>, <code>royaltyAmount</code> MAY be dynamic due to <code>salePrice</code> and time. 
+
+Marketplaces that support this standard MUST emit the event, <code>RoyaltiesTransferred</code> for each recipient, after sending a payment.
+
+===Events===
+
+====RoyaltiesTransferred====
+
+<pre>
+{
+  "name": "RoyaltiesTransferred",
+  "parameters": [
+    {
+      "name": "royaltyToken",
+      "type": "Hash160"
+    },
+    {
+      "name": "royaltyRecipient",
+      "type": "Hash160"
+    },
+    {
+      "name": "buyer",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    }
+  ]
+}
+</pre>
+
+<code>royaltyToken</code> MUST be the same address as that in <code>royaltyInfo</code> method.
+
+<code>royaltyRecipient</code> MUST be the same address as that in <code>royaltyInfo</code> method.
+
+MUST trigger after marketplaces transferring royalties to the royalty recipient if <code>royaltyInfo</code> method is implemented.
+
+Each <code>royaltyRecipient</code> has 1 event. That means if there are 5 <code>royaltyRecipient</code> in <code>royaltyInfo</code> method, 5 <code>RoyaltiesTransferred</code> events MUST be triggered.
+
+==Implementation==
+
+https://github.com/OnBlockIO/n3-tokens-contracts/blob/6b01ac3f46b18629f880dcac4e2f5bb4e7f94a37/contracts/NEP11/GhostMarket.NFT.py#L475
+
+https://github.com/neo-project/neo-devpack-dotnet/blob/master/examples/Example.SmartContract.SampleRoyaltyNEP11Token/SampleRoyaltyNEP11Token.cs
+
