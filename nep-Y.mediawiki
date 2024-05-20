@@ -1,5 +1,5 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 25
   Title: Smart contract transfer callback for non-fungible tokens
   Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
   Type: Informational
