@@ -1,7 +1,7 @@
 <pre>
   NEP: 25
   Title: Smart contract transfer callback for non-fungible tokens
-  Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
+  Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>, Jaime Kindelan <jaime@red4sec.com>, Jimmy Liao <jimmy@r3e.network>
   Type: Informational
   Status: Accepted
   Created: 2024-03-03
