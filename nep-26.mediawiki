@@ -1,9 +1,9 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 26
   Title: Smart contract transfer callback for fungible tokens
   Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
   Type: Informational
-  Status: Draft
+  Status: Accepted
   Created: 2024-03-03
   Requires: 17
 </pre>
