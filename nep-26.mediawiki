@@ -17,7 +17,15 @@ Currently, the term "GAS" refers to both the divisible cryptocurrency used for t
 
 ==Specification==
 
-The specification defines "Datoshi" as the new term for the smallest unit of GAS, which is divisible to eight decimal places. One GAS is equivalent to 100,000,000 Datoshi.
+The term "Datoshi" is proposed as the name for the smallest unit of GAS. The relationship between GAS and Datoshi is defined as follows:
+- 1 Datoshi = 1e-8 GAS
+- 1 Kdatoshi (thousand Datoshi) = 1e-5 GAS
+- 1 Mdatoshi (million Datoshi) = 1e-2 GAS
+
+In equivalency:
+- 100,000,000 Datoshi = 100,000 Kdatoshi = 100 Mdatoshi = 1 GAS
+
+This specification introduces a clear, scalable denomination system for GAS that aids in transactions, contracts, and discussions within the NEO ecosystem.
 
 ==Rationale==
 
