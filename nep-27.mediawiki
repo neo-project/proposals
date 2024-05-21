@@ -9,11 +9,11 @@ Replaces (*optional): None
 
 ==Abstract==
 
-This NEP proposes to standardize the terminology for the smallest unit of GAS by naming it "Datoshi." This change aims to eliminate ambiguity in NEO's financial transactions and further refine the clarity of GAS as a divisible currency unit.
+This NEP proposes to standardize the terminology for the smallest unit of GAS by naming it "Datoshi." This change aims to eliminate ambiguity in Neo's financial transactions and further refine the clarity of GAS as a divisible currency unit.
 
 ==Motivation==
 
-Currently, the term "GAS" refers to both the divisible cryptocurrency used for transactions on the NEO network and its smallest unit. This dual usage leads to confusion and inefficiencies in communication and documentation. By adopting "Datoshi" as the designated term for the smallest unit, this proposal seeks to enhance clarity and precision in the NEO ecosystem.
+Currently, the term "GAS" refers to both the divisible cryptocurrency used for transactions on the Neo network and its smallest unit. This dual usage leads to confusion and inefficiencies in communication and documentation. By adopting "Datoshi" as the designated term for the smallest unit, this proposal seeks to enhance clarity and precision in the Neo ecosystem.
 
 ==Specification==
 
@@ -25,11 +25,11 @@ The term "Datoshi" is proposed as the name for the smallest unit of GAS. The rel
 In equivalency:
 - 100,000,000 Datoshi = 100,000 Kdatoshi = 100 Mdatoshi = 1 GAS
 
-This specification introduces a clear, scalable denomination system for GAS that aids in transactions, contracts, and discussions within the NEO ecosystem.
+This specification introduces a clear, scalable denomination system for GAS that aids in transactions, contracts, and discussions within the Neo ecosystem.
 
 ==Rationale==
 
-The choice of "Datoshi" was made after a community vote and discussion within the NEO Discord channels. The NEO Foundation (NF) has approved this terminology. This proposal aligns with the practices seen in other major blockchain projects, such as Bitcoin's smallest unit being named "Satoshi," which has been beneficial for transactional clarity and community engagement.
+The choice of "Datoshi" was made after a community vote and discussion within the Neo Discord channels. The Neo Foundation (NF) has approved this terminology. This proposal aligns with the practices seen in other major blockchain projects, such as Bitcoin's smallest unit being named "Satoshi," which has been beneficial for transactional clarity and community engagement.
 
 ==Backwards Compatibility==
 
@@ -41,4 +41,4 @@ N/A
 
 ==Implementation==
 
-Prior to final approval of this NEP, updates will be prepared for all NEO platform documentation and user interfaces to incorporate the term "Datoshi." This preparation will ensure a smooth transition upon formal acceptance of the proposal.
+Prior to final approval of this NEP, updates will be prepared for all Neo platform documentation and user interfaces to incorporate the term "Datoshi." This preparation will ensure a smooth transition upon formal acceptance of the proposal.
