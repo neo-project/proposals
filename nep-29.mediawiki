@@ -1,0 +1,41 @@
+NEP: 29
+Title: Standardization of NEP Number Assignment and Usage
+Author: Jimmy Liao <jimmy@r3e.network>
+Type: Meta
+Status: Draft
+Created: 2024-05-22
+
+==Abstract==
+
+NEP 29 proposes a standardized method for assigning and managing Neo Enhancement Proposal (NEP) numbers. This proposal addresses the logistical challenges involved with the naming and referencing of NEP drafts, which currently cannot be assigned a permanent NEP number until the proposal is officially adopted. The solution is to uniquely assign NEP numbers at the draft stage, which will remain permanently associated with the draft, whether or not it is adopted.
+
+==Motivation==
+
+The current process for managing NEP numbers is cumbersome and inefficient, causing confusion and delays in the drafting and reviewing phases. Proposers often need to reference NEP numbers in their drafts and related documentation, but without a permanent number, this becomes a moving target until adoption. This NEP seeks to streamline the process by ensuring each draft receives a unique and final NEP number upon submission.
+
+==Specification==
+
+1. **NEP Number Assignment**:
+   - Upon submission of a draft NEP, a unique NEP number will be assigned immediately.
+   - This number will be considered used, regardless of the draft’s final status (adopted or not).
+
+2. **Usage of NEP Numbers**:
+   - Drafts must use their assigned NEP number in all references within the document.
+   - When submitting a draft as a pull request (PR), the PR title must include the NEP number in the format: `Draft NEP XX: [Title]`.
+   - If a PR includes multiple drafts, the title format should be: `Draft NEP XX and Draft NEP YY: [Title]`.
+
+==Rationale==
+
+By standardizing the assignment of NEP numbers at the submission stage, this proposal ensures clarity and consistency in how drafts are referenced and managed throughout their lifecycle. This method reduces ambiguity and simplifies the tracking and updating of proposals, making the NEP process more transparent and accessible.
+
+==Backwards Compatibility==
+
+This proposal does not introduce technical changes to the Neo protocol but modifies the procedural aspects of the NEP process. It is fully backward compatible as it only affects new submissions.
+
+==Test Cases==
+
+N/A
+
+==Implementation==
+
+Implementation involves updating the NEP submission guidelines and possibly modifying the NEP management tools to accommodate the automated assignment of NEP numbers upon draft submission.
