@@ -4,8 +4,6 @@ Author: Jimmy Liao <jimmy@r3e.network>
 Type: Standard
 Status: Draft
 Created: 2024-05-20
-Requires (*optional): None
-Replaces (*optional): None
 
 ==Abstract==
 
