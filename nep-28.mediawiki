@@ -1,4 +1,4 @@
-NEP: 27
+NEP: 28
 Title: Standardization of the Smallest Unit of GAS
 Author: Jimmy Liao <jimmy@r3e.network>
 Type: Standard
