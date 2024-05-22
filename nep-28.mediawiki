@@ -15,7 +15,7 @@ Currently, the term "GAS" refers to both the divisible cryptocurrency used for t
 
 ==Specification==
 
-The term "Datoshi" is proposed as the name for the smallest unit of GAS. The relationship between GAS and Datoshi is defined as follows:
+The term "Datoshi" <code>MUST</code> be adopted as the name for the smallest unit of GAS. The relationship between GAS and Datoshi is defined as follows:
 - 1 Datoshi = 1e-8 GAS
 - 1 Kdatoshi (thousand Datoshi) = 1e-5 GAS
 - 1 Mdatoshi (million Datoshi) = 1e-2 GAS
@@ -31,7 +31,7 @@ The choice of "Datoshi" was made after a community vote and discussion within th
 
 ==Backwards Compatibility==
 
-This proposal does not introduce any technical incompatibilities but will require updates to documentation, user interfaces, and educational materials to reflect the new terminology.
+This proposal does not introduce any technical incompatibilities but <code>WILL</code> require updates to documentation, user interfaces, and educational materials to reflect the new terminology.
 
 ==Test Cases==
 
@@ -39,4 +39,4 @@ N/A
 
 ==Implementation==
 
-Prior to final approval of this NEP, updates will be prepared for all Neo platform documentation and user interfaces to incorporate the term "Datoshi." This preparation will ensure a smooth transition upon formal acceptance of the proposal.
+Prior to final approval of this NEP, updates <code>MUST</code> be prepared for all Neo platform documentation and user interfaces to incorporate the term "Datoshi." This preparation WILL ensure a smooth transition upon formal acceptance of the proposal.
