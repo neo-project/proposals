@@ -99,6 +99,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Informational
 | Accepted
 |-
+| [[nep-24.mediawiki|24]]
+| NFT Royalty Standard
+| Owen Zhang, Vincent Geneste
+| Standard
+| Accepted
+|-
 | [[nep-25.mediawiki|25]]
 | NeoContract ABI
 | Erik Zhang, Roman Khimov
