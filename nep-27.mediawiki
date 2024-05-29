@@ -52,12 +52,16 @@ MUST implement <code>onNEP17Payment</code> method with the following signature:
 </pre>
 
 A contract that doesn't implement this method will not be able to receive
-[[nep-17.mediawiki|NEP-17]] tokens (transfers to its address will fail). This
-method is called by [[nep-17.mediawiki|NEP-17]] contracts which tokens are being
-transferred. A particular token can be obtained via the <code>System.Runtime.GetCallingScriptHash</code>
-system call. Contracts SHOULD check for this hash to match their expectations
-like allowed/accepted tokens, processing this call means that contract trusts
-the caller to implement [[nep-17.mediawiki|NEP-17]] correctly.
+[[nep-17.mediawiki|NEP-17]] tokens standard requires this method to be called
+unconditionally which will fail at the system call level if it's not implemented
+which then leads to a complete transaction failure). This method is called by
+[[nep-17.mediawiki|NEP-17]] contracts which tokens are being transferred. A
+particular token can be obtained via the <code>System.Runtime.GetCallingScriptHash</code>
+system call. Notice that technically this method MAY be called by entry scripts or
+non-[[nep-17.mediawiki|NEP-17]] contracts as well, so contracts SHOULD check for
+caller script hash to match their expectations like allowed/accepted tokens.
+Processing this call means that contract trusts the caller to implement
+[[nep-17.mediawiki|NEP-17]] correctly.
 
 <code>from</code> parameter specifies the sender of tokens and can be <code>null</code>
 for minted tokens.
