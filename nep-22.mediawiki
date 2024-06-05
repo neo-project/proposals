@@ -13,7 +13,7 @@ This proposal outlines a basic method guideline for the NEO blockchain that will
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Initial Deploy, Verify, Update and Destroy will become increasingly important.  Without guideline for these method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
+As the NEO blockchain scales, Smart Contract Initial Deploy, Verify, Update and Destroy will become increasingly important.  Without guideline for these methods, systems will be required to maintain different API for different contracts, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
 
 ==Specification==
 
