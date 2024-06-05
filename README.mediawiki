@@ -103,13 +103,25 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | JSON-RPC error handling and codes
 | Anna Shaleva, Roman Khimov
 | Informational
-| Accepted
+| Final
 |-
 | [[nep-24.mediawiki|24]]
 | NFT Royalty Standard
 | Owen Zhang, Vincent Geneste
 | Standard
-| Accepted
+| Final
+|-
+| [[nep-26.mediawiki|26]]
+| Smart contract transfer callback for non-fungible tokens
+| Erik Zhang, Roman Khimov, Jaime Kindelan, Jimmy Liao
+| Standard
+| Final
+|-
+| [[nep-27.mediawiki|27]]
+| Smart contract transfer callback for fungible tokens
+| Erik Zhang, Roman Khimov, Jaime Kindelan, Jimmy Liao
+| Standard
+| Final
 |-
 |
 | Dynamic Sharding

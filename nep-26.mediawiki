@@ -3,7 +3,7 @@
   Title: Smart contract transfer callback for non-fungible tokens
   Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>, Jaime Kindelan <jaime@red4sec.com>, Jimmy Liao <jimmy@r3e.network>
   Type: Informational
-  Status: Accepted
+  Status: Final
   Created: 2024-03-03
   Requires: 11
 </pre>
