@@ -13,24 +13,13 @@ This proposal outlines a basic method guideline for the NEO blockchain that will
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Initial Deploy, Update and Destroy will become increasingly important.  Without guideline for <code>update</code> and <code>destroy</code> method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
+As the NEO blockchain scales, Smart Contract Initial Deploy, Verify, Update and Destroy will become increasingly important.  Without guideline for these method, systems will be required to maintain a unique API for each contract, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
 
 ==Specification==
 
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
 
 ===Methods===
-
-====_initialize====
-
-It's an internal function which will be compiled into Abi file if any function is using initialize statement. These functions which have initialize statement will be executed first when loading contract. The format should be [InitialValue(Value, ContractParameterType)], here's an example.
-
-<pre>
-[InitialValue("NdUL5oDPD159KeFpD5A9zw5xNF1xLX6nLT", ContractParameterType.Hash160)]
-private static readonly UInt160 owner = default;
-</pre>
-
-The <code>owner</code> here will be initialized as <code>"NdUL5oDPD159KeFpD5A9zw5xNF1xLX6nLT"</code> everytime when the contract be executed.
 
 ====_deploy====
 
