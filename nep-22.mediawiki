@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update and destroy.
+This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update, verify and destroy.
 
 ==Motivation==
 
@@ -69,11 +69,13 @@ The parameter <code>data</code> can be any type of supported parameters for cont
 }
 </pre>
 
-If this contract address is included in the transaction signature, it MUST apply this. This method will be triggered as a VerificationTrigger to verify that the signature is correct.. Here's an example:
+If this contract has scenario that its address will be included in the transaction signature, it MUST apply this. A typical scenario is withdraw tokens from a smart contract. The first Verify method in that contract's manifest abi will be triggered as a VerificationTrigger to verify if the signature is correct. Here's an example:
 
 <code>public static bool Verify() => Runtime.CheckWitness(Owner);</code>
 
-This method needs to be called when withdrawing token from the contract.
+This method needs to be called when withdrawing token from the contract. 
+
+Verify method can have multi params as well.
 
 ====update====
 
