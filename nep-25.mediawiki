@@ -102,7 +102,8 @@ Parameter object has the following structure:
 <pre>
 {
   "name": "from",
-  "type": "Hash160"
+  "type": "Hash160",
+  "extendedtype": {}
 }
 </pre>
 
@@ -110,8 +111,7 @@ Parameter object has the following structure:
 
 <code>type</code> indicates the type of the parameter. It can have any value of the ParameterType enumeration defined below, except for <code>Void</code>.
 
-Parameter may also have all of the ExtendedType fields embedded in the same
-object if that allows to provide additional type data.
+<code>extendedtype</code> is an ExtendedType object used to provide additional type data if needed, this field can be omitted.
 
 ===ParameterType===
 
@@ -163,8 +163,8 @@ ParameterType enum has the following values:
 
 ===ExtendedType===
 
-Extended type data is a set of fields that can be used as an object for named
-types and <code>extendedreturntype</code> or embedded into Parameter object
+Extended type data is an object can be used for <code>extendedtype</code>
+and <code>extendedreturntype</code> fields or named types
 (the object below is not a valid ExtendedType specification, rather it
 represents all possible fields).
 
@@ -179,7 +179,14 @@ represents all possible fields).
 }
 </pre>
 
-<code>type</code> indicates the base type of the return value/parameter. It can have any value of the ParameterType enumeration defined above.
+<code>type</code> indicates the base type of the return value/parameter.
+It can have any value of the ParameterType enumeration defined above. This
+field is mandatory. When ExtendedType is used in <code>extendedtype</code>
+this field MUST be the same as outer (Parameter's) <code>type</code>, when
+used in <code>extendedreturntype</code> it MUST be the same as outer
+(Method's) <code>returntype</code>, when used in one of <code>namedtypes</code>
+it MUST be same as ExtendedType's <code>type</code> that refers to this
+named type.
 
 <code>namedtype</code> is used to refer to one of the types defined in the
 <code>namedtypes</code> object of Contract, so <code>namedtypes</code> MUST
@@ -251,23 +258,32 @@ map parameters, returning an iterator with structured element type.
          "parameters" : [
             {
                "type" : "Array",
-               "namedtype" : "local.Structure",
-               "name" : "structParam"
+               "name" : "structParam",
+               "extendedtype" : {
+                  "type" : "Array",
+                  "namedtype" : "local.Structure"
+               }
             },
             {
-               "value" : {
-                  "type" : "Hash160"
+               "extendedtype" : {
+                  "value" : {
+                     "type" : "Hash160"
+                  },
+                  "type" : "Array",
                },
                "type" : "Array",
                "name" : "arrayOfHash160"
             },
             {
                "name" : "mapParam",
-               "value" : {
-                  "type" : "Integer"
-               },
                "type" : "Map",
-               "key" : "Hash160"
+               "extendedtype" : {
+                  "value" : {
+                     "type" : "Integer"
+                  },
+                  "type" : "Map",
+                  "key" : "Hash160"
+               }
             }
          ]
       }
@@ -287,17 +303,26 @@ map parameters, returning an iterator with structured element type.
             {
                "name" : "ArrayOfArraysOfBooleans",
                "type" : "Array",
-               "value" : {
+               "extendedtype" : {
+                  "type" : "Array",
                   "value" : {
-                     "type" : "Boolean"
-                  },
-                  "type" : "Array"
+                     "extendedtype" : {
+                        "value" : {
+                           "type" : "Boolean"
+                        },
+                        "type" : "Array"
+                     },
+                     "type" : "Array"
+                  }
                }
             },
             {
                "type" : "Array",
                "name" : "StructureField",
-               "namedtype" : "package.Structure"
+               "extendedtype" : {
+                  "type" : "Array",
+                  "namedtype" : "package.Structure"
+               }
             }
          ],
          "type" : "Array"
@@ -306,14 +331,20 @@ map parameters, returning an iterator with structured element type.
          "type" : "Array",
          "fields" : [
             {
-               "key" : "Hash160",
-               "type" : "Map",
-               "value" : {
+               "extendedtype" : {
+                  "key" : "Hash160",
+                  "type" : "Map",
                   "value" : {
-                     "type" : "Integer"
+                     "extendedtype" : {
+                        "value" : {
+                           "type" : "Integer"
+                        },
+                        "type" : "Array"
+                     },
+                     "type" : "Array"
                   },
-                  "type" : "Array"
                },
+               "type" : "Map",
                "name" : "MapHash160ToArrayOfIntegers"
             },
             {
