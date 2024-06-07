@@ -1,0 +1,231 @@
+<pre>
+  NEP: 20
+  Title: Authentication Scheme
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Accepted
+  Created: 2021-03-19
+</pre>
+
+==Abstract==
+
+This NEP describes a scheme for third-party applications to authenticate users based on NEO.
+The third-party applications mentioned here can be any type of application, including Dapps, websites, games, etc.
+
+==Motivation==
+
+Usually, an application saves user data on its own server. The authenticated user can modify the corresponding data through application-defined logic.
+Traditional Internet applications usually use an authentication scheme based on username and password, which is not suitable for blockchain.
+This authentication scheme allows third-party applications to authenticate users based on digital signatures.
+In this way, NEO users can log in to any third-party application that supports this scheme without registering, and allow applications to share user data on the blockchain.
+
+==Specification==
+
+===Payloads===
+
+The authentication process is divided into two steps.
+In the first step, the server sends a challenge payload to the client to request authentication.
+In the second step, the client sends the response payload to the server to complete the authentication.
+The payloads are transmitted in the form of JSON.
+
+====Challenge payload====
+
+<pre>
+{
+  "action": "Authentication",
+  "grant_type": "Signature",
+  "allowed_algorithms": ["ECDSA-P256"],
+  "networks": [860833102],
+  "nonce": "13458238842203010919",
+  "timestamp": 1616131368,
+  "callback": "https://someurl.com/callback"
+}
+</pre>
+
+=====action=====
+
+This field should be fixed to <code>"Authentication"</code> and can be extended in the future to support more actions.
+
+=====grant_type=====
+
+This field should be fixed to <code>"Signature"</code> and can be extended in the future to support more authentication schemes.
+
+=====allowed_algorithms=====
+
+An array containing the signature algorithms allowed by the server.
+
+The client should use one of the algorithms to sign the response data.
+If none of the algorithms are supported by the client, the authentication fails.
+
+=====networks=====
+
+The magic number of the supported networks. Indicates which networks this authentication will be applied to.
+
+=====nonce=====
+
+A 64-bit unsigned integer used to identify this authentication.
+
+The server should record the expiration time of the nonce and check it when the response is received.
+The expiration time is recommended to be 5 minutes.
+
+=====timestamp=====
+
+The timestamp of the server.
+This timestamp is used by the client to check whether the local time is synchronized with the server.
+
+If the local time of the client is not synchronized with the server, the authentication may fail.
+In this case, the client should first synchronize the time or prompt the user.
+
+=====callback=====
+
+''Optional''. An url that used to send the response payload.
+
+When a <code>callback</code> is provided, the response payload is sent to the <code>callback</code> url in HTTP POST method.
+
+====Response payload====
+
+<pre>
+{
+  "algorithm": "ECDSA-P256",
+  "network": 860833102,
+  "pubkey": "0355912bc4e61c9715c5912397ea53a5ac6c103c4893fbd9c2a9f3be13b7a3e29d",
+  "address": "NfMFWYxaUUQy9SYo6AhRiGmRxfPxe9Edj7",
+  "nonce": "13458238842203010919",
+  "timestamp": 1616131369,
+  "signature": "BAS7Ljufj3vrhOrTAi21D/5Cf62n4r64Suf/do8dq/OCMHiLJl+hLJeMFZwTajVjhcpFLz6FuSEp13vvEqWf1w=="
+}
+</pre>
+
+=====algorithm=====
+
+The algorithm used by the client to sign the response data.
+It should be one of the values in the <code>allowed_algorithms</code> sent by the server.
+
+If the algorithm used by the client is not supported by the server, the authentication fails.
+
+=====network=====
+
+The magic number of the network.
+It must be one of the <code>networks</code> in the challenge payload, otherwise the authentication fails.
+
+=====pubkey=====
+
+The public key used to verify the signature.
+It must correspond to the <code>address</code>, otherwise the authentication fails.
+
+=====address=====
+
+The address of the user to be authenticated.
+It must correspond to the <code>pubkey</code>, otherwise the authentication fails.
+
+=====nonce=====
+
+A 64-bit unsigned integer used to identify this authentication.
+This value must be exactly the same as the <code>nonce</code> sent by the server.
+
+When the server receives the response, it should check whether the nonce has expired.
+If the nonce has expired or not exists, the authentication fails.
+
+=====timestamp=====
+
+The timestamp of the client.
+This timestamp is used by the server to determine the time of the signature to prevent replay attacks.
+
+=====signature=====
+
+The signature of the response data.
+It should be encoded in base64.
+
+====Response data to sign====
+
+{| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
+!Name
+!Type
+!Offset
+!Size
+!Description
+|-
+| network
+| uint32
+| 0
+| 4
+| The magic number of the network
+|-
+| nonce
+| uint64
+| 4
+| 8
+| The nonce sent by the server
+|-
+| timestamp
+| uint32
+| 12
+| 4
+| The timestamp of the client
+|-
+| hash
+| uint160
+| 16
+| 20
+| The script hash of the user's address
+|}
+
+===Scene modes===
+
+====QR code mode====
+
+A website can allow NEO users to log in directly.
+
+The login process is:
+
+#The user clicks the login button with the NEO icon.
+
+#The QR code for login is displayed on the webpage. The challenge payload is encoded in the QR code. In this case, the <code>callback</code> must be included.
+
+#The user opens the mobile wallet and scans the QR code.
+
+#After the wallet recognizes the QR code, a pop-up window asks the user to confirm login.
+
+#If the user cancels the login, the authentication process ends. Otherwise, go to the next step.
+
+#The wallet sends the response payload to the <code>callback</code> url through the HTTP POST method.
+
+#After the website receives the response payload and the verification is successful, it notifies the front end to refresh the page.
+
+#The authentication is complete and the login is successful.
+
+====Plug-in mode====
+
+If the user uses a plug-in wallet, it will be able to automatically log in to the supported website.
+
+The login process is:
+
+#The front end of the website detects whether a supported plug-in wallet is installed.
+
+#The front end requests challenge payload from the server.
+
+#The front end calls the <code>authenticate</code> method of the plug-in wallet and passes the challenge payload as a parameter.
+
+#The plug-in automatically selects an account, or the user specifies an account for the authentication process.
+
+#The wallet sends the response payload as the return value of the <code>authenticate</code> method to the front end.
+
+#The front end verifies the response payload and notifies the server.
+
+#The authentication is complete and the login is successful.
+
+====Connection mode====
+
+This authentication scheme can also be used in connection mode. For example, game clients, command line wallets, etc.
+
+The login process is:
+
+#The client connects to the server.
+
+#The server sends the challenge payload to the client.
+
+#The client sends the response payload to the server.
+
+#If the authentication is successful, then keep the connection and continue the business logic. Otherwise, send an error code and disconnect.
+
+==Implementation==
