@@ -18,7 +18,7 @@ Currently, different client programs generate different wallet files. They have 
 
 ==Rationale==
 
-The wallet standard should consider both security and cross-platform compatibility. For security, we require the implementations to use the NEP-2 mechanism to encrypt or decrypt the private keys. For cross-platform, we use the JSON format to describe the wallet files, so that the contents of the wallet files can be easily recognized on each platform.
+The wallet standard should consider both security and cross-platform compatibility. For security, we require the implementations to use the [[nep-2.mediawiki|NEP-2]] mechanism to encrypt or decrypt the private keys. For cross-platform, we use the JSON format to describe the wallet files, so that the contents of the wallet files can be easily recognized on each platform.
 
 ==Specification==
 
@@ -88,7 +88,7 @@ Account object has the following structure:
 
 <code>lock</code> indicates whether the account is locked by the user. The client shouldn't spend the funds in a locked account.
 
-<code>key</code> is the private key of the account in NEP-2 format. This field can be <code>null</code> (for watch-only address or non-standard address).
+<code>key</code> is the private key of the account in [[nep-2.mediawiki|NEP-2]] format. This field can be <code>null</code> (for watch-only address or non-standard address).
 
 <code>contract</code> is a Contract object which describes the details of the contract. This field can be <code>null</code> (for watch-only address).
 
@@ -108,7 +108,7 @@ Contract object has the following structure:
 
 <code>script</code> is the script code of the contract. This field can be <code>null</code> if the contract has been deployed to the blockchain.
 
-<code>parameters</code> is an array of Parameter objects which describe the details of each parameter of the contract function. For more information about the Parameter object, see the descriptions in [[nep-3.mediawiki|NEP-3: NeoContract ABI]].
+<code>parameters</code> is an array of Parameter objects which describe the details of each parameter of the contract function. For more information about the Parameter object, see the descriptions in [[obsolete/nep-3.mediawiki|NEP-3: NeoContract ABI]].
 
 <code>deployed</code> indicates whether the contract has been deployed to the blockchain.
 

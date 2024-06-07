@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This NEP describes a URI standard for transfer of NEO native assets. Furthermore it proposes a subset of URI's for well established smart contract operations, which at the time of this proposal encompasses NEP-5 token transfers. In the future, as more well understood and well tested contracts are added to the network, URI's may be added. We define a framework for determining if a URI scheme is appropriate for a given smart contract operation below.  
+This NEP describes a URI standard for transfer of NEO native assets. Furthermore it proposes a subset of URI's for well established smart contract operations, which at the time of this proposal encompasses [[obsolete/nep-5.mediawiki|NEP-5]] token transfers. In the future, as more well understood and well tested contracts are added to the network, URI's may be added. We define a framework for determining if a URI scheme is appropriate for a given smart contract operation below.
 
 ==Motivation==
 
@@ -17,7 +17,7 @@ Currently, there is no standard URI for NEO clients to consume. Bitcoin implemen
 
 However NEO can possibly implement much more contract operations via smart contract execution. These can range from minting and transferring tokens, registering domain names, exchanges, and other customized applications. Ideally a URI could exist for generic smart contract execution. However, this has security implications, as it may be difficult to determine what a smart contract URI actually does, which could lead to loss of funds.
 
-To counter this we propose that the URI's generated for smart contract invocation to be limited to a subset of well established contract operations like NEP-5 token transfer. This will allow a client to easily understand and verify what a given URI will be to do. If the client is even more security conscious it could maintain a white list of contracts that follow the given URI spec.
+To counter this we propose that the URI's generated for smart contract invocation to be limited to a subset of well established contract operations like [[obsolete/nep-5.mediawiki|NEP-5]] token transfer. This will allow a client to easily understand and verify what a given URI will be to do. If the client is even more security conscious it could maintain a white list of contracts that follow the given URI spec.
 
 Any new NEO URI that is added to this specification should be used for a smart contract that is secure, well documented, and commonly used. We will discuss more about this at the end of this proposal.
 
@@ -132,7 +132,7 @@ This should be sufficient to facilitate transfer of native NEO assets safely.
 
 
 ===Smart contract invocation URI===
-To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer NEP-5 token, voting, etc. what left for a user to do is to authorize/sign the transaction. 
+To invoke the smart contract, we need to specify a script hash and the operation of the smart contract that is being invoked as well as providing required parameters. This way an application can tailor the screen to match the invoking operation with pre-filled information. e.g. transfer [[obsolete/nep-5.mediawiki|NEP-5]] token, voting, etc. what left for a user to do is to authorize/sign the transaction.
 
 As mentioned before, generic smart contract execution is not necessarily suitable for URI's. This is because both of the security issues, and usability. A client of the URI should have 100% confidence that the URI that they will consume will have it's intended effect. Limiting it to a subset of contract operations does most of the heavy lifting. If the client wishes to be even more secure, it can whitelist its own set of contracts for each subset of supported smart contract URI's.
 
@@ -147,7 +147,7 @@ If it meets these criteria than can be considered to enter the list of supported
 
 ====NEP-5 token transfer====
 
-A NEP-5 token transfer is a smart contract invocation and would have the following URI. 
+A [[obsolete/nep-5.mediawiki|NEP-5]] token transfer is a smart contract invocation and would have the following URI.
 
 <code>neo:<address>?asset=<NEP5ScriptHash>[?amount=<amount>][?<TransactionAttributeKey>=<value>]</code>
 
