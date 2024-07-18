@@ -269,7 +269,7 @@ map parameters, returning an iterator with structured element type.
                   "value" : {
                      "type" : "Hash160"
                   },
-                  "type" : "Array",
+                  "type" : "Array"
                },
                "type" : "Array",
                "name" : "arrayOfHash160"
@@ -342,7 +342,7 @@ map parameters, returning an iterator with structured element type.
                         "type" : "Array"
                      },
                      "type" : "Array"
-                  },
+                  }
                },
                "type" : "Map",
                "name" : "MapHash160ToArrayOfIntegers"
