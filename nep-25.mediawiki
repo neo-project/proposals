@@ -257,8 +257,8 @@ map parameters, returning an iterator with structured element type.
          "name" : "m",
          "parameters" : [
             {
-               "type" : "Array",
                "name" : "structParam",
+               "type" : "Array",
                "extendedtype" : {
                   "type" : "Array",
                   "namedtype" : "local.Structure"
@@ -271,8 +271,8 @@ map parameters, returning an iterator with structured element type.
                   },
                   "type" : "Array"
                },
-               "type" : "Array",
-               "name" : "arrayOfHash160"
+               "name" : "arrayOfHash160",
+               "type" : "Array"
             },
             {
                "name" : "mapParam",
@@ -317,8 +317,8 @@ map parameters, returning an iterator with structured element type.
                }
             },
             {
-               "type" : "Array",
                "name" : "StructureField",
+               "type" : "Array",
                "extendedtype" : {
                   "type" : "Array",
                   "namedtype" : "package.Structure"
@@ -331,9 +331,11 @@ map parameters, returning an iterator with structured element type.
          "type" : "Array",
          "fields" : [
             {
+               "name" : "MapHash160ToArrayOfIntegers",
+               "type" : "Map",
                "extendedtype" : {
-                  "key" : "Hash160",
                   "type" : "Map",
+                  "key" : "Hash160",
                   "value" : {
                      "extendedtype" : {
                         "value" : {
@@ -343,13 +345,11 @@ map parameters, returning an iterator with structured element type.
                      },
                      "type" : "Array"
                   }
-               },
-               "type" : "Map",
-               "name" : "MapHash160ToArrayOfIntegers"
+               }
             },
             {
-               "type" : "String",
-               "name" : "StringField"
+               "name" : "StringField",
+               "type" : "String"
             },
             {
                "name" : "ByteArrayField",
