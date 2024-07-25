@@ -123,6 +123,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
+| [[nep-29.mediawiki|29]]
+| Contract deployment/update callback function
+| Roman Khimov
+| Standard
+| Accepted
+|-
 |
 | Dynamic Sharding
 | 
