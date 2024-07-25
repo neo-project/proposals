@@ -1,5 +1,5 @@
 <pre>
-  NEP: <to be assigned>
+  NEP: 29
   Title: Contract deployment/update callback function
   Author: Roman Khimov <roman@nspcc.ru>
   Type: Standard
