@@ -35,6 +35,8 @@ This specification does not address contracts whose interface is dynamic or othe
 
 ==Specification==
 
+Anywhere below "identifier" is an ASCII string that starts with a letter or underscore and contains letters, numbers or underscore.
+
 ===Contract===
 
 The NeoContract ABI is defined by JSON format, which has the following basic structure, where some of the top-level objects can have any number of child objects:
@@ -51,7 +53,7 @@ The NeoContract ABI is defined by JSON format, which has the following basic str
 
 <code>events</code> is an array of Event objects which describe the details of each event in the contract.
 
-<code>namedtypes</code> is an object with each member having a name (a string identifier of this type) and a value of ExtendedType object.
+<code>namedtypes</code> is an object with each member having a name (a string consisting of one or more identifiers joined by dots) and a value of ExtendedType object.
 
 ===Method===
 
@@ -230,9 +232,13 @@ type specified in the <code>namedtypes</code> object).
 
 ==Backwards Compatibility==
 
-This NEP is completely backwards-compatible with
+For the field extension this NEP is completely backwards-compatible with
 [https://github.com/neo-project/proposals/blob/06a6b550987a74025009cf6841757f2426462697/nep-14.mediawiki NEP-14]
 when new fields are ignored, old fields and their meaning remain intact.
+
+This NEP has more strict requirements for identifiers, but these are mostly
+clarifying what was meant implicitly earlier and practically it's compatible
+with the old definition.
 
 ==Test Cases==
 
