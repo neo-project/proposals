@@ -175,6 +175,7 @@ represents all possible fields).
   "type": "Integer",
   "namedtype": "name",
   "length": 32,
+  "forbidnull": true,
   "interface": "IIterator",
   "key": "Integer",
   "value": {},
@@ -205,6 +206,13 @@ MUST NOT be used for other types. When used it specifies the maximum possible
 byte length of an integer/byte array/string or number of array elements.
 Any of these lengths MUST NOT exceed NeoVM limitations that are relevant for
 the current version of it. Length 0 means "unlimited".
+
+<code>forbidnull</code> is an optional field that can be used for <code>Hash160</code>,
+<code>Hash256</code>, <code>ByteArray</code>, <code>String</code>, <code>Array</code>,
+<code>Map</code> or <code>InteropInterface</code> types and MUST NOT be used
+for other types. It allows to specify that the method accepts or event emits
+only non-null values for this field. The default (if not specified) is "false",
+meaning that null can be used.
 
 <code>interface</code> is only used in conjuction with the
 <code>InteropInterface</code> <code>type</code> and MUST NOT be used for other
@@ -266,6 +274,7 @@ map parameters, returning an iterator with structured element type.
                "namedtype" : "package.Structure"
             },
             "type" : "InteropInterface",
+            "forbidnull" : true,
             "interface" : "IIterator"
          },
          "name" : "m",
