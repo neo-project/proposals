@@ -17,7 +17,7 @@ Contracts may need to run some initialization/update code right after their depl
 
 ==Specification==
 
-Neo N3 has a native <code>ContractManagement</code> contract that is used for contract deployment and update via <code>deploy</code> and <code>update</code> methods of it. After settling with the new NEF and manifest both of them can invoke a special <code>_deploy</code> method if it's implemented by the contract.
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract deployment and update via <code>deploy</code> and <code>update</code> methods of it. After settling with the new NEF and manifest both of them will invoke a special <code>_deploy</code> method if it's implemented by the contract.
 
 ===Methods===
 
