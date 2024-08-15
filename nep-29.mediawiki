@@ -58,3 +58,4 @@ Notice that if there are any notifications emitted during <code>_deploy</code> e
 ==Implementation==
 
 * https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/netmap/contract.go#L79
+* https://github.com/neo-project/non-native-contracts/blob/8d72b92e5e5705d763232bcc24784ced0fb8fc87/src/NameService/NameService.cs#L439
