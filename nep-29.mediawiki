@@ -41,9 +41,9 @@ Neo N3 has a native <code>ContractManagement</code> contract that is used for co
 }
 </pre>
 
-This method will be automatically executed by ContractManagement contract when a contract is first deployed or updated. At this point new contract state is already saved (and it can be called from other code), but <code>Deploy</code> or <code>Update</code> notification is not yet emitted by ContractManagement contract.
+This method will be automatically executed by <code>ContractManagement</code> contract when a contract is first deployed or updated. At this point new contract state is already saved (and it can be called from other code), but <code>Deploy</code> or <code>Update</code> notification is not yet emitted by <code>ContractManagement</code> contract.
 
-The <code>data</code> parameter is completely contract-specific, contracts can accept any valid [[nep-14.mediawiki|NEP-14]] parameter types and handle them as required. It's the same <code>data</code> that is accepted by <code>deploy</code> and <code>update</code> methods of ContractManagement contract.
+The <code>data</code> parameter is completely contract-specific, contracts can accept any valid [[nep-14.mediawiki|NEP-14]] parameter types and handle them as required. It's the same <code>data</code> that is accepted by <code>deploy</code> and <code>update</code> methods of <code>ContractManagement</code> contract.
 
 <code>update</code> is true when contract is updated via <code>update</code> and it's false on initial deployment via <code>deploy</code>.
 
@@ -53,7 +53,7 @@ This callback is designed to guarantee the first code to be executed in a new/up
 
 <code>_deploy</code> parameters are made to be generic enough to cover all contract state management cases, it is possible to get additional per-network or per-instance contract data for initialization and updates can be easily differentiated from deployments via <code>update</code> parameter.
 
-Notice that if there are any notifications emitted during <code>_deploy</code> execution they will precede <code>Deploy</code> or <code>Update</code> notifications from ContractManagement. This behavior is historic, it mostly means that we're considering contract to be completely ready after succesful <code>_deploy</code> invocation (it can throw an exception or abort execution as well).
+Notice that if there are any notifications emitted during <code>_deploy</code> execution they will precede <code>Deploy</code> or <code>Update</code> notifications from <code>ContractManagement</code>. This behavior is historic, it mostly means that we're considering contract to be completely ready after succesful <code>_deploy</code> invocation (it can throw an exception or abort execution as well).
 
 ==Implementation==
 
