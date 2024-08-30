@@ -1,0 +1,61 @@
+<pre>
+  NEP: 29
+  Title: Contract deployment/update callback function
+  Author: Roman Khimov <roman@nspcc.ru>
+  Type: Standard
+  Status: Accepted
+  Created: 2024-07-18
+</pre>
+
+==Abstract==
+
+This proposal standardizes the callback function that can be implemented by contracts to have some code executed right after initial deployment or update.
+
+==Motivation==
+
+Contracts may need to run some initialization/update code right after their deployment or upgrade. Neo N3 has provided a mechanism for that since version 3.0, but it was never properly standardized, so this proposal fixes it.
+
+==Specification==
+
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract deployment and update via <code>deploy</code> and <code>update</code> methods of it. After settling with the new NEF and manifest both of them will invoke a special <code>_deploy</code> method if it's implemented by the contract.
+
+===Methods===
+
+====_deploy====
+
+<pre>
+{
+  "name": "_deploy",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "data",
+      "type": "Any"
+    },
+    {
+      "name": "update",
+      "type": "Boolean"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+This method will be automatically executed by <code>ContractManagement</code> contract when a contract is first deployed or updated. At this point new contract state is already saved (and it can be called from other code), but <code>Deploy</code> or <code>Update</code> notification is not yet emitted by <code>ContractManagement</code> contract.
+
+The <code>data</code> parameter is completely contract-specific, contracts can accept any valid [[nep-14.mediawiki|NEP-14]] parameter types and handle them as required. It's the same <code>data</code> that is accepted by <code>deploy</code> and <code>update</code> methods of <code>ContractManagement</code> contract.
+
+<code>update</code> is true when contract is updated via <code>update</code> and it's false on initial deployment via <code>deploy</code>.
+
+==Rationale==
+
+This callback is designed to guarantee the first code to be executed in a new/updated contract. Previously contracts could provide methods of their own for doing this, but this either required an additional code in deployment/update transaction script or an additional transaction and some special contract state management (to disable actions before some initialization).
+
+<code>_deploy</code> parameters are made to be generic enough to cover all contract state management cases, it is possible to get additional per-network or per-instance contract data for initialization and updates can be easily differentiated from deployments via <code>update</code> parameter.
+
+Notice that if there are any notifications emitted during <code>_deploy</code> execution they will precede <code>Deploy</code> or <code>Update</code> notifications from <code>ContractManagement</code>. This behavior is historic, it mostly means that we're considering contract to be completely ready after succesful <code>_deploy</code> invocation (it can throw an exception or abort execution as well).
+
+==Implementation==
+
+* C#: https://github.com/neo-project/non-native-contracts/blob/8d72b92e5e5705d763232bcc24784ced0fb8fc87/src/NameService/NameService.cs#L439
+* Go: https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/netmap/contract.go#L79
