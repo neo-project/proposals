@@ -129,6 +129,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [[nep-30.mediawiki|30]]
+| Contract witness verification callback
+| Roman Khimov
+| Standard
+| Accepted
+|-
 |
 | Dynamic Sharding
 | 
