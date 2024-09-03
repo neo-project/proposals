@@ -44,7 +44,7 @@ Returning <code>true</code> from this method will make the contract signer verif
 
 ===Transaction scripts===
 
-Transactions with contract address used as one of signers MUST include an appropriate witness. Just like a regular witness contract address witness consists of an invocation script and a verification script. Verification script MUST be empty, invocation script can have any code producing parameters for contract invocation if contract's <code>verify</code> method needs them or it can be empty as well if <code>verify</code> takes no parameters.
+Transactions with contract address used as one of signers MUST include an appropriate witness. Just like a regular witness contract address witness consists of an invocation script and a verification script. Verification script MUST be empty. Invocation script can have any code producing parameters for contract invocation if contract's <code>verify</code> method needs them or it can be empty if <code>verify</code> takes no parameters.
 
 ==Rationale==
 
