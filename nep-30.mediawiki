@@ -54,5 +54,5 @@ Since the system knows all deployed contract hashes and they can not intersect w
 
 ==Implementation==
 
-* https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/proxy/contract.go#L43
-* https://github.com/neo-project/neo-devpack-dotnet/blob/113651008c8873f983da962d9ab9ba378e1cc1bd/examples/Example.SmartContract.SampleRoyaltyNEP11Token/SampleRoyaltyNEP11Token.cs#L187
+* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/113651008c8873f983da962d9ab9ba378e1cc1bd/examples/Example.SmartContract.SampleRoyaltyNEP11Token/SampleRoyaltyNEP11Token.cs#L187
+* Go: https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/proxy/contract.go#L43
