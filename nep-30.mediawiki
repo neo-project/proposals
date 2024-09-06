@@ -1,0 +1,58 @@
+<pre>
+  NEP: 30
+  Title: Contract witness verification callback
+  Author: Roman Khimov <roman@nspcc.ru>
+  Type: Standard
+  Status: Accepted
+  Created: 2024-07-25
+</pre>
+
+==Abstract==
+
+This NEP standardizes a specific method that if implemented allows to use contracts as signers for transactions and pass witness checks for their address in other code.
+
+==Motivation==
+
+Contracts may want to act as transaction senders covering for fees from GAS they have, in this case their address is the first transaction signer and there needs to be some way to verify it which is made possible by this NEP.
+
+Contract addresses may also be used in other contexts like [[nep-17.mediawiki|NEP-17]] transfers, to successfully pass witness check there contract needs to either be a method caller or be a transaction signer in which case verification of the address is needed as well.
+
+The mechanism for this verification is provided by Neo N3 since its initial version, but it was never properly standardized.
+
+==Specification==
+
+Contracts that want their addresses to be used as transaction signers MUST implement <code>verify</code> method outlined below. This method will be automatically called during transaction verification (with <code>Verification</code> trigger), its return value signifies whether verification was successful (in which case transaction is considered to be valid) or not (in which case transaction is invalid).
+
+===Methods===
+
+====verify====
+
+<pre>
+{
+  "name": "verify",
+  "safe": true,
+  "parameters": [],
+  "returntype": "bool"
+}
+</pre>
+
+Parameters are contract-specific, any number of valid [[nep-14.mediawiki|NEP-14]] parameters can be added if contract needs them to perform verification. Compliant contract MUST have only one method with this name, otherwise the result is undefined.
+
+To prevent using this method in regular application calls contract can check for trigger returned from <code>System.Runtime.GetTrigger</code> interop function.
+
+Returning <code>true</code> from this method will make the contract signer verification pass.
+
+===Transaction scripts===
+
+Transactions with contract address used as one of signers MUST include an appropriate witness. Just like a regular witness contract address witness consists of an invocation script and a verification script. Verification script MUST be empty. Invocation script can have any code producing parameters for contract invocation if contract's <code>verify</code> method needs them or it can be empty if <code>verify</code> takes no parameters.
+
+==Rationale==
+
+Neo Legacy differentiated contract verification and application contexts only with VM trigger type, but Legacy contracts had only one entry point and their hashes were derived directly from the byte code, so they could be used as verification scripts as well. In N3 contract hashes are derived from the script that is intentionally made to abort execution, but N3 contracts also have multiple entry points described in [[nep-14.mediawiki|NEP-14]] ABI. Therefore a specific name was chosen to represent a method to be used for contract address verification.
+
+Since the system knows all deployed contract hashes and they can not intersect with valid verification scripts the choice was made to keep verification scripts attached to transactions empty. But as some contracts may need additional data for this method (typically, signatures or addresses) method parameters are not fixed and invocation scripts can be used to pass them.
+
+==Implementation==
+
+* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/113651008c8873f983da962d9ab9ba378e1cc1bd/examples/Example.SmartContract.SampleRoyaltyNEP11Token/SampleRoyaltyNEP11Token.cs#L187
+* Go: https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/proxy/contract.go#L43
