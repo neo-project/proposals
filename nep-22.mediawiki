@@ -46,7 +46,7 @@ Neo N3 has a native <code>ContractManagement</code> contract that is used for co
 }
 </pre>
 
-This method will be automatically executed by <code>ContractManagement</code> contract when a contract is updated. When <code>update</code> in <code>_deploy</code> is true, ContractManagement contract will update new contract state by this method.
+This method will be automatically executed by <code>ContractManagement</code> contract when a contract is updated. When <code>update</code> in <code>_deploy</code> is true, <code>ContractManagement</code> contract will update new contract state by this method.
 
 Updating a smart contract MUST have <code>nefFile</code> and<code>manifest.json</code>. It will be passed to <code>_deploy</code>.
 
