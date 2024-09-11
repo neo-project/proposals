@@ -1,43 +1,40 @@
 <pre>
-  NEP: 31
-  Title: Contract Destroy Function
-  Author: Owen Zhang <zhangzhihong@ngd.neo.org>
-  Type: Standard
+  NEP: <to be assigned>
+  Title: <NEP title>
+  Author: <list of authors' names and optionally, email addresses>
+  Type: <Standard | Informational | Meta>
   Status: Draft
-  Created: 2024-09-11
+  Created: <date created on, in ISO 8601 (yyyy-mm-dd) format>
+  Requires (*optional): <NEP number(s)>
+  Replaces (*optional): <NEP number(s)>
 </pre>
 
 ==Abstract==
 
-This proposal standardizes the destroy function that can be implemented by contracts to have some code executed right after initial deployment or update.
+A short (~200 words) description of the technical issue being addressed.
 
 ==Motivation==
 
-N3 already provided contract destroy mechanism but it hasn't been summarized in a standard. This standard will show details.
+The motivation is critical for NEPs that want to change the NEO protocol. It should clearly explain why the existing protocol specification is inadequate to address the problem that the NEP solves. NEP submissions without sufficient motivation may be rejected outright.
 
 ==Specification==
 
-Neo N3 has a native <code>ContractManagement</code> contract that is used for contract destroy via <code>Destroy</code> method. It can delete all storage references under the contract.
+The technical specification should describe the syntax and semantics of any new feature. The specification should be detailed enough to allow competing, interoperable implementations for any of the current NEO platforms.
 
-===Methods===
+==Rationale==
 
-====destroy====
+The rationale fleshes out the specification by describing what motivated the design and why particular design decisions were made. It should describe alternate designs that were considered and related work, e.g. how the feature is supported in other languages.
 
-<pre>
-{
-  "name": "destroy",
-  "safe": false,
-  "parameters": [],
-  "returntype": "Void"
-}
-</pre>
+The rationale may also provide evidence of consensus within the community, and should discuss important objections or concerns raised during discussion.
 
-This method SHOULD invoke <code>Destroy</code> method of <code>ContractManagement</code> contract when a contract is destroyed. After execution, all related storage and contract state will be deleted.  <code>Destroy</code>notification will be emitted by <code>ContractManagement</code> contract in destroy transaction.
+==Backwards Compatibility==
 
-==References==
+All NEPs that introduce backwards incompatibilities must include a section describing these incompatibilities and their severity. The NEP must explain how the author proposes to deal with these incompatibilities. NEP submissions without a sufficient backwards compatibility treatise may be rejected outright.
 
+==Test Cases==
+
+Test cases for an implementation are mandatory for NEPs that are affecting consensus changes. Other NEPs can choose to include links to test cases if applicable.
 
 ==Implementation==
 
-* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NFT/Loot.Admin.cs#L79
-
+The implementations must be completed before any NEP is given status "Final", but it need not be completed before the NEP is accepted. It is better to finish the specification and rationale first and reach consensus on it before writing code.

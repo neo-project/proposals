@@ -1,0 +1,43 @@
+<pre>
+  NEP: 31
+  Title: Contract Destroy Function
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2024-09-11
+</pre>
+
+==Abstract==
+
+This proposal standardizes the destroy function that can be implemented by contracts to have some code executed right after initial deployment or update.
+
+==Motivation==
+
+N3 already provided contract destroy mechanism but it hasn't been summarized in a standard. This standard will show details.
+
+==Specification==
+
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract destroy via <code>Destroy</code> method. It can delete all storage references under the contract.
+
+===Methods===
+
+====destroy====
+
+<pre>
+{
+  "name": "destroy",
+  "safe": false,
+  "parameters": [],
+  "returntype": "Void"
+}
+</pre>
+
+This method SHOULD invoke <code>Destroy</code> method of <code>ContractManagement</code> contract when a contract is destroyed. After execution, all related storage and contract state will be deleted.  <code>Destroy</code>notification will be emitted by <code>ContractManagement</code> contract in destroy transaction.
+
+==References==
+
+
+==Implementation==
+
+* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NFT/Loot.Admin.cs#L79
+
