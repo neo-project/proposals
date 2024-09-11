@@ -2,8 +2,8 @@
   NEP: 22
   Title: Contract Update Function
   Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>
-  Type: Informational
-  Status: Standard
+  Type: Standard
+  Status: Accepted
   Created: 2021-04-19
 </pre>
 
