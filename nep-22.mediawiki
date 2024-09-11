@@ -1,70 +1,25 @@
 <pre>
   NEP: 22
-  Title: Contract Basic Methods Guideline
+  Title: Contract Update Function
   Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>
   Type: Informational
-  Status: Accepted
+  Status: Standard
   Created: 2021-04-19
 </pre>
 
 ==Abstract==
 
-This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract initial deploy, update, verify and destroy.
+This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract update and destroy.
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Initial Deploy, Verify, Update and Destroy will become increasingly important.  Without guideline for these methods, systems will be required to maintain different API for different contracts, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
+As the NEO blockchain scales, Smart Contract Update will become increasingly important.  Without guideline for these methods, systems will be required to maintain different API for different contracts, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
 
 ==Specification==
 
 In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
 
 ===Methods===
-
-====_deploy====
-
-<pre>
-{
-  "name": "_deploy",
-  "safe": false,
-  "parameters": [
-    {
-      "name": "data",
-      "type": "Any"
-    },
-    {
-      "name": "update",
-      "type": "Boolean"
-    }
-  ],
-  "returntype": "Void"
-}
-</pre>
-
-This is an optional function which will be automatically executed by ContractManagement contract when a contract is first deployed or updated.
-
-The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose. It's the same <code>data</code> that is accepted by Deploy() and Update() in ContractManagement contract.
-
-<code>update</code> is true when contract is updated via <code>update()</code> and it's false on initial deployment via <code>_deploy()</code>.
-
-====verify====
-
-<pre>
-{
-  "name": "verify",
-  "safe": false,
-  "parameters": [],
-  "returntype": "bool"
-}
-</pre>
-
-If this contract has scenario that its address will be included in the transaction signatures, it MUST apply this. A typical scenario is withdraw tokens from a smart contract. The first Verify method in that contract's manifest abi will be triggered as a VerificationTrigger to verify if the signature is correct. Here's an example:
-
-<code>public static bool Verify() => Runtime.CheckWitness(Owner);</code>
-
-This method needs to be called when withdrawing token from the contract. 
-
-Verify method can have multi parameters as well.
 
 ====update====
 
@@ -90,25 +45,16 @@ Verify method can have multi parameters as well.
 }
 </pre>
 
-Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code> or <code>both</code>. It will be passed to <code>_deploy</code>.
+This method will be automatically executed by ContractManagement contract when a contract is updated. When <code>update</code> in <code>_deploy</code> is true, ContractManagement contract will update new contract state by this mehod.
 
-The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose.
+Updating a smart contract MUST have <code>nefFile</code> and<code>manifest.json</code>. It will be passed to <code>_deploy</code>.
 
-The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
+The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose. For example some kinds of json parameters can be put into data for specific check.
 
-====destroy====
+This function will check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. Details has been explained in [NEP-30](https://github.com/superboyiii/proposals/blob/upgrade-standard/nep-30.mediawiki).
 
-<pre>
-{
-  "name": "destroy",
-  "safe": false,
-  "parameters": [],
-  "returntype": "Void"
-}
-</pre>
-This function can delete all the storage of this contract.
+===Implementation===
 
-The function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. The function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
-This <code>owner</code> means the <code>20-byte address</code> which has authority to update, deploy this contract or do any customized operation.
+* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NEP17/SampleNep17Token.cs#L130
 
-If any token is in this contract asset, they MUST be transferred to another address before <code>destroy</code>.
+* Go: https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/proxy/contract.go#L33
