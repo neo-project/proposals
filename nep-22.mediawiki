@@ -1,23 +1,24 @@
 <pre>
   NEP: 22
   Title: Contract Update Function
-  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
   Type: Standard
   Status: Accepted
   Created: 2021-04-19
 </pre>
 
+
 ==Abstract==
 
-This proposal outlines a basic method guideline for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract update and destroy.
+This proposal outlines a standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract update.
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Update will become increasingly important.  Without guideline for these methods, systems will be required to maintain different API for different contracts, regardless of their similarity to other contracts which makes application development very inconvenient. This guideline can lead most contracts to implement the same basic methods with the same types of parameters but still accept diversity.
+As the NEO blockchain scales, Smart Contract Update will become increasingly important. Update mechanism is already there from initial N3 release. But we haven't summarized that standard. That's why this standard is necessary.
 
 ==Specification==
 
-In the method definitions below, we provide both the definitions of the functions as they are defined in the contract as well as the invoke parameters.
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract deployment and update via <code>deploy</code> and <code>update</code> methods of it. After settling with the new NEF and manifest both of them will invoke a special <code>_deploy</code> method if it's implemented by the contract.
 
 ===Methods===
 
@@ -45,7 +46,7 @@ In the method definitions below, we provide both the definitions of the function
 }
 </pre>
 
-This method will be automatically executed by ContractManagement contract when a contract is updated. When <code>update</code> in <code>_deploy</code> is true, ContractManagement contract will update new contract state by this mehod.
+This method will be automatically executed by ContractManagement contract when a contract is updated. When <code>update</code> in <code>_deploy</code> is true, ContractManagement contract will update new contract state by this method.
 
 Updating a smart contract MUST have <code>nefFile</code> and<code>manifest.json</code>. It will be passed to <code>_deploy</code>.
 
