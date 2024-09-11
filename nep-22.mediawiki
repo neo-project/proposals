@@ -53,6 +53,12 @@ The parameter <code>data</code> can be any type of supported parameters for cont
 
 This function will check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. Details has been explained in [NEP-30](https://github.com/superboyiii/proposals/blob/upgrade-standard/nep-30.mediawiki).
 
+===References===
+
+https://github.com/neo-project/proposals/blob/master/nep-29.mediawiki
+
+https://github.com/neo-project/proposals/blob/master/nep-30.mediawiki
+
 ===Implementation===
 
 * C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NEP17/SampleNep17Token.cs#L130
