@@ -72,7 +72,8 @@ multiple pieces of information encoded as a string. Those encodings are indicate
 
   interface DebugInformation {
     hash: string; // hex-encoded UInt160
-    documents?: string[]; // file paths
+    documents?: string[]; // absolute or relative file paths
+    document-root?: string | null; // project root
     events?: Event[];
     methods?: Method[];
     "static-variables"?: Variable[]; 
@@ -173,11 +174,22 @@ debug information. The hash value is stored as a hex encoded string with an opti
 
 ==== documents ====
 
-This property stores an array of file paths, used in sequence point data. These paths should be full file
-paths as they existed on the machine where the contract was compiled. Neo Smart Contract Debugger has 
-the ability to automatically discover differences in paths between compiling and debugging machine, 
-plus supports manual source file mapping for cases where the mapping cannot be determined automatically.
+This property stores an array of file paths, used in sequence point data. These paths can be absolute or
+relative, pointing to the file paths of source files as they existed on the machine where the contract was
+compiled.
+
+Neo Smart Contract Debugger has the ability to automatically discover differences in paths between compiling 
+and debugging machine, plus supports manual source file mapping for cases where the mapping cannot be determined
+automatically.
+
 If omitted, this property defaults to an empty array.
+
+==== document-root ====
+
+This property stores the root folder path for the contract source files. Releative paths in the documents
+array are treated as relative to the document-root path.
+
+If omitted or null, all elements of the documents array are treated as absolute paths.
 
 ==== static-variables ====
 

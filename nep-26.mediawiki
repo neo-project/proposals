@@ -1,0 +1,104 @@
+<pre>
+  NEP: 26
+  Title: Smart contract transfer callback for non-fungible tokens
+  Author: Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>, Jaime Kindelan <jaime@red4sec.com>, Jimmy Liao <jimmy@r3e.network>
+  Type: Informational
+  Status: Final
+  Created: 2024-03-03
+  Requires: 11
+</pre>
+
+==Abstract==
+
+This proposal describes the callback method used by Neo smart contracts to
+process transfers of non-fungible [[nep-11.mediawiki|NEP-11]] tokens to their addresses.
+
+==Motivation==
+
+While the original [[nep-11.mediawiki|NEP-11]] already defines this method, it
+lacks some details relevant specifically to the receiver contract and it doesn't
+allow for easy reference. This standard can be used in <code>supportedstandards</code>
+section of [[nep-15.mediawiki|NEP-15 manifest]] or in any other situation to
+refer to contracts able to receive [[nep-11.mediawiki|NEP-11]] tokens (but not
+necessarily being [[nep-11.mediawiki|NEP-11]] themselves). Typical use cases
+for this functionality are: depositing/staking (with contract locking and
+managing tokens according to some rules) or exchange/minting (contract accepting
+transfer to itself, but returning some different token to the sender).
+
+==Specification==
+
+Smart contracts that need to receive and own [[nep-11.mediawiki|NEP-11]] tokens
+MUST implement <code>onNEP11Payment</code> method with the following signature:
+
+<pre>
+{
+  "name": "onNEP11Payment",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteString"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+A contract that doesn't implement this method will not be able to receive
+[[nep-11.mediawiki|NEP-11]] tokens (standard requires this method to be called
+unconditionally which will fail at the system call level if it's not implemented
+which then leads to a complete transaction failure). This method is called by
+[[nep-11.mediawiki|NEP-11]] contracts which tokens are being transferred. A
+particular token can be obtained via the <code>System.Runtime.GetCallingScriptHash</code>
+system call. Notice that technically this method MAY be called by entry scripts or
+non-[[nep-11.mediawiki|NEP-11]] contracts as well, so contracts SHOULD check for
+caller script hash to match their expectations like allowed/accepted tokens.
+Processing this call means that contract trusts the caller to implement
+[[nep-11.mediawiki|NEP-11]] correctly.
+
+<code>from</code> parameter specifies the sender of tokens and can be <code>null</code>
+for minted tokens.
+
+<code>amount</code> is the amount of tokens transferred to the contract. It's
+always 1 for non-divisible [[nep-11.mediawiki|NEP-11]] tokens.
+
+<code>tokenId</code> is the transferred token ID.
+
+<code>data</code> is the same <code>data</code>parameter that was given to the
+[[nep-11.mediawiki|NEP-11]] <code>transfer</code> call. Contract can interpret
+it in any application-specific way including imposing any restrictions on
+accepted <code>data</code> contents.
+
+If the contract implementing this NEP can't accept the transfer (for reasons like
+unexpected token, wrong amount, forbidden sender, wrong <code>data</code>
+parameter or any other) it MUST call <code>ABORT</code> or <code>ABORTMSG</code>
+VM opcode to fail the transaction. This is the only way to ensure contract
+won't own transferred tokens, because the method doesn't return any value
+and exceptions can be handled by calling contract. Contact MAY also check for
+various conditions with <code>ASSERT</code> or <code>ASSERTMSG</code> opcodes.
+
+==Rationale==
+
+This NEP just follows and explains [[nep-11.mediawiki|NEP-11]] semantics, no
+design decisions made here.
+
+==Backwards Compatibility==
+
+This NEP is completely compatible with [[nep-11.mediawiki|NEP-11]], there are
+just two extensions to it:
+* addition of <code>ABORTMSG</code> opcode that didn't exist at the time of [[nep-11.mediawiki|NEP-11]] creation, but it's the same thing as <code>ABORT</code> semantically.
+* explicit <code>ASSERT</code> and <code>ASSERTMSG</code> opcode allowance that was not a part of [[nep-11.mediawiki|NEP-11]], but also has the same function as <code>ABORT</code> for failed conditions.
+
+==Implementation==
+

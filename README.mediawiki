@@ -93,7 +93,49 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| 
+| [https://github.com/neo-project/proposals/pull/154 22]
+| Contract Basic Method Guideline
+| Owen Zhang, Fernando Díaz Toledano, Erik Zhang
+| Informational
+| Accepted
+|-
+| [[nep-23.mediawiki|23]]
+| JSON-RPC error handling and codes
+| Anna Shaleva, Roman Khimov
+| Informational
+| Final
+|-
+| [[nep-24.mediawiki|24]]
+| NFT Royalty Standard
+| Owen Zhang, Vincent Geneste
+| Standard
+| Final
+|-
+| [[nep-26.mediawiki|26]]
+| Smart contract transfer callback for non-fungible tokens
+| Erik Zhang, Roman Khimov, Jaime Kindelan, Jimmy Liao
+| Standard
+| Final
+|-
+| [[nep-27.mediawiki|27]]
+| Smart contract transfer callback for fungible tokens
+| Erik Zhang, Roman Khimov, Jaime Kindelan, Jimmy Liao
+| Standard
+| Final
+|-
+| [[nep-29.mediawiki|29]]
+| Contract deployment/update callback function
+| Roman Khimov
+| Standard
+| Accepted
+|-
+| [[nep-30.mediawiki|30]]
+| Contract witness verification callback
+| Roman Khimov
+| Standard
+| Accepted
+|-
+|
 | Dynamic Sharding
 | 
 | Standard
