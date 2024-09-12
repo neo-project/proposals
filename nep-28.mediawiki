@@ -2,7 +2,7 @@ NEP: 28
 Title: Standardization of the Smallest Unit of GAS
 Author: Jimmy Liao <jimmy@r3e.network>
 Type: Standard
-Status: Draft
+Status: Final
 Created: 2024-05-20
 
 ==Abstract==
