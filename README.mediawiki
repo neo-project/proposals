@@ -124,7 +124,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Final
 |-
 | [[nep-28.mediawiki|28]]
-| CStandardization of the Smallest Unit of GAS
+| Standardization of the Smallest Unit of GAS
 | Jimmy Liao
 | Standard
 | Final
