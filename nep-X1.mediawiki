@@ -31,7 +31,7 @@ Neo N3 has a native <code>ContractManagement</code> contract that is used for co
   "returntype": "Void"
 }
 </pre>
-This method will automatically invoke <code>destroy</code> method of <code>ContractManagement</code> contract when a contract is destroyed.
+This method MUST invoke the <code>destroy</code> method of <code>ContractManagement</code> contract when the contract is destroyed.
 
 ===Events===
 
