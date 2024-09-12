@@ -17,7 +17,7 @@ N3 already provided contract destroy mechanism but it hasn't been summarized in 
 
 ==Specification==
 
-Neo N3 has a native <code>ContractManagement</code> contract that is used for contract destroy via <code>destroy</code> method. When <code>destroy</code> is executed, it will callback the  <code>destroy</code> method in <code>ContractManagement</code>. Finally, it will delete all storage and entries of this contract. It will block the contract address in native <code>Policy</code> contract as well.
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract destroy via <code>destroy</code> method. When <code>destroy</code> is executed, it will callback the <code>destroy</code> method in <code>ContractManagement</code>. Finally, it will delete all storage and entries of this contract. It will block the contract address in native <code>Policy</code> contract as well.
 
 ===Methods===
 
