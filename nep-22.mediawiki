@@ -14,11 +14,11 @@ This proposal outlines a standard for the NEO blockchain that will provide syste
 
 ==Motivation==
 
-As the NEO blockchain scales, Smart Contract Update will become increasingly important. Update mechanism is already there from initial N3 release. But we haven't summarized that standard. That's why this standard is necessary.
+As the NEO blockchain scales, Smart Contract Update will become increasingly important. We need standize <code>update</code> method in contract to callback native <code>ContractManagement</code> correctly.
 
 ==Specification==
 
-Neo N3 has a native <code>ContractManagement</code> contract that is used for contract deployment and update via <code>deploy</code> and <code>update</code> methods of it. After settling with the new NEF and manifest both of them will invoke a special <code>_deploy</code> method if it's implemented by the contract.
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract deployment and update via <code>deploy</code> and <code>update</code> methods of it. After settling with the new NEF and manifest both of them will invoke a special <code>_deploy</code> method if it's implemented by the contract. More details in [NEP-29](https://github.com/neo-project/proposals/blob/master/nep-29.mediawiki)
 
 ===Methods===
 
@@ -46,13 +46,13 @@ Neo N3 has a native <code>ContractManagement</code> contract that is used for co
 }
 </pre>
 
-This method will be automatically executed by <code>ContractManagement</code> contract when a contract is updated. When <code>update</code> in <code>_deploy</code> is true, <code>ContractManagement</code> contract will update new contract state by this method.
+This method will will callback <code>Update</code> method in native <code>ContractManagement</code> contract. It will update contract state if it's exectued successfully.
 
-Updating a smart contract MUST have <code>nefFile</code> and<code>manifest.json</code>. It will be passed to <code>_deploy</code>.
+Updating a smart contract MUST have <code>nefFile</code> or <code>manifest.json</code>. If just update one of them at a time is OK, another SHOULD be set as null. It will be passed to <code>_deploy</code>.
 
 The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose. For example some kinds of json parameters can be put into data for specific check.
 
-This function will check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. Details has been explained in [NEP-30](https://github.com/superboyiii/proposals/blob/upgrade-standard/nep-30.mediawiki).
+This function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. Details has been explained in [NEP-30](https://github.com/superboyiii/proposals/blob/upgrade-standard/nep-30.mediawiki).
 
 ===References===
 
