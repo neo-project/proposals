@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This proposal standardizes the destroy function that can be implemented by contracts to have some code executed right after initial deployment or update.
+This proposal standardizes the destroy function which is necessary for contract storage deletion.
 
 ==Motivation==
 
@@ -17,7 +17,7 @@ N3 already provided contract destroy mechanism but it hasn't been summarized in 
 
 ==Specification==
 
-Neo N3 has a native <code>ContractManagement</code> contract that is used for contract destroy via <code>Destroy</code> method. It can delete all storage references under the contract.
+Neo N3 has a native <code>ContractManagement</code> contract that is used for contract destroy via <code>destroy</code> method. When <code>destroy</code> is executed, it will callback the  <code>destroy</code> method in <code>ContractManagement</code>. Finally, it will delete all storage and entries of this contract. It will block the contract address in native <code>Policy</code> contract as well.
 
 ===Methods===
 
@@ -31,8 +31,25 @@ Neo N3 has a native <code>ContractManagement</code> contract that is used for co
   "returntype": "Void"
 }
 </pre>
+This method will automatically invoke <code>destroy</code> method of <code>ContractManagement</code> contract when a contract is destroyed.
 
-This method SHOULD invoke <code>Destroy</code> method of <code>ContractManagement</code> contract when a contract is destroyed. After execution, all related storage and contract state will be deleted.  <code>Destroy</code>notification will be emitted by <code>ContractManagement</code> contract in destroy transaction.
+===Events===
+
+====Destroy====
+
+<pre>
+{
+  "name": "Destroy",
+  "parameters": [
+    {
+      "name": "contract",
+      "type": "Hash160"
+    }
+  ]
+}
+</pre>
+
+<code>Destroy</code>notification will be emitted automatically by native <code>ContractManagement</code> contract as well. It will notify contract hash in event.
 
 ==References==
 
