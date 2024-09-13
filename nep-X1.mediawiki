@@ -49,7 +49,7 @@ This method MUST invoke the <code>destroy</code> method of <code>ContractManagem
 }
 </pre>
 
-<code>Destroy</code>notification will be emitted automatically by native <code>ContractManagement</code> contract as well. It will notify contract hash in event.
+<code>Destroy</code> notification is emitted automatically by native <code>ContractManagement</code> contract after all contract storage items and the contract itself are removed. This event contains destroyed contract hash.
 
 ==References==
 
