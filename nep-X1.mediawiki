@@ -13,7 +13,7 @@ This proposal standardizes the destroy function which is necessary for contract 
 
 ==Motivation==
 
-N3 already provided contract destroy mechanism but it hasn't been summarized in a standard. This standard will show details.
+Contracts that are not relevant anymore may need to be destroyed. Neo N3 has provided contract destroy mechanism but it hasn't been summarized in a standard. This standard will show details.
 
 ==Specification==
 
