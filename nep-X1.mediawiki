@@ -1,6 +1,6 @@
 <pre>
   NEP: 31
-  Title: Contract Destroy Function
+  Title: Contract destroy guideline
   Author: Owen Zhang <zhangzhihong@ngd.neo.org>
   Type: Standard
   Status: Draft
