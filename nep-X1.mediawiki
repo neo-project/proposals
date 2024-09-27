@@ -1,6 +1,6 @@
 <pre>
   NEP: 31
-  Title: Contract destroy guideline
+  Title: Contract Destroy Guideline
   Author: Owen Zhang <zhangzhihong@ngd.neo.org>
   Type: Standard
   Status: Draft
@@ -33,6 +33,12 @@ Neo N3 has the native <code>ContractManagement</code> contract that is responsib
 </pre>
 This method MUST invoke the <code>destroy</code> method of <code>ContractManagement</code> contract when the contract is destroyed.
 
+<code>destroy</code> method can have multi parameters for any specific purpose since it's an operation only for contract owner.
+
+This function SHOULD check whether the <code>signer</code> address equals the <code>owner</code> hash of contract to avoid security risks. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. Details has been explained in [NEP-30](https://github.com/superboyiii/proposals/blob/upgrade-standard/nep-30.mediawiki).
+
+This function is not allowed to call another contract when executing <code>destroy</code> method of native <code>ContractManagement</code> contract since <code>RequiredCallFlags = CallFlags.States | CallFlags.AllowNotify</code> 
+
 ===Events===
 
 ====Destroy====
@@ -57,4 +63,5 @@ This method MUST invoke the <code>destroy</code> method of <code>ContractManagem
 ==Implementation==
 
 * C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NFT/Loot.Admin.cs#L79
+* Go:  https://github.com/nspcc-dev/neo-go/blob/e1d5ac8557d7e087158e6a766d059913a56df79f/examples/nft-nd/nft.go#L261
 
