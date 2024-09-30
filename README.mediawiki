@@ -45,12 +45,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [[nep-14.mediawiki|14]]
-| NeoContract ABI
-| Erik Zhang
-| Standard
-| Final
-|-
 | [[nep-15.mediawiki|15]]
 | NeoContract Manifest
 | Erik Zhang, Fernando Díaz Toledano, Vitor Nazário Coelho, Igor Machado Coelho, Li Jianying
@@ -135,7 +129,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-|
+| [[nep-25.mediawiki|25]]
+| NeoContract ABI
+| Erik Zhang, Roman Khimov
+| Standard
+|-
+| 
 | Dynamic Sharding
 | 
 | Standard
