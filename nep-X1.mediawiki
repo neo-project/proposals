@@ -27,7 +27,7 @@ Neo N3 has the native <code>ContractManagement</code> contract that is responsib
 {
   "name": "destroy",
   "safe": false,
-  "parameters": not restricted,
+  "parameters": [],
   "returntype": "Void"
 }
 </pre>
@@ -35,11 +35,9 @@ This method MUST invoke the <code>destroy</code> method of <code>ContractManagem
 
 <code>destroy</code> method can have multi parameters for any specific purpose since it's an operation only for contract owner.
 
-<code>destroy</code> method SHOULD do checkwitness for contract <code>owner</code> to avoid security risks. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. Details has been explained in [NEP-30](https://github.com/superboyiii/proposals/blob/upgrade-standard/nep-30.mediawiki).
+<code>destroy</code> method SHOULD do checkwitness for contract <code>owner</code> to avoid security risks. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
 
-It's strongly recommended to execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly.
-
-<code>destroy</code> method is not allowed to call another contract when executing the <code>destroy</code> method of native <code>ContractManagement</code> contract since <code>RequiredCallFlags = CallFlags.States | CallFlags.AllowNotify</code> 
+Contract SHOULD execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly. 
 
 ===Events===
 
