@@ -37,7 +37,7 @@ This method MUST invoke the <code>destroy</code> method of <code>ContractManagem
 
 <code>destroy</code> method SHOULD do checkwitness for contract <code>owner</code> to avoid security risks. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>.
 
-Contract SHOULD execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly. 
+Contract SHOULD transfer any assets (_NEO/GAS_) that contract is currently holding before calling <code>ContractManagement.Destroy()</code> or else the assets will be lost.
 
 ===Events===
 
