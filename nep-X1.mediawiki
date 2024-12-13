@@ -35,9 +35,9 @@ This method MUST invoke the <code>destroy</code> method of <code>ContractManagem
 
 <code>destroy</code> method can have multi parameters for any specific purpose since it's an operation only for contract owner.
 
-<code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>CheckWitness</code> to verify the <code>signer</code>. Otherwise anyone will be able to destroy your contract.
+<code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>CheckWitness</code> to verify the <code>owner</code>. Otherwise anyone will be able to destroy your contract.
 
-Contract SHOULD transfer any assets (_NEO/GAS_) that contract is currently holding before calling <code>ContractManagement.Destroy()</code> or else the assets will be lost.
+Contract SHOULD execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly. Especially these contract holding assets, they SHOULD transfer tokens before calling <code>ContractManagement.Destroy()</code> or else the assets will be lost.
 
 ===Events===
 
