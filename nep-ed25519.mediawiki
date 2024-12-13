@@ -1,0 +1,124 @@
+  NEP: TBD
+  Title: Ed25519 Signature Verification Support
+  Author: Jimmy Liao <vvvincentvan@gmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2024-12-13
+  Requires: N/A
+  Supersedes: N/A
+  Hardfork: HF_Echidna
+
+==Abstract==
+
+This NEP proposes the addition of Ed25519 signature verification support to Neo N3. This enhancement will expand Neo N3's cryptographic capabilities, enabling better integration with WebAuthn and various blockchain protocols, while also facilitating non-custodial solutions for services like Discord integration.
+
+==Motivation==
+
+Neo N3 currently supports various signature verification methods through its native contracts, including ECDSA with different curves and hash functions. However, there is a growing need for Ed25519 signature support due to several factors:
+
+1. WebAuthn Compatibility: Ed25519 is fully supported by WebAuthn, making it an ideal choice for simplified key management and transaction signing.
+
+2. Cross-Platform Integration: Ed25519 is widely adopted across major blockchain protocols, making it valuable for cross-chain compatibility and interoperability.
+
+3. Service Integration: External services, such as Discord, use Ed25519 for their authentication systems. Supporting this signature type would enable better integration with these services, particularly for non-custodial solutions.
+
+4. Account Abstraction: As part of the broader account abstraction initiative in Neo N3, Ed25519 support would provide more flexibility in implementing various authentication schemes.
+
+==Specification==
+
+===Native Contract Interface===
+
+The Ed25519 signature verification will be added to the <code>CryptoLib</code> native contract in hardfork <code>HF_Echidna</code> with the following interface:
+
+<pre>
+{
+    "name": "verifyWithEd25519",
+    "safe": true,
+    "parameters": [
+        {
+            "name": "message",
+            "type": "ByteArray"
+        },
+        {
+            "name": "publicKey",
+            "type": "ByteArray"
+        },
+        {
+            "name": "signature",
+            "type": "ByteArray"
+        }
+    ],
+    "returntype": "Boolean"
+}
+</pre>
+
+===Method Specification===
+
+The verification method MUST follow these rules:
+
+1. Input Requirements:
+   * Public key MUST be exactly 32 bytes
+   * Signature MUST be exactly 64 bytes
+   * Message can be of any length
+
+2. Return Value:
+   * Returns true if and only if the signature is a valid Ed25519 signature of the message under the provided public key
+   * Returns false in all other cases, including:
+     - Invalid public key length
+     - Invalid signature length
+     - Invalid signature format
+     - Any verification failure
+
+===Cryptographic Specification===
+
+The Ed25519 signature scheme uses the Edwards curve 25519 with the following parameters:
+
+* Curve: Edwards25519
+* Field: 2^255 - 19
+* Cofactor: 8
+* Order: 2^252 + 27742317777372353535851937790883648493
+
+The verification algorithm MUST follow the Ed25519 specification as defined in RFC 8032.
+
+==Backwards Compatibility==
+
+This NEP introduces new functionality without modifying existing behavior. All existing signature verification methods will continue to work as before. The new method will only be available after the <code>HF_Echidna</code> hardfork activation.
+
+==Test Vectors==
+
+Implementation MUST pass the following test vectors from RFC 8032 Section 7.1:
+
+<pre>
+-----TEST 1-----
+SECRET KEY: 9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60
+PUBLIC KEY: d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a
+MESSAGE: (empty string)
+SIGNATURE: e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b
+
+-----TEST 2-----
+SECRET KEY: 4ccd089b28ff96da9db6c346ec114e0f5b8a319f35aba624da8cf6ed4fb8a6fb
+PUBLIC KEY: 3d4017c3e843895a92b70aa74d1b7ebc9c982ccf2ec4968cc0cd55f12af4660c
+MESSAGE: 72 ("r" in UTF-8)
+SIGNATURE: 92a009a9f0d4cab8720e820b5f642540a2b27b5416503f8fb3762223ebdb69da085ac1e43e15996e458f3613d0f11d8c387b2eaeb4302aeeb00d291612bb0c00
+
+-----TEST 3-----
+SECRET KEY: c5aa8df43f9f837bedb7442f31dcb7b166d38535076f094b85ce3a2e0b4458f7
+PUBLIC KEY: fc51cd8e6218a1a38da47ed00230f0580816ed13ba3303ac5deb911548908025
+MESSAGE: af82
+SIGNATURE: 6291d657deec24024827e69c3abe01a30ce548a284743a445e3680d7db5ac3ac18ff9b538d16f290ae67f760984dc6594a7c15e9716ed28dc027beceea1ec40a
+</pre>
+
+Additional test vectors SHOULD cover:
+1. Invalid signature formats
+2. Invalid public key formats
+3. Edge cases (e.g., all-zero public key, all-zero signature)
+
+==References==
+
+1. RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)
+2. Original Ed25519 paper: "High-speed high-security signatures"
+3. Neo Core Issue #3506: https://github.com/neo-project/neo/issues/3506
+
+==Implementation==
+
+C#: https://github.com/neo-project/neo/pull/3507
