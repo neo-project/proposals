@@ -5,7 +5,6 @@
   Status: Draft
   Created: 2024-12-13
   Requires: N/A
-  Supersedes: N/A
   Hardfork: HF_Echidna
 
 ==Abstract==
