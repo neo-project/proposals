@@ -10,7 +10,7 @@
 
 ==Abstract==
 
-This proposal outlines a standard for the NEO blockchain that will provide systems with a generalized interaction mechanism for smart contract update.
+This proposal outlines a standard for the Neo blockchain that will provide systems with a generalized interaction mechanism for smart contract update.
 
 ==Motivation==
 
