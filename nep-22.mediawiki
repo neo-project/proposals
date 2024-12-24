@@ -1,0 +1,71 @@
+<pre>
+  NEP: 22
+  Title: Contract Update Function
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>, Fernando Díaz Toledano <shargon@gmail.com>, Erik Zhang <erik@neo.org>, Roman Khimov <roman@nspcc.ru>
+  Type: Standard
+  Status: Accepted
+  Created: 2021-04-19
+</pre>
+
+
+==Abstract==
+
+This proposal outlines a standard for the Neo blockchain that will provide systems with a generalized interaction mechanism for smart contract update.
+
+==Motivation==
+
+As the Neo blockchain scales, Smart Contract Update will become increasingly important. We need a standard for <code>update</code> method in contract to callback native <code>ContractManagement</code> correctly.
+
+==Specification==
+
+All contracts SHOULD implement this NEP to be able to fix bugs or otherwise improve functionality. If no update method there, incorrect action can never be corrected.
+
+===Methods===
+
+====update====
+
+<pre>
+{
+  "name": "update",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "nefFile",
+      "type": "ByteArray"
+    },
+    {
+      "name": "manifest",
+      "type": "ByteArray"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+This method MUST call <code>update</code> method in native <code>ContractManagement</code> contract. It will update contract state if it's executed successfully.
+
+Calls to this method MUST have <code>nefFile</code> or <code>manifest</code>. These are serialized representations of NEF ([https://github.com/neo-project/proposals/blob/master/nep-16.mediawiki NEP-16] and NeoContract manifest ([https://github.com/neo-project/proposals/blob/master/nep-15.mediawiki NEP-15]). Omitting one of them (setting to null) is a valid call, this means no changes to this component (old version is kept). These two parameters MUST be passed into <code>ContractManagement</code>'s <code>update</code> method.
+
+The parameter <code>data</code> can be any type of supported parameters for contract-specific purpose. For [https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/proxy/contract.go#L33 example] some kinds of parameters can be put into data for specific check. See [https://github.com/neo-project/proposals/blob/master/nep-29.mediawiki NEP-29] for additional reference on contract update callback mechanism that works with this parameter.
+
+This method SHOULD do <code>Checkwitness</code> for contract <code>owner</code> to avoid security risks. This function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the <code>signer</code>. 
+
+It's strongly recommended to execute all codes before calling <code>ContractManagement</code>'s <code>update</code> method to ensure they can be executed correctly.
+
+===References===
+
+https://github.com/neo-project/proposals/blob/master/nep-15.mediawiki
+
+https://github.com/neo-project/proposals/blob/master/nep-16.mediawiki
+
+https://github.com/neo-project/proposals/blob/master/nep-29.mediawiki
+
+===Implementation===
+
+* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NEP17/SampleNep17Token.cs#L130
+
+* Go: https://github.com/nspcc-dev/neofs-contract/blob/99fb86c35a48ed12017423aa4fee13f7d07fa4c0/contracts/proxy/contract.go#L33
