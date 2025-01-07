@@ -33,11 +33,11 @@ Neo N3 has the native <code>ContractManagement</code> contract that is responsib
 </pre>
 This method MUST invoke the <code>destroy</code> method of <code>ContractManagement</code> contract when the contract is destroyed.
 
-<code>destroy</code> method can have multi parameters for any specific purpose since it's an operation only for contract owner.
+<code>destroy</code> method SHOULD be parameterless for conformity. It SHOULD purely execute relevant code for contract destruction.
 
-<code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>CheckWitness</code> to verify the <code>owner</code>. Otherwise anyone will be able to destroy your contract.
-
-Contract SHOULD execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly. Especially these contract holding assets, they SHOULD transfer tokens before calling <code>ContractManagement.Destroy()</code> or else the assets will be lost.
+<code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>System.Runtime.CheckWitness</code> to verify the <code>owner</code>. Otherwise anyone will be able to destroy your contract.
+ 
+Contract MUST execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly. Especially contracts holding assets, they SHOULD transfer tokens before calling <code>Destroy()</code> or else the assets will be lost.
 
 ===Events===
 
