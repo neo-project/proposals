@@ -37,7 +37,7 @@ This method MUST invoke the <code>destroy</code> method of <code>ContractManagem
 
 <code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>System.Runtime.CheckWitness</code> to verify the <code>owner</code>. Otherwise anyone will be able to destroy your contract.
  
-Contract MUST execute all codes before calling ContractManagement.Destroy() to ensure they can be executed correctly. Especially contracts holding assets, they SHOULD transfer tokens before calling <code>Destroy()</code> or else the assets will be lost.
+Contract MUST execute all codes before calling <code>destroy</code> method of <code>ContractManagement</code> to ensure they can be executed correctly. Especially contracts holding assets, they SHOULD transfer tokens before calling <code>destroy</code> or else the assets will be lost.
 
 ===Events===
 
