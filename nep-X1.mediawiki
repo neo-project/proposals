@@ -33,7 +33,7 @@ Neo N3 has the native <code>ContractManagement</code> contract that is responsib
 </pre>
 This method MUST invoke the <code>destroy</code> method of <code>ContractManagement</code> contract when the contract is destroyed.
 
-<code>destroy</code> method SHOULD be parameterless for conformity. It SHOULD purely execute relevant code for contract destruction.
+<code>destroy</code> method MUST be parameterless for conformity. It SHOULD purely execute relevant code for contract destruction (but MAY perform other actions relevant for contract destruction).
 
 <code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>System.Runtime.CheckWitness</code> to verify the <code>owner</code>. Otherwise anyone will be able to destroy your contract.
  
