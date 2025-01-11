@@ -1,0 +1,67 @@
+<pre>
+  NEP: 31
+  Title: Contract Destroy Guideline
+  Author: Owen Zhang <zhangzhihong@ngd.neo.org>
+  Type: Standard
+  Status: Draft
+  Created: 2024-09-11
+</pre>
+
+==Abstract==
+
+This proposal standardizes the <code>destroy</code> function which is necessary for contract storage deletion and contract disposal from the system.
+
+==Motivation==
+
+Contracts that are not relevant anymore may need to be destroyed. Neo N3 has provided contract destroy mechanism but it hasn't been summarized in a standard. This standard will show details.
+
+==Specification==
+
+Neo N3 has the native <code>ContractManagement</code> contract that is responsible for contract destruction via its <code>destroy</code> method. When <code>destroy</code> is executed, it will delete all storage entries of calling contract. It will block the calling contract address using the native <code>Policy</code> contract to prevent redeployment or calling any methods on the contract from that point forward. Contracts that want to be destroyable SHOULD implement the <code>destroy</code> method as described below.
+
+===Methods===
+
+====destroy====
+
+<pre>
+{
+  "name": "destroy",
+  "safe": false,
+  "parameters": [],
+  "returntype": "Void"
+}
+</pre>
+This method MUST invoke the <code>destroy</code> method of <code>ContractManagement</code> contract when the contract is destroyed.
+
+<code>destroy</code> method MUST be parameterless for conformity. It SHOULD purely execute relevant code for contract destruction (but MAY perform other actions relevant for contract destruction).
+
+<code>destroy</code> method SHOULD use the <code>SYSCALL</code> <code>System.Runtime.CheckWitness</code> to verify the <code>owner</code>. Otherwise anyone will be able to destroy your contract.
+ 
+Contract MUST execute all codes before calling <code>destroy</code> method of <code>ContractManagement</code> to ensure they can be executed correctly. Especially contracts holding assets, they SHOULD transfer tokens before calling <code>destroy</code> or else the assets will be lost.
+
+===Events===
+
+====Destroy====
+
+<pre>
+{
+  "name": "Destroy",
+  "parameters": [
+    {
+      "name": "contract",
+      "type": "Hash160"
+    }
+  ]
+}
+</pre>
+
+<code>Destroy</code> notification is emitted automatically by native <code>ContractManagement</code> contract after all contract storage items and the contract itself are removed. This event contains destroyed contract hash.
+
+==References==
+
+
+==Implementation==
+
+* C#: https://github.com/neo-project/neo-devpack-dotnet/blob/003a50095efe88f63f518a0c989921be086409f3/examples/Example.SmartContract.NFT/Loot.Admin.cs#L79
+* Go:  https://github.com/nspcc-dev/neo-go/blob/e1d5ac8557d7e087158e6a766d059913a56df79f/examples/nft-nd/nft.go#L261
+
