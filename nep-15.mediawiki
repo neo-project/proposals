@@ -51,7 +51,7 @@ The <code>features</code> field will be used for future expansion and should alw
 
 The <code>supportedstandards</code> field describes which standard it supports, such like <code>NEP</code> or <code>RFC</code>. It must be an array. In order to make smart contracts or other clients understand correctly, all NEPs must be capitalized. NEP and number must be connected with <code>-</code>. For example: <code>"supportedstandards": ["NEP-11", "NEP-17", "RFC 1035"]</code>.
 
-The <code>abi</code> field describes which methods and events are included in the contract and how other contracts interact with them. For technical details of ABI, please refer to [[nep-14.mediawiki|NEP-14: NeoContract ABI]].
+The <code>abi</code> field describes which methods and events are included in the contract and how other contracts interact with them. For technical details of ABI, please refer to [[obsolete/nep-14.mediawiki|NEP-14: NeoContract ABI]].
 
 The <code>permissions</code> field is an array containing a set of <code>Permission</code> objects. It describes which contracts may be invoked and which methods are called.
 

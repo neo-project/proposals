@@ -36,7 +36,7 @@ Contracts that want their addresses to be used as transaction signers MUST imple
 }
 </pre>
 
-Parameters are contract-specific, any number of valid [[nep-14.mediawiki|NEP-14]] parameters can be added if contract needs them to perform verification. Compliant contract MUST have only one method with this name, otherwise the result is undefined.
+Parameters are contract-specific, any number of valid [[obsolete/nep-14.mediawiki|NEP-14]] parameters can be added if contract needs them to perform verification. Compliant contract MUST have only one method with this name, otherwise the result is undefined.
 
 To prevent using this method in regular application calls contract can check for trigger returned from <code>System.Runtime.GetTrigger</code> interop function.
 
@@ -48,7 +48,7 @@ Transactions with contract address used as one of signers MUST include an approp
 
 ==Rationale==
 
-Neo Legacy differentiated contract verification and application contexts only with VM trigger type, but Legacy contracts had only one entry point and their hashes were derived directly from the byte code, so they could be used as verification scripts as well. In N3 contract hashes are derived from the script that is intentionally made to abort execution, but N3 contracts also have multiple entry points described in [[nep-14.mediawiki|NEP-14]] ABI. Therefore a specific name was chosen to represent a method to be used for contract address verification.
+Neo Legacy differentiated contract verification and application contexts only with VM trigger type, but Legacy contracts had only one entry point and their hashes were derived directly from the byte code, so they could be used as verification scripts as well. In N3 contract hashes are derived from the script that is intentionally made to abort execution, but N3 contracts also have multiple entry points described in [[obsolete/nep-14.mediawiki|NEP-14]] ABI. Therefore a specific name was chosen to represent a method to be used for contract address verification.
 
 Since the system knows all deployed contract hashes and they can not intersect with valid verification scripts the choice was made to keep verification scripts attached to transactions empty. But as some contracts may need additional data for this method (typically, signatures or addresses) method parameters are not fixed and invocation scripts can be used to pass them.
 
