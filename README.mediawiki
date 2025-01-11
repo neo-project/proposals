@@ -63,7 +63,7 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
-| [https://github.com/neo-project/proposals/pull/133 18]
+| [[nep-18.mediawiki|18]]
 | Neo Address Resolution
 | Erik Zhang
 | Standard
@@ -87,10 +87,10 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/154 22]
-| Contract Basic Method Guideline
-| Owen Zhang, Fernando Díaz Toledano, Erik Zhang
-| Informational
+| [[nep-22.mediawiki|22]]
+| Contract Update Function
+| Owen Zhang, Fernando Díaz Toledano, Erik Zhang, Roman Khimov
+| Standard
 | Accepted
 |-
 | [[nep-23.mediawiki|23]]
