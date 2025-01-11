@@ -141,6 +141,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [[nep-31.mediawiki|31]]
+| Contract Destroy Guideline
+| Owen Zhang
+| Standard
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
