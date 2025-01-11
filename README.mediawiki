@@ -105,6 +105,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Final
 |-
+| [[nep-25.mediawiki|25]]
+| NeoContract ABI
+| Erik Zhang, Roman Khimov
+| Standard
+| Accepted
+|-
 | [[nep-26.mediawiki|26]]
 | Smart contract transfer callback for non-fungible tokens
 | Erik Zhang, Roman Khimov, Jaime Kindelan, Jimmy Liao
@@ -134,11 +140,6 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Roman Khimov
 | Standard
 | Accepted
-|-
-| [[nep-25.mediawiki|25]]
-| NeoContract ABI
-| Erik Zhang, Roman Khimov
-| Standard
 |-
 | 
 | Dynamic Sharding
