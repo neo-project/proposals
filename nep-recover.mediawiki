@@ -1,0 +1,135 @@
+  NEP: TBD
+  Title: SECP256K1 ECDSA Public Key Recovery Support
+  Author: Fernando Díaz Toledano <shargon@gmail.com>,Jimmy Liao <vvvincentvan@gmail.com>
+  Type: Draft
+  Status: Draft
+  Created: 2024-12-18
+  Requires: N/A
+  Supersedes: N/A
+  Hardfork: HF_Echidna
+
+==Abstract==
+
+This NEP adds SECP256K1 public key recovery to Neo N3's CryptoLib native contract. This feature enables recovery of signing addresses from signatures, improving interoperability with Bitcoin and Ethereum.
+
+==Motivation==
+
+Most blockchain platforms use addresses derived from SECP256K1 public keys. When verifying signatures from these chains, only the signature, message, and signer's address are available. Neo N3 currently lacks native support for SECP256K1 public key recovery, which limits:
+
+1. Cross-chain bridge implementations
+2. Multi-chain dApp development
+3. Signature verification with only addresses
+4. Advanced signature schemes
+
+==Specification==
+
+===Native Contract Interface===
+
+A method will be added to CryptoLib in <code>HF_Echidna</code>:
+
+====SECP256K1 Public Key Recovery====
+<pre>
+{
+    "name": "secp256k1Recover",
+    "safe": true,
+    "parameters": [
+        {
+            "name": "hash",
+            "type": "ByteArray"
+        },
+        {
+            "name": "signature",
+            "type": "ByteArray"
+        }
+    ],
+    "returntype": "ByteArray"
+}
+</pre>
+
+The method takes the following parameters:
+* hash: A 32-byte array containing the message hash
+* signature: A 64 or 65-byte array containing the ECDSA signature
+  - For 64-byte signatures: contains (r,s) in Compact Signature Representation (ERC-2098) format where the recovery bit is encoded in s
+  - For 65-byte signatures: contains (r,s,v) where v is the recovery ID
+
+The method returns:
+* A 33-byte array containing the recovered public key in compressed format
+
+===Input Requirements===
+
+The method <code>MUST</code> follow these rules:
+
+1. Input Requirements for secp256k1Recover:
+   * hash: A 32-byte array containing the message hash
+   * signature: A 64 or 65-byte array containing the ECDSA signature
+     - For 64-byte signatures: follows ERC-2098 Compact Signature Representation where the most significant bit of s encodes the recovery bit (0 or 1)
+     - For 65-byte signatures: contains (r,s,v) where v is the recovery ID
+
+2. Return Value:
+   * Success: 33-byte compressed public key in SEC format
+   * Failure: Returns null if:
+     - Invalid signature/component length
+     - Invalid recovery value (<code>v</code>)
+     - Invalid signature format
+     - Recovery failure
+
+===Technical Details===
+
+The recovery process <code>MUST</code> follow the SECP256K1 curve specifications:
+
+1. For concatenated signatures, split into <code>r</code>, <code>s</code>, and <code>v</code> components
+2. Apply SECP256K1 curve equation: <code>y² = x³ + 7</code> over field <code>F_p</code>
+   where <code>p = 2²⁵⁶ - 2³² - 2⁹ - 2⁸ - 2⁷ - 2⁶ - 2⁴ - 1</code>
+3. Use recovery ID <code>v</code> to determine the correct public key point
+4. Return the public key in compressed SEC format (33 bytes)
+
+==Test Vectors==
+
+The implementation <code>MUST</code> pass the following test vectors:
+
+<pre>
+-----TEST 1-----
+Hash: 14caf05a544c8547b52e97989892514ee8f2722e89f7dd5b99e0ba2160af0e4f
+r: 1c76e62e8d0b31bb188f3457ff0ea874a25814f1acb6df52af8445b1a2001f0a
+s: 7e53d3d0e96e6cbd0bebcf3d63b3c35b0e607a459f9cec52f6904b4f7f5e8ba
+v: 28
+Signature: 1c76e62e8d0b31bb188f3457ff0ea874a25814f1acb6df52af8445b1a2001f0a7e53d3d0e96e6cbd0bebcf3d63b3c35b0e607a459f9cec52f6904b4f7f5e8ba1b
+Public Key: 02c0dec04c7ccc57061f6d22d3c4e6e0d4ed742861a84c42bb65948ae4e2d67fcd
+
+-----TEST 2-----
+Hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+r: 5f8499879ce281f6a15449e7458c96103a79c89f61979c0b3a8a61c88e7d8d5a
+s: 3cec0b839958ddb1458e46f7f8c865b7e0485137e5ce7617c8f4bd7f43bb88e
+v: 28
+Signature: 5f8499879ce281f6a15449e7458c96103a79c89f61979c0b3a8a61c88e7d8d5a3cec0b839958ddb1458e46f7f8c865b7e0485137e5ce7617c8f4bd7f43bb88e1c
+Public Key: 03e33b41f5dd1e3536f01f4646e747e739e9d104d2a21c2d30f161e3cefb26e5c7
+
+-----TEST 3 (Invalid Cases)-----
+# Invalid recovery ID
+r: 1c76e62e8d0b31bb188f3457ff0ea874a25814f1acb6df52af8445b1a2001f0a
+s: 7e53d3d0e96e6cbd0bebcf3d63b3c35b0e607a459f9cec52f6904b4f7f5e8ba
+v: 29
+Result: null
+
+# Invalid r length
+r: 1c76e62e8d0b31bb188f3457ff0ea874a25814f1acb6df52af8445b1a2001f
+s: 7e53d3d0e96e6cbd0bebcf3d63b3c35b0e607a459f9cec52f6904b4f7f5e8ba
+v: 28
+Result: null
+</pre>
+
+==Backwards Compatibility==
+
+This NEP introduces new functionality without modifying existing behavior. All existing signature verification methods will continue to work as before. The new methods will only be available after the HF_Echidna hardfork activation.
+
+==References==
+
+1. SEC 2: Recommended Elliptic Curve Domain Parameters
+2. Ethereum Yellow Paper (Appendix F: Signing Transactions)
+3. Bitcoin BIP-137: Signatures of Messages using Private Keys
+4. ERC-2098: Compact Signature Representation
+
+==Implementation==
+
+The implementation will be provided in the following pull request:
+[Implementation Link TBD]
