@@ -25,7 +25,7 @@ Most blockchain platforms use addresses derived from SECP256K1 public keys. When
 
 ===Native Contract Interface===
 
-A method will be added to CryptoLib in <code>HF_Echidna</code>:
+A method will be added to CryptoLib with the hardfork <code>Echidna</code>:
 
 ====SECP256K1 Public Key Recovery====
 <pre>
