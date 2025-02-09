@@ -1,6 +1,6 @@
   NEP: TBD
   Title: SECP256K1 ECDSA Public Key Recovery Support
-  Author: Fernando Díaz Toledano <shargon@gmail.com>,Jimmy Liao <vvvincentvan@gmail.com>
+  Author: Fernando Díaz Toledano <shargon@gmail.com>, Jimmy Liao <vvvincentvan@gmail.com>
   Type: Draft
   Status: Draft
   Created: 2024-12-18
