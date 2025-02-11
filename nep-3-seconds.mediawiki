@@ -83,15 +83,11 @@ The following scenarios should be tested:
 * Issue: Faster block times may increase network overhead
 * Mitigation: Implement improved network optimization and node requirements
 
-2. Node Requirements
-* Issue: Higher hardware requirements for validators
-* Mitigation: Phase implementation to allow gradual node upgrades
-
-3. Smart Contract Timing
+2. Smart Contract Timing
 * Issue: Some contracts may assume 15-second blocks
 * Mitigation: Provide migration guidelines and testing framework
 
-4. Network Synchronization
+3. Network Synchronization
 * Issue: Faster blocks may impact node sync speed
 * Mitigation: Implement enhanced sync protocols
 
