@@ -1,0 +1,112 @@
+<NEP: xxx>
+  Title: Reduce Block Time and Gas Generation Rate
+  Author: Jimmy Liao <vvvincentvan@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2025-02-11
+  Replaces: N/A
+  Hardfork: Echidna
+
+==Abstract==
+
+This NEP proposes two significant changes to the Neo N3 network parameters:
+1. Reducing the block time from 15 seconds to 3 seconds
+2. Reducing the GAS generation rate per block from 5 GAS to 1 GAS
+
+==Motivation==
+
+The primary motivations for these changes are:
+1. Improve transaction throughput and user experience
+2. Maintain a stable GAS/NEO ratio in the ecosystem
+3. Better compete with other high-performance blockchain platforms
+
+==Specification==
+
+===Block Time Reduction===
+* Current value: 15 seconds
+* Proposed value: 3 seconds
+* Implementation: Modify the block time in dBFT plugin
+
+===GAS Generation Rate Reduction===
+* Current value: 5 GAS per block
+* Proposed value: 1 GAS per block
+* Implementation: 
+  * Modify the native Neo contract to include hardcoded upgrade logic
+  * At hardfork height, automatically apply 1/5 reduction to GasPerBlock
+  * This reduction remains in effect until council explicitly sets a new value
+  * Ensures stable GAS generation rate immediately after hardfork
+* Governance:
+  * Council retains ability to adjust GasPerBlock
+  * Any new value set by council will override the hardfork reduction
+  * Prevents potential GAS minting instability during the upgrade
+
+===Hardfork Activation===
+
+==Rationale==
+
+The reduction in block time from 15 to 3 seconds will:
+* Reduce transaction confirmation waiting times
+* Improve DApp responsiveness and user experience
+* Better compete with other high-performance blockchains
+
+The reduction in GAS generation from 5 to 1 GAS per block will:
+* Maintain economic balance despite increased block production
+* Preserve the intended tokenomics of the Neo ecosystem
+* Prevent potential GAS oversupply and value dilution
+
+== Affected Configurations ==
+
+* MillisecondsPerBlock: 15000 => 3000
+* MaxTransactionsPerBlock: 512 => 256
+* GasPerBlock: 
+  * Current: 5 GAS
+  * At hardfork: Automatically reduced to 1 GAS
+  * Post-hardfork: Configurable by council
+* MaxValidUntilBlockIncrement: 100 => 500?
+
+==Backwards Compatibility==
+
+This change requires a hard fork as it modifies fundamental network parameters. All nodes must upgrade to maintain network consensus.
+
+==Test Cases==
+
+The following scenarios should be tested:
+1. Network stability under 3-second block times
+2. Transaction processing under high load
+3. Node synchronization with faster blocks
+4. GAS generation and distribution accuracy
+5. Smart contract execution under new timing constraints
+
+==Potential Issues and Mitigations==
+
+1. Network Stability
+* Issue: Faster block times may increase network overhead
+* Mitigation: Implement improved network optimization and node requirements
+
+2. Node Requirements
+* Issue: Higher hardware requirements for validators
+* Mitigation: Phase implementation to allow gradual node upgrades
+
+3. Smart Contract Timing
+* Issue: Some contracts may assume 15-second blocks
+* Mitigation: Provide migration guidelines and testing framework
+
+4. Network Synchronization
+* Issue: Faster blocks may impact node sync speed
+* Mitigation: Implement enhanced sync protocols
+
+==Implementation==
+
+The implementation requires modifications to:
+1. Core consensus mechanism
+2. Native Neo contract
+3. dBFT plugin
+
+A phased implementation approach is recommended:
+1. TestNet deployment and testing (2 weeks)
+2. MainNet deployment preparation (1 month)
+3. Hard fork coordination and execution
+
+==Reference Implementation==
+
+CSharp implementation: https://github.com/neo-project/neo/pull/3622
