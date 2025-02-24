@@ -15,7 +15,7 @@ process transfers of fungible [[nep-17.mediawiki|NEP-17]] tokens to their addres
 
 ==Motivation==
 
-While the original [[nep-17.mediawiki|NEP-17]] already defines this method, it
+While the original [[nep-17.mediawiki|NEP-17]] standard already defines this method, it
 lacks some details relevant specifically to the receiver contract and it doesn't
 allow for easy reference. This standard can be used in <code>supportedstandards</code>
 section of [[nep-15.mediawiki|NEP-15 manifest]] or in any other situation to
@@ -52,8 +52,8 @@ MUST implement <code>onNEP17Payment</code> method with the following signature:
 </pre>
 
 A contract that doesn't implement this method will not be able to receive
-[[nep-17.mediawiki|NEP-17]] tokens standard requires this method to be called
-unconditionally which will fail at the system call level if it's not implemented
+[[nep-17.mediawiki|NEP-17]] tokens. The standard requires this method to be called
+unconditionally which will fail at the system call level if it's not implemented (
 which then leads to a complete transaction failure). This method is called by
 [[nep-17.mediawiki|NEP-17]] contracts which tokens are being transferred. A
 particular token can be obtained via the <code>System.Runtime.GetCallingScriptHash</code>
@@ -78,7 +78,7 @@ unexpected token, wrong amount, forbidden sender, wrong <code>data</code>
 parameter or any other) it MUST call <code>ABORT</code> or <code>ABORTMSG</code>
 VM opcode to fail the transaction. This is the only way to ensure contract
 won't own transferred tokens, because the method doesn't return any value
-and exceptions can be handled by calling contract. Contact MAY also check for
+and exceptions can be handled by calling contract. Contract MAY also check for
 various conditions with <code>ASSERT</code> or <code>ASSERTMSG</code> opcodes.
 
 ==Rationale==
