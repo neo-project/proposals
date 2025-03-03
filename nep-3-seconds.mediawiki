@@ -25,22 +25,85 @@ The primary motivations for these changes are:
 ===Block Time Reduction===
 * Current value: 15 seconds
 * Proposed value: 3 seconds
-* Implementation: Modify the block time in dBFT plugin
+* Implementation: 
+  * Move block time configuration from dBFT plugin to Policy native contract
+  * Allow the council to configure block time through the Policy contract
+  * Consensus mechanism will read block time from the Policy contract
 
 ===GAS Generation Rate Reduction===
 * Current value: 5 GAS per block
 * Proposed value: 1 GAS per block
 * Implementation: 
-  * Modify the native Neo contract to include hardcoded upgrade logic
-  * At hardfork height, automatically apply 1/5 reduction to GasPerBlock
-  * This reduction remains in effect until council explicitly sets a new value
-  * Ensures stable GAS generation rate immediately after hardfork
-* Governance:
-  * Council retains ability to adjust GasPerBlock
-  * Any new value set by council will override the hardfork reduction
-  * Prevents potential GAS minting instability during the upgrade
+  * Retain the existing governance model where council controls GasPerBlock
+  * Add new native method in Policy contract to set block time and GAS generation simultaneously
+  * Provide a coordinated update mechanism to ensure economic stability
+
+===Policy Contract Enhancement===
+* New native method: `SetBlockTimeReward(BigInteger milliseconds, BigInteger datoshi)`
+  * Allows council to set both block time and GAS per block in a single operation
+  * Ensures atomic updates to both parameters
+  * Prevents inconsistency between block generation speed and GAS minting rate
+  * Parameters:
+    * `milliseconds`: The new block time in milliseconds
+    * `datoshi`: The new GAS generation rate per block in datoshi (1 GAS = 10^8 datoshi)
+
+===Native Contract Interface===
+
+The block time and GAS generation configuration method will be added to the <code>PolicyContract</code> native contract in hardfork <code>HF_Echidna</code> with the following interface:
+
+<pre>
+{
+    "name": "setBlockTimeReward",
+    "safe": false,
+    "parameters": [
+        {
+            "name": "milliseconds",
+            "type": "Integer"
+        },
+        {
+            "name": "datoshi",
+            "type": "Integer"
+        }
+    ],
+    "returntype": "Boolean"
+}
+</pre>
+
+===Method Specification===
+
+The <code>setBlockTimeReward</code> method MUST follow these rules:
+
+1. Permission Requirements:
+   * MUST only be callable by the Neo Council through a committee multi-signature transaction
+   * MUST fail if called by any other entity
+
+2. Input Requirements:
+   * <code>milliseconds</code> MUST be a positive integer representing block time in milliseconds
+   * <code>milliseconds</code> MUST be greater than or equal to 1000 (1 second)
+   * <code>datoshi</code> MUST be a non-negative integer representing GAS per block in datoshi units
+   * <code>datoshi</code> value of 100000000 represents 1 GAS
+
+3. Behavior:
+   * MUST atomically update both block time and GAS generation rate
+   * MUST take effect immediately after the transaction is executed
+   * Consensus nodes MUST use the new block time for the next consensus round
+   * GAS minting MUST use the new rate for the next block and all subsequent blocks
+
+4. Return Value:
+   * Returns true if the operation is successful
+   * Returns false if any validation fails
+
+5. Effect on Contracts:
+   * Contract executions MUST adapt to the new block time for all time-related calculations
+   * The consensus mechanism MUST read the block time from the Policy contract for each consensus round
 
 ===Hardfork Activation===
+* The hardfork will:
+  * Add the new `SetBlockTimeReward` method to the Policy contract
+  * Move block time configuration from consensus settings to Policy contract
+  * Initially set the default block time to 15 seconds (current value)
+  * After hardfork activation, the council will call the new method to set both parameters
+  * This ensures a coordinated transition to the new values
 
 ==Rationale==
 
@@ -56,13 +119,16 @@ The reduction in GAS generation from 5 to 1 GAS per block will:
 
 == Affected Configurations ==
 
-* MillisecondsPerBlock: 15000 => 3000
+* Block Time Configuration:
+  * Current: Hardcoded in consensus settings (MillisecondsPerBlock: 15000)
+  * Proposed: Configurable via Policy contract with initial value of 15000
+  * Target after council update: 3000 (3 seconds)
 * MaxTransactionsPerBlock: 512 => 256
 * GasPerBlock: 
   * Current: 5 GAS
-  * At hardfork: Automatically reduced to 1 GAS
-  * Post-hardfork: Configurable by council
-* MaxValidUntilBlockIncrement: 100 => 500?
+  * Proposed: Remains configurable by council via Policy contract
+  * Target after council update: 1 GAS
+* MaxValidUntilBlockIncrement: 100 => 500
 
 ==Backwards Compatibility==
 
@@ -91,17 +157,26 @@ The following scenarios should be tested:
 * Issue: Faster blocks may impact node sync speed
 * Mitigation: Implement enhanced sync protocols
 
+4. Governance Coordination
+* Issue: Mismatch between block time and GAS generation rate changes
+* Mitigation: The new atomic `SetBlockTimeReward` method ensures consistent updates
+
+5. Contract Dependency on Block Time
+* Issue: Contracts relying on block time for time-related calculations will be affected
+* Mitigation: Documentation and tools to help developers update affected contracts
+
 ==Implementation==
 
 The implementation requires modifications to:
-1. Core consensus mechanism
-2. Native Neo contract
-3. dBFT plugin
+1. Policy native contract to add the new `SetBlockTimeReward` method
+2. Consensus mechanism to read block time from Policy contract
+3. Neo native contract to coordinate with the new timing system
 
 A phased implementation approach is recommended:
 1. TestNet deployment and testing (2 weeks)
 2. MainNet deployment preparation (1 month)
 3. Hard fork coordination and execution
+4. Council governance action to call `SetBlockTimeReward(3000, 100000000)` after hardfork
 
 ==Reference Implementation==
 
