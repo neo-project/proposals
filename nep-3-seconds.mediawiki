@@ -1,6 +1,6 @@
 <NEP: xxx>
   Title: Reduce Block Time and Gas Generation Rate
-  Author: Jimmy Liao <vvvincentvan@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>
+  Author: Jimmy Liao <vvvincentvan@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>,  Fernando Díaz Toledano <shargon@gmail.com>, Roman Khimov <roman@nspcc.ru>, Christopher Schuchardt <chris.schuchardt@neo.events> 
   Type: Standard
   Status: Draft
   Created: 2025-02-11
@@ -35,33 +35,26 @@ The primary motivations for these changes are:
 * Proposed value: 1 GAS per block
 * Implementation: 
   * Retain the existing governance model where council controls GasPerBlock
-  * Add new native method in Policy contract to set block time and GAS generation simultaneously
-  * Provide a coordinated update mechanism to ensure economic stability
+  * Council will need to adjust GasPerBlock separately after block time changes
+  * Coordination between the two changes will be managed through governance
 
 ===Policy Contract Enhancement===
-* New native method: `SetBlockTimeReward(BigInteger milliseconds, BigInteger datoshi)`
-  * Allows council to set both block time and GAS per block in a single operation
-  * Ensures atomic updates to both parameters
-  * Prevents inconsistency between block generation speed and GAS minting rate
+* New native method: `SetBlockTime(BigInteger milliseconds)`
+  * Allows council to set block time through the Policy contract
   * Parameters:
     * `milliseconds`: The new block time in milliseconds
-    * `datoshi`: The new GAS generation rate per block in datoshi (1 GAS = 10^8 datoshi)
 
 ===Native Contract Interface===
 
-The block time and GAS generation configuration method will be added to the <code>PolicyContract</code> native contract in hardfork <code>HF_Echidna</code> with the following interface:
+The block time configuration method will be added to the <code>PolicyContract</code> native contract in hardfork <code>Echidna</code> with the following interface:
 
 <pre>
 {
-    "name": "setBlockTimeReward",
+    "name": "setBlockTime",
     "safe": false,
     "parameters": [
         {
             "name": "milliseconds",
-            "type": "Integer"
-        },
-        {
-            "name": "datoshi",
             "type": "Integer"
         }
     ],
@@ -71,7 +64,7 @@ The block time and GAS generation configuration method will be added to the <cod
 
 ===Method Specification===
 
-The <code>setBlockTimeReward</code> method MUST follow these rules:
+The <code>setBlockTime</code> method MUST follow these rules:
 
 1. Permission Requirements:
    * MUST only be callable by the Neo Council through a committee multi-signature transaction
@@ -80,14 +73,11 @@ The <code>setBlockTimeReward</code> method MUST follow these rules:
 2. Input Requirements:
    * <code>milliseconds</code> MUST be a positive integer representing block time in milliseconds
    * <code>milliseconds</code> MUST be greater than or equal to 1000 (1 second)
-   * <code>datoshi</code> MUST be a non-negative integer representing GAS per block in datoshi units
-   * <code>datoshi</code> value of 100000000 represents 1 GAS
 
 3. Behavior:
-   * MUST atomically update both block time and GAS generation rate
+   * MUST update the block time configuration
    * MUST take effect immediately after the transaction is executed
    * Consensus nodes MUST use the new block time for the next consensus round
-   * GAS minting MUST use the new rate for the next block and all subsequent blocks
 
 4. Return Value:
    * Returns true if the operation is successful
@@ -99,11 +89,13 @@ The <code>setBlockTimeReward</code> method MUST follow these rules:
 
 ===Hardfork Activation===
 * The hardfork will:
-  * Add the new `SetBlockTimeReward` method to the Policy contract
+  * Add the new `SetBlockTime` method to the Policy contract
   * Move block time configuration from consensus settings to Policy contract
   * Initially set the default block time to 15 seconds (current value)
-  * After hardfork activation, the council will call the new method to set both parameters
-  * This ensures a coordinated transition to the new values
+  * After hardfork activation, the council will:
+    * Call the new method to set the block time to 3 seconds
+    * Adjust the GasPerBlock value separately to 1 GAS
+  * Careful coordination will be needed to ensure economic balance
 
 ==Rationale==
 
@@ -126,7 +118,7 @@ The reduction in GAS generation from 5 to 1 GAS per block will:
 * MaxTransactionsPerBlock: 512 => 256
 * GasPerBlock: 
   * Current: 5 GAS
-  * Proposed: Remains configurable by council via Policy contract
+  * Proposed: Remains configurable by council via existing mechanisms
   * Target after council update: 1 GAS
 * MaxValidUntilBlockIncrement: 100 => 500
 
@@ -158,8 +150,8 @@ The following scenarios should be tested:
 * Mitigation: Implement enhanced sync protocols
 
 4. Governance Coordination
-* Issue: Mismatch between block time and GAS generation rate changes
-* Mitigation: The new atomic `SetBlockTimeReward` method ensures consistent updates
+* Issue: Non-atomic updates between block time and GAS generation rate
+* Mitigation: Careful governance coordination to adjust both settings in close succession
 
 5. Contract Dependency on Block Time
 * Issue: Contracts relying on block time for time-related calculations will be affected
@@ -168,7 +160,7 @@ The following scenarios should be tested:
 ==Implementation==
 
 The implementation requires modifications to:
-1. Policy native contract to add the new `SetBlockTimeReward` method
+1. Policy native contract to add the new `SetBlockTime` method
 2. Consensus mechanism to read block time from Policy contract
 3. Neo native contract to coordinate with the new timing system
 
@@ -176,7 +168,9 @@ A phased implementation approach is recommended:
 1. TestNet deployment and testing (2 weeks)
 2. MainNet deployment preparation (1 month)
 3. Hard fork coordination and execution
-4. Council governance action to call `SetBlockTimeReward(3000, 100000000)` after hardfork
+4. Council governance actions after hardfork:
+   * Call `SetBlockTime(3000)` to set new block time
+   * Adjust GasPerBlock to 1 GAS using existing governance mechanisms
 
 ==Reference Implementation==
 
