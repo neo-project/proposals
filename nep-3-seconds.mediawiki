@@ -166,7 +166,7 @@ The implementation requires modifications to:
 
 A phased implementation approach is recommended:
 1. TestNet deployment and testing (2 weeks)
-2. MainNet deployment preparation (1 month)
+2. MainNet deployment preparation (2 weeks)
 3. Hard fork coordination and execution
 4. Council governance actions after hardfork:
    * Call `SetBlockTime(3000)` to set new block time
