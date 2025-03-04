@@ -41,16 +41,24 @@ The primary motivations for these changes are:
 ===Policy Contract Enhancement===
 * New native method: `SetBlockGenTime(BigInteger milliseconds)`
   * Allows council to set block time through the Policy contract
+  * **Permission restricted**: Can only be called by the Neo Council
+  * **Safe**: False (requires verification)
   * Parameters:
     * `milliseconds`: The new block time in milliseconds
+* New native method: `GetBlockGenTime()`
+  * Returns the current block generation time
+  * **Permission**: Can be called by any user or contract
+  * **Safe**: True (read-only operation)
+  * Returns:
+    * A BigInteger representing the current block time in milliseconds
 
 ===Native Contract Interface===
 
-The block time configuration method will be added to the <code>PolicyContract</code> native contract in hardfork <code>Echidna</code> with the following interface:
+The block time configuration methods will be added to the <code>PolicyContract</code> native contract in hardfork <code>Echidna</code> with the following interfaces:
 
 <pre>
 {
-    "name": "setBlockTime",
+    "name": "SetBlockGenTime",
     "safe": false,
     "parameters": [
         {
@@ -62,13 +70,22 @@ The block time configuration method will be added to the <code>PolicyContract</c
 }
 </pre>
 
+<pre>
+{
+    "name": "GetBlockGenTime",
+    "safe": true,
+    "parameters": [],
+    "returntype": "Integer"
+}
+</pre>
+
 ===Method Specification===
 
-The <code>setBlockTime</code> method MUST follow these rules:
+The <code>SetBlockGenTime</code> method MUST follow these rules:
 
 1. Permission Requirements:
    * MUST only be callable by the Neo Council through a committee multi-signature transaction
-   * MUST fail if called by any other entity
+   * MUST fail with "Access denied" error if called by any other entity
 
 2. Input Requirements:
    * <code>milliseconds</code> MUST be a positive integer representing block time in milliseconds
@@ -83,13 +100,41 @@ The <code>setBlockTime</code> method MUST follow these rules:
    * Returns true if the operation is successful
    * Returns false if any validation fails
 
+The <code>GetBlockGenTime</code> method MUST follow these rules:
+
+1. Permission Requirements:
+   * Can be called by any entity (contracts, users, or applications)
+   * MUST be marked as "safe": true in the contract manifest to enable read-only access
+
+2. Behavior:
+   * MUST return the current block generation time in milliseconds
+
+3. Return Value:
+   * Returns an integer representing the current block time in milliseconds
+
 5. Effect on Contracts:
    * Contract executions MUST adapt to the new block time for all time-related calculations
    * The consensus mechanism MUST read the block time from the Policy contract for each consensus round
 
+===Permission Enforcement===
+
+The Policy contract MUST implement strict permission enforcement:
+
+1. For `SetBlockGenTime`:
+   * The method MUST verify the caller is the Neo Council committee
+   * Implementation MUST use the CheckCommittee verification pattern
+   * Any unauthorized calls MUST be rejected with appropriate error codes
+
+2. For `GetBlockGenTime`:
+   * No permission checks required
+   * Must be implemented as a read-only operation
+   * Cannot modify blockchain state
+
+This permission model ensures that only the governance committee can modify critical consensus parameters while providing transparent access to current settings.
+
 ===Hardfork Activation===
 * The hardfork will:
-  * Add the new `SetBlockTime` method to the Policy contract
+  * Add the new `SetBlockGenTime` and `GetBlockGenTime` methods to the Policy contract
   * Move block time configuration from consensus settings to Policy contract
   * Initially set the default block time to 15 seconds (current value)
   * After hardfork activation, the council will:
@@ -160,7 +205,7 @@ The following scenarios should be tested:
 ==Implementation==
 
 The implementation requires modifications to:
-1. Policy native contract to add the new `SetBlockTime` method
+1. Policy native contract to add the new `SetBlockGenTime` and `GetBlockGenTime` methods
 2. Consensus mechanism to read block time from Policy contract
 3. Neo native contract to coordinate with the new timing system
 
@@ -169,7 +214,7 @@ A phased implementation approach is recommended:
 2. MainNet deployment preparation (2 weeks)
 3. Hard fork coordination and execution
 4. Council governance actions after hardfork:
-   * Call `SetBlockTime(3000)` to set new block time
+   * Call `SetBlockGenTime(3000)` to set new block time
    * Adjust GasPerBlock to 1 GAS using existing governance mechanisms
 
 ==Reference Implementation==
