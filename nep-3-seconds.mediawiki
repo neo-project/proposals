@@ -10,8 +10,11 @@
 ==Abstract==
 
 This NEP proposes two significant changes to the Neo N3 network parameters:
-1. Reducing the block time from 15 seconds to 3 seconds
-2. Reducing the GAS generation rate per block from 5 GAS to 1 GAS
+1. Enabling governance mechanism for block time adjustment via the Policy contract
+2. Preparing for future reduction of block time from 15 seconds to 3 seconds
+3. Preparing for future reduction of GAS generation rate per block from 5 GAS to 1 GAS
+
+The hardfork will introduce the governance methods while maintaining current values. After the hardfork, the Neo Council will be responsible for executing the parameter changes through the governance mechanism.
 
 ==Motivation==
 
@@ -23,20 +26,24 @@ The primary motivations for these changes are:
 ==Specification==
 
 ===Block Time Reduction===
-* Current value: 15 seconds
-* Proposed value: 3 seconds
+* Current value: 15 seconds (15000 milliseconds)
+* Initial value after hardfork: 15 seconds (15000 milliseconds)
+* Target value after council update: 3 seconds (3000 milliseconds)
 * Implementation: 
   * Move block time configuration from dBFT plugin to Policy native contract
+  * Initially maintain current block time at hardfork activation
   * Allow the council to configure block time through the Policy contract
-  * Consensus mechanism will read block time from the Policy contract
+  * Consensus mechanism will read block time from configuration for blocks up to and including the hardfork block
+  * Consensus mechanism will read block time from the Policy contract for blocks after the hardfork block
 
 ===GAS Generation Rate Reduction===
 * Current value: 5 GAS per block
-* Proposed value: 1 GAS per block
+* Initial value after hardfork: 5 GAS per block
+* Target value after council update: 1 GAS per block
 * Implementation: 
   * Retain the existing governance model where council controls GasPerBlock
-  * Council will need to adjust GasPerBlock separately after block time changes
-  * Coordination between the two changes will be managed through governance
+  * Council will adjust GasPerBlock after hardfork using existing mechanisms
+  * Coordination between block time and GAS per block changes will be managed through governance
 
 ===Policy Contract Enhancement===
 * New native method: `SetBlockGenTime(BigInteger milliseconds)`
@@ -66,7 +73,22 @@ The block time configuration methods will be added to the <code>PolicyContract</
             "type": "Integer"
         }
     ],
-    "returntype": "Boolean"
+    "returntype": "Boolean",
+    "events": [
+        {
+            "name": "BlockGenTimeChanged",
+            "parameters": [
+                {
+                    "name": "oldTime",
+                    "type": "Integer"
+                },
+                {
+                    "name": "newTime", 
+                    "type": "Integer"
+                }
+            ]
+        }
+    ]
 }
 </pre>
 
@@ -95,6 +117,9 @@ The <code>SetBlockGenTime</code> method MUST follow these rules:
    * MUST update the block time configuration
    * MUST take effect immediately after the transaction is executed
    * Consensus nodes MUST use the new block time for the next consensus round
+   * MUST emit an <code>Event</code> with the name "BlockGenTimeChanged" containing:
+     * The previous block generation time in milliseconds
+     * The new block generation time in milliseconds
 
 4. Return Value:
    * Returns true if the operation is successful
@@ -136,15 +161,18 @@ This permission model ensures that only the governance committee can modify crit
 * The hardfork will:
   * Add the new `SetBlockGenTime` and `GetBlockGenTime` methods to the Policy contract
   * Move block time configuration from consensus settings to Policy contract
-  * Initially set the default block time to 15 seconds (current value)
-  * After hardfork activation, the council will:
-    * Call the new method to set the block time to 3 seconds
-    * Adjust the GasPerBlock value separately to 1 GAS
+  * Initially set the default block time to 15 seconds (15000 milliseconds)
+  * The consensus module behavior will change:
+    * For blocks before and including the hardfork block (Ht), consensus time is read from configuration
+    * For blocks after the hardfork block (Ht+1 and beyond), consensus time is read from `GetBlockGenTime()`
+  * After hardfork activation, the council will be responsible for:
+    * Calling `SetBlockGenTime()` to adjust the block time to the target value
+    * Calling `SetGasPerBlock()` to adjust the GAS generation rate
   * Careful coordination will be needed to ensure economic balance
 
 ==Rationale==
 
-The reduction in block time from 15 to 3 seconds will:
+The reduction in block time from 15000 to 3000 milliseconds will:
 * Reduce transaction confirmation waiting times
 * Improve DApp responsiveness and user experience
 * Better compete with other high-performance blockchains
@@ -158,12 +186,12 @@ The reduction in GAS generation from 5 to 1 GAS per block will:
 
 * Block Time Configuration:
   * Current: Hardcoded in consensus settings (MillisecondsPerBlock: 15000)
-  * Proposed: Configurable via Policy contract with initial value of 15000
+  * After hardfork: Configurable via Policy contract with initial value of 15000 (15 seconds)
   * Target after council update: 3000 (3 seconds)
 * MaxTransactionsPerBlock: 512 => 256
 * GasPerBlock: 
   * Current: 5 GAS
-  * Proposed: Remains configurable by council via existing mechanisms
+  * After hardfork: Remains at 5 GAS until configured by council
   * Target after council update: 1 GAS
 * MaxValidUntilBlockIncrement: 100 => 500
 
@@ -191,7 +219,7 @@ The following scenarios should be tested:
 * Mitigation: Provide migration guidelines and testing framework
 
 3. Network Synchronization
-* Issue: Faster blocks may impact node sync speed since more block data will be generated.
+* Issue: Faster blocks may impact node sync speed
 * Mitigation: Implement enhanced sync protocols
 
 4. Governance Coordination
@@ -206,7 +234,9 @@ The following scenarios should be tested:
 
 The implementation requires modifications to:
 1. Policy native contract to add the new `SetBlockGenTime` and `GetBlockGenTime` methods
-2. Consensus mechanism to read block time from Policy contract
+2. Consensus mechanism to read block time:
+   * From configuration for blocks up to and including the hardfork block
+   * From Policy contract (`GetBlockGenTime()`) for blocks after the hardfork block
 3. Neo native contract to coordinate with the new timing system
 
 A phased implementation approach is recommended:
