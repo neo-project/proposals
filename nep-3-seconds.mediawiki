@@ -39,7 +39,7 @@ The primary motivations for these changes are:
   * Coordination between the two changes will be managed through governance
 
 ===Policy Contract Enhancement===
-* New native method: `SetBlockTime(BigInteger milliseconds)`
+* New native method: `SetBlockGenTime(BigInteger milliseconds)`
   * Allows council to set block time through the Policy contract
   * Parameters:
     * `milliseconds`: The new block time in milliseconds
