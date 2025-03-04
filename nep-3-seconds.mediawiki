@@ -191,7 +191,7 @@ The following scenarios should be tested:
 * Mitigation: Provide migration guidelines and testing framework
 
 3. Network Synchronization
-* Issue: Faster blocks may impact node sync speed
+* Issue: Faster blocks may impact node sync speed since more block data will be generated.
 * Mitigation: Implement enhanced sync protocols
 
 4. Governance Coordination
