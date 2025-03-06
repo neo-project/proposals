@@ -1,0 +1,94 @@
+<pre>
+  NEP: TBD
+  Title: Unified Neo chain dump format
+  Author: Ekaterina Pavlova <ekt@nspcc.ru>, Roman Khimov <roman@nspcc.ru>
+  Type: Informational
+  Status: Draft
+  Created: 2025-02-14
+</pre>
+
+==Abstract==
+
+This proposal standardizes a single Neo chain dump format that unifies the “full” and “incremental”
+approaches into one consistent structure. It enables different Neo node implementations to remain
+compatible when producing or consuming chain dumps, allowing easy import or export of chain
+data without confusion over file naming or format variations.
+
+==Motivation==
+
+Neo nodes have historically used two chain dump formats: a full dump from block 0 (e.g., chain.acc)
+and an incremental dump from an arbitrary block (e.g., chain.X.acc). This dual approach complicates
+tooling and confuses operators (e.g., chain.0.acc is actually incremental). This NEP unifies both
+formats into one, making dumps interchangeable, simplifying import/restore, and reducing confusion.
+
+==Specification==
+
+===Dump Structure===
+
+Multibyte data items are always stored in little-endian order, where the low bytes come first.
+Its structure is described further below.
+
+<pre>
+dump_file
+{
+  4-byte start;
+  4-byte count;
+  block{
+    4-byte length;
+    length-byte data;
+  } blocks[];
+}
+</pre>
+
+====start====
+The <code>start</code> item represents the index of the first block
+included in the dump. It is stored as a 4-byte <code>uint32</code>.
+
+====count====
+The <code>count</code> item denotes the total number of blocks
+contained in the dump. It is stored as a 4-byte <code>uint32</code>.
+
+====blocks====
+Each entry in the <code>blocks</code> item represents a serialized
+block in the range <code>[start, start + count - 1]</code>.
+Blocks must be stored in ascending order.
+
+=====length=====
+The <code>length</code> item is a 4-byte <code>uint32</code> indicating the
+length of the serialized block data.
+
+=====data=====
+The <code>data</code> item contains the serialized block data, with a
+length specified by the <code>length</code> field.
+
+
+Nodes MUST parse the first two integers to determine the dump’s block range.
+No assumptions about file names (<code>chain.acc</code>, <code>chain.X.acc</code>)
+are allowed; the header is the sole source of truth.
+
+== Rationale ==
+
+Nodes treated “full” vs. “incremental” dumps differently, confusing — especially with
+“official” dumps from [https://sync.ngd.network/ sync.ngd.network].
+Unifying on one incremental format (using start=0 for a “full” dump) removes
+filename dependencies, ensures consistent tooling, and delivers a
+straightforward “download/restore/run” experience.
+
+== Backwards Compatibility ==
+
+Nodes relying on <code>chain.acc</code> or <code>chain.X.acc</code> can still import
+dumps by reading their header. Legacy tools may need a transition period, but moving
+to a single incremental format does not break existing usage and simplifies future
+interoperability.
+
+== References ==
+* [https://sync.ngd.network/ Neo Official Dumps]
+* [https://github.com/neo-project/neo/issues/2998 Neo Issue#2998]
+* [https://github.com/neo-project/neo-node/issues/536 Neo Issue#536]
+* [https://github.com/nspcc-dev/neo-go/issues/2849 NeoGo Issue#2849]
+
+== Implementation ==
+* C#: https://github.com/neo-project/neo/blob/2cb647614db6bcdb90d276ac809e78b277408305/src/Neo.CLI/CLI/MainService.Blockchain.cs#L30
+* C#: https://github.com/neo-project/neo/blob/2e2fbe9552110c4f0c34468722e9900ca3ab0bf1/src/Neo.CLI/CLI/MainService.cs#L187-L235
+* Go: https://github.com/nspcc-dev/neo-go/blob/ebb71497a531edd10fc72fddd50c18c8e41c8356/cli/server/server.go#L164
+* Go: https://github.com/nspcc-dev/neo-go/blob/ebb71497a531edd10fc72fddd50c18c8e41c8356/cli/server/server.go#L220
