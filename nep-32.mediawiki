@@ -1,9 +1,9 @@
 <pre>
-  NEP: TBD
+  NEP: 32
   Title: Unified Neo chain dump format
   Author: Ekaterina Pavlova <ekt@nspcc.ru>, Roman Khimov <roman@nspcc.ru>
   Type: Informational
-  Status: Draft
+  Status: Accepted
   Created: 2025-02-14
 </pre>
 

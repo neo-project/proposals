@@ -147,6 +147,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
+| [[nep-32.mediawiki|32]]
+| Unified Neo chain dump format
+| Ekaterina Pavlova, Roman Khimov
+| Informational
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
