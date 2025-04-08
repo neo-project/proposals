@@ -1,0 +1,58 @@
+<pre>
+  NEP: TBD
+  Title: NeoFS block storage format
+  Author: Ekaterina Pavlova <ekt@nspcc.ru>
+  Type: Informational
+  Status: Draft
+  Created: 2025-04-07
+</pre>
+
+==Abstract==
+
+This proposal outlines the methodology and specifications for storing Neo blockchain blocks within
+the NeoFS container.
+
+==Motivation==
+
+Neo node synchronization via P2P requires all block headers (~700 bytes each, over 1 GB per year with
+15-second blocks) to remain available, limiting scalability as chains grow. Storing blocks in NeoFS
+provides a distributed alternative, reducing local storage, enabling on-demand fetches, and speeding
+up sync with snapshots or checkpoints. This proposal defines a NeoFS storage schema, building on
+experiments (e.g., nspcc-dev/neo-go#3496) and future enhancements (#1526).
+
+==Specification==
+
+===Block Storage Schema===
+A single NeoFS container is used to store blocks. Each container
+has network magic attribute (`Magic:56753`). Each block is stored in a binary
+form as a separate object with a unique OID and a set of attributes:
+ - block object identifier with block index value (`Block:1`)
+ - primary node index (`Primary:0`)
+ - block hash in the LE form (`Hash:5412a781caf278c0736556c0e544c7cfdbb6e3c62ae221ef53646be89364566b`)
+ - previous block hash in the LE form (`PrevHash:3654a054d82a8178c7dfacecc2c57282e23468a42ee407f14506368afe22d929`)
+ - millisecond-precision block creation timestamp (`BlockTime:1627894840919`)
+ - second-precision block uploading timestamp (`Timestamp:1627894840`)
+
+These attributes are stored as NeoFS object metadata alongside the binary block data.
+Multibyte data items are always stored in little-endian order, where the low bytes come first.
+Its structure is described further below.
+
+<pre>
+block_binary
+{
+  var-byte header;             // Fixed-size header including witnesses
+  var-byte txcount;            // Transaction count
+  var-byte transactions[];     // Array of serialized transactions
+}
+</pre>
+
+== References ==
+* [https://github.com/neo-project/neo/issues/3463 Neo Issue#3463]
+* [https://github.com/neo-project/neo/issues/2373 Neo Issue#2373]
+* [https://github.com/neo-project/neo/issues/1526 Neo Issue#1526]
+* [https://github.com/nspcc-dev/neo-go/issues/3496 NeoGo Issue#3496]
+* [https://github.com/nspcc-dev/neofs-api/issues/285 NeoFS API Issue#285]
+
+
+== Implementation ==
+* Go: https://github.com/nspcc-dev/neo-go/blob/61992405983ddfb5547ae3afab75c22186dc966f/cli/util/uploader.go
