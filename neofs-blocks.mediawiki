@@ -40,7 +40,7 @@ Its structure is described further below.
 <pre>
 block_binary
 {
-  var-byte header;            // Fixed-size header including witnesses
+  var-byte header;             // Fixed-size header including witnesses
   var-byte txcount;            // Transaction count
   var-byte transactions[];     // Array of serialized transactions
 }
