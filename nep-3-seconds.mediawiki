@@ -1,0 +1,252 @@
+<NEP: xxx>
+  Title: Reduce Block Time and Gas Generation Rate
+  Author: Jimmy Liao <vvvincentvan@gmail.com>, Vitor Nazário Coelho <vncoelho@gmail.com>,  Fernando Díaz Toledano <shargon@gmail.com>, Roman Khimov <roman@nspcc.ru>, Christopher Schuchardt <chris.schuchardt@neo.events> 
+  Type: Standard
+  Status: Draft
+  Created: 2025-02-11
+  Replaces: N/A
+  Hardfork: Echidna
+
+==Abstract==
+
+This NEP proposes two significant changes to the Neo N3 network parameters:
+1. Enabling governance mechanism for block time adjustment via the Policy contract
+2. Preparing for future reduction of block time from 15 seconds to 3 seconds
+3. Preparing for future reduction of GAS generation rate per block from 5 GAS to 1 GAS
+
+The hardfork will introduce the governance methods while maintaining current values. After the hardfork, the Neo Council will be responsible for executing the parameter changes through the governance mechanism.
+
+==Motivation==
+
+The primary motivations for these changes are:
+1. Improve transaction throughput and user experience
+2. Maintain a stable GAS/NEO ratio in the ecosystem
+3. Better compete with other high-performance blockchain platforms
+
+==Specification==
+
+===Block Time Reduction===
+* Current value: 15 seconds (15000 milliseconds)
+* Initial value after hardfork: 15 seconds (15000 milliseconds)
+* Target value after council update: 3 seconds (3000 milliseconds)
+* Implementation: 
+  * Move block time configuration from dBFT plugin to Policy native contract
+  * Initially maintain current block time at hardfork activation
+  * Allow the council to configure block time through the Policy contract
+  * Consensus mechanism will read block time from configuration for blocks up to and including the hardfork block
+  * Consensus mechanism will read block time from the Policy contract for blocks after the hardfork block
+
+===GAS Generation Rate Reduction===
+* Current value: 5 GAS per block
+* Initial value after hardfork: 5 GAS per block
+* Target value after council update: 1 GAS per block
+* Implementation: 
+  * Retain the existing governance model where council controls GasPerBlock
+  * Council will adjust GasPerBlock after hardfork using existing mechanisms
+  * Coordination between block time and GAS per block changes will be managed through governance
+
+===Policy Contract Enhancement===
+* New native method: `SetBlockGenTime(BigInteger milliseconds)`
+  * Allows council to set block time through the Policy contract
+  * **Permission restricted**: Can only be called by the Neo Council
+  * **Safe**: False (requires verification)
+  * Parameters:
+    * `milliseconds`: The new block time in milliseconds
+* New native method: `GetBlockGenTime()`
+  * Returns the current block generation time
+  * **Permission**: Can be called by any user or contract
+  * **Safe**: True (read-only operation)
+  * Returns:
+    * A BigInteger representing the current block time in milliseconds
+
+===Native Contract Interface===
+
+The block time configuration methods will be added to the <code>PolicyContract</code> native contract in hardfork <code>Echidna</code> with the following interfaces:
+
+<pre>
+{
+    "name": "SetBlockGenTime",
+    "safe": false,
+    "parameters": [
+        {
+            "name": "milliseconds",
+            "type": "Integer"
+        }
+    ],
+    "returntype": "Boolean",
+    "events": [
+        {
+            "name": "BlockGenTimeChanged",
+            "parameters": [
+                {
+                    "name": "oldTime",
+                    "type": "Integer"
+                },
+                {
+                    "name": "newTime", 
+                    "type": "Integer"
+                }
+            ]
+        }
+    ]
+}
+</pre>
+
+<pre>
+{
+    "name": "GetBlockGenTime",
+    "safe": true,
+    "parameters": [],
+    "returntype": "Integer"
+}
+</pre>
+
+===Method Specification===
+
+The <code>SetBlockGenTime</code> method MUST follow these rules:
+
+1. Permission Requirements:
+   * MUST only be callable by the Neo Council through a committee multi-signature transaction
+   * MUST fail with "Access denied" error if called by any other entity
+
+2. Input Requirements:
+   * <code>milliseconds</code> MUST be a positive integer representing block time in milliseconds
+   * <code>milliseconds</code> MUST be greater than or equal to 1000 (1 second)
+
+3. Behavior:
+   * MUST update the block time configuration
+   * MUST take effect immediately after the transaction is executed
+   * Consensus nodes MUST use the new block time for the next consensus round
+   * MUST emit an <code>Event</code> with the name "BlockGenTimeChanged" containing:
+     * The previous block generation time in milliseconds
+     * The new block generation time in milliseconds
+
+4. Return Value:
+   * Returns true if the operation is successful
+   * Returns false if any validation fails
+
+The <code>GetBlockGenTime</code> method MUST follow these rules:
+
+1. Permission Requirements:
+   * Can be called by any entity (contracts, users, or applications)
+   * MUST be marked as "safe": true in the contract manifest to enable read-only access
+
+2. Behavior:
+   * MUST return the current block generation time in milliseconds
+
+3. Return Value:
+   * Returns an integer representing the current block time in milliseconds
+
+5. Effect on Contracts:
+   * Contract executions MUST adapt to the new block time for all time-related calculations
+   * The consensus mechanism MUST read the block time from the Policy contract for each consensus round
+
+===Permission Enforcement===
+
+The Policy contract MUST implement strict permission enforcement:
+
+1. For `SetBlockGenTime`:
+   * The method MUST verify the caller is the Neo Council committee
+   * Implementation MUST use the CheckCommittee verification pattern
+   * Any unauthorized calls MUST be rejected with appropriate error codes
+
+2. For `GetBlockGenTime`:
+   * No permission checks required
+   * Must be implemented as a read-only operation
+   * Cannot modify blockchain state
+
+This permission model ensures that only the governance committee can modify critical consensus parameters while providing transparent access to current settings.
+
+===Hardfork Activation===
+* The hardfork will:
+  * Add the new `SetBlockGenTime` and `GetBlockGenTime` methods to the Policy contract
+  * Move block time configuration from consensus settings to Policy contract
+  * Initially set the default block time to 15 seconds (15000 milliseconds)
+  * The consensus module behavior will change:
+    * For blocks before and including the hardfork block (Ht), consensus time is read from configuration
+    * For blocks after the hardfork block (Ht+1 and beyond), consensus time is read from `GetBlockGenTime()`
+  * After hardfork activation, the council will be responsible for:
+    * Calling `SetBlockGenTime()` to adjust the block time to the target value
+    * Calling `SetGasPerBlock()` to adjust the GAS generation rate
+  * Careful coordination will be needed to ensure economic balance
+
+==Rationale==
+
+The reduction in block time from 15000 to 3000 milliseconds will:
+* Reduce transaction confirmation waiting times
+* Improve DApp responsiveness and user experience
+* Better compete with other high-performance blockchains
+
+The reduction in GAS generation from 5 to 1 GAS per block will:
+* Maintain economic balance despite increased block production
+* Preserve the intended tokenomics of the Neo ecosystem
+* Prevent potential GAS oversupply and value dilution
+
+== Affected Configurations ==
+
+* Block Time Configuration:
+  * Current: Hardcoded in consensus settings (MillisecondsPerBlock: 15000)
+  * After hardfork: Configurable via Policy contract with initial value of 15000 (15 seconds)
+  * Target after council update: 3000 (3 seconds)
+* MaxTransactionsPerBlock: 512 => 256
+* GasPerBlock: 
+  * Current: 5 GAS
+  * After hardfork: Remains at 5 GAS until configured by council
+  * Target after council update: 1 GAS
+* MaxValidUntilBlockIncrement: 100 => 500
+
+==Backwards Compatibility==
+
+This change requires a hard fork as it modifies fundamental network parameters. All nodes must upgrade to maintain network consensus.
+
+==Test Cases==
+
+The following scenarios should be tested:
+1. Network stability under 3-second block times
+2. Transaction processing under high load
+3. Node synchronization with faster blocks
+4. GAS generation and distribution accuracy
+5. Smart contract execution under new timing constraints
+
+==Potential Issues and Mitigations==
+
+1. Network Stability
+* Issue: Faster block times may increase network overhead
+* Mitigation: Implement improved network optimization and node requirements
+
+2. Smart Contract Timing
+* Issue: Some contracts may assume 15-second blocks
+* Mitigation: Provide migration guidelines and testing framework
+
+3. Network Synchronization
+* Issue: Faster blocks may impact node sync speed
+* Mitigation: Implement enhanced sync protocols
+
+4. Governance Coordination
+* Issue: Non-atomic updates between block time and GAS generation rate
+* Mitigation: Careful governance coordination to adjust both settings in close succession
+
+5. Contract Dependency on Block Time
+* Issue: Contracts relying on block time for time-related calculations will be affected
+* Mitigation: Documentation and tools to help developers update affected contracts
+
+==Implementation==
+
+The implementation requires modifications to:
+1. Policy native contract to add the new `SetBlockGenTime` and `GetBlockGenTime` methods
+2. Consensus mechanism to read block time:
+   * From configuration for blocks up to and including the hardfork block
+   * From Policy contract (`GetBlockGenTime()`) for blocks after the hardfork block
+3. Neo native contract to coordinate with the new timing system
+
+A phased implementation approach is recommended:
+1. TestNet deployment and testing (2 weeks)
+2. MainNet deployment preparation (2 weeks)
+3. Hard fork coordination and execution
+4. Council governance actions after hardfork:
+   * Call `SetBlockGenTime(3000)` to set new block time
+   * Adjust GasPerBlock to 1 GAS using existing governance mechanisms
+
+==Reference Implementation==
+
+CSharp implementation: https://github.com/neo-project/neo/pull/3622
