@@ -41,7 +41,9 @@ Only 4 of the 15 council seats not directly presented as NGD or NF were in atten
 
 As a result of this tokenomic model, we have seen the introduction of surrogate products which optimize GAS generation
 for the NEO token holders at the expense of their vote. These products have become incredibly popular since inception, 
-showing the intensity of the bias that this mechanic introduces on our governance process. NeoBurger, for example, has enough NEO to directly take 3 council
+showing the intensity of the bias that this mechanic introduces on our governance process. 
+
+NeoBurger, for example, has enough NEO to directly take 3 council
 seats with focused voting at the time of writing. These surrogate solutions expand the attack surface area of our platform 
 and introduce algorithmic risk by taking advantage of this flaw in the model and incentivizing 
 indifference towards actively participating in governance. 
