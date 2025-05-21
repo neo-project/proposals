@@ -232,8 +232,7 @@ If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST r
 
 If the receiver is a deployed contract, the function MUST call <code>onNEP11Payment</code> method on receiver contract with the <code>data</code> parameter from <code>transfer</code> AFTER firing the <code>Transfer</code> event.
 
-The function SHOULD check whether the <code>from</code> address equals the caller contract hash.
-If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+The function SHOULD verify the <code>from</code> address using the SYSCALL <code>Neo.Runtime.CheckWitness</code>.
 
 If the transfer is not processed, the function SHOULD return <code>false</code>.
 
