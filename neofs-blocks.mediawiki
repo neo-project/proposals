@@ -1,0 +1,115 @@
+<pre>
+  NEP: TBD
+  Title: NeoFS block storage format
+  Author: Ekaterina Pavlova <ekt@nspcc.ru>
+  Type: Informational
+  Status: Draft
+  Created: 2025-04-07
+</pre>
+
+==Abstract==
+
+This proposal outlines the specification for storing Neo blockchain blocks within
+the NeoFS container.
+
+==Motivation==
+
+Neo node synchronization via P2P requires all headers and blocks (~700 bytes each, over 1 GB per year with
+15-second blocks) to remain available, limiting scalability as chains grow. Storing blocks in NeoFS
+provides a distributed alternative, reducing local storage, enabling on-demand fetches and allowing to drop
+blocks and headers from storage for most nodes.
+
+==Specification==
+
+===Block Storage Schema===
+A single NeoFS container is used to store blocks and index files per network. Each container
+has network magic attribute (`Magic:56753`). Each block is stored in a binary
+form as a separate object with a unique OID and a set of attributes:
+* Block: block object identifier with block index value.
+* Hash: block hash in the in hex hash representation.
+* PrevHash: previous block hash in the in hex hash representation.
+* BlockTime: millisecond-precision block creation timestamp.
+* Timestamp: second-precision block uploading timestamp.
+
+These attributes are stored as NeoFS object metadata alongside the binary block data and can be extended.
+Multibyte data items are always stored in little-endian order, where the low bytes come first.
+Its structure is standard Neo block serialization and the object may have additional data after the block.
+
+An [https://rest.fs.neo.org/v1/objects/3RCdP3ZubyKyo8qFeo7EJPryidTZaGCMdUjqFJaaEKBV/by_id/Fu7yQzspvLJwSGJNK64xeeyMdWXtU5B5b1es6KSxUag1 example]
+of a block object is as follows:
+<pre>
+ID: Fu7yQzspvLJwSGJNK64xeeyMdWXtU5B5b1es6KSxUag1
+CID: 3RCdP3ZubyKyo8qFeo7EJPryidTZaGCMdUjqFJaaEKBV
+Owner: NVvY1FF67XJ2GTVhy9FqiZGC4jEQtvjmHt
+CreatedAt: 28202
+Size: 697
+HomoHash: 45c98e627910d9b915d58368493789ce49ca194626f16ea5bf6b57bb2cce462921a1d3faf682d252a804b0555ca48905286222ee9209b3ff1ce4677a082ffd4d
+Checksum: fa6cedddfec3a61157c4a12e25f81e85c0f92aac70317d6df7fe193f983b4917
+Type: REGULAR
+Attributes:
+  Block=1
+  Primary=0
+  Hash=5f3fbb43d1e516fe07771e2e873ebc9e2810662401acf603a775aace486220bd
+  PrevHash=1f4d1defa46faa5e7b9b8d3f79a06bec777d7c26c4aa5f6f5899a291daa87c15
+  BlockTime=1627894840919
+  Timestamp=1734362616 (2024-12-16 18:23:36 +0300 MSK)
+ID signature:
+  public key: 02a4920745d86db224c179c936606dc0e4620edad13d568ef036da279352e45f2b
+  signature: 0443ff20d15952759b5101a7d223d70eb992260fd9ad5aecb404a97448b2ea54bd1ad783b12ccddba0097dd6608b55ccac9215c5715f9589ec6a555542ead6dc00
+[Block Binary Data]
+</pre>
+
+Each index file is an object containing a constant-sized batch of raw block object
+IDs in binary form ordered by block index. Each index file is marked with the
+following attributes:
+* Index: index file identifier with consecutive file index value.
+* IndexSize: the number of OIDs included into index file.
+* Timestamp: second-precision index file uploading timestamp.
+
+An [https://rest.fs.neo.org/v1/objects/3RCdP3ZubyKyo8qFeo7EJPryidTZaGCMdUjqFJaaEKBV/by_id/4nxxFWRFbNbcfwf5EuftboHQVnnsH6vDw5Dp6mPTuwYN example]
+of a index object is as follows:
+<pre>
+ ID: 4nxxFWRFbNbcfwf5EuftboHQVnnsH6vDw5Dp6mPTuwYN
+ CID: 3RCdP3ZubyKyo8qFeo7EJPryidTZaGCMdUjqFJaaEKBV
+ Owner: NVvY1FF67XJ2GTVhy9FqiZGC4jEQtvjmHt
+ CreatedAt: 28202
+ Size: 4096000
+ HomoHash: 6d01444340687199c44a3dfaa719954a0f1343108fe7dda6ad03b27eaa4247d87b7bb7cd8de29f09027280cac9490b53261a005c7e8b84ab8e65818439f190d6
+ Checksum: 57ee0f196c49a7b85b9dc4c5ce97e032511c3c7fe7af57754adf455e48e68b80
+ Type: REGULAR
+ Attributes:
+   Index=1
+   IndexSize=128000
+   Timestamp=1734363922 (2024-12-16 18:45:22 +0300 MSK)
+ ID signature:
+   public key: 02b6a56095b0c8971bfc7ec0ade0cb97ed7f616360c6dd0d0b93f4ce8d38c64a8d
+   signature: 046c531bf202429ba86842983f48dfb7693e5ed881e9e9f7347625350a6d10694b011d3b808821b5cfe9e383aef34094356b63e6319383e541ba25a152e84aa2df
+[32-bit OID array]
+</pre>
+
+===Synchronization Algorithm===
+Blocks stored in NeoFS and those synchronized via P2P both use the standard Neo block
+serialization format, ensuring compatibility across different synchronization methods.
+The NeoFS container serves as verified storage for downloading blocks, with two methods
+for block retrieval:
+ - Index File Search: Searches for index files by index file attribute and reads block
+ OIDs from index file object-by-object.
+ - Direct Block Search: Searches blocks one by one directly by block attribute.
+
+Downloaded blocks are inserted into the blockchain using the same logic as in the
+P2P synchronization protocol.
+
+==Rationale==
+This proposal defines a NeoFS storage schema, building on experiments (e.g., nspcc-dev/neo-go#3496)
+and future enhancements (#1526).
+
+== References ==
+* [https://github.com/neo-project/neo/issues/3463 Neo Issue#3463]
+* [https://github.com/neo-project/neo/issues/2373 Neo Issue#2373]
+* [https://github.com/neo-project/neo/issues/1526 Neo Issue#1526]
+* [https://github.com/nspcc-dev/neo-go/issues/3496 NeoGo Issue#3496]
+* [https://github.com/nspcc-dev/neofs-api/issues/285 NeoFS API Issue#285]
+
+
+== Implementation ==
+* Go: https://github.com/nspcc-dev/neo-go/blob/61992405983ddfb5547ae3afab75c22186dc966f/cli/util/uploader.go
