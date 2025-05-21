@@ -125,7 +125,7 @@ The function MUST return <code>false</code> if the <code>from</code> account bal
 
 If the method succeeds, it MUST fire the <code>Transfer</code> event, and MUST return <code>true</code>, even if the <code>amount</code> is <code>0</code>, or <code>from</code> and <code>to</code> are the same address.
 
-The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed; If not, the function SHOULD use the SYSCALL <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+The function SHOULD verify the <code>from</code> address using the SYSCALL <code>Neo.Runtime.CheckWitness</code>. Take into account that <code>Neo.Runtime.CheckWitness</code> already will check whether the <code>from</code> address equals the caller contract hash.
 
 If the transfer is not processed, the function MUST return <code>false</code>.
 
