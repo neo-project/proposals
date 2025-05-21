@@ -1,0 +1,535 @@
+<pre>
+  NEP: 21
+  Title: Dapi for N3
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Accepted
+  Created: 2021-11-24
+  Requires: 20
+</pre>
+
+==Abstract==
+
+This NEP describes a common API interface for dApps to communicate with external wallet providers. The use of a trusted 3rd party wallet providers will help users feel more secure when using dApps, and the unified interface will help dApp creators to have a more uniform developer experience when making their dApps compatible with various providers.
+
+==Motivation==
+
+===End Users===
+
+As dApps come into the ecosystem, there will be more concerns about the safety of user assets. If dApps all required users to input their private keys in order to use them, it just takes one malicious dApp to steal all their funds. By using a trusted wallet provider which interfaces with the various dApps in the ecosystem on their behalf, users can reduce the exposure of their private keys. This will even allow users to transact with their hardware wallets via the wallet provider, never having to reveal their private keys even to the wallet itself.
+
+===dApp Developers===
+
+One of the initial hurdles for any developer when starting to develop a dApp is to create a wallet module that will allow the user and application to interface with the NEO blockchain. While there are many quality SDKs out there, such as neon-js, for facilitating the communication of these requests, there are often many hurdles to successfully construct the right combination of methods, along with input and output parsing. The issue only gets amplified when trying to integrate with hardware wallet providers such as a Ledger device.
+
+While there may be several options for 3rd party wallet providers that will help them to facilitate these transactions, there is currently no common consensus on the consistency of their interfaces. With a lack of consistency in interfaces to use these wallet provider services, dApp developers will be forced to make a decision to have their platform supported by a single provider, or to double or even triple their development efforts to accommodate all the different wallet provider interfaces. This will lead to a fragmentation in the dApps ecosystem.
+
+===Wallet providers===
+
+Each wallet provider, when deciding on supporting dApps to utilize their services as an authentication mechanism will be faced with a decision on how to implement an API to communicate with the dApps. Wallet providers can choose to create their own API from scratch, create their own version of existing projects, or aim to directly duplicate an existing API. In the case that the provider decides to make their own API interface from scratch, and try to promote dApps to use it, time and effort will inevitably be wasted by both the provider and competing providers on getting dApp developers on board with using their custom communication interface. If we have a unified interface for such transactions, providers could spend more time on making their individual services better for their users.
+
+==Specification==
+
+===Types===
+
+<pre>
+// Represents a piece of data encoded as a base64 string.
+export type Base64Encoded = string;
+
+// Represents a N3 address.
+// Example: "NSiVJYZej4XsxG5CUpdwn7VRQk8iiiDMPM"
+export type Address = string;
+
+// A 160-bit hash represented by a hexadecimal string.
+// Example: "0x682cca3ebdc66210e5847d7f8115846586079d4a"
+export type UInt160 = string;
+
+// A 256-bit hash represented by a hexadecimal string.
+// Example: "0x1f4d1defa46faa5e7b9b8d3f79a06bec777d7c26c4aa5f6f5899a291daa87c15"
+export type UInt256 = string;
+
+// Represents an ECC public key.
+// Example: "03b209fd4f53a7170ea4444e0cb0a6bb6a53c2bd016926989cf85f9b0fba17a70c"
+export type ECPoint = string;
+
+// A large integer of any length expressed as a string.
+export type Integer = string;
+
+// Represents a piece of data encoded as a hexadecimal string.
+export type HexString = string;
+
+// Represents a version.
+// Example: "1.0.0"
+export type Version = string;
+
+// Represents the N3 network.
+// MAINNET: 860833102
+// TESTNET: 877933390
+export type Network = number;
+
+// Represents the name of the event in IDapiProvider.
+export type EventName =
+    "accountschanged" | // Triggered when the accounts in the wallet change.
+    "networkchanged";   // Triggered when the user switches the current network.
+
+// Represents the type of ContractParameter.
+export type ContractParameterType =
+    "Any" |              // Indicates that the parameter can be of any type.
+    "Boolean" |          // Indicates that the parameter is of Boolean type.
+    "Integer" |          // Indicates that the parameter is an integer.
+    "ByteArray" |        // Indicates that the parameter is a byte array.
+    "String" |           // Indicates that the parameter is a string.
+    "Hash160" |          // Indicates that the parameter is a 160-bit hash.
+    "Hash256" |          // Indicates that the parameter is a 256-bit hash.
+    "PublicKey" |        // Indicates that the parameter is a public key.
+    "Signature" |        // Indicates that the parameter is a signature.
+    "Array" |            // Indicates that the parameter is an array.
+    "Map" |              // Indicates that the parameter is a map.
+    "InteropInterface" | // Indicates that the parameter is an interoperable interface.
+    "Void";              // It can be only used as the return type of a method, meaning that the method has no return value.
+
+// Represents a parameter of a contract method.
+export type ContractParameter = {
+    name?: string;               // The name of the parameter.
+    type: ContractParameterType; // The type of the parameter.
+}
+
+// Represents an account in a wallet.
+export type Account = {
+    hash: UInt160;      // The script hash of the account.
+    label?: string;     // The label of the account.
+    isDefault: boolean; // Indicates whether the account is the default account.
+    contract?: {        // The contract of the account.
+        script?: Base64Encoded;          // The verification script of the contract.
+        parameters: ContractParameter[]; // The parameters of the verification script.
+        deployed: boolean;               // Indicates whether the contract is deployed on the blockchain.
+    };
+}
+
+// Represents the scope of a witness.
+export type WitnessScope =
+    "None" |            // Indicates that no contract was witnessed. Only sign the transaction.
+    "CalledByEntry" |   // Indicates that the calling contract must be the entry contract.
+    "CustomContracts" | // Custom hash for contract-specific.
+    "CustomGroups" |    // Custom pubkey for group members.
+    "WitnessRules" |    // Indicates that the current context must satisfy the specified rules.
+    "Global" |          // This allows the witness in all contexts (default Neo2 behavior).
+    "CalledByEntry, CustomContracts" |
+    "CalledByEntry, CustomGroups" |
+    "CalledByEntry, WitnessRules" |
+    "CustomContracts, CustomGroups" |
+    "CustomContracts, WitnessRules" |
+    "CustomGroups, WitnessRules" |
+    "CalledByEntry, CustomContracts, CustomGroups" |
+    "CalledByEntry, CustomContracts, WitnessRules" |
+    "CalledByEntry, CustomGroups, WitnessRules" |
+    "CustomContracts, CustomGroups, WitnessRules" |
+    "CalledByEntry, CustomContracts, CustomGroups, WitnessRules";
+
+// Represents the type of WitnessCondition.
+export type WitnessConditionType =
+    "Boolean" |          // Indicates that the condition will always be met or not met.
+    "Not" |              // Reverse another condition.
+    "And" |              // Indicates that all conditions must be met.
+    "Or" |               // Indicates that any of the conditions meets.
+    "ScriptHash" |       // Indicates that the condition is met when the current context has the specified script hash.
+    "Group" |            // Indicates that the condition is met when the current context has the specified group.
+    "CalledByEntry" |    // Indicates that the condition is met when the current context is the entry point or is called by the entry point.
+    "CalledByContract" | // Indicates that the condition is met when the current context is called by the specified contract.
+    "CalledByGroup";     // Indicates that the condition is met when the current context is called by the specified group.
+
+// Represents the condition of a WitnessRule.
+export interface WitnessCondition {
+    type: WitnessConditionType; // The type of the condition.
+}
+
+export interface BooleanCondition extends WitnessCondition {
+    type: "Boolean";
+    expression: boolean;
+}
+
+export interface NotCondition extends WitnessCondition {
+    type: "Not";
+    expression: WitnessCondition;
+}
+
+export interface AndCondition extends WitnessCondition {
+    type: "And";
+    expressions: WitnessCondition[];
+}
+
+export interface OrCondition extends WitnessCondition {
+    type: "Or";
+    expressions: WitnessCondition[];
+}
+
+export interface ScriptHashCondition extends WitnessCondition {
+    type: "ScriptHash";
+    hash: UInt160;
+}
+
+export interface GroupCondition extends WitnessCondition {
+    type: "Group";
+    group: ECPoint;
+}
+
+export interface CalledByEntryCondition extends WitnessCondition {
+    type: "CalledByEntry";
+}
+
+export interface CalledByContractCondition extends WitnessCondition {
+    type: "CalledByContract";
+    hash: UInt160;
+}
+
+export interface CalledByGroupCondition extends WitnessCondition {
+    type: "CalledByGroup";
+    group: ECPoint;
+}
+
+export type WitnessRule = {
+    action: "Deny" | "Allow";
+    condition: WitnessCondition;
+}
+
+export type Signer = {
+    account: UInt160;
+    scopes: WitnessScope;
+    allowedContracts?: UInt160[];
+    allowedGroups?: ECPoint[];
+    rules?: WitnessRule[];
+}
+
+export type TransactionAttributeType =
+    "HighPriority" |
+    "OracleResponse";
+
+export interface TransactionAttribute {
+    type: TransactionAttributeType;
+}
+
+export interface HighPriorityAttribute extends TransactionAttribute {
+    type: "HighPriority";
+}
+
+export type OracleResponseCode =
+    "Success" |
+    "ProtocolNotSupported" |
+    "ConsensusUnreachable" |
+    "NotFound" |
+    "Timeout" |
+    "Forbidden" |
+    "ResponseTooLarge" |
+    "InsufficientFunds" |
+    "ContentTypeNotSupported" |
+    "Error";
+
+export interface OracleResponse extends TransactionAttribute {
+    type: "OracleResponse";
+    id: number;
+    code: OracleResponseCode;
+    result?: Base64Encoded;
+}
+
+export type Transaction = {
+    hash: UInt256;
+    size: number;
+    blockHash: UInt256;
+    blockTime: number;
+    confirmations: number;
+    version: number;
+    nonce: number;
+    systemFee: Integer;
+    networkFee: Integer;
+    validUntilBlock: number;
+    sender: UInt160;
+    signers: Signer[];
+    attributes: TransactionAttribute[];
+    script: Base64Encoded;
+}
+
+export type Block = {
+    hash: UInt256;
+    size: number;
+    confirmations: number;
+    nextBlockHash?: UInt256;
+    version: number;
+    previousBlockHash: UInt256;
+    merkleRoot: UInt256;
+    time: number;
+    nonce: HexString;
+    index: number;
+    primary: number;
+    nextConsensus: UInt160;
+    tx: Transaction[];
+}
+
+export type TriggerType =
+    "OnPersist" |
+    "PostPersist" |
+    "Verification" |
+    "Application";
+
+export type VMState =
+    "NONE" |
+    "HALT" |
+    "FAULT" |
+    "BREAK";
+
+export type StackItemType =
+    "Any" |
+    "Pointer" |
+    "Boolean" |
+    "Integer" |
+    "ByteString" |
+    "Buffer" |
+    "Array" |
+    "Struct" |
+    "Map" |
+    "InteropInterface";
+
+export type Argument = {
+    type: StackItemType;
+    value?: any;
+}
+
+export type ApplicationLog = {
+    txid: UInt256;
+    executions: {
+        trigger: TriggerType;
+        vmstate: VMState;
+        exception?: string;
+        gasconsumed: Integer;
+        stack: Argument[];
+        notifications: Notification[];
+    }[];
+}
+
+export type Token = {
+    symbol: string;
+    decimals: number;
+    totalSupply: Integer;
+}
+
+// Provides the necessary arguments for a contract call.
+export type InvocationArguments = {
+    hash: UInt160;         // The hash of the contract to be called.
+    operation: string;     // The operation of the contract to be called.
+    args?: Argument[];     // The arguments for the call.
+    abortOnFail?: boolean; // Indicates whether the entire transaction should fail when the contract returns `false`.
+}
+
+export type InvocationResult = {
+    script: Base64Encoded;
+    state: VMState;
+    gasconsumed: Integer;
+    exception?: string;
+    stack: Argument[];
+}
+
+export type ContractParametersContext = {
+    type: "Neo.Network.P2P.Payloads.Transaction";
+    hash: UInt256;
+    data: Base64Encoded;
+    items: Record<UInt160, {
+        script: Base64Encoded;
+        parameters: {
+            type: ContractParameterType;
+            value: any;
+        }[];
+        signatures: Record<ECPoint, Base64Encoded>;
+    }>;
+    network: Network;
+}
+
+export type AuthenticationChallengePayload = {
+    action: "Authentication";
+    grant_type: "Signature";
+    allowed_algorithms: ["ECDSA-P256"];
+    networks: Network[];
+    nonce: string;
+    timestamp: number;
+}
+
+export type AuthenticationResponsePayload = {
+    algorithm: "ECDSA-P256";
+    network: Network;
+    pubkey: ECPoint;
+    address: Address;
+    nonce: string;
+    timestamp: number;
+    signature: Base64Encoded;
+}
+</pre>
+
+===Interfaces===
+
+<pre>
+export interface IDapiProvider {
+
+    // Properties
+
+    // Indicates the standards supported by this provider.
+    // Example: ["NEP-11", "NEP-17"]
+    compatibility: string[];
+    
+    // The version of the Dapi. It must currently be "1.0".
+    dapiVersion: Version;
+
+    // Additional data for the provider.
+    extra: any;
+
+    // The name of the provider.
+    name: string;
+
+    // Indicates the network currently in use.
+    network: Network;
+
+    // Indicates the networks supported by this provider.
+    supportedNetworks: Network[];
+
+    // The version of the provider.
+    version: Version;
+
+    // The website of the provider.
+    website: string;
+
+
+    // Events
+
+    // Adds an event handler for the specified event.
+    on(event: EventName, listener: () => void): void;
+
+    // Removes an event handler for the specified event.
+    removeListener(event: EventName, listener: () => void): void;
+
+
+    // Methods
+
+    // Requests for authentication. Usually used to log in to a website.
+    // Possible errors: UNSUPPORTED, INVALID, TIMEOUT, CANCELED.
+    authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
+
+    // Calls a contract offchain and get the execution result.
+    // Possible errors: INVALID, RPC_ERROR.
+    call(invocation: InvocationArguments): Promise<InvocationResult>;
+
+    // Gets all accounts in the current wallet.
+    getAccounts(): Promise<Account[]>;
+
+    // Gets the application log of the specified transaction.
+    // Possible errors: INVALID, RPC_ERROR.
+    getApplicationLog(txid: UInt256): Promise<ApplicationLog>;
+
+    // Gets the balance of the specified account.
+    // If `account` is omitted, the sum of all account balances in the current wallet should be returned.
+    // Possible errors: INVALID, NOTFOUND, FAILED, RPC_ERROR.
+    getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
+
+    // Gets the block of the specified hash.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
+    getBlock(hash: UInt256): Promise<Block>;
+
+    // Gets the block of the specified index.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
+    getBlock(index: number): Promise<Block>;
+
+    // Gets the count of blocks in the blockchain.
+    // Possible errors: RPC_ERROR.
+    getBlockCount(): Promise<number>;
+
+    // Gets the specified storage entry.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
+    getStorage(hash: UInt160, key: Base64Encoded): Promise<Base64Encoded>;
+
+    // Gets the information of the specified token.
+    // Possible errors: INVALID, NOTFOUND, FAILED, RPC_ERROR.
+    getTokenInfo(hash: UInt160): Promise<Token>;
+
+    // Gets the transaction of the specified hash.
+    // Possible errors: INVALID, NOTFOUND, RPC_ERROR.
+    getTransaction(txid: UInt256): Promise<Transaction>;
+
+    // Calls one or more contracts onchain and returns the hash of the transaction.
+    // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
+    invoke(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<UInt256>;
+
+    // Calls one or more contracts onchain and return the transaction without relaying.
+    // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
+    makeTransaction(invocations: InvocationArguments[], signers?: Signer[], suggestedSystemFee?: Integer): Promise<ContractParametersContext>;
+    
+    // Relays a transaction and returns the hash of it.
+    // Possible errors: INVALID, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
+    relay(context: ContractParametersContext): Promise<UInt256>;
+
+    // Sends assets to an account and returns the hash of the transaction.
+    // If `from` is omitted, the wallet should automatically select an account or prompt the user to select one.
+    // Possible errors: INVALID, NOTFOUND, FAILED, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
+    send(asset: UInt160, amount: Integer, to: UInt160, from?: UInt160): Promise<UInt256>;
+
+    // Signs the transaction with the current wallet. Usually used for multi-signature transactions.
+    // Possible errors: UNSUPPORTED, INVALID, NOTFOUND, TIMEOUT, CANCELED.
+    sign(context: ContractParametersContext): Promise<ContractParametersContext>;
+    
+    // Signs the message with the specified account.
+    // The algorithm used is ECDsa with SHA256.
+    // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
+    // Possible errors: INVALID, NOTFOUND, TIMEOUT, CANCELED.
+    signMessage(message: Base64Encoded, account?: UInt160): Promise<{ signature: Base64Encoded; account: UInt160; pubkey: ECPoint }>;
+
+}
+</pre>
+
+===Errors===
+
+<pre>
+// The type of the Error.
+export type ErrorType =
+    "UNSUPPORTED" |         // The requested feature or operation is not supported.
+    "INVALID" |             // The input data is in an invalid format.
+    "NOTFOUND" |            // The requested data doesn't exist.
+    "FAILED" |              // The contract execution failed.
+    "TIMEOUT" |             // The requested operation was cancelled due to timeout.
+    "CANCELED" |            // The requested operation was cancelled by the user.
+    "INSUFFICIENT_FUNDS" |  // The requested operation failed due to insufficient balance.
+    "RPC_ERROR" |           // An exception was thrown by the RPC server.
+    "UNKNOWN";              // An unknown error has occurred.
+
+// The reason passed to the `onRejected` callback of the promises.
+export interface Error {
+    type: ErrorType; // The type of the error.
+    message: string; // The message of the error.
+    detail?: any;    // Additional data for the error.
+}
+
+export interface FailedError extends Error {
+    type: "FAILED";
+    detail: InvocationResult;
+}
+</pre>
+
+===How to obtain an instance of IDapiProvider interface?===
+
+In order for dapps to have a unified method of obtaining <code>IDapiProvider</code> instances, all providers must trigger the <code>Neo.DapiProvider.ready</code> event of the <code>window</code> object when they are ready.
+
+<pre>
+window.dispatchEvent(new CustomEvent("Neo.DapiProvider.ready", {
+    detail: {
+        provider: provider
+    }
+}));
+</pre>
+
+The front end of the dapp can listen to the event and obtain the <code>IDapiProvider</code> instance from the <code>detail</code> property of the event.
+
+<pre>
+window.addEventListener("Neo.DapiProvider.ready", e => {
+    var provider = e.detail.provider;
+});
+</pre>
+
+==Rationale==
+
+This protocol will allow dApp developers to create applications that interact with the NEO blockchain without having to be concerned about managing a full wallet within their application or the details related to handing transaction creation or broadcasting. This will also allow dApps to allow users to transact in a secure fashion that does not require sharing of their private key.
+
+==Implementation==
