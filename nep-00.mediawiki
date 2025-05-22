@@ -1,0 +1,94 @@
+<pre>
+  NEP: 00 <Assignment on Merge>
+  Title: Decoupling Council Rank From GAS Distribution
+  Author: Tyler Adams <tyler@coz.io> on behalf of CentrePoint
+  Type: Standard
+  Status: Draft
+  Created: 2025-05-21
+</pre>
+
+==Abstract==
+
+The Neo platform is a proven innovator in many areas in the blockchain space. One particular differentiator is the
+unique tokenomic model which rewards NEO holders for participating in our delegated governance process without a lock period. 
+In our current implementation, we only distribute notable reward to voters who support active council members on the voting epoch. GAS is uniformly 
+distributed to each council member's voting bin, then uniformly distributed to the voters in the bin. This process 
+results in a GAS distribution to voters that is inversely proportional to the governance rank of council members, 
+with marginal GAS being distributed to those who vote for candidates without a council seat.
+
+In the field, we have experienced some issues with this distribution strategy. In particular, council "stickiness" has 
+become a significant problem and has led to complacency within platform governance. This proposal will specifically target
+enhancements to the GAS distribution mechanism to align governance engagement and community participation motivations. Enhancements considering 
+other areas of the governance process including consensus node succession and voting mechanics should be modularly handled in other proposals.
+
+==Motivation==
+
+NEO token holders are disproportionately rewarded for participating in governance if they vote for active council members.
+Due to this incentive structure, the governance community has stagnated and become insensitive to ecosystem needs. Some 
+motivating considerations for this enhancement are outlined below:
+
+=== Inactive Governance ===
+
+A major benefit of the current implementation is ecosystem stability. Council seats and Consensus nodes are relatively stable and those positions benefit from experience, but there is a cost.
+
+In the current model, because of the economic incentive which is further reinforced by reward maximizing tools, we find that it is almost impossible for council/consensus replacement through organic means. Because it is infeasible to transition ecosystem governance, a significant number of members have chosen to ignore ecosystem obligations since the risk of losing their position is negligible.
+
+This is evidenced by the recent CentrePoint event where every governance member was actively engaged to participate in a discussion to enhance the ecosystem, requiring 2-3 days of time and ~2% (at the time of the event) of their annual GAS generation to cover travel expenses.
+
+Only 4 of the 15 council seats not directly presented as NGD or NF were in attendance at the event. This engagement rate raises major concerns about our ability to actively engage in governance decisions as an ecosystem without direct intervention by Neo for signatures.
+
+=== Misaligned Incentives and Exploit Vectors ===
+
+As a result of this tokenomic model, we have seen the introduction of surrogate products which optimize GAS generation
+for the NEO token holders at the expense of their vote. These products have become incredibly popular since inception, 
+showing the intensity of the bias that this mechanic introduces on our governance process. 
+
+NeoBurger, for example, has enough NEO to directly take 3 council
+seats with focused voting at the time of writing. These surrogate solutions expand the attack surface area of our platform 
+and introduce algorithmic risk by taking advantage of this flaw in the model and incentivizing 
+indifference towards actively participating in governance. 
+
+=== Token and Utility Draining ===
+
+The council members should maintain a full node in the event that they are elevated to participate in consensus. Their investment in securing the network and participating in ecosystem governance is rewarded with GAS. Neither of these obligations are enforced, thereby introducing a scenario where inactive members are being rewarded to damage (by introducing selling pressure without positive utility) the very community they are responsible for leading.
+
+This scenario has led to a cultural shift within the community to expect the few active governance members to carry the burden of scaling the ecosystem and supporting the nucleation of new initiatives, while also making it nearly impossible for new projects to organically scale into accessing funding through participation in the ecosystem leadership.
+
+Holders of the Neo Blockchain governance token(NEO) should be free to vote for their preferred candidates without 
+confounding considerations which misalign ecosystem motivations.
+
+==Specification==
+
+Currently, GAS generated on each block is distributed as follows:
+* 10% - Uniform distribution to NEO token holders
+* 10% - Uniform distribution to council members
+* 80% - "Successful Voters"
+** 40% uniform distribution to each council(14) member voting pool
+** 40% uniform distribution to each consensus(7) member voting pool
+
+This proposal simplifies the distribution to the following:
+* 10% - Uniform distribution to council members
+* 90% - Uniform distribution to voters
+
+This tokenomic change considers both the stickness in council roles as well as the nested issue with the consensus nodes by 
+completely flattening the distribution. Consensus nodes are further incentivized for their efforts through collection of
+system fees and reputation for producing a stable platform as a means of justifying presence on the council. 
+
+This draft proposal is intentionally spartan to motivate discussions for tokenomic improvements. Enhancements to this
+specification with any consideration for "reputation" or "vote weighting" (e.g. quadratic voting) should include a 
+discussion on handling of sybil attack resistance.
+
+==Backwards Compatibility==
+
+Attempts to engage inactive council members have been attempted as a gap resolution with marginal success. 
+This proposal will most likely be breaking for surogate projects which leverage the GAS distribution model of the ecosystem.
+
+==Test Cases==
+
+This proposal introduces a significant tokenomic shift that will impact fundamental aspects of the protocol’s economic 
+design and long-term incentives. Due to the scope and potential consequences of this change, the community should engage 
+in adversarial wargaming of any mechanisms discussed here with extended due diligence beyond 
+measures conducted on the current implementation. A formal FMEA and external audit through grantshares should also be considered.
+
+==Implementation==
+
