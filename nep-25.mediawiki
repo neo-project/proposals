@@ -214,7 +214,7 @@ for other types. It allows to specify that the method accepts or event emits
 only non-null values for this field. The default (if not specified) is "false",
 meaning that null can be used.
 
-<code>interface</code> is only used in conjuction with the
+<code>interface</code> is only used in conjunction with the
 <code>InteropInterface</code> <code>type</code> and MUST NOT be used for other
 types, when used it specifies which interop interface is used. The only valid
 defined value for it is "IIterator" which means an iterator object. When used
