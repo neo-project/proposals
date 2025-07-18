@@ -37,9 +37,9 @@ separate NeoFS object with a unique OID and the following metadata attributes:
 |-
 | PrevHash || Hexadecimal string of the previous block’s hash.
 |-
-| BlockTime || Millisecond-precision timestamp when the block was created.
+| BlockTime || Millisecond-precision unix timestamp when the block was created.
 |-
-| Timestamp || Second-precision timestamp when the block was uploaded.
+| Timestamp || Second-precision unix timestamp when the block was uploaded.
 |}
 
 These attributes are stored as NeoFS object metadata; the list of attributes MAY be extended.
