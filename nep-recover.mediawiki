@@ -59,7 +59,7 @@ The method returns:
 
 The method <code>MUST</code> follow these rules:
 
-1. Input Requirements for secp256k1Recover:
+1. Input Requirements for recoverSecp256K1:
    * hash: A 32-byte array containing the message hash
    * signature: A 64 or 65-byte array containing the ECDSA signature
      - For 64-byte signatures: follows ERC-2098 Compact Signature Representation where the most significant bit of s encodes the recovery bit (0 or 1)
