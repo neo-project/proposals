@@ -30,7 +30,7 @@ A method will be added to CryptoLib with the hardfork <code>Echidna</code>:
 ====SECP256K1 Public Key Recovery====
 <pre>
 {
-    "name": "secp256k1Recover",
+    "name": "recoverSecp256K1",
     "safe": true,
     "parameters": [
         {
