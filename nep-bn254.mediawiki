@@ -1,0 +1,53 @@
+<pre>
+  NEP: 33
+  Title: BN254 Cryptographic Primitives
+  Author: TBD
+  Type: Standard
+  Status: Draft
+  Created: 2025-09-22
+  Requires (*optional):
+  Replaces (*optional):
+</pre>
+
+==Abstract==
+
+This proposal introduces native BN254 elliptic-curve primitives to the Neo platform. The new CryptoLib system call family surfaces point addition, scalar multiplication, and pairing operations over the BN254 curve, enabling smart contracts to verify Groth16 and other zk-SNARK proofs without relying on off-chain oracles.
+
+==Motivation==
+
+Neo currently lacks built-in support for bilinear pairings, which prevents contracts from efficiently validating popular zero-knowledge proof systems. Developers must either redesign proofs around secp256r1 primitives or trust centralized verifiers. Providing BN254 operations inside the VM removes this blocker, aligns Neo with the de facto standard used by EVM chains, and unlocks cross-chain interoperability for zk applications.
+
+==Specification==
+
+* Add three new methods to `CryptoLib` gated behind `Hardfork.HF_Gorgon`:
+** `bn254Add(byte[]) -> byte[64]` performs Jacobian point addition on two affine G1 points.
+** `bn254Mul(byte[]) -> byte[64]` multiplies a G1 point by a scalar in Fr.
+** `bn254Pairing(byte[]) -> byte[32]` evaluates the product pairing across a sequence of (G1, G2) tuples and returns a success word.
+* Inputs follow Ethereum's BN254 ABI:
+** G1 points are 64 big-endian bytes (`x || y`). Points at infinity are represented as all zeros.
+** Scalars are 32 big-endian bytes modulo Fr.
+** Pairing inputs are concatenations of 192-byte elements (`G1 || G2`), where each G2 coordinate uses the compressed Fp2 representation (`imag || real`).
+* Outputs mirror the precompile behavior:
+** Arithmetic operations return the resulting point encoded as 64 bytes (or all zeros on failure).
+** Pairing returns 32 bytes with the least significant byte set to 1 on success, or all zeros on failure.
+* Validation rules:
+** Reject inputs with incorrect lengths via `ArgumentException` before invoking the native implementation.
+** Deserialize affine points, verify they lie on the curve and in the correct subgroup, and treat the point at infinity as neutral.
+** Treat tuples containing an infinite point as neutral factors within pairing.
+* Resource accounting follows the drafted implementation: `bn254Add` and `bn254Mul` charge `2^19` GAS, while `bn254Pairing` charges `2^21` GAS per invocation, independent of tuple count.
+
+==Rationale==
+
+BN254 is chosen for compatibility with a large ecosystem of tooling and because the Nethermind MCL bindings provide a performant, audited implementation. Exposing the primitives through `CryptoLib` maintains Neo's existing contract interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Alternative curves (e.g., BLS12-381) were considered but postponed to reduce scope and because BN254 already covers the majority of current zk-SNARK deployments.
+
+==Backwards Compatibility==
+
+The new syscalls are consensus-affecting and therefore activate only after the `HF_Gorgon` protocol upgrade. Nodes that do not implement the primitives will diverge once contracts start invoking them. No existing contracts are affected because the methods are new additions and do not alter previous behavior.
+
+==Test Cases==
+
+Reference unit tests exercise addition, multiplication, identity handling, and pairing vectors sourced from Ethereum's `ecpairing_inputs.json`, covering positive, negative, and malformed inputs. Additional integration tests validating Groth16 verifier contracts are recommended before finalization.
+
+==Implementation==
+
+A reference implementation is available in the Neo core repository pull request [#4185](https://github.com/neo-project/neo/pull/4185), which wires the Nethermind.MclBindings library into the native runtime and exposes the BN254 contract methods.
