@@ -38,7 +38,7 @@ Neo currently lacks built-in support for bilinear pairings, which prevents contr
 
 ==Rationale==
 
-BN254 is chosen for compatibility with a large ecosystem of tooling and because the Nethermind MCL bindings provide a performant, audited implementation. Exposing the primitives through `CryptoLib` maintains Neo's existing contract interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Alternative curves (e.g., BLS12-381) were considered but postponed to reduce scope and because BN254 already covers the majority of current zk-SNARK deployments.
+BN254 is chosen for compatibility with a large ecosystem of tooling and because the Nethermind MCL bindings provide a performant, audited implementation. Exposing the primitives through `CryptoLib` maintains Neo's existing contract interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Neo already exposes BLS12-381 primitives; BN254 complements that work by matching the curve targeted by Groth16, PLONK, and other widely deployed zk-SNARK tooling, ensuring high compatibility with existing artifacts.
 
 ==Backwards Compatibility==
 
