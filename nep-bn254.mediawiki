@@ -50,4 +50,4 @@ Reference unit tests exercise addition, multiplication, identity handling, and p
 
 ==Implementation==
 
-A reference implementation is available in the Neo core repository pull request [#4185](https://github.com/neo-project/neo/pull/4185), which wires the Nethermind.MclBindings library into the native runtime and exposes the BN254 contract methods.
+A reference implementation is available in the Neo core repository pull request [4185](https://github.com/neo-project/neo/pull/4185), which wires the Nethermind.MclBindings library into the native runtime and exposes the BN254 contract methods.
