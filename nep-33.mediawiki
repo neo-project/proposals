@@ -83,7 +83,7 @@ accounting, which would require new NEO account state fields or transaction
 semantics. An alternative design requiring explicit claim transactions
 preserves current rules but keeps the UX burden and does not address the key
 problem. Another alternative--allowing fees to directly reduce unclaimed GAS
-without minting—would complicate reward accounting and diverge from the
+without minting--would complicate reward accounting and diverge from the
 existing mint/burn model. The chosen design minimizes changes, preserves
 existing fee computation and distribution, and is safely gated by HF_Faun.
 
