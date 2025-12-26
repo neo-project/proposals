@@ -1,0 +1,64 @@
+<pre>
+  NEP: TBD
+  Title: GAS-Only Contract Fees via System Fee Minting
+  Author: Chris Schuchardt <cschuchardt88@gmail.com>, Roman Khimov <roman.khimov@gmail.com>
+  Type: Standard
+  Status: Draft
+  Created: 2025-10-27
+</pre>
+
+==Abstract==
+
+This NEP defines a minimal protocol addition that enables GAS-only contract fees without ABI changes. It introduces a syscall that mints GAS to the executing contract while increasing the transaction system fee. Token-based fees are explicitly out of scope for now.
+
+==Motivation==
+
+Contracts often need to charge fees for services such as withdrawals, premium data, or subscription access. Existing approaches either require custom ABI metadata or force users to pre-transfer tokens, both of which add friction and reduce transparency. This NEP keeps fee logic inside contracts while avoiding ABI changes and keeping authorization explicit at the transaction level, but limits the scope to GAS-only fees.
+
+==Specification==
+
+===System.Runtime.MintGas===
+
+Add a new syscall for GAS-only fees:
+
+<pre>
+void System.Runtime.MintGas(BigInteger amount)
+</pre>
+
+Semantics:
+
+* <code>amount</code> MUST be non-negative.
+* If <code>SystemFee + amount</code> exceeds the transaction <code>MaxSystemFee</code>, the VM MUST FAULT.
+* On success, <code>SystemFee</code> is increased by <code>amount</code> and the same <code>amount</code> of GAS is credited to the executing contract (<code>Runtime.ExecutingScriptHash</code>).
+* The effect is equivalent to <code>System.Runtime.BurnGas(amount)</code> plus a native GAS mint to the executing contract.
+* The syscall MUST be available only in the Application trigger.
+
+This provides GAS-only fee charging without any ABI or manifest changes.
+
+===Usage Pattern===
+
+* GAS fees: The contract computes the fee and calls <code>System.Runtime.MintGas(fee)</code>.
+
+No ABI changes are required.
+
+==Rationale==
+
+* GAS-only fees can be implemented with a minimal syscall (<code>System.Runtime.MintGas</code>) rather than ABI metadata.
+* Keeping fees inside contract logic avoids new ABI fields, manifest changes, and tooling requirements.
+* Token fees are out of scope for now and should be handled via ordinary NEP-17 transfers once witness scopes can express bounded transfer permissions (see #137).
+
+==Backwards Compatibility==
+
+This NEP introduces a new syscall, which requires a protocol update. Existing contracts remain unaffected unless they opt into the new feature.
+
+==Security Considerations==
+
+* <code>System.Runtime.MintGas</code> is limited by <code>MaxSystemFee</code>, which is explicitly accepted by the signer.
+
+==Test Cases==
+
+TBD
+
+==Implementation==
+
+* https://github.com/neo-project/neo/pull/4396
