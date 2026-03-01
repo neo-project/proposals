@@ -1,0 +1,109 @@
+<pre>
+  NEP: TBD
+  Title: Zero Extra Fee for Contract Deploy and Update
+  Author: TBD
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-01
+</pre>
+
+==Abstract==
+
+This proposal removes mandatory GAS fees charged by native <code>ContractManagement</code> logic for smart contract deployment and update operations, setting both to zero. Specifically, it removes the additional fee currently charged in <code>deploy</code> and <code>update</code> beyond ordinary execution costs, and sets the minimum deployment fee baseline to <code>0</code>.
+
+This change reduces onboarding and upgrade costs for contract developers while preserving all existing validation rules, witness checks, contract manifest constraints, and notification behavior. It does not alter contract hash derivation, ABI semantics, storage model, contract ID assignment, or policy blocklist behavior.
+
+==Motivation==
+
+In the current implementation, contract deployment and update include mandatory fee charging in native contract logic. Deployment charges at least a minimum fee and may additionally scale with payload size; update charges based on payload size. These fees are applied before contract state transition and are not optional.
+
+For many development, migration, and maintenance workflows, this creates recurring friction that is not directly tied to execution complexity at the contract level. Setting these fees to zero simplifies developer operations and makes contract lifecycle management cheaper, while keeping all existing safety and correctness checks intact.
+
+==Specification==
+
+This proposal modifies <code>ContractManagement</code> fee behavior as follows.
+
+===1. Deployment Fee===
+
+The fee charged during <code>deploy</code> in native <code>ContractManagement</code> MUST be set to <code>0</code>.
+
+Concretely:
+
+* The current native fee addition based on
+<code>max(storage_price * (nef_len + manifest_len), minimum_deployment_fee) * FeeFactor</code>
+MUST NOT be charged.
+
+===2. Update Fee===
+
+The fee charged during <code>update</code> in native <code>ContractManagement</code> MUST be set to <code>0</code>.
+
+Concretely:
+
+* The current native fee addition based on
+<code>storage_price * (nef_len + manifest_len) * FeeFactor</code>
+MUST NOT be charged.
+
+===3. Minimum Deployment Fee Baseline===
+
+The native minimum deployment fee value maintained by <code>ContractManagement</code> MUST be <code>0</code>.
+
+Concretely:
+
+* Initialization for the minimum deployment fee storage slot MUST set it to <code>0</code>.
+* <code>getMinimumDeploymentFee</code> MUST return <code>0</code>.
+
+An implementation MAY keep the existing getter/setter ABI for compatibility, but effective deploy fee charging remains zero under this proposal.
+
+===4. Unchanged Behavior===
+
+The following are unchanged:
+
+* Contract validation and manifest checks.
+* Contract hash and ID assignment.
+* Contract lifecycle notifications (<code>Deploy</code>, <code>Update</code>, <code>Destroy</code>).
+* Policy blocklist and witness/permission requirements.
+* Any non-ContractManagement fees outside this proposal.
+
+==Rationale==
+
+This proposal is intentionally narrow: it only removes native deployment/update fee charging and keeps contract lifecycle semantics unchanged.
+
+Alternative approaches were considered:
+
+* Reducing, but not removing, current fees.
+* Keeping fees but exposing new governance controls.
+* Removing only deployment or only update fee.
+
+These alternatives retain fee complexity and partial barriers. A full zero-fee policy for both operations is simpler, easier to reason about, and directly matches the goal of eliminating contract lifecycle fee friction.
+
+Keeping ABI shape stable where possible minimizes tooling impact and avoids unnecessary migration for callers using <code>getMinimumDeploymentFee</code>/<code>setMinimumDeploymentFee</code> paths.
+
+==Backwards Compatibility==
+
+This proposal is backward-compatible at the ABI and contract-call level if existing methods remain available. The primary behavior change is economic:
+
+* Transactions that previously failed due to insufficient system fee for contract deploy/update may succeed after activation.
+* Expected deploy/update cost calculations in tooling and SDKs will need adjustment.
+
+No contract source changes are required for contracts that use existing <code>ContractManagement</code> deploy/update flows.
+
+==Security Considerations==
+
+Removing deploy/update fees lowers the economic barrier for frequent contract churn. Implementations should evaluate resource-abuse and spam implications at the policy/network level, including mempool and throughput controls. This proposal does not remove existing validation, permission, or policy blocklist checks.
+
+==Test Cases==
+
+Consensus/client test coverage SHOULD include:
+
+* Deploy with non-empty NEF/manifest succeeds without native deploy fee charging.
+* Update with NEF and/or manifest changes succeeds without native update fee charging.
+* <code>getMinimumDeploymentFee</code> returns <code>0</code> after activation.
+* Existing deploy/update validation failures (empty payload, invalid manifest, blocked hash, call flags constraints) remain unchanged.
+
+==Implementation==
+
+TBD
+
+==References==
+
+* Reference implementation target: <code>ContractManagement.cs</code> in Neo core.
