@@ -550,27 +550,29 @@ export interface IDapiProvider {
 
 <pre>
 // The type of the Error.
-export type ErrorType =
-    "UNSUPPORTED" |         // The requested feature or operation is not supported.
-    "INVALID" |             // The input data is in an invalid format.
-    "NOTFOUND" |            // The requested data doesn't exist.
-    "FAILED" |              // The contract execution failed.
-    "TIMEOUT" |             // The requested operation was cancelled due to timeout.
-    "CANCELED" |            // The requested operation was cancelled by the user.
-    "INSUFFICIENT_FUNDS" |  // The requested operation failed due to insufficient balance.
-    "RPC_ERROR" |           // An exception was thrown by the RPC server.
-    "UNKNOWN";              // An unknown error has occurred.
+export const enum ErrorCode {
+    UNKNOWN = 10000,            // An unknown error has occurred.
+    UNSUPPORTED = 10001,        // The requested feature or operation is not supported.
+    INVALID = 10002,            // The input data is in an invalid format.
+    NOTFOUND = 10003,           // The requested data doesn't exist.
+    FAILED = 10004,             // The contract execution failed.
+    TIMEOUT = 10005,            // The requested operation was cancelled due to timeout.
+    CANCELED = 10006,           // The requested operation was cancelled by the user.
+    INSUFFICIENT_FUNDS = 10007, // The requested operation failed due to insufficient balance.
+    RPC_ERROR = 10008           // An exception was thrown by the RPC server.
+}
 
 // The reason passed to the `onRejected` callback of the promises.
 export interface Error {
-    type: ErrorType; // The type of the error.
-    message: string; // The message of the error.
-    detail?: any;    // Additional data for the error.
+    code: ErrorCode;    // The code of the error.
+    message: string;    // The message of the error.
+    data?: any;         // Additional data for the error.
 }
 
 export interface FailedError extends Error {
-    type: "FAILED";
-    detail: InvocationResult;
+    code: ErrorCode.FAILED;
+    message: "Contract execution failed";
+    data: InvocationResult;
 }
 </pre>
 
