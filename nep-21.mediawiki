@@ -52,8 +52,9 @@ export type UInt256 = string;
 // Example: "03b209fd4f53a7170ea4444e0cb0a6bb6a53c2bd016926989cf85f9b0fba17a70c"
 export type ECPoint = string;
 
-// A large integer of any length expressed as a string.
-export type Integer = string;
+// A large integer of any length expressed as a string or number.
+// It is used to represent values that may exceed the safe integer limit of JavaScript.
+export type Integer = number | string;
 
 // Represents a piece of data encoded as a hexadecimal string.
 export type HexString = string;
