@@ -97,13 +97,14 @@ export type ContractParameter = {
 // Represents an account in a wallet.
 export type Account = {
     hash: UInt160;      // The script hash of the account.
+    address: Address;   // The address of the account.
     label?: string;     // The label of the account.
-    isDefault: boolean; // Indicates whether the account is the default account.
     contract?: {        // The contract of the account.
         script?: Base64Encoded;          // The verification script of the contract.
         parameters: ContractParameter[]; // The parameters of the verification script.
         deployed: boolean;               // Indicates whether the contract is deployed on the blockchain.
     };
+    extra?: any;        // Additional data for the account.
 }
 
 // Represents the scope of a witness.
