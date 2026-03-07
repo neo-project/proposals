@@ -348,6 +348,13 @@ export type ContractParametersContext = {
     network: Network;
 }
 
+export type SignedMessage = {
+    message: Base64Encoded;     // The original message that was signed.
+    signature: Base64Encoded;   // The signature of the message.
+    account: UInt160;           // The account used to sign the message.
+    pubkey: ECPoint;            // The public key of the account used to sign the message.
+}
+
 export type AuthenticationChallengePayload = {
     action: "Authentication";
     grant_type: "Signature";
@@ -455,7 +462,7 @@ export interface IDapiProvider {
     // The algorithm used is ECDsa with SHA256.
     // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
     // Possible errors: INVALID, NOTFOUND, TIMEOUT, CANCELED.
-    signMessage(message: Base64Encoded, account?: UInt160): Promise<{ signature: Base64Encoded; account: UInt160; pubkey: ECPoint }>;
+    signMessage(message: Base64Encoded, account?: UInt160): Promise<SignedMessage>;
     
     // Relays a transaction and returns the hash of it.
     // Possible errors: INVALID, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
