@@ -110,7 +110,7 @@ export type TxConfirmedEvent = {
     }
 }
 
-// Represents the type of ContractParameter.
+// Represents the type of ContractParameter. See NEP-14 for more details.
 export type ContractParameterType =
     "Any" |              // Indicates that the parameter can be of any type.
     "Boolean" |          // Indicates that the parameter is of Boolean type.
