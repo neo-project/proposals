@@ -385,7 +385,8 @@ export interface IDapiProvider {
     dapiVersion: Version;
 
     // Indicates the standards supported by this provider.
-    // Example: ["NEP-11", "NEP-17"]
+    // It should include "NEP-21" if the provider supports this standard.
+    // Example: ["NEP-11", "NEP-17", "NEP-21"]
     compatibility: string[];
 
     // Indicates the network currently in use.
