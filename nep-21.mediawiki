@@ -418,6 +418,7 @@ export interface IDapiProvider {
     // Methods
 
     // Requests for authentication. Usually used to log in to a website.
+    // The authentication process is described in detail in NEP-20.
     // Possible errors: UNSUPPORTED, INVALID, TIMEOUT, CANCELED.
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
 
