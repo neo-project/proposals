@@ -389,6 +389,10 @@ export interface IDapiProvider {
     // Indicates the networks supported by this provider.
     supportedNetworks: Network[];
 
+    // The logo of the provider, represented as a URL.
+    // Should be a square image with a size of at least 128x128 pixels for better display quality.
+    logo: string;
+
     // The website of the provider.
     website: string;
 
