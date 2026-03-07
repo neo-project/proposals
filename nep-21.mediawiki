@@ -69,8 +69,45 @@ export type Network = number;
 
 // Represents the name of the event in IDapiProvider.
 export type EventName =
-    "accountchanged" | // Triggered when the user has changed the connected account in the wallet.
-    "networkchanged";  // Triggered when the user switches the current network.
+    "accountchanged" |  // Triggered when the user has changed the connected account in the wallet.
+    "networkchanged" |  // Triggered when the user switches the current network.
+    "newblock" |        // Triggered when a new block is added to the blockchain.
+    "txconfirmed";      // Triggered when a previously broadcast transaction is confirmed on the blockchain.
+
+// Represents the event when the provider is ready to be used.
+export type ProviderReadyEvent = {
+    detail: {
+        provider: IDapiProvider;    // The instance of the provider that is ready.
+    }
+}
+
+// Represents the event when the user has changed the connected account in the wallet.
+export type AccountChangedEvent = {
+    detail: {
+        account: Account;   // The new connected account in the wallet.
+    }
+}
+
+// Represents the event when the user switches the current network.
+export type NetworkChangedEvent = {
+    detail: {
+        network: Network;   // The new network.
+    }
+}
+
+// Represents the event when a new block is added to the blockchain.
+export type NewBlockEvent = {
+    detail: {
+        hash: UInt256;  // The hash of the new block.
+    }
+}
+
+// Represents the event when a previously broadcast transaction is confirmed on the blockchain.
+export type TxConfirmedEvent = {
+    detail: {
+        hash: UInt256;  // The hash of the confirmed transaction.
+    }
+}
 
 // Represents the type of ContractParameter.
 export type ContractParameterType =
