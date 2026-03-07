@@ -464,6 +464,11 @@ export interface IDapiProvider {
     // Possible errors: INVALID, NOTFOUND, TIMEOUT, CANCELED.
     signMessage(message: Base64Encoded, account?: UInt160): Promise<SignedMessage>;
     
+    // Verifies the signature of a message with the specified public key.
+    // The algorithm used is ECDsa with SHA256.
+    // Possible errors: INVALID.
+    verifyMessage(message: Base64Encoded, signature: Base64Encoded, pubkey: ECPoint): Promise<boolean>;
+
     // Relays a transaction and returns the hash of it.
     // Possible errors: INVALID, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
     relay(context: ContractParametersContext): Promise<UInt256>;
