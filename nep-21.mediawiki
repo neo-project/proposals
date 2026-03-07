@@ -415,11 +415,11 @@ export interface IDapiProvider {
     // Possible errors: UNSUPPORTED, INVALID, TIMEOUT, CANCELED.
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
 
-    // Gets all accounts in the current wallet.
-    getAccounts(): Promise<Account[]>;
+    // Gets the current connected account in the wallet.
+    getAccount(): Promise<Account>;
 
     // Gets the balance of the specified account.
-    // If `account` is omitted, the sum of all account balances in the current wallet should be returned.
+    // If `account` is omitted, the current connected account in the wallet will be used.
     // Possible errors: INVALID, NOTFOUND, FAILED, RPC_ERROR.
     getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
 
