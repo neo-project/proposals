@@ -69,7 +69,7 @@ export type Network = number;
 
 // Represents the name of the event in IDapiProvider.
 export type EventName =
-    "accountschanged" | // Triggered when the accounts in the wallet change.
+    "accountchanged" | // Triggered when the user has changed the connected account in the wallet.
     "networkchanged";   // Triggered when the user switches the current network.
 
 // Represents the type of ContractParameter.
