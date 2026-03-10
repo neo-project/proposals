@@ -611,7 +611,7 @@ window.addEventListener("Neo.DapiProvider.ready", e => {
 });
 </pre>
 
-In addition to waiting for a provider to announce itself (for example via a <code>Neo.DapiProvider.ready</code> event), a dApp may proactively request a provider instance by dispatching the <code>Neo.DapiProvider.request</cdoe> event.
+In addition to waiting for a provider to announce itself (for example via a <code>Neo.DapiProvider.ready</code> event), a dApp may proactively request a provider instance by dispatching the <code>Neo.DapiProvider.request</code> event.
 
 <pre>
 window.dispatchEvent(new CustomEvent("Neo.DapiProvider.request", {
