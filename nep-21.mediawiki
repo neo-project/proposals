@@ -112,7 +112,7 @@ export type TxConfirmedEvent = {
     }
 }
 
-// Represents the type of ContractParameter. See NEP-14 for more details.
+// Represents the type of Parameter. See NEP-14 for more details.
 export type ContractParameterType =
     "Any" |              // Indicates that the parameter can be of any type.
     "Boolean" |          // Indicates that the parameter is of Boolean type.
@@ -129,7 +129,7 @@ export type ContractParameterType =
     "Void";              // It can be only used as the return type of a method, meaning that the method has no return value.
 
 // Represents a parameter of a contract method.
-export type ContractParameter = {
+export type Parameter = {
     name?: string;               // The name of the parameter.
     type: ContractParameterType; // The type of the parameter.
 }
@@ -140,9 +140,9 @@ export type Account = {
     address: Address;   // The address of the account.
     label?: string;     // The label of the account.
     contract?: {        // The contract of the account.
-        script?: Base64Encoded;          // The verification script of the contract.
-        parameters: ContractParameter[]; // The parameters of the verification script.
-        deployed: boolean;               // Indicates whether the contract is deployed on the blockchain.
+        script?: Base64Encoded;     // The verification script of the contract.
+        parameters: Parameter[];    // The parameters of the verification script.
+        deployed: boolean;          // Indicates whether the contract is deployed on the blockchain.
     };
     extra?: any;        // Additional data for the account.
 }
