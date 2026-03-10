@@ -35,6 +35,7 @@ The payloads are transmitted in the form of JSON.
   "action": "Authentication",
   "grant_type": "Signature",
   "allowed_algorithms": ["ECDSA-P256"],
+  "domain": "example.com",
   "networks": [860833102],
   "nonce": "13458238842203010919",
   "timestamp": 1616131368,
@@ -56,6 +57,10 @@ An array containing the signature algorithms allowed by the server.
 
 The client should use one of the algorithms to sign the response data.
 If none of the algorithms are supported by the client, the authentication fails.
+
+=====domain=====
+
+The domain of the server. It is used to prevent phishing/MITM attacks.
 
 =====networks=====
 
@@ -141,33 +146,38 @@ It should be encoded in base64.
 {| class="wikitable sortable" style="width: auto; text-align: center; font-size: smaller; table-layout: fixed;"
 !Name
 !Type
-!Offset
 !Size
 !Description
 |-
-| network
-| uint32
-| 0
-| 4
-| The magic number of the network
-|-
 | nonce
 | uint64
-| 4
 | 8
 | The nonce sent by the server
 |-
 | timestamp
 | uint32
-| 12
 | 4
 | The timestamp of the client
 |-
+| network
+| uint32
+| 4
+| The magic number of the network
+|-
 | hash
 | uint160
-| 16
 | 20
 | The script hash of the user's address
+|-
+| action
+| var_str
+| variable
+| The action sent by the server.
+|-
+| domain
+| var_str
+| variable
+| The domain of the server.
 |}
 
 ===Scene modes===
@@ -185,6 +195,8 @@ The login process is:
 #The user opens the mobile wallet and scans the QR code.
 
 #After the wallet recognizes the QR code, a pop-up window asks the user to confirm login.
+
+#The pop-up window displays the domain of the server and the action to be performed, which is used to prevent phishing/MITM attacks.
 
 #If the user cancels the login, the authentication process ends. Otherwise, go to the next step.
 
@@ -206,6 +218,8 @@ The login process is:
 
 #The front end calls the <code>authenticate</code> method of the plug-in wallet and passes the challenge payload as a parameter.
 
+#The plug-in wallet needs to verify the domain in the challenge payload and check if it matches the current website. If the domain does not match, the authentication fails.
+
 #The plug-in automatically selects an account, or the user specifies an account for the authentication process.
 
 #The wallet sends the response payload as the return value of the <code>authenticate</code> method to the front end.
@@ -223,6 +237,8 @@ The login process is:
 #The client connects to the server.
 
 #The server sends the challenge payload to the client.
+
+#The client needs to verify the domain in the challenge payload and check if it matches the TLS/SSL certificate of the server. If the domain does not match, the authentication fails.
 
 #The client sends the response payload to the server.
 
