@@ -409,7 +409,7 @@ export type SignOptions = {
 }
 
 export type SignedMessage = {
-    message: Base64Encoded;     // The original message that was signed.
+    payload: Base64Encoded;     // The base64 encoded payload of the message that was signed.
     signature: Base64Encoded;   // The signature of the message.
     account: UInt160;           // The account used to sign the message.
     pubkey: ECPoint;            // The public key of the account used to sign the message.
@@ -497,7 +497,7 @@ export interface IDapiProvider {
     getAccounts(): Promise<Account[]>;
 
     // Prompts the user to select an account from the wallet and returns the selected address.
-	// This method is usually used when the dApp needs to access an account that is different from the currently connected one.
+    // This method is usually used when the dApp needs to access an account that is different from the currently connected one.
     // Possible errors: CANCELED.
     pickAddress(prompt?: string): Promise<Address>;
 
