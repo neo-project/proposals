@@ -70,6 +70,8 @@ export type Network = number;
 
 // Represents the name of the event in IDapiProvider.
 export type EventName =
+    "connected" |       // Triggered when the user has connected their wallet to the dApp.
+    "disconnected" |    // Triggered when the user has disconnected their wallet from the dApp.
     "accountchanged" |  // Triggered when the user has changed the connected account in the wallet.
     "networkchanged" |  // Triggered when the user switches the current network.
     "newblock" |        // Triggered when a new block is added to the blockchain.
@@ -447,6 +449,9 @@ export interface IDapiProvider {
     // It should include "NEP-21" if the provider supports this standard.
     // Example: ["NEP-11", "NEP-17", "NEP-21"]
     compatibility: string[];
+
+    // Indicates whether the user has connected their wallet to the dApp.
+    connected: boolean;
 
     // Indicates the network currently in use.
     network: Network;
