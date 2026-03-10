@@ -329,7 +329,7 @@ export type StackItemType =
     "Map" |
     "InteropInterface";
 
-export type Argument = {
+export type StackItem = {
     type: StackItemType;
     value?: any;
 }
@@ -337,7 +337,7 @@ export type Argument = {
 export type Notification = {
     contract: UInt160;  // The script hash of the contract that triggered the event.
     eventname: string;  // The name of the event.
-    state: Argument;    // The data of the event.
+    state: StackItem;   // The data of the event.
 }
 
 export type ApplicationLog = {
@@ -347,7 +347,7 @@ export type ApplicationLog = {
         vmstate: VMState;
         exception?: string;
         gasconsumed: Integer;
-        stack: Argument[];
+        stack: StackItem[];
         notifications: Notification[];
     }[];
 }
@@ -360,10 +360,10 @@ export type Token = {
 
 // Provides the necessary arguments for a contract call.
 export type InvocationArguments = {
-    hash: UInt160;         // The hash of the contract to be called.
-    operation: string;     // The operation of the contract to be called.
-    args?: Argument[];     // The arguments for the call.
-    abortOnFail?: boolean; // Indicates whether the entire transaction should fail when the contract returns `false`.
+    hash: UInt160;          // The hash of the contract to be called.
+    operation: string;      // The operation of the contract to be called.
+    args?: StackItem[];     // The arguments for the call.
+    abortOnFail?: boolean;  // Indicates whether the entire transaction should fail when the contract returns `false`.
 }
 
 // Represents the result of a contract call.
@@ -373,12 +373,12 @@ export type InvocationResult = {
     gasconsumed: Integer;           // The amount of gas consumed during the execution.
     exception?: string;             // The exception message if the execution failed.
     notifications: Notification[];  // The notifications triggered during the execution.
-    stack: Argument[];              // The return value of the execution.
+    stack: StackItem[];             // The return value of the execution.
 }
 
 export type FeeOptions = {
-    suggestedSystemFee?: Integer; // The suggested system fee for the transaction. If provided, the wallet will not automatically calculate the system fee, but will use this value instead. `extraSystemFee` will be ignored if `suggestedSystemFee` is provided.
-    extraSystemFee?: Integer;     // The extra system fee that the user wants to pay for the transaction. The wallet will automatically calculate the system fee and add this value to it.
+    suggestedSystemFee?: Integer;   // The suggested system fee for the transaction. If provided, the wallet will not automatically calculate the system fee, but will use this value instead. `extraSystemFee` will be ignored if `suggestedSystemFee` is provided.
+    extraSystemFee?: Integer;       // The extra system fee that the user wants to pay for the transaction. The wallet will automatically calculate the system fee and add this value to it.
 }
 
 export type ContractParametersContext = {
