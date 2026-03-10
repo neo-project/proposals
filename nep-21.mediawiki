@@ -394,6 +394,12 @@ export type ContractParametersContext = {
     network: Network;
 }
 
+export type SignOptions = {
+    isBase64Encoded?: boolean;      // Indicates whether the message is a base64 encoded string. The default value is `false`.
+    isTypedData?: boolean;          // Indicates whether the message is a typed data. This value can only be set to `false` at the moment, but it is reserved for future use.
+    isLedgerCompatible?: boolean;   // Indicates whether the signature should be compatible with Ledger devices. The default value is `false`. If set to `true`, the message will be wrapped in a transaction-like structure before signing.
+}
+
 export type SignedMessage = {
     message: Base64Encoded;     // The original message that was signed.
     signature: Base64Encoded;   // The signature of the message.
@@ -513,7 +519,7 @@ export interface IDapiProvider {
     // The algorithm used is ECDsa with SHA256.
     // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
     // Possible errors: INVALID, NOTFOUND, TIMEOUT, CANCELED.
-    signMessage(message: Base64Encoded, account?: UInt160): Promise<SignedMessage>;
+    signMessage(message: string | Base64Encoded, account?: UInt160, options?: SignOptions): Promise<SignedMessage>;
 
     // Relays a transaction and returns the hash of it.
     // Possible errors: INVALID, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
