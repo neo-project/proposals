@@ -358,11 +358,17 @@ export type Token = {
     totalSupply: Integer;
 }
 
+// Represents an argument for a contract call.
+export type Argument = {
+    type: ContractParameterType;    // The type of the argument.
+    value?: any;                    // The value of the argument. It can be omitted if the type is "Any".
+}
+
 // Provides the necessary arguments for a contract call.
 export type InvocationArguments = {
     hash: UInt160;          // The hash of the contract to be called.
     operation: string;      // The operation of the contract to be called.
-    args?: StackItem[];     // The arguments for the call.
+    args?: Argument[];      // The arguments for the call.
     abortOnFail?: boolean;  // Indicates whether the entire transaction should fail when the contract returns `false`.
 }
 
@@ -387,10 +393,7 @@ export type ContractParametersContext = {
     data: Base64Encoded;
     items: Record<UInt160, {
         script: Base64Encoded;
-        parameters: {
-            type: ContractParameterType;
-            value: any;
-        }[];
+        parameters: Argument[];
         signatures: Record<ECPoint, Base64Encoded>;
     }>;
     network: Network;
