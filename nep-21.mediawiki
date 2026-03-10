@@ -1,6 +1,6 @@
 <pre>
   NEP: 21
-  Title: Dapi for N3
+  Title: dAPI for N3
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
   Status: Accepted
@@ -442,7 +442,7 @@ export interface IDapiProvider {
     // The version of the provider.
     version: Version;
     
-    // The version of the Dapi. It must currently be "1.0".
+    // The version of the dAPI. It must currently be "1.0".
     dapiVersion: Version;
 
     // Indicates the standards supported by this provider.
@@ -593,7 +593,7 @@ export interface FailedError extends Error {
 
 ===How to obtain an instance of IDapiProvider interface?===
 
-In order for dapps to have a unified method of obtaining <code>IDapiProvider</code> instances, all providers must trigger the <code>Neo.DapiProvider.ready</code> event of the <code>window</code> object when they are ready.
+In order for dApps to have a unified method of obtaining <code>IDapiProvider</code> instances, all providers must trigger the <code>Neo.DapiProvider.ready</code> event of the <code>window</code> object when they are ready.
 
 <pre>
 window.dispatchEvent(new CustomEvent("Neo.DapiProvider.ready", {
@@ -603,13 +603,33 @@ window.dispatchEvent(new CustomEvent("Neo.DapiProvider.ready", {
 }));
 </pre>
 
-The front end of the dapp can listen to the event and obtain the <code>IDapiProvider</code> instance from the <code>detail</code> property of the event.
+The front end of the dApp can listen to the event and obtain the <code>IDapiProvider</code> instance from the <code>detail</code> property of the event.
 
 <pre>
 window.addEventListener("Neo.DapiProvider.ready", e => {
     var provider = e.detail.provider;
 });
 </pre>
+
+In addition to waiting for a provider to announce itself (for example via a <code>Neo.DapiProvider.ready</code> event), a dApp may proactively request a provider instance by dispatching the <code>Neo.DapiProvider.request</cdoe> event.
+
+<pre>
+window.dispatchEvent(new CustomEvent("Neo.DapiProvider.request", {
+    detail: {
+        version: "1.0"
+    }
+}));
+</pre>
+
+This mechanism allows a dApp to signal that it expects a compatible dAPI provider to be injected into the page. Wallets or browser extensions implementing the Neo dAPI SHOULD listen for this event and respond by injecting their provider implementation and/or emitting the corresponding provider ready event.
+
+<pre>
+window.addEventListener("Neo.DapiProvider.request", () => {
+    // inject provider or trigger provider ready flow
+});
+</pre>
+
+If multiple providers respond, the dApp MAY choose which provider to use according to its own selection logic.
 
 ==Rationale==
 
