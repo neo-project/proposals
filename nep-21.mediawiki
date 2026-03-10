@@ -476,7 +476,7 @@ export interface IDapiProvider {
     authenticate(payload: AuthenticationChallengePayload): Promise<AuthenticationResponsePayload>;
 
     // Gets the current connected account in the wallet.
-    getAccount(): Promise<Account>;
+    getAccounts(): Promise<Account[]>;
 
     // Prompts the user to select an account from the wallet and returns the selected address.
 	// This method is usually used when the dApp needs to access an account that is different from the currently connected one.
@@ -484,9 +484,9 @@ export interface IDapiProvider {
     pickAddress(prompt?: string): Promise<Address>;
 
     // Gets the balance of the specified account.
-    // If `account` is omitted, the current connected account in the wallet will be used.
+    // The account can be either in the wallet or an arbitrary address.
     // Possible errors: INVALID, NOTFOUND, FAILED, RPC_ERROR.
-    getBalance(asset: UInt160, account?: UInt160): Promise<Integer>;
+    getBalance(asset: UInt160, account: UInt160): Promise<Integer>;
 
     // Sends assets to an account and returns the hash of the transaction.
     // If `from` is omitted, the wallet should automatically select an account or prompt the user to select one.
