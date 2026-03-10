@@ -419,6 +419,7 @@ export type AuthenticationChallengePayload = {
     action: "Authentication";
     grant_type: "Signature";
     allowed_algorithms: ["ECDSA-P256"];
+    domain: string;
     networks: Network[];
     nonce: string;
     timestamp: number;
