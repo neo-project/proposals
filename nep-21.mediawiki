@@ -78,39 +78,42 @@ export type EventName =
     "txconfirmed";      // Triggered when a previously broadcast transaction is confirmed on the blockchain.
 
 // Represents the event when the provider is ready to be used.
-export type ProviderReadyEvent = {
-    detail: {
-        provider: IDapiProvider;    // The instance of the provider that is ready.
-    }
-}
+export type ProviderReadyEvent = CustomEvent<{
+    provider: IDapiProvider;    // The instance of the provider that is ready.
+}>;
+
+// Represents the event when a dApp requests for a provider to be injected.
+export type ProviderRequestEvent = CustomEvent<{
+    version: Version;   // The version of the dAPI that the requester expects to use.
+}>;
+
+// Represents the event when the user has connected their wallet to the dApp.
+export type ConnectedEvent = CustomEvent<{
+    accounts: Account[];    // The connected accounts in the wallet.
+}>;
+
+// Represents the event when the user has disconnected their wallet from the dApp.
+export type DisconnectedEvent = CustomEvent<{}>;
 
 // Represents the event when the user has changed the connected account in the wallet.
-export type AccountChangedEvent = {
-    detail: {
-        account: Account;   // The new connected account in the wallet.
-    }
-}
+export type AccountChangedEvent = CustomEvent<{
+    accounts: Account[];    // The new connected accounts in the wallet.
+}>;
 
 // Represents the event when the user switches the current network.
-export type NetworkChangedEvent = {
-    detail: {
-        network: Network;   // The new network.
-    }
-}
+export type NetworkChangedEvent = CustomEvent<{
+    network: Network;   // The new network.
+}>;
 
 // Represents the event when a new block is added to the blockchain.
-export type NewBlockEvent = {
-    detail: {
-        hash: UInt256;  // The hash of the new block.
-    }
-}
+export type NewBlockEvent = CustomEvent<{
+    hash: UInt256;  // The hash of the new block.
+}>;
 
 // Represents the event when a previously broadcast transaction is confirmed on the blockchain.
-export type TxConfirmedEvent = {
-    detail: {
-        hash: UInt256;  // The hash of the confirmed transaction.
-    }
-}
+export type TxConfirmedEvent = CustomEvent<{
+    hash: UInt256;  // The hash of the confirmed transaction.
+}>;
 
 // Represents the type of Parameter. See NEP-14 for more details.
 export type ContractParameterType =
@@ -477,10 +480,10 @@ export interface IDapiProvider {
     // Events
 
     // Adds an event handler for the specified event.
-    on(event: EventName, listener: () => void): void;
+    on(event: EventName, listener: (e: CustomEvent) => void): void;
 
     // Removes an event handler for the specified event.
-    removeListener(event: EventName, listener: () => void): void;
+    removeListener(event: EventName, listener: (e: CustomEvent) => void): void;
 
 
     // Methods
