@@ -461,6 +461,7 @@ export interface IDapiProvider {
 
     // The icon of the provider, represented as a URL.
     // Should be a square image with a size of at least 128x128 pixels for better display quality.
+    // The scheme of the URL should be either "https" or "data".
     icon: string;
 
     // The website of the provider.
