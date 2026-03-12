@@ -447,6 +447,9 @@ export interface IDapiProvider {
     // Example: ["NEP-11", "NEP-17", "NEP-21"]
     compatibility: string[];
 
+    // Indicates whether the user has connected their wallet to the dApp.
+    connected: boolean;
+
     // Indicates the network currently in use.
     network: Network;
 
