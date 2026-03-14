@@ -502,7 +502,7 @@ export interface IDapiProvider {
     // If `from` is not specified, the wallet should automatically select an account or prompt the user to select one.
     // The `data` field can be used to pass additional data for the transfer, which can be used by the wallet or the receiving contract.
     // Possible errors: INVALID, NOTFOUND, FAILED, TIMEOUT, CANCELED, INSUFFICIENT_FUNDS, RPC_ERROR.
-    send(asset: UInt160, from?: UInt160, to: UInt160, amount: Integer, data?: any): Promise<UInt256>;
+    send(asset: UInt160, from?: UInt160, to: UInt160, amount: Integer, data?: Argument): Promise<UInt256>;
 
     // Calls a contract offchain and get the execution result.
     // Possible errors: INVALID, RPC_ERROR.
