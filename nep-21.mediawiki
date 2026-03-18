@@ -71,9 +71,7 @@ export type Network = number;
 // Represents the name of the event in IDapiProvider.
 export type EventName =
     "accountchanged" |  // Triggered when the user has changed the connected account in the wallet.
-    "networkchanged" |  // Triggered when the user switches the current network.
-    "newblock" |        // Triggered when a new block is added to the blockchain.
-    "txconfirmed";      // Triggered when a previously broadcast transaction is confirmed on the blockchain.
+    "networkchanged";   // Triggered when the user switches the current network.
 
 // Represents the event when the provider is ready to be used.
 export type ProviderReadyEvent = CustomEvent<{
@@ -93,16 +91,6 @@ export type AccountChangedEvent = CustomEvent<{
 // Represents the event when the user switches the current network.
 export type NetworkChangedEvent = CustomEvent<{
     network: Network;   // The new network.
-}>;
-
-// Represents the event when a new block is added to the blockchain.
-export type NewBlockEvent = CustomEvent<{
-    hash: UInt256;  // The hash of the new block.
-}>;
-
-// Represents the event when a previously broadcast transaction is confirmed on the blockchain.
-export type TxConfirmedEvent = CustomEvent<{
-    hash: UInt256;  // The hash of the confirmed transaction.
 }>;
 
 // Represents the type of Parameter. See NEP-14 for more details.
