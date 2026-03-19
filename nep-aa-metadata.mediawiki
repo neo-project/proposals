@@ -1,0 +1,104 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Abstract Account Metadata Standard
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP defines a minimal metadata document for Neo Abstract Accounts.
+The standard focuses on four fields only: display name, description, logo, and primary domain.
+It also defines an optional <code>accountURI(account)</code> method for contracts or registries that want to expose a canonical metadata location on-chain.
+
+==Motivation==
+
+Abstract Accounts need a human-readable layer.
+Wallets, explorers, marketplaces, and social applications should be able to show the same display name, description, logo, and primary domain for the same account.
+
+Without a shared structure, each application must invent its own metadata keys and URI format, leading to fragmented user experience and duplicate indexer logic.
+
+==Specification==
+
+===Optional on-chain discovery method===
+
+A contract or registry that exposes Abstract Account metadata on-chain SHOULD implement:
+
+<pre>
+{
+  "name": "accountURI",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "account",
+      "type": "Hash160"
+    }
+  ],
+  "returntype": "String"
+}
+</pre>
+
+If implemented, <code>accountURI</code> MUST return a URI pointing to a UTF-8 JSON metadata document.
+If no metadata is available, it SHOULD return an empty string.
+
+===Metadata JSON===
+
+The metadata document MUST be a JSON object with the following keys:
+
+<pre>
+{
+  "name": "Alice Treasury",
+  "description": "Primary operating Abstract Account for Alice.",
+  "logo": "neofs://<container-id>/<object-id>",
+  "primary_domain": "alice.matrix"
+}
+</pre>
+
+===Field rules===
+
+====name====
+
+<code>name</code> MUST be a string intended for display.
+
+====description====
+
+<code>description</code> MUST be a string.
+
+====logo====
+
+<code>logo</code> MUST be a string URI.
+If a logo is present, it MUST use the <code>neofs://</code> scheme.
+
+====primary_domain====
+
+<code>primary_domain</code> MUST be a string containing the account's preferred fully qualified domain name.
+Examples include <code>alice.neo</code> and <code>alice.matrix</code>.
+
+The primary domain:
+
+* MUST be treated as informational metadata;
+* MUST NOT be treated as an authorization primitive by itself.
+
+===Extensibility===
+
+Additional keys MAY be added to the JSON object.
+Applications that do not understand extra keys MUST ignore them.
+
+==Rationale==
+
+This standard intentionally stays small.
+The four required fields cover the most common user-facing metadata needs while keeping the document easy to index and easy to mirror into wallet UIs or marketplace views.
+
+Separating the metadata document from the account's authorization logic also keeps naming and branding concerns out of the core verification path.
+
+==Backwards Compatibility==
+
+Existing applications can continue to use custom metadata formats.
+However, applications that adopt this NEP gain a shared minimal schema for cross-application display.
+
+==Implementation==
+
+The <code>neo-abstract-account</code> repository already uses domain-based account discovery for <code>.matrix</code> names.
+This NEP extends that account-facing layer with a minimal shared metadata document.
