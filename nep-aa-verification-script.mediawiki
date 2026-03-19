@@ -1,0 +1,86 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Abstract Account Verification Script Standard
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP defines a deterministic verification script for Neo Abstract Accounts.
+The script embeds an opaque <code>accountId</code> and an Abstract Account entry-contract hash, calls <code>verify(accountId)</code> on that entry contract, and uses the script hash of this verification script as the public address of the Abstract Account.
+
+==Motivation==
+
+Current Abstract Account designs can derive an account address without deploying a new contract for every user.
+That property is useful only if wallets, explorers, SDKs, relayers, and indexers derive the same address from the same inputs.
+Without a standard verification script, different implementations may assign different addresses to the same logical account, making cross-wallet and cross-application interoperability impossible.
+
+This NEP standardizes only the script-level identity layer.
+It does not standardize the internal storage model of the entry contract or the application entrypoints used after verification succeeds.
+
+==Specification==
+
+===Terms===
+
+* <code>accountId</code>: an opaque <code>ByteString</code> chosen by the Abstract Account system.
+* <code>entryContract</code>: the <code>Hash160</code> of the Abstract Account entry contract.
+* <code>accountAddress</code>: the script hash of the verification script defined by this NEP.
+
+===Verification script===
+
+A compliant Abstract Account verification script MUST be semantically equivalent to:
+
+<pre>
+System.Contract.Call(entryContract, "verify", ReadOnly, [accountId])
+</pre>
+
+The verification script:
+
+* MUST embed <code>accountId</code> as a constant.
+* MUST embed <code>entryContract</code> as a constant.
+* MUST call the method named <code>verify</code> on <code>entryContract</code>.
+* MUST return the Boolean result of that call.
+
+===Address derivation===
+
+The public address of the Abstract Account MUST be the script hash of the verification script defined above.
+
+Wallets, SDKs, explorers, indexers, and relayers:
+
+* MUST derive the Abstract Account address from the full verification script.
+* MUST NOT derive the address from <code>accountId</code> alone.
+
+===Witness rules===
+
+When a transaction uses an Abstract Account address defined by this NEP as a signer:
+
+* the witness verification script MUST be the deterministic verification script for that Abstract Account;
+* the invocation script SHOULD be empty;
+* authorization MUST be decided by the entry contract's <code>verify(accountId)</code> method.
+
+===Out of scope===
+
+This NEP does not standardize:
+
+* how <code>accountId</code> is created;
+* how the entry contract stores account state;
+* how application execution happens after verification succeeds;
+* how native signatures, meta-transactions, or custom verifiers are implemented.
+
+==Rationale==
+
+The goal of this NEP is minimal interoperability.
+It provides one canonical script shape for zero-deployment Abstract Account addresses while leaving account policy and execution logic to a separate standard.
+
+By keeping the address tied to a script instead of a deployed per-account contract, this approach preserves the main cost advantage of the singleton-entry-contract architecture already used by current Neo Abstract Account implementations.
+
+==Backwards Compatibility==
+
+Existing Abstract Account systems that use another script format can continue to work, but they are not compliant with this NEP and will not derive the same address for the same <code>accountId</code> and <code>entryContract</code>.
+
+==Implementation==
+
+The <code>neo-abstract-account</code> repository contains a reference script builder in <code>sdk/js/src/index.js</code>.
