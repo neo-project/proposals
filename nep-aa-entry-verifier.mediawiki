@@ -1,0 +1,169 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Abstract Account Entry Contract and Custom Verifier Standard
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP defines the minimal on-chain interface for a Neo Abstract Account entry contract and its custom verifier contracts.
+It standardizes the <code>verify(accountId)</code> boundary used by deterministic Abstract Account verification scripts, one canonical runtime entrypoint for application execution, and one optional meta-transaction verifier method for implementations that support recovered signer sets.
+
+==Motivation==
+
+The verification script alone is not enough for interoperability.
+Wallets, relayers, and external tools also need to know which contract method performs verification and which contract method is the canonical runtime entrypoint for executing application calls.
+
+At the same time, Abstract Account systems need an extension point for custom authorization logic such as passkeys, EVM signatures, TEE attestations, or social recovery.
+That extension point should be standardized without letting custom verifiers bypass the entry contract's policy checks.
+
+==Specification==
+
+===Required entry-contract methods===
+
+====verify====
+
+<pre>
+{
+  "name": "verify",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "accountId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Boolean"
+}
+</pre>
+
+This method is called by the deterministic verification script defined by the Abstract Account verification-script standard.
+
+The entry contract:
+
+* MUST expose exactly one method named <code>verify</code> with the signature above.
+* MUST return <code>true</code> if the current transaction is authorized for the Abstract Account identified by <code>accountId</code>.
+* MUST return <code>false</code> if authorization fails.
+
+====executeUnifiedByAddress====
+
+<pre>
+{
+  "name": "executeUnifiedByAddress",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "account",
+      "type": "Hash160"
+    },
+    {
+      "name": "target",
+      "type": "Hash160"
+    },
+    {
+      "name": "method",
+      "type": "String"
+    },
+    {
+      "name": "args",
+      "type": "Array"
+    }
+  ],
+  "returntype": "Any"
+}
+</pre>
+
+This is the canonical runtime entrypoint for application execution.
+
+The entry contract:
+
+* MUST accept the public Abstract Account address as <code>account</code>.
+* MUST resolve that address to the corresponding account state.
+* MUST authenticate the operation before calling <code>target</code>.
+* MUST enforce account policy, if any, before calling <code>target</code>.
+
+An implementation MAY expose additional helper methods such as account-id-based wrappers or meta-transaction-specific overloads, but compliant tools SHOULD treat <code>executeUnifiedByAddress</code> as the canonical runtime entrypoint.
+
+===Custom verifier interface===
+
+A custom verifier contract MUST expose:
+
+====verify====
+
+<pre>
+{
+  "name": "verify",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "accountId",
+      "type": "ByteString"
+    }
+  ],
+  "returntype": "Boolean"
+}
+</pre>
+
+If the Abstract Account system supports recovered off-chain signer sets, the custom verifier contract MUST also expose:
+
+====verifyMetaTx====
+
+<pre>
+{
+  "name": "verifyMetaTx",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "accountId",
+      "type": "ByteString"
+    },
+    {
+      "name": "signerHashes",
+      "type": "Array"
+    }
+  ],
+  "returntype": "Boolean"
+}
+</pre>
+
+Each item in <code>signerHashes</code> MUST be a <code>Hash160</code>.
+
+===Verifier call rules===
+
+If a custom verifier is configured for an Abstract Account:
+
+* the entry contract MUST call the verifier with <code>CallFlags.ReadOnly</code> or an equivalent read-only permission set;
+* the verifier MUST only decide authorization;
+* the verifier MUST NOT be treated as permission to bypass whitelist, blacklist, transfer-limit, or other runtime policy checks enforced by the entry contract.
+
+If the entry contract supports meta-transactions and a custom verifier is configured:
+
+* the entry contract MUST call <code>verifyMetaTx(accountId, signerHashes)</code> for the meta-transaction path;
+* the entry contract MUST treat a missing method or a <code>false</code> result as rejection.
+
+===Security rule===
+
+Passing the verification phase MUST NOT by itself authorize direct third-party contract execution.
+Application execution MUST flow through the entry contract runtime entrypoint so the entry contract remains the policy boundary.
+
+==Rationale==
+
+This NEP keeps the standard as small as possible:
+
+* one verification method for the deterministic address path;
+* one canonical runtime entrypoint for normal application calls;
+* one optional verifier extension for recovered signer sets.
+
+It also formalizes the separation already emerging in current Neo Abstract Account implementations: custom verifiers answer "who is authorized", while the entry contract answers "what execution is allowed".
+
+==Backwards Compatibility==
+
+Abstract Account systems that use other verifier names such as <code>validateSignature</code> can continue to operate, but they are not compliant with this NEP.
+An adapter verifier or adapter entry contract can be used to bridge older interfaces into this standard.
+
+==Implementation==
+
+The <code>neo-abstract-account</code> repository documents and audits the <code>verify(accountId)</code> and <code>verifyMetaTx(accountId, signerHashes)</code> pattern in its custom-verifier documentation and security-audit notes.
