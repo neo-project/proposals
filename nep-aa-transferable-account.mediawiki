@@ -1,0 +1,90 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Transferable Abstract Account Standard
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+  Requires: 11
+</pre>
+
+==Abstract==
+
+This NEP defines a simple transferable mode for Neo Abstract Accounts.
+In this mode, one Abstract Account is represented by one non-divisible [[nep-11.mediawiki|NEP-11]] token.
+Sending the token sends control of the Abstract Account.
+Trading the token trades control of the Abstract Account.
+
+==Motivation==
+
+Users want to send or sell an Abstract Account as easily as they send or sell any other on-chain asset.
+The simplest way to achieve that is to reuse Neo's existing non-fungible token standard instead of inventing a new transfer primitive.
+
+This NEP defines the narrowest possible bridge between Abstract Accounts and NEP-11:
+
+* one account;
+* one token;
+* one current controller.
+
+==Specification==
+
+===Scope===
+
+This NEP applies only to single-controller Abstract Accounts.
+
+It does not standardize:
+
+* multi-admin governance;
+* threshold accounts;
+* shared custody;
+* partial ownership;
+* verifier-specific approval models.
+
+===Ownership token===
+
+A transferable Abstract Account MUST be represented by a non-divisible [[nep-11.mediawiki|NEP-11]] token.
+
+The ownership token contract:
+
+* MUST mint exactly one token for each transferable Abstract Account;
+* MUST use the Abstract Account address bytes as the <code>tokenId</code>;
+* MUST treat <code>ownerOf(tokenId)</code> as the current controller of that Abstract Account.
+
+===Control rule===
+
+For a transferable Abstract Account, the canonical controller MUST be the current owner of the corresponding NEP-11 token.
+
+Sending the Abstract Account to another address MUST be performed by NEP-11 <code>transfer</code>.
+After a successful transfer:
+
+* the Abstract Account address MUST remain unchanged;
+* control of the Abstract Account MUST move to the new token owner.
+
+===Authorization===
+
+The Abstract Account entry contract or linked ownership module MUST use the current NEP-11 owner as the single controller for authorization in this mode.
+
+If the implementation supports native witness-based control, it MUST authorize the current token owner and MUST NOT continue to authorize the previous token owner after transfer.
+
+===Metadata===
+
+If the ownership token exposes metadata through <code>properties(tokenId)</code>, it SHOULD follow the Abstract Account metadata standard for name, description, logo, and primary domain.
+
+==Rationale==
+
+This standard keeps transferability simple by reusing NEP-11 wallets, marketplaces, and transfer semantics.
+The Abstract Account address stays stable, so the account can keep its assets, history, and integrations while its controller changes.
+
+Using the account address as the <code>tokenId</code> also makes lookups straightforward for wallets and indexers.
+
+==Backwards Compatibility==
+
+This NEP is an optional mode.
+Abstract Accounts that do not want transferability can continue to use any other control model.
+
+Accounts with multiple admins, threshold verification, or custom verifier logic are out of scope unless they intentionally reduce themselves to the single-controller model defined here.
+
+==Implementation==
+
+The <code>neo-abstract-account</code> repository already uses a stable, deterministic account address as the public identity of an Abstract Account.
+That address-first model makes a one-account-to-one-NEP-11-token mapping a natural extension.
