@@ -65,7 +65,7 @@ export type Version = string;
 
 // Represents the N3 network.
 // MAINNET: 860833102
-// TESTNET: 877933390
+// TESTNET: 894710606
 export type Network = number;
 
 // Represents the name of the event in IDapiProvider.
