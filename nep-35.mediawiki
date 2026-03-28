@@ -1,6 +1,6 @@
 <pre>
   NEP: TBD
-  Title: NeoFS Token Logo Metadata
+  Title: NeoFS Contract Logo Metadata
   Author: Jimmy <jimmy@r3e.network>
   Type: Standard
   Status: Draft
@@ -10,94 +10,100 @@
 
 ==Abstract==
 
-This proposal defines a standard way for token contracts to publish a canonical logo reference for wallets, explorers, and other clients. It introduces a <code>LOGO</code> field in the NEP-15 contract manifest <code>extra</code> object and requires that field to contain a NeoFS URI.
+This proposal defines a standard way for smart contracts to publish a canonical logo reference for wallets, explorers, marketplaces, registries, and other clients. It introduces a <code>logo</code> field in the NEP-15 contract manifest <code>extra</code> object and requires that field to contain a NeoFS URI.
 
-By storing the image itself in NeoFS and publishing only its immutable location in contract metadata, this proposal avoids placing bulky binary data on chain and avoids dependence on centralized token lists or fixed HTTP hosts. The result is a lightweight, decentralized, and interoperable way to discover token logos for both NEP-11 and NEP-17 contracts.
+By storing the image itself in NeoFS and publishing only its immutable location in contract metadata, this proposal avoids placing bulky binary data on chain and avoids dependence on centralized token lists or fixed HTTP hosts. The result is a lightweight, decentralized, and interoperable way to discover contract logos.
 
 ==Motivation==
 
-Today, token logos are commonly distributed through wallet-specific token lists, explorer databases, or centralized web servers. This leads to fragmentation, duplicated maintenance, and inconsistent presentation across the ecosystem. It also creates a trust problem: users may see different icons for the same asset depending on which registry or server a client uses.
+Today, contract logos are commonly distributed through wallet-specific token lists, explorer databases, marketplace metadata, or centralized web servers. This leads to fragmentation, duplicated maintenance, and inconsistent presentation across the ecosystem. It also creates a trust problem: users may see different icons for the same contract depending on which registry or server a client uses.
 
-Neo smart contracts already expose static metadata via the NEP-15 manifest, while NeoFS provides decentralized object storage suitable for image assets. Standardizing a single manifest field for the token logo lets contracts self-describe their branding in a way that is easy for clients to discover and display.
+Neo smart contracts already expose static metadata via the NEP-15 manifest, while NeoFS provides decentralized object storage suitable for image assets. Standardizing a single manifest field for the contract logo lets contracts self-describe their branding in a way that is easy for clients to discover and display.
 
-This proposal is intentionally narrow. It standardizes a contract-level logo only. It does not attempt to standardize arbitrary media assets, token lists, or per-token NFT artwork.
+This proposal is intentionally narrow. It standardizes a contract-level logo only. It does not attempt to standardize arbitrary media assets, token lists, per-token NFT artwork, or application branding outside the contract identity itself.
 
 ==Specification==
 
 ===Scope===
 
-This standard applies to contracts that declare support for [[nep-11.mediawiki|NEP-11]] or [[nep-17.mediawiki|NEP-17]]. A compliant contract MAY publish a contract-level logo by adding a <code>LOGO</code> entry to the NEP-15 manifest <code>extra</code> object.
+This standard applies to any smart contract that wants to publish a contract-level logo.
 
-Contracts implementing this standard SHOULD include <code>"NEP-35"</code> in the manifest <code>supportedstandards</code> array.
+A contract that declares <code>"NEP-35"</code> in the manifest <code>supportedstandards</code> array MUST publish a valid contract-level logo by adding a <code>logo</code> entry to the NEP-15 manifest <code>extra</code> object.
 
 ===Manifest Field===
 
-The manifest <code>extra</code> object MAY contain the following field:
+The manifest <code>extra</code> object for a compliant contract MUST contain the following field:
 
 <pre>
 {
-  "LOGO": "neofs://&lt;container-id&gt;/&lt;object-id&gt;"
+  "logo": "neofs:&lt;container-id&gt;/&lt;object-id&gt;"
 }
 </pre>
 
 Requirements:
 
-* <code>LOGO</code> MUST be a JSON string.
-* <code>LOGO</code> MUST use the NeoFS URI scheme <code>neofs://&lt;container-id&gt;/&lt;object-id&gt;</code>.
+* <code>logo</code> MUST be a JSON string.
+* <code>logo</code> MUST use the NeoFS URI syntax <code>neofs:&lt;container-id&gt;/&lt;object-id&gt;</code>.
 * The referenced NeoFS object SHOULD be publicly readable.
-* The referenced object SHOULD contain a single image suitable for token display.
-* Contracts MUST NOT use <code>LOGO</code> for mutable user-specific content.
+* The referenced object MUST contain a single image suitable for contract display.
+* Supported image formats for compliant contracts are SVG, PNG, and WebP.
+* Raster images SHOULD be square and SHOULD use <code>512x512</code> pixels.
+* Contracts MUST NOT use <code>logo</code> for mutable user-specific content.
 
 ===Client Behavior===
 
 Clients that support this standard:
 
-* MUST treat an absent or invalid <code>LOGO</code> value as if no logo were provided.
+* MUST treat an absent or invalid <code>logo</code> value as non-compliant NEP-35 metadata.
 * MUST NOT assume any specific HTTP gateway or transport endpoint for NeoFS access.
 * MAY resolve the NeoFS URI through a native NeoFS client, a locally configured gateway, or another trusted retrieval mechanism.
-* SHOULD bound download size and decode only supported image formats.
+* SHOULD bound download size.
+* SHOULD decode SVG, PNG, and WebP.
+* MAY reject raster images that are not square or that exceed <code>512x512</code> pixels.
 
-Recommended image formats are SVG, PNG, and WebP. Clients MAY support additional formats.
+Clients MAY support additional image formats for non-NEP-35 data, but compliant contracts MUST use one of the formats above.
 
 ===Examples===
 
-Example NEP-17 manifest snippet:
+Example manifest snippet:
 
 <pre>
 {
-  "name": "ExampleToken",
-  "supportedstandards": ["NEP-17", "NEP-35"],
+  "name": "ExampleContract",
+  "supportedstandards": ["NEP-35"],
   "extra": {
-    "LOGO": "neofs://&lt;container-id&gt;/&lt;object-id&gt;"
+    "logo": "neofs:&lt;container-id&gt;/&lt;object-id&gt;"
   }
 }
 </pre>
 
-For NEP-11 contracts, <code>LOGO</code> identifies the contract-level collection logo. Per-token NFT media and metadata remain out of scope and may continue to use existing NEP-11 mechanisms such as <code>properties</code>.
+For NEP-11 contracts, <code>logo</code> identifies the contract-level collection logo. Per-token NFT media and metadata remain out of scope and may continue to use existing NEP-11 mechanisms such as <code>properties</code>.
 
 ==Rationale==
 
-Using NEP-15 manifest metadata avoids adding a new contract method, which keeps this proposal simple and cheap to consume. Clients can retrieve the logo reference from existing contract metadata without an extra invocation and without introducing additional ABI requirements.
+Using NEP-15 manifest metadata avoids adding a new contract method, which keeps this proposal simple and cheap to consume. Clients can retrieve the logo reference from existing contract metadata without an extra invocation and without introducing additional ABI requirements. NEP-15 already reserves <code>extra</code> for custom user data, so a standardized <code>logo</code> key fits naturally there.
 
 Using NeoFS keeps the image content off chain while preserving decentralized storage semantics. Standardizing a NeoFS URI instead of a fixed HTTP URL prevents this proposal from depending on any single gateway operator or hostname.
 
+Typical use cases include contract pages in explorers, wallet asset lists, NFT collection views, marketplace contract cards, permission prompts, and contract registries. A dApp can still use its own application logo, while the contract logo identifies the on-chain contract artifact itself.
+
 Alternative approaches were considered:
 
-* Adding a new token method such as <code>logo()</code>.
+* Adding a new contract method such as <code>logo()</code>.
 * Using arbitrary HTTP(S) URLs in the manifest.
 * Reusing wallet-maintained off-chain registries only.
 
-These approaches either add unnecessary ABI surface, rely on centralized infrastructure, or fail to provide a contract-native source of truth.
+These approaches either add unnecessary ABI surface for static metadata, rely on centralized infrastructure, or fail to provide a contract-native source of truth.
 
 ==Backwards Compatibility==
 
-This proposal is fully additive. Existing NEP-11 and NEP-17 contracts remain valid whether or not they expose a <code>LOGO</code> field. Existing clients that ignore <code>LOGO</code> continue to function unchanged.
+This proposal is fully additive. Existing contracts remain valid whether or not they expose a <code>logo</code> field. Existing clients that ignore <code>logo</code> continue to function unchanged.
 
 A contract may adopt this standard in a later update by modifying its manifest <code>extra</code> object and adding <code>"NEP-35"</code> to <code>supportedstandards</code>.
 
 ==Security Considerations==
 
-A displayed logo is metadata, not proof of authenticity. Clients MUST NOT rely on <code>LOGO</code> alone when deciding whether a token is trusted or official.
+A displayed logo is metadata, not proof of authenticity. Clients MUST NOT rely on <code>logo</code> alone when deciding whether a contract is trusted or official.
 
 Clients SHOULD protect themselves against malicious or oversized content, including malformed image files and active content embedded in SVG images. Implementations should apply normal rendering sanitization and resource limits.
 
@@ -107,15 +113,16 @@ NeoFS retrieval infrastructure is outside the consensus layer. Clients should us
 
 Client and tooling test coverage SHOULD include:
 
-* A compliant NEP-11 or NEP-17 manifest containing a valid <code>LOGO</code> NeoFS URI.
-* A manifest with a missing <code>LOGO</code> field.
-* A manifest with a non-string <code>LOGO</code> value.
-* A manifest with a <code>LOGO</code> value that is not a valid NeoFS URI.
+* A compliant manifest containing a valid <code>logo</code> NeoFS URI.
+* A manifest that declares <code>"NEP-35"</code> but has a missing <code>logo</code> field.
+* A manifest with a non-string <code>logo</code> value.
+* A manifest with a <code>logo</code> value that is not a valid NeoFS URI.
+* A manifest with a raster image larger than <code>512x512</code>.
 * Rendering behavior for supported image formats and graceful fallback for unsupported or unavailable objects.
 
 ==Implementation==
 
 No protocol changes are required. This standard can be implemented immediately by:
 
-* Token contracts that publish a <code>LOGO</code> value in manifest <code>extra</code>.
+* Contracts that publish a <code>logo</code> value in manifest <code>extra</code>.
 * Wallets, explorers, SDKs, and indexers that read and resolve the standardized NeoFS URI.
