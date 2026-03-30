@@ -208,9 +208,9 @@ dapp://mygame/auth?result=%7B%22algorithm%22%3A%22ECDSA-P256%22%2C%22network%22%
 dapp://mygame/auth?error=%7B%22code%22%3A-32001%2C%22message%22%3A%22User%20cancelled%22%7D
 </pre>
 
-===Security Considerations===
+==Security Considerations==
 
-====Trust Model====
+===Trust Model===
 
 This specification uses custom URI schemes, which are not secure transport channels.
 
@@ -218,13 +218,13 @@ It does not guarantee confidentiality, integrity, or application identity.
 
 Security relies entirely on NEP-20 signature verification.
 
-====Authentication Security====
+===Authentication Security===
 
 Authentication MUST be established exclusively through NEP-20 verification.
 
 The callback URI MUST NOT be trusted as proof of authentication.
 
-====Scope Limitation====
+===Scope Limitation===
 
 This specification MUST NOT be used for:
 
@@ -233,39 +233,39 @@ This specification MUST NOT be used for:
 * smart contract invocation;
 * session-based authorization.
 
-====Callback Interception====
+===Callback Interception===
 
 Callback URIs may be intercepted.
 
 Applications MUST treat callback data as publicly observable.
 
-====Request Forgery====
+===Request Forgery===
 
 Wallets MUST NOT trust request origin and MUST require explicit user approval.
 
-====Phishing====
+===Phishing===
 
 Wallets MUST clearly display the domain field.
 
-====Replay Protection====
+===Replay Protection===
 
 Nonces MUST be unique and single-use.
 
 Expiration SHOULD be enforced (recommended: 5 minutes).
 
-====Data Exposure====
+===Data Exposure===
 
 Payloads MUST NOT contain secrets.
 
-====Wallet Identity====
+===Wallet Identity===
 
 The host component is not a secure identity guarantee.
 
-===Compatibility===
+==Compatibility==
 
 Fully compatible with NEP-20.
 
-===Rationale===
+==Rationale==
 
 This design:
 
