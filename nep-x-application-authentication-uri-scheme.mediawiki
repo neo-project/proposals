@@ -97,10 +97,6 @@ Example:
 
 The identifier of the requesting application.
 
-=====callback=====
-
-The <code>callback</code> field defined in NEP-20 MUST be ignored in this transport mode.
-
 ===Callback URI===
 
 After processing, the wallet invokes:
@@ -118,6 +114,8 @@ dapp://<dapp_identifier>/auth?error=<url_encoded_error>
 </pre>
 
 The wallet MUST construct the callback URI using the <code>dapp</code> parameter from the request URI.
+
+The <code>callback</code> field defined in NEP-20 MUST be ignored in this transport mode.
 
 The callback URI MUST contain exactly one of <code>result</code> or <code>error</code>.
 
