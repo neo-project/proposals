@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This NEP describes a scheme for third-party applications to authenticate users based on NEO.
+This NEP describes a scheme for third-party applications to authenticate users with Neo addresses.
 The third-party applications mentioned here can be any type of application, including Dapps, websites, games, etc.
 
 ==Motivation==
