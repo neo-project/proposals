@@ -17,7 +17,6 @@ The third-party applications mentioned here can be any type of application, incl
 Usually, an application saves user data on its own server. The authenticated user can modify the corresponding data through application-defined logic.
 Traditional Internet applications usually use an authentication scheme based on username and password, which is not suitable for blockchain.
 This authentication scheme allows third-party applications to authenticate users based on digital signatures.
-In this way, NEO users can log in to any third-party application that supports this scheme without registering, and allow applications to share user data on the blockchain.
 
 ==Specification==
 
