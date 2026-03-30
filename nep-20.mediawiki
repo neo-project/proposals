@@ -20,6 +20,8 @@ This authentication scheme enables third-party applications to verify users thro
 
 ==Specification==
 
+This section defines the core components of the authentication scheme. It first describes the payload structures, including the Challenge and Response payloads. Subsequently, it outlines three interaction scenarios (Scene Modes): QR Code Mode, Plugin Mode, and Connection Mode, each representing a different authentication workflow between users and third-party applications.
+
 ===Payloads===
 
 The authentication process is divided into two steps.
