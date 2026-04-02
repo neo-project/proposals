@@ -498,11 +498,11 @@ export interface IDapiProvider {
 
     // Calls one or more contracts onchain and returns the hash of the transaction.
     // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
-    invoke(invocations: InvocationArguments[], signers?: Signer[], fee?: FeeOptions): Promise<UInt256>;
+    invoke(invocations: InvocationArguments[], signers?: Signer[], attributes?: TransactionAttribute[], fee?: FeeOptions): Promise<UInt256>;
 
     // Calls one or more contracts onchain and return the transaction without relaying.
     // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
-    makeTransaction(invocations: InvocationArguments[], signers?: Signer[], fee?: FeeOptions): Promise<ContractParametersContext>;
+    makeTransaction(invocations: InvocationArguments[], signers?: Signer[], attributes?: TransactionAttribute[], fee?: FeeOptions): Promise<ContractParametersContext>;
 
     // Signs the transaction with the current wallet. Usually used for multi-signature transactions.
     // Possible errors: UNSUPPORTED, INVALID, NOTFOUND, TIMEOUT, CANCELED.
