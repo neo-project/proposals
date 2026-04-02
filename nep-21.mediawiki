@@ -363,9 +363,10 @@ export type InvocationResult = {
     stack: StackItem[];             // The return value of the execution.
 }
 
-export type FeeOptions = {
+export type TransactionOptions = {
     suggestedSystemFee?: Integer;   // The suggested system fee for the transaction. If provided, the wallet will not automatically calculate the system fee, but will use this value instead. `extraSystemFee` will be ignored if `suggestedSystemFee` is provided.
     extraSystemFee?: Integer;       // The extra system fee that the user wants to pay for the transaction. The wallet will automatically calculate the system fee and add this value to it.
+    validUntilBlock?: number;       // The block until which the transaction is valid. If not provided, the wallet will use a default value.
 }
 
 export type ContractParametersContext = {
@@ -498,11 +499,11 @@ export interface IDapiProvider {
 
     // Calls one or more contracts onchain and returns the hash of the transaction.
     // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
-    invoke(invocations: InvocationArguments[], signers?: Signer[], attributes?: TransactionAttribute[], fee?: FeeOptions): Promise<UInt256>;
+    invoke(invocations: InvocationArguments[], signers?: Signer[], attributes?: TransactionAttribute[], options?: TransactionOptions): Promise<UInt256>;
 
     // Calls one or more contracts onchain and return the transaction without relaying.
     // Possible errors: INVALID, FAILED, TIMEOUT, CANCELED, RPC_ERROR.
-    makeTransaction(invocations: InvocationArguments[], signers?: Signer[], attributes?: TransactionAttribute[], fee?: FeeOptions): Promise<ContractParametersContext>;
+    makeTransaction(invocations: InvocationArguments[], signers?: Signer[], attributes?: TransactionAttribute[], options?: TransactionOptions): Promise<ContractParametersContext>;
 
     // Signs the transaction with the current wallet. Usually used for multi-signature transactions.
     // Possible errors: UNSUPPORTED, INVALID, NOTFOUND, TIMEOUT, CANCELED.
