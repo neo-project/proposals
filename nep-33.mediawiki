@@ -1,9 +1,9 @@
 <pre>
-  NEP: <TBD>
+  NEP: 33
   Title: Application Authentication URI Scheme
   Author: Erik Zhang <erik@neo.org>
   Type: Standard
-  Status: Draft
+  Status: Accepted
   Created: 2026-03-28
   Requires: 20
 </pre>
