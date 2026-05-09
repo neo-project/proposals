@@ -1,0 +1,98 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Contract-based Account Verification Script Standard
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP defines a deterministic verification script for contract-based accounts.
+The script embeds an opaque <code>accountId</code> and a verifier contract hash, calls <code>verify(accountId)</code> on that contract, and uses the script hash of the verification script as the public account address.
+
+==Motivation==
+
+Neo contracts can already verify witnesses, but wallets, SDKs, explorers, RPC tooling, and relayers need a common script shape to recognize contract-based accounts, estimate verification costs, construct signing contexts, and derive addresses consistently.
+Without a standard verification script, different implementations may assign different addresses to the same logical contract-based account or make different assumptions about the invocation script required for verification.
+
+Abstract Accounts are one possible use case for this standard because they can derive account addresses without deploying a new contract for every user.
+The standard itself is not limited to Abstract Accounts and does not define an account storage model, ownership model, or execution model.
+
+This NEP standardizes only the witness verification script and the address derived from it.
+
+==Specification==
+
+===Terms===
+
+* <code>accountId</code>: an opaque <code>ByteString</code> identifying one account within the verifier contract.
+* <code>verifierContract</code>: the <code>Hash160</code> of the contract that decides whether the account witness is valid.
+* <code>accountAddress</code>: the script hash of the verification script defined by this NEP.
+
+===Verification script===
+
+A compliant contract-based account verification script MUST be semantically equivalent to:
+
+<pre>
+System.Contract.Call(verifierContract, "verify", ReadOnly, [accountId])
+</pre>
+
+The verification script:
+
+* MUST embed <code>accountId</code> as a constant.
+* MUST embed <code>verifierContract</code> as a constant.
+* MUST call the method named <code>verify</code> on <code>verifierContract</code>.
+* MUST pass only <code>accountId</code> to <code>verify</code>.
+* MUST use the <code>ReadOnly</code> call flag.
+* MUST return the Boolean result of that call.
+
+The verifier contract's <code>verify</code> method:
+
+* MUST accept one <code>ByteString</code> argument.
+* MUST return a Boolean value.
+* MUST NOT require an invocation script for the standard account witness.
+
+===Address derivation===
+
+The public address of a contract-based account compliant with this NEP MUST be the script hash of the full verification script defined above.
+
+Wallets, SDKs, explorers, indexers, RPC tooling, and relayers:
+
+* MUST derive the account address from the full verification script.
+* MUST NOT derive the address from <code>accountId</code> alone.
+* SHOULD use this script shape to identify compliant contract-based account witnesses.
+
+===Witness rules===
+
+When a transaction uses a contract-based account address defined by this NEP as a signer:
+
+* the witness verification script MUST be the deterministic verification script for that account;
+* the invocation script SHOULD be empty;
+* authorization MUST be decided by the verifier contract's <code>verify(accountId)</code> method.
+
+===Out of scope===
+
+This NEP does not standardize:
+
+* how <code>accountId</code> is created;
+* how the verifier contract stores account state;
+* how application execution happens after verification succeeds;
+* whether an account is transferable;
+* metadata for accounts;
+* native signatures, meta-transactions, or custom verifier schemes.
+
+==Rationale==
+
+The goal of this NEP is minimal interoperability.
+It provides one canonical witness script shape for contract-based account addresses while leaving account policy and execution logic to separate contracts and, if needed, separate standards.
+
+By tying the account address to a deterministic script instead of a deployed per-account contract, this approach allows implementations to avoid per-account deployment while preserving normal Neo witness verification semantics.
+
+==Backwards Compatibility==
+
+Existing contract-based account systems that use another script format can continue to work, but they are not compliant with this NEP and will not derive the same address for the same <code>accountId</code> and <code>verifierContract</code>.
+
+==Implementation==
+
+The <code>neo-abstract-account</code> repository contains one implementation of this script pattern in <code>sdk/js/src/index.js</code>.
