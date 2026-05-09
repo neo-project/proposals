@@ -153,6 +153,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Informational
 | Accepted
 |-
+| [https://github.com/neo-project/proposals/pull/222 33]
+| Application Authentication URI Scheme
+| Erik Zhang
+| Standard
+| Accepted
+|-
 | 
 | Dynamic Sharding
 | 
