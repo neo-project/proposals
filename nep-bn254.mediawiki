@@ -19,35 +19,46 @@ Neo currently lacks built-in support for bilinear pairings, which prevents contr
 
 ==Specification==
 
-* Add three new methods to `CryptoLib` gated behind `Hardfork.HF_Gorgon`:
-** `bn254Add(byte[]) -> byte[64]` performs Jacobian point addition on two affine G1 points.
-** `bn254Mul(byte[]) -> byte[64]` multiplies a G1 point by a scalar in Fr.
-** `bn254Pairing(byte[]) -> byte[32]` evaluates the product pairing across a sequence of (G1, G2) tuples and returns a success word.
-* Inputs follow Ethereum's BN254 ABI:
-** G1 points are 64 big-endian bytes (`x || y`). Points at infinity are represented as all zeros.
+* Add BN254 methods to <code>CryptoLib</code> gated behind <code>Hardfork.HF_Faun</code>.
+* Add typed point methods:
+** <code>bn254Serialize(InteropInterface point) -> ByteArray</code> serializes a BN254 G1 or G2 point.
+** <code>bn254Deserialize(ByteArray data) -> InteropInterface</code> deserializes a 64-byte G1 or 128-byte G2 point.
+** <code>bn254Add(InteropInterface x, InteropInterface y) -> InteropInterface</code> adds two G1 points.
+** <code>bn254Equal(InteropInterface x, InteropInterface y) -> Boolean</code> compares two G1 points or two G2 points.
+** <code>bn254Mul(InteropInterface point, ByteArray scalar) -> InteropInterface</code> multiplies a G1 point by a scalar in Fr.
+** <code>bn254Pairing(Array pairs) -> ByteArray</code> evaluates a sequence of <code>[G1, G2]</code> point pairs and returns a success word.
+* Add raw Ethereum-compatible methods:
+** <code>bn254_add(ByteArray input) -> ByteArray</code> performs G1 addition using the Ethereum precompile byte layout.
+** <code>bn254_mul(ByteArray input) -> ByteArray</code> performs G1 scalar multiplication using the Ethereum precompile byte layout.
+** <code>bn254_pairing(ByteArray input) -> ByteArray</code> evaluates pairing checks using the Ethereum precompile byte layout.
+* Raw method inputs follow Ethereum's BN254 ABI:
+** G1 points are 64 big-endian bytes (<code>x || y</code>). Points at infinity are represented as all zeros.
 ** Scalars are 32 big-endian bytes modulo Fr.
-** Pairing inputs are concatenations of 192-byte elements (`G1 || G2`), where each G2 coordinate uses the compressed Fp2 representation (`imag || real`).
-* Outputs mirror the precompile behavior:
-** Arithmetic operations return the resulting point encoded as 64 bytes (or all zeros on failure).
+** Pairing inputs are concatenations of 192-byte elements (<code>G1 || G2</code>), where each G2 coordinate uses the Fp2 representation <code>imag || real</code>.
+* Raw method outputs mirror Ethereum precompile behavior:
+** Addition and multiplication return the resulting G1 point encoded as 64 bytes, or all zeros on invalid point data.
 ** Pairing returns 32 bytes with the least significant byte set to 1 on success, or all zeros on failure.
 * Validation rules:
-** Reject inputs with incorrect lengths via `ArgumentException` before invoking the native implementation.
+** Reject inputs with incorrect lengths via <code>ArgumentException</code> before invoking the native implementation.
 ** Deserialize affine points, verify they lie on the curve and in the correct subgroup, and treat the point at infinity as neutral.
 ** Treat tuples containing an infinite point as neutral factors within pairing.
-* Resource accounting follows the drafted implementation: `bn254Add` and `bn254Mul` charge `2^19` GAS, while `bn254Pairing` charges `2^21` GAS per invocation, independent of tuple count.
+* Resource accounting follows the reference implementation:
+** <code>bn254Serialize</code>, <code>bn254Deserialize</code>, <code>bn254Add</code>, and <code>bn254_add</code> use <code>2^19</code> as the <code>CpuFee</code>.
+** <code>bn254Equal</code> uses <code>2^5</code> as the <code>CpuFee</code>.
+** <code>bn254Mul</code>, <code>bn254Pairing</code>, <code>bn254_mul</code>, and <code>bn254_pairing</code> use <code>2^21</code> as the <code>CpuFee</code>.
 
 ==Rationale==
 
-BN254 is chosen for compatibility with a large ecosystem of tooling and because the Nethermind MCL bindings provide a performant, audited implementation. Exposing the primitives through `CryptoLib` maintains Neo's existing contract interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Neo already exposes BLS12-381 primitives; BN254 complements that work by matching the curve targeted by Groth16, PLONK, and other widely deployed zk-SNARK tooling, ensuring high compatibility with existing artifacts.
+BN254 is chosen for compatibility with a large ecosystem of tooling and because the Nethermind MCL bindings provide a performant, audited implementation. Exposing the primitives through <code>CryptoLib</code> maintains Neo's existing contract interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Neo already exposes BLS12-381 primitives; BN254 complements that work by matching the curve targeted by Groth16, PLONK, and other widely deployed zk-SNARK tooling, ensuring high compatibility with existing artifacts.
 
 ==Backwards Compatibility==
 
-The new syscalls are consensus-affecting and therefore activate only after the `HF_Gorgon` protocol upgrade. Nodes that do not implement the primitives will diverge once contracts start invoking them. No existing contracts are affected because the methods are new additions and do not alter previous behavior.
+The new syscalls are consensus-affecting and therefore activate only after the <code>HF_Faun</code> protocol upgrade. Nodes that do not implement the primitives will diverge once contracts start invoking them. No existing contracts are affected because the methods are new additions and do not alter previous behavior.
 
 ==Test Cases==
 
-Reference unit tests exercise addition, multiplication, identity handling, and pairing vectors sourced from Ethereum's `ecpairing_inputs.json`, covering positive, negative, and malformed inputs. Additional integration tests validating Groth16 verifier contracts are recommended before finalization.
+Reference unit tests exercise typed addition, multiplication, equality, serialization, identity handling, and raw precompile-compatible addition, multiplication, and pairing vectors sourced from Ethereum test fixtures, covering positive, negative, and malformed inputs. Additional integration tests validating Groth16 verifier contracts are recommended before finalization.
 
 ==Implementation==
 
-A reference implementation is available in the Neo core repository pull request [4185](https://github.com/neo-project/neo/pull/4185), which wires the Nethermind.MclBindings library into the native runtime and exposes the BN254 contract methods.
+A reference implementation is available in the Neo core repository pull request [https://github.com/neo-project/neo/pull/4185 neo-project/neo#4185], which wires the Nethermind.MclBindings library into the native runtime and exposes the BN254 contract methods listed above.
