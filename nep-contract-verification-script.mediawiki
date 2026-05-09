@@ -59,7 +59,7 @@ The verification script:
 * MUST encode <code>verifierContract</code> as a constant <code>Hash160</code> value.
 * MUST encode <code>operation</code> as a constant string.
 * MUST NOT require <code>operation</code> to be named <code>verify</code>.
-* MUST encode <code>argumentCount</code> as a constant integer.
+* MUST make <code>argumentCount</code> statically parseable.
 * MUST use the <code>ReadOnly</code> call flag.
 * MUST end after the <code>System.Contract.Call</code> syscall.
 * MUST leave exactly one Boolean result on the stack.
