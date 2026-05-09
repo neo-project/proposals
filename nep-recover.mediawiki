@@ -1,7 +1,7 @@
   NEP: TBD
-  Title: SECP256K1 ECDSA Public Key Recovery Support
+  Title: CryptoLib recoverSecp256K1 Public Key Recovery
   Author: Fernando Díaz Toledano <shargon@gmail.com>, Jimmy Liao <vvvincentvan@gmail.com>
-  Type: Draft
+  Type: Standard
   Status: Draft
   Created: 2024-12-18
   Requires: N/A
@@ -10,7 +10,7 @@
 
 ==Abstract==
 
-This NEP adds SECP256K1 public key recovery to Neo N3's CryptoLib native contract. This feature enables recovery of signing addresses from signatures, improving interoperability with Bitcoin and Ethereum.
+This NEP documents the <code>recoverSecp256K1</code> method in Neo N3's CryptoLib native contract. The method recovers a compressed SECP256K1 public key from a message hash and an ECDSA signature, improving interoperability with Bitcoin, Ethereum, and other SECP256K1-based systems.
 
 ==Motivation==
 
@@ -25,7 +25,7 @@ Most blockchain platforms use addresses derived from SECP256K1 public keys. When
 
 ===Native Contract Interface===
 
-A method will be added to CryptoLib with the hardfork <code>Echidna</code>:
+CryptoLib exposes the following method:
 
 ====SECP256K1 Public Key Recovery====
 <pre>
@@ -34,7 +34,7 @@ A method will be added to CryptoLib with the hardfork <code>Echidna</code>:
     "safe": true,
     "parameters": [
         {
-            "name": "hash",
+            "name": "messageHash",
             "type": "ByteArray"
         },
         {
@@ -47,23 +47,24 @@ A method will be added to CryptoLib with the hardfork <code>Echidna</code>:
 </pre>
 
 The method takes the following parameters:
-* hash: A 32-byte array containing the message hash
+* messageHash: A 32-byte array containing the message hash.
 * signature: A 64 or 65-byte array containing the ECDSA signature
-  - For 64-byte signatures: contains (r,s) in Compact Signature Representation (ERC-2098) format where the recovery bit is encoded in s
-  - For 65-byte signatures: contains (r,s,v) where v is the recovery ID
+  - For 64-byte signatures: contains <code>r[32] || yParityAndS[32]</code> in ERC-2098 compact signature representation, where the most significant bit of <code>s</code> encodes the recovery parity.
+  - For 65-byte signatures: contains <code>r[32] || s[32] || v[1]</code>, where <code>v</code> is the recovery ID.
 
 The method returns:
-* A 33-byte array containing the recovered public key in compressed format
+* Success: a 33-byte compressed SEC public key.
+* Failure: <code>null</code>.
 
 ===Input Requirements===
 
 The method <code>MUST</code> follow these rules:
 
 1. Input Requirements for recoverSecp256K1:
-   * hash: A 32-byte array containing the message hash
+   * messageHash: A 32-byte array containing the message hash
    * signature: A 64 or 65-byte array containing the ECDSA signature
      - For 64-byte signatures: follows ERC-2098 Compact Signature Representation where the most significant bit of s encodes the recovery bit (0 or 1)
-     - For 65-byte signatures: contains (r,s,v) where v is the recovery ID
+     - For 65-byte signatures: contains (r,s,v), where v is either 0..3 or 27..30
 
 2. Return Value:
    * Success: 33-byte compressed public key in SEC format
@@ -108,7 +109,7 @@ Public Key: 03e33b41f5dd1e3536f01f4646e747e739e9d104d2a21c2d30f161e3cefb26e5c7
 # Invalid recovery ID
 r: 1c76e62e8d0b31bb188f3457ff0ea874a25814f1acb6df52af8445b1a2001f0a
 s: 7e53d3d0e96e6cbd0bebcf3d63b3c35b0e607a459f9cec52f6904b4f7f5e8ba
-v: 29
+v: 31
 Result: null
 
 # Invalid r length
@@ -120,7 +121,7 @@ Result: null
 
 ==Backwards Compatibility==
 
-This NEP introduces new functionality without modifying existing behavior. All existing signature verification methods will continue to work as before. The new methods will only be available after the HF_Echidna hardfork activation.
+This NEP introduces new functionality without modifying existing behavior. All existing signature verification methods continue to work as before.
 
 ==References==
 
@@ -131,5 +132,4 @@ This NEP introduces new functionality without modifying existing behavior. All e
 
 ==Implementation==
 
-The implementation will be provided in the following pull request:
-[Implementation Link TBD]
+The implementation was merged in Neo core pull request [https://github.com/neo-project/neo/pull/3696 neo-project/neo#3696]. The merged native method name is <code>recoverSecp256K1</code>.
