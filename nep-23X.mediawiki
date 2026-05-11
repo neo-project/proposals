@@ -1,8 +1,9 @@
 <pre>
-  NEP: 23
+  NEP: X
   Title: Neo JSON-RPC error handling and codes
   Author: Anna Shaleva <shaleva.ann@nspcc.ru>, Roman Khimov <roman@nspcc.ru>
   Type: Informational
+  CompatibleWith: NEP-23 
   Status: Final
   Created: 2022-09-12
 </pre>
@@ -157,13 +158,17 @@ used by compliant implementations.
 |-
 | -509 || Invalid size       || Transaction or its script is too big.
 |-
-| -510 || Expired            || Transaction's ValidUntilBlock value is already in the past or NotValidBefore attribute value is in future.
+| -510 || Expired *          || Transaction's ValidUntilBlock value is already in the past or NotValidBefore attribute value is in future. Note: this code was moved to -514.
 |-
 | -511 || Insufficient funds || Sender doesn't have enough GAS to pay for all currently pooled transactions.
 |-
 | -512 || Invalid verification function|| Contract doesn't have a <code>verify</code> method or this method doesn't return proper value.
 |-
 | -513 || Conflicts          || There is a conflict with another transaction already in memory pool caused by one or both of them having a Conflicts attribute.
+|-
+| -514 || Expired            || Transaction's ValidUntilBlock value is already in the past.
+|-
+| -515 || NotYetValid        || Transaction's ValidUntilBlock value is in future.
 |}
 
 ====Service and node configuration====
