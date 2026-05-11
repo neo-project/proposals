@@ -1,7 +1,7 @@
 <pre>
   NEP: X
   Title: Neo JSON-RPC error handling and codes
-  Author: Anna Shaleva <shaleva.ann@nspcc.ru>, Roman Khimov <roman@nspcc.ru>
+  Author: Anna Shaleva <shaleva.ann@nspcc.ru>, Roman Khimov <roman@nspcc.ru>, Fernando Díaz Toledano <shargon@gmail.com>
   Type: Informational
   CompatibleWith: NEP-23 
   Status: Final
