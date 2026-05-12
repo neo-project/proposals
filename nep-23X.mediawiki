@@ -166,7 +166,7 @@ used by compliant implementations.
 |-
 | -513 || Conflicts          || There is a conflict with another transaction already in memory pool caused by one or both of them having a Conflicts attribute.
 |-
-| -514 || NotYetValid        || Transaction's ValidUntilBlock value exceeds the maximum allowed forward window (current height + MaxValidUntilBlockIncrement), making it not yet eligible for inclusion.
+| -514 || NotYetValid        || Transaction's ValidUntilBlock value is beyond the maximum allowed forward window (current height + MaxValidUntilBlockIncrement), making it not yet eligible for inclusion.
 |}
 
 ====Service and node configuration====
