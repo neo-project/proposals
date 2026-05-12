@@ -158,7 +158,7 @@ used by compliant implementations.
 |-
 | -509 || Invalid size       || Transaction or its script is too big.
 |-
-| -510 || Expired *          || Transaction's ValidUntilBlock value is already in the past or NotValidBefore attribute value is in future. Note: this code was moved to -514.
+| -510 || Expired            || Transaction's ValidUntilBlock value is already in the past or NotValidBefore attribute value is in future.
 |-
 | -511 || Insufficient funds || Sender doesn't have enough GAS to pay for all currently pooled transactions.
 |-
@@ -166,9 +166,7 @@ used by compliant implementations.
 |-
 | -513 || Conflicts          || There is a conflict with another transaction already in memory pool caused by one or both of them having a Conflicts attribute.
 |-
-| -514 || Expired            || Transaction's ValidUntilBlock value is already in the past.
-|-
-| -515 || NotYetValid        || Transaction's ValidUntilBlock value is in future.
+| -514 || NotYetValid        || Transaction's ValidUntilBlock value is in future.
 |}
 
 ====Service and node configuration====
