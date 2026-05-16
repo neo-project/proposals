@@ -1,0 +1,334 @@
+<pre>
+  NEP: 23
+  Title: Neo JSON-RPC error handling and codes
+  Author: Anna Shaleva <shaleva.ann@nspcc.ru>, Roman Khimov <roman@nspcc.ru>
+  Type: Informational
+  Status: Final
+  Created: 2022-09-12
+</pre>
+
+==Abstract==
+
+This proposal describes some Neo-specific JSON-RPC interaction requirements
+along with a set of Neo-specific error codes to be used by compliant
+implementations. It allows different Neo nodes with different RPC server
+implementations to be compatible and able to interact with various RPC
+clients.
+
+==Motivation==
+
+Currently different implementations of RPC servers in Neo nodes use slightly
+different set of error codes and clients can't rely on codes to distinguish
+one error from another. Some errors were also changed on update from Legacy
+to N3. The overall set is also too coarse to be used effectively by clients,
+many different problems requiring different client actions end up with the
+same code, so clients have to parse error messages to react correctly which is
+far less reliable than using codes. At the same time JSON-RPC is too
+permissive in some of its definitions, while Neo can benefit from stricter
+definitions used.
+
+A standard set of errors and JSON-RPC conventions solve these problems by
+providing common language both for servers and clients. Servers can have a
+reference on what code should be used for what purpose and what data types
+should be used, while clients can easily check for error codes and react
+accordingly.
+
+==Specification==
+
+===General JSON-RPC conventions===
+
+JSON-RPC 2.0 specification for the <code>Error</code> object is augmented with
+the following compatible clauses:
+
+* <code>code</code> field MUST be a negative integer value ranging from -1 to -65536 that is reserved for a particular error by the specification. <code>code</code> field MUST be the same for each Neo node irrespective of the implementation details except for the reserved experimental implementation-defined range. <code>code</code> field MUST NOT be omitted. 
+* <code>message</code> field MUST be a valid UTF-8 string value that specifies a short error description. <code>message</code> value MAY NOT be exactly the same across all Neo node implementations (we have <code>code</code> for this). <code>message</code> value SHOULD be limited to a concise single sentence. <code>message</code> field MUST NOT be omitted. <code>message</code> field SHOULD start with a capital letter and SHOULD NOT end with a dot.
+* <code>data</code> field MUST be a valid UTF-8 string value that contains any implementation-dependent textual data (including debug traces). <code>data</code> field MAY be omitted, however it’s RECOMMENDED for servers to return it. <code>data</code> value SHOULD contain additional information about error and be aimed to clarify the error reason. <code>data</code> value MAY NOT be exactly the same across Neo node implementations.
+
+===Error codes===
+
+Compliant server implementations can use error codes defined by JSON-RPC
+specification (from -32700 to -32600) for any calls when they're
+appropriate. The most often used one is -32602 "Invalid params", it SHOULD be
+used only when call parameters are syntactically incorrect and servers
+SHOULD give additional data like offending parameter number and why it's wrong
+in the <code>data</code> response field.
+
+If several codes can be used in some situations implementations SHOULD pick
+the most specific one.
+
+====Groups====
+
+Error codes are grouped. Each call can use any appropriate group and code as
+long as they fit the purpose.
+
+{|
+|+ Error code ranges
+|-
+! Range           !! Usage
+|-
+| -15000...-10000 || Experimental implementation-defined range.
+|-
+| -699...-600     || Configuration and service errors.
+|-
+| -599...-500     || Inventory verification errors.
+|-
+| -399...-300     || Wallet-related errors.
+|-
+| -199...-100     || Missing/unknown items/inventories/states.
+|}
+
+Experimental codes can be used by node implementations if they're documented,
+however clients can't rely on the meaning of these codes if the version of the
+node changes or if they connect to a different node implementation. New
+proposals can set new ranges or specific codes as long as they don't conflict
+with this specification. All the remaining error codes (not listed in this
+specification or JSON-RPC 2.0)  are reserved for future use and MUST NOT be
+used by compliant implementations.
+
+====Missing items====
+
+{|
+|+ Codes for missing items
+|-
+! Code !! Message            !! Meaning
+|-
+| -101 || Unknown block      || Call that accepts as a parameter or searches for a header or a block as a part of its job can't find it.
+|-
+| -102 || Unknown contract   || Call that accepts as a parameter or searches for a contract as a part of its job can't find it.
+|-
+| -103 || Unknown transaction|| Call that accepts as a parameter or searches for a transaction as a part of its job can't find it.
+|-
+| -104 || Unknown storage item|| Call that looks for an item in the storage as part of its job can't find it.
+|-
+| -105 || Unknown script container|| Call that accepts as a parameter or searches for a script container (a block or transaction) as a part of its job can't find it (this error generalizes -101 and -103 in cases where it's needed).
+|-
+| -106 || Unknown state root || Call that accepts as a parameter or searches for a state root as a part of its job can't find it.
+|-
+| -107 || Unknown session    || Call that accepts as a parameter or searches for a session as a part of its job can't find it.
+|-
+| -108 || Unknown iterator   || Call that accepts as a parameter or searches for a session iterator as a part of its job can't find it.
+|-
+| -109 || Unknown height     || Block or header height passed as parameter or calculated during call execution is not correct (out of the range known to the node).
+|}
+
+
+====Wallet-related problems====
+
+{|
+|+ Codes for calls that use a wallet
+|-
+! Code !! Message            !! Meaning
+|-
+| -300 || Insufficient funds || Transaction that sends some assets can't be created because it fails.
+|-
+| -301 || Fee limit exceeded || Transaction requires more network fee to be paid than is allowed by settings.
+|-
+| -302 || No opened wallet   || Server doesn't have any opened wallet to operate with.
+|-
+| -303 || Wallet not found   || Specified (or configured) wallet file path is invalid.
+|-
+| -304 || Wallet not supported|| Specified (or configured) file can't be opened as a wallet.
+|}
+
+====Verification errors====
+
+{|
+|+ Inventory verification or verification script errors
+|-
+! Code !! Message            !! Meaning
+|-
+| -500 || Unclassified verification error|| Anything that can't be expressed by other codes.
+|-
+| -501 || Inventory already exists on chain|| Block or transaction is already accepted and processed.
+|-
+| -502 || Memory pool is full|| No more transactions can be accepted into the memory pool (unless they have a priority) as its full capacity is reached.
+|-
+| -503 || Transaction already exists in the pool|| Transaction is already pooled, but not yet accepted into a block.
+|-
+| -504 || Insufficient network fee|| Transaction has incorrect (too small per Policy setting) network fee value.
+|-
+| -505 || Policy check failed|| Denied by the Policy contract (one of signers is blocked).
+|-
+| -506 || Invalid script     || Transaction contains incorrect executable script.
+|-
+| -507 || Invalid attribute  || Transaction contains an invalid attribute.
+|-
+| -508 || Invalid signature  || One of the verification scripts failed.
+|-
+| -509 || Invalid size       || Transaction or its script is too big.
+|-
+| -510 || Expired            || Transaction's ValidUntilBlock value is already in the past or NotValidBefore attribute value is in future.
+|-
+| -511 || Insufficient funds || Sender doesn't have enough GAS to pay for all currently pooled transactions.
+|-
+| -512 || Invalid verification function|| Contract doesn't have a <code>verify</code> method or this method doesn't return proper value.
+|-
+| -513 || Conflicts          || There is a conflict with another transaction already in memory pool caused by one or both of them having a Conflicts attribute.
+|}
+
+====Service and node configuration====
+
+{|
+|+ Errors related to node configuration and various services
+|-
+! Code !! Message            !! Meaning
+|-
+| -600 || Access denied  || Server requires authentication or has a policy not allowing request to be processed.
+|-
+| -601 || Sessions disabled  || Session support is not enabled on the server.
+|-
+| -602 || Oracle service is not running|| Service is not enabled in the configuration.
+|-
+| -603 || Oracle request already finished|| The oracle request submitted is already completely processed.
+|-
+| -604 || Oracle request not found  || The oracle request submitted is not known to this node.
+|-
+| -605 || Not a designated oracle node|| Oracle service is enabled, but this node is not designated to provide this functionality.
+|-
+| -606 || Old state requests are not supported|| This node can't answer  requests for old state because it's configured to keep only the latest one.
+|-
+| -607 || Invalid proof      || State proof verification failed.
+|-
+| -608 || Execution failed   || Call made a VM execution, but it has failed.
+|}
+
+===Applicability to current calls===
+
+This table is informative, compliant implementations MAY use other codes
+specified above that fit the purpose as well if they're documented. Only
+Neo-specific codes are documented here (except -600 that can be returned
+for any call), generic JSON-RPC errors like -32602 or
+-32603 can be used by any of these methods.
+
+{|
+|+ Error codes returned from specific calls
+|-
+! Method              !! Codes
+|-
+| calculatenetworkfee || -508, -512
+|-
+| closewallet         || 
+|-
+| dumpprivkey         || -302
+|-
+| findstates          || -102, -606
+|-
+| getapplicationlog   || -105
+|-
+| getblock            || -101, -109
+|-
+| getblockhash        || -109
+|-
+| getblockheader      || -101, -109
+|-
+| getcandidates       ||
+|-
+| getcommittee        ||
+|-
+| getconnectioncount  ||
+|-
+| getcontractstate    || -102
+|-
+| getnativecontracts  ||
+|-
+| getnep11balances    ||
+|-
+| getnep11properties  || -608
+|-
+| getnep11transfers   ||
+|-
+| getnep17balances    ||
+|-
+| getnep17transfers   ||		
+|-
+| getnewaddress       || -302
+|-
+| getnextblockvalidators||
+|-
+| getpeers 	      ||
+|-
+| getproof            || -102, -104, -606
+|-
+| getrawmempool       || 			
+|-
+| getrawtransaction   || -103
+|-
+| getstate            || -102, -606
+|-
+| getstateheight      ||
+|-
+| getstateroot        || -106
+|-
+| getstorage          || -102, -104
+|-
+| gettransactionheight|| -103
+|-
+| getunclaimedgas     ||
+|-
+| getversion          ||
+|-
+| getwalletbalance    || -302
+|-
+| getwalletunclaimedgas|| -302
+|-
+| invokecontractverify|| -102, -512
+|-
+| invokefunction      ||
+|-
+| invokescript        ||
+|-
+| importprivkey       || -302
+|-
+| listaddress         || -302
+|-
+| listplugins 	      ||
+|-
+| openwallet          || -302, -303, -304
+|-
+| sendfrom            || -300, -301, -302
+|-
+| sendmany            || -300, -301, -302
+|-
+| sendtoaddress       || -300, -301, -302
+|-
+| sendrawtransaction  || -500, -501, -502, -503, -504, -505, -506, -507, -508, -509, -510, -511
+|-
+| submitblock         || -500, -501, -502, -503, -504, -505, -506, -507, -508, -509, -510, -511
+|-
+| submitoracleresponse|| -508, -602, -603, -604, -605
+|-
+| terminatesession    || -107, -601
+|-
+| traverseiterator    || -107, -108, -601
+|-
+| validateaddress     ||
+|-
+| verifyproof         || -606, -607
+|}
+
+
+==Rationale==
+
+A large set of codes and behavior nuances is directly inhereted from current
+implementations. New ones are added where clients need more details to
+properly interpret server response. The most important changes are in the
+verification group, specific errors allow clients to adjust the behavior
+accordingly: fail, retry or wait.
+
+==Backwards Compatibility==
+
+* -100 code is gone completely, it's returned for a very wide variety of different problems at the moment, so the code itself shouldn't matter much
+* -101 and -102 errors change their meaning, they're only used in <code>invokecontractverify</code> call which is not very popular
+* -300 and -301 wallet-related errors are completely compatible
+* -400 error is now -302 or -600 (depending on its meaning) which may affect some applications
+* -500 error has the same meaning and is compatible
+* new codes can affect client applications that expect only old ones
+
+==References==
+
+* [https://www.jsonrpc.org/specification JSON-RPC 2.0 Specification]
+
+==Implementation==
+
+* https://pkg.go.dev/github.com/nspcc-dev/neo-go@v0.105.1/pkg/neorpc#pkg-constants and server in https://github.com/nspcc-dev/neo-go/tree/v0.105.1/pkg/services/rpcsrv
+* https://github.com/neo-project/neo-modules/pull/815
