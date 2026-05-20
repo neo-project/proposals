@@ -186,4 +186,4 @@ A token contract which burns tokens MUST trigger a <code>Transfer</code> event w
 
 C#: https://github.com/neo-project/neo-devpack-dotnet/blob/master/src/Neo.SmartContract.Framework/Nep17Token.cs
 
-Python: https://github.com/CityOfZion/neo3-boa/blob/development/boa3_test/examples/NEP17.py
+Python: https://github.com/CityOfZion/neo3-boa/blob/development/boa3_test/examples/nep17.py
