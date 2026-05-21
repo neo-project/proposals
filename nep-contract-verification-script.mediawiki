@@ -1,0 +1,122 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Contract-based Verification Script Standard
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP defines a deterministic verification script pattern for accounts whose witness is validated by an existing contract.
+A compliant script performs one statically parseable <code>System.Contract.Call</code> to a verifier contract.
+The verifier contract hash, method name, call flags, and argument count are encoded in the verification script, while dynamic witness data such as signatures can be supplied by the invocation script.
+
+==Motivation==
+
+Neo contracts can already verify witnesses, but wallets, SDKs, explorers, RPC tooling, and relayers need a common verification script shape to recognize contract-based witnesses, estimate verification costs, construct signing contexts, and inspect the verifier contract call.
+Without a standard script shape, different implementations may make different assumptions about the invocation script, method name, parameter count, or static call target.
+
+Abstract Accounts are one possible use case for this standard because they can derive account addresses without deploying a new contract for every user.
+The standard itself is not limited to Abstract Accounts and does not define an account storage model, ownership model, or execution model.
+
+This NEP standardizes only the witness verification script shape.
+
+==Specification==
+
+===Terms===
+
+* <code>verifierContract</code>: the <code>Hash160</code> of the contract that decides whether the witness is valid.
+* <code>operation</code>: the public method name called on <code>verifierContract</code>.
+* <code>argumentCount</code>: the number of arguments passed to <code>operation</code>.
+* <code>arguments</code>: the ordered argument array passed to <code>operation</code>.
+
+===Verification script===
+
+A compliant contract-based verification script MUST perform exactly one verifier call semantically equivalent to:
+
+<pre>
+System.Contract.Call(verifierContract, operation, ReadOnly, arguments)
+</pre>
+
+The script MUST use the same static app-call shape used by standard dynamic contract-call scripts:
+
+<pre>
+<argument-producing instructions>
+PUSH <argumentCount>
+PACK
+PUSH <ReadOnly>
+PUSH <operation>
+PUSH <verifierContract>
+SYSCALL System.Contract.Call
+</pre>
+
+For a zero-argument call, <code>NEWARRAY0</code> MAY replace <code>PUSH 0</code> followed by <code>PACK</code>.
+
+The verification script:
+
+* MUST encode <code>verifierContract</code> as a constant <code>Hash160</code> value.
+* MUST encode <code>operation</code> as a constant string.
+* MUST NOT require <code>operation</code> to be named <code>verify</code>.
+* MUST make <code>argumentCount</code> statically parseable.
+* MUST use the <code>ReadOnly</code> call flag.
+* MUST end after the <code>System.Contract.Call</code> syscall.
+* MUST leave exactly one Boolean result on the stack.
+
+The verifier contract method:
+
+* MUST be a public ABI method on <code>verifierContract</code>.
+* MUST accept exactly <code>argumentCount</code> arguments.
+* MUST return a Boolean value.
+* MAY use any public method name accepted by Neo contracts.
+
+===Arguments and invocation script===
+
+The invocation script MAY be non-empty.
+It MAY push dynamic witness data, such as signatures, network identifiers, namespaces, account identifiers, or other verifier-specific parameters.
+
+The verification script MAY push embedded constant arguments before packing the final <code>arguments</code> array.
+Together, the invocation script and verification script MUST leave the stack in the order required for <code>PACK</code> to build the intended <code>arguments</code> array.
+
+A compliant verification script MUST make <code>argumentCount</code> and the static call target parseable from the verification script alone.
+Static parsers MAY use non-strict argument parsing when some arguments are supplied by the invocation script rather than embedded in the verification script.
+
+===Tooling behavior===
+
+Wallets, SDKs, explorers, indexers, RPC tooling, and relayers that claim support for this NEP:
+
+* MUST parse <code>verifierContract</code>, <code>operation</code>, <code>ReadOnly</code>, and <code>argumentCount</code> from the verification script.
+* MUST treat a script that does not match the static app-call shape as non-compliant.
+* SHOULD use the parsed verifier call to estimate verification cost and build signing contexts.
+* MUST NOT assume the method name is <code>verify</code>.
+* MUST NOT assume the invocation script is empty.
+
+===Out of scope===
+
+This NEP does not standardize:
+
+* how verifier contracts store account or authorization state;
+* how verifier arguments are interpreted;
+* how application execution happens after verification succeeds;
+* whether a contract-based account is transferable;
+* metadata for accounts;
+* native signatures, meta-transactions, or custom verifier schemes.
+
+==Rationale==
+
+The goal of this NEP is minimal interoperability.
+It provides one parseable witness verification script shape for contract-based account addresses while leaving authorization policy and execution logic to verifier contracts and, if needed, separate standards.
+
+The method name and parameter list are intentionally not fixed.
+For example, one verifier may expose <code>verifyAccount(network, namespace, id, signature)</code>, while another may use a different method and argument layout.
+The common requirement is that the verification script contains a static <code>System.Contract.Call</code> target and a static argument count so tooling can recognize and process it consistently.
+
+==Backwards Compatibility==
+
+Existing contract-based account systems that use another script format can continue to work, but they are not compliant with this NEP if tooling cannot parse the verifier call from the verification script.
+
+==Implementation==
+
+A compliant builder can use the same instruction order as Neo's dynamic contract-call script builder: prepare the argument array, push <code>ReadOnly</code>, push the method name, push the verifier contract hash, and emit the <code>System.Contract.Call</code> syscall.
+For scripts with invocation-supplied arguments, parsers should use non-strict app-call parsing so missing argument pushes are treated as values provided by the invocation script.
