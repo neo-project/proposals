@@ -1,0 +1,374 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Multi-Fungible Token Standard
+  Author: Paulo Aboim Pinto / Forge
+  Discussions-To: https://github.com/neo-project/proposals/issues/146
+  Type: Standard
+  Status: Draft
+  Created: 2026-05-23
+  Requires: 17, 27
+</pre>
+
+==Abstract==
+
+This proposal defines a token-id-aware fungible token standard for Neo N3. It allows one smart contract to manage multiple independent fungible token identities while exposing standard metadata, supply, balance, transfer, receiver-callback, and event semantics for wallets, explorers, indexers, and applications.
+
+The goal is not to copy ERC-1155 or to introduce batching as the primary motivation. Neo transactions can already compose multiple invocations. The purpose of this standard is narrower: provide a Neo-native way for launchpads, games, community-token platforms, and similar systems to create many independent fungible tokens from one deployed contract without losing wallet and indexer interoperability.
+
+==Motivation==
+
+[[nep-17.mediawiki|NEP-17]] works well for standalone fungible tokens, but the token identity is contract-scoped. A practical NEP-17 token therefore maps to one deployed smart contract. This is simple and interoperable, but it becomes expensive and operationally inefficient for platforms that need to create many fungible token identities.
+
+This is not only a batching problem. Existing Neo transactions can call multiple contracts, and that already solves many cases where Ethereum-style batch transfer standards are useful. The missing capability is a standard interface for one contract to expose many independent fungible token identities with separate metadata, decimals, supply, balances, and token-id-aware transfer events.
+
+HushForge measured the following creation paths for a token-launcher use case:
+
+{| class="wikitable"
+! Path
+! Standard wallet/indexer path today?
+! Per-token cost
+|-
+| Full NEP-17 token deployment through TokenFactory
+| Yes
+| <code>13.95593220</code> GAS
+|-
+| Ultra-lean NEP-17 facade per token plus shared engine
+| Yes
+| <code>12.19824780</code> GAS
+|-
+| Shared master/engine registration only, no per-token deployment
+| No
+| <code>0.43633510</code> GAS
+|}
+
+The shared-registration model is much cheaper, but it is not standard wallet/indexer-compatible today. This proposal defines the minimum standard surface needed to make that model interoperable.
+
+==Specification==
+
+===Token identity===
+
+Each fungible token managed by a contract implementing this standard MUST have a stable <code>tokenId</code>.
+
+The <code>tokenId</code>:
+
+* MUST uniquely identify one fungible token identity inside the contract.
+* MUST NOT be reused for a different token after creation.
+* SHOULD be represented as a VM ByteString and as <code>ByteArray</code> in contract ABI metadata.
+* SHOULD have a length of no more than 64 bytes.
+
+Unknown or malformed <code>tokenId</code> values SHOULD cause metadata and transfer methods to throw an exception or otherwise fail closed. Implementations MUST NOT silently route an unknown token id to a default token.
+
+===Methods===
+
+====tokens====
+
+<pre>
+{
+  "name": "tokens",
+  "safe": true,
+  "parameters": [],
+  "returntype": "InteropInterface"
+}
+</pre>
+
+Returns an iterator containing all token ids managed by the contract.
+
+Each item in the iterator SHOULD be a <code>ByteArray</code> value representing a valid <code>tokenId</code>.
+
+====name====
+
+<pre>
+{
+  "name": "name",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ],
+  "returntype": "String"
+}
+</pre>
+
+Returns the display name of the token identified by <code>tokenId</code>.
+
+Unlike NEP-17, a multi-fungible contract cannot use only the contract manifest name as the token name because the contract manages more than one token identity.
+
+====symbol====
+
+<pre>
+{
+  "name": "symbol",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ],
+  "returntype": "String"
+}
+</pre>
+
+Returns a short string representing the symbol of the token identified by <code>tokenId</code>.
+
+This string MUST be valid ASCII, MUST NOT contain whitespace or control characters, SHOULD be limited to uppercase Latin alphabet, and SHOULD be short.
+
+This method MUST always return the same value for the same <code>tokenId</code> while the token exists.
+
+====decimals====
+
+<pre>
+{
+  "name": "decimals",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ],
+  "returntype": "Integer"
+}
+</pre>
+
+Returns the number of decimals used by the token identified by <code>tokenId</code>.
+
+This method MUST always return the same value for the same <code>tokenId</code> while the token exists.
+
+====totalSupply====
+
+<pre>
+{
+  "name": "totalSupply",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ],
+  "returntype": "Integer"
+}
+</pre>
+
+Returns the total supply for the token identified by <code>tokenId</code>.
+
+====balanceOf====
+
+<pre>
+{
+  "name": "balanceOf",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "account",
+      "type": "Hash160"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ],
+  "returntype": "Integer"
+}
+</pre>
+
+Returns the balance of <code>account</code> for the token identified by <code>tokenId</code>.
+
+The parameter <code>account</code> MUST be a 20-byte address. If not, this method SHOULD throw an exception.
+
+If <code>account</code> has no balance for the specified token id, this method MUST return <code>0</code>.
+
+====transfer====
+
+<pre>
+{
+  "name": "transfer",
+  "safe": false,
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Boolean"
+}
+</pre>
+
+Transfers <code>amount</code> of the token identified by <code>tokenId</code> from <code>from</code> to <code>to</code>.
+
+The parameters <code>from</code> and <code>to</code> MUST be 20-byte addresses. If not, this method SHOULD throw an exception.
+
+The parameter <code>amount</code> MUST be greater than or equal to <code>0</code>. If not, this method SHOULD throw an exception.
+
+The function MUST return <code>false</code> if the <code>from</code> account balance for the specified <code>tokenId</code> does not have enough tokens to spend.
+
+If the method succeeds, it MUST fire the <code>Transfer</code> event and MUST return <code>true</code>, even if <code>amount</code> is <code>0</code> or <code>from</code> and <code>to</code> are the same address.
+
+The function SHOULD check whether the <code>from</code> address equals the caller contract hash. If so, the transfer SHOULD be processed. If not, the function SHOULD use <code>Neo.Runtime.CheckWitness</code> to verify the transfer.
+
+If the transfer is not processed, the function MUST return <code>false</code>.
+
+If the receiver is a deployed contract, the function MUST call the receiver callback defined below after firing the <code>Transfer</code> event. If the receiver does not want to receive this transfer it MUST call <code>ABORT</code> or <code>ABORTMSG</code>.
+
+===Receiver method===
+
+The receiver callback method name SHOULD be finalized when this proposal receives a NEP number. This draft uses <code>onNEPXXPayment</code> as a placeholder.
+
+<pre>
+{
+  "name": "onNEPXXPayment",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    },
+    {
+      "name": "data",
+      "type": "Any"
+    }
+  ],
+  "returntype": "Void"
+}
+</pre>
+
+Contracts that need to receive tokens defined by this standard MUST implement the receiver method.
+
+The meaning of <code>from</code>, <code>amount</code>, <code>tokenId</code>, and <code>data</code> is consistent with the <code>transfer</code> method.
+
+The receiving contract can obtain the multi-fungible token contract via <code>System.Runtime.GetCallingScriptHash</code>. It MUST use both the calling script hash and <code>tokenId</code> when deciding whether to accept a transfer.
+
+===Events===
+
+====Transfer====
+
+<pre>
+{
+  "name": "Transfer",
+  "parameters": [
+    {
+      "name": "from",
+      "type": "Hash160"
+    },
+    {
+      "name": "to",
+      "type": "Hash160"
+    },
+    {
+      "name": "amount",
+      "type": "Integer"
+    },
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ]
+}
+</pre>
+
+MUST trigger when tokens are transferred, including zero value transfers and self-transfers.
+
+A contract which creates new token supply MUST trigger a <code>Transfer</code> event with the <code>from</code> address set to <code>null</code>.
+
+A contract which burns token supply MUST trigger a <code>Transfer</code> event with the <code>to</code> address set to <code>null</code>.
+
+The <code>tokenId</code> parameter is mandatory. Indexers and wallets MUST treat balances and supply as scoped by both contract hash and <code>tokenId</code>.
+
+===Optional metadata method===
+
+====properties====
+
+<pre>
+{
+  "name": "properties",
+  "safe": true,
+  "parameters": [
+    {
+      "name": "tokenId",
+      "type": "ByteArray"
+    }
+  ],
+  "returntype": "Map"
+}
+</pre>
+
+Returns a map containing optional display metadata for the token identified by <code>tokenId</code>.
+
+The map MAY include keys such as <code>description</code>, <code>image</code>, and <code>tokenURI</code>. Applications MUST NOT require this method for balance or transfer correctness.
+
+==Rationale==
+
+This proposal is intentionally narrower than ERC-1155. It does not use batching as the main justification because Neo already supports transaction-level composition. The standard focuses on the missing interoperability layer for many fungible token identities inside one contract.
+
+The proposal also does not replace NEP-17. NEP-17 remains the correct standard for standalone fungible tokens with one token identity per contract.
+
+The method and event shape follows the existing Neo token model where practical:
+
+* <code>symbol</code>, <code>decimals</code>, <code>totalSupply</code>, <code>balanceOf</code>, and <code>transfer</code> are derived from NEP-17 concepts.
+* <code>tokenId</code>-aware balance, transfer, receiver-callback, and event semantics are similar to divisible NEP-11.
+* The receiver method includes <code>tokenId</code> because <code>System.Runtime.GetCallingScriptHash</code> identifies only the multi-fungible contract, not the token identity inside it.
+
+Alternatives considered:
+
+* Deploy one NEP-17 contract per token. This is compatible today, but it makes launchpad-style platforms pay deployment cost for every token identity.
+* Deploy an ultra-lean NEP-17 facade per token with a shared engine. This preserves wallet compatibility, but still requires per-token deployment and only partially reduces cost.
+* Use a shared engine with no standard. This is cheap, but wallets and indexers cannot consistently display or transfer each token identity.
+* Use AssetCombiner-style containment. This can hold existing assets, but it does not define many independent fungible token identities inside one contract.
+* Extend divisible NEP-11. This is close in shape, but the goal here is a fungible-token standard with per-token metadata, per-token decimals, and wallet presentation as fungible assets rather than NFT ownership.
+
+==Backwards Compatibility==
+
+This proposal is backwards compatible with existing NEP-17 and NEP-11 contracts. It does not change their required behavior.
+
+Contracts implementing this standard are not automatically NEP-17 contracts because NEP-17 methods are contract-scoped and do not include <code>tokenId</code>. Wallets, explorers, SDKs, and indexers need explicit support for this standard to display each <code>contractHash + tokenId</code> pair as a distinct fungible asset.
+
+Implementations SHOULD NOT emit ambiguous NEP-17-style <code>Transfer(from, to, amount)</code> events for token-id-scoped balances unless they also define a real contract-level NEP-17 asset. Emitting token-id-free transfer events for many token identities could cause wallets and indexers to aggregate unrelated balances incorrectly.
+
+==Test Cases==
+
+Implementations of this standard SHOULD include tests for at least the following cases:
+
+* Two token ids in one contract have separate names, symbols, decimals, total supply, and balances.
+* A balance change for one token id does not affect another token id.
+* A transfer emits a token-id-aware <code>Transfer</code> event.
+* Minting emits a token-id-aware <code>Transfer</code> event with <code>from</code> set to <code>null</code>.
+* Burning emits a token-id-aware <code>Transfer</code> event with <code>to</code> set to <code>null</code>.
+* Transfer to a contract invokes the receiver callback with the correct <code>tokenId</code>.
+* Unknown token ids fail closed.
+* A receiver contract accepts or rejects transfers based on both calling script hash and <code>tokenId</code>.
+* Indexer reconstruction of balances from token-id-aware events matches contract <code>balanceOf(account, tokenId)</code>.
+
+==Implementation==
+
+A reference implementation is expected to be developed from the HushForge shared multi-token contract work once the interface direction is accepted for discussion.
+
+The initial discussion, measurements, and problem statement are captured in:
+
+* https://github.com/neo-project/proposals/issues/146
+
