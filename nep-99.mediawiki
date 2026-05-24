@@ -1,0 +1,117 @@
+# NEP: <to be assigned>
+
+**Title**: Discard Unclaimed GAS Rewards After 30-60 Days of Inactivity  
+**Author**: Ricardo Prado  
+**Type**: Standard  
+**Status**: Draft  
+**Created**: 2025-05-22  
+
+## Abstract
+
+This NEP proposes a mechanism to enforce voter participation in the NEO network by requiring users to re-vote every 30-60 days (configurable via network policy). Claimed rewards accumulated beyond this period will be burned, incentivizing continuous interaction with the network. The goals are to increase voter engagement, reduce the total GAS emitted, and ensure that only active participants' votes influence governance.
+
+## Motivation
+
+The current NEO protocol allows users to vote for consensus nodes and accumulate GAS rewards indefinitely without requiring periodic re-engagement. This leads to:
+
+1. **Low voter interaction**: Users may vote once and never revisit their choice, reducing active participation in governance.
+2. **Inefficient GAS emission**: Inactive voters continue to accrue GAS, increasing the total supply without contributing to network activity.
+3. **Stale votes**: Votes from inactive users remain valid, potentially skewing consensus node selection.
+
+By enforcing periodic re-voting, this NEP aims to:
+
+- Encourage active participation in the network.
+- Reduce GAS emissions by burning rewards for inactive voters.
+- Ensure the network reflects the preferences of engaged users.
+
+## Specification
+
+This NEP introduces a new network policy parameter, `MaxVoterInactivityBlocks`, which defines the maximum number of blocks (approximately 30-60 days) after which a voter's accumulated GAS rewards are burned if they do not re-vote. The default value is set to 172,800 blocks (~30 days, assuming 15 seconds per block).
+
+### Changes to `NeoToken.cs`
+
+The `DistributeGas` method in `Neo/SmartContract/Native/NeoToken.cs` ([line 123](https://github.com/neo-project/neo/blob/9b9be47357e9065de524005755212ed54c3f6a11/src/Neo/SmartContract/Native/NeoToken.cs#L123)) is modified to check the block height delta since the last vote or balance update. If the delta exceeds `MaxVoterInactivityBlocks`, only the rewards for the allowed period are distributed, and the excess is discarded (burned).
+
+#### C# Pseudo Code
+
+```csharp
+private GasDistribution DistributeGas(ApplicationEngine engine, UInt160 account, NeoAccountState state)
+{
+    // PersistingBlock is null when running under the debugger
+    if (engine.PersistingBlock is null) return null;
+
+    // Retrieve the maximum inactivity period from network policy
+    var maxInactivityBlocks = engine.SnapshotCache.GetPolicy().MaxVoterInactivityBlocks; // Default: 172,800 (~30 days)
+    var currentBlockIndex = engine.PersistingBlock.Index;
+    var lastBalanceHeight = state.BalanceHeight;
+
+    // Calculate the number of blocks since last vote or balance update
+    var blockDelta = currentBlockIndex - lastBalanceHeight;
+
+    // Calculate GAS rewards (in datoshi, 1 datoshi = 1e-8 GAS)
+    BigInteger datoshi;
+    if (blockDelta > maxInactivityBlocks)
+    {
+        // If inactive for too long, calculate rewards only for the allowed period
+        datoshi = CalculateBonus(engine.SnapshotCache, state, lastBalanceHeight + maxInactivityBlocks);
+    }
+    else
+    {
+        // Normal case: calculate rewards up to current block
+        datoshi = CalculateBonus(engine.SnapshotCache, state, currentBlockIndex);
+    }
+
+    // Update state
+    state.BalanceHeight = currentBlockIndex;
+    if (state.VoteTo is not null)
+    {
+        var keyLatest = CreateStorageKey(Prefix_VoterRewardPerCommittee, state.VoteTo);
+        var latestGasPerVote = engine.SnapshotCache.TryGet(keyLatest) ?? BigInteger.Zero;
+        state.LastGasPerVote = latestGasPerVote;
+    }
+
+    if (datoshi == 0) return null;
+    return new GasDistribution
+    {
+        Account = account,
+        Amount = datoshi
+    };
+}
+```
+
+Note: In practice, any action that distributes GAS rewards will reset the inactivity timer.
+
+
+### Network Policy Parameter
+
+The `MaxVoterInactivityBlocks` parameter defines the maximum number of blocks (approximately 30-60 days) after which a voter's accumulated GAS rewards are discarded if they don't interact with the network.
+
+- **Name**: `MaxVoterInactivityBlocks`
+- **Type**: Integer
+- **Default Value**: 172,800 blocks (~30 days at 15 seconds per block)
+- **Range**: 86,400 to 345,600 blocks (~15 to 60 days)
+- **Description**: Specifies the maximum number of blocks after which a voter's unclaimed GAS rewards are burned if they do not re-vote.
+- **Configuration**: Adjustable via NEO's governance mechanism (e.g., consensus node voting).
+
+### Burning Mechanism
+
+- Excess GAS rewards (beyond `MaxVoterInactivityBlocks`) are not distributed to the account and are effectively burned, as they are not allocated to any other account or pool.
+- This reduces the total GAS supply over time, aligning with the goal of controlling emission.
+
+## Rationale
+
+This NEP’s design incentivizes active voter participation, reduces GAS emissions, and ensures fair governance while keeping changes minimal.
+
+### Alternative Designs Considered
+
+- **Redistributing Excess GAS**: Instead of burning, excess GAS could be redistributed to active voters or a community fund. This was rejected to prioritize reducing GAS emissions.
+- **Time Period**: Using timestamps instead of block height was considered but it doesn't 'seem ideal' to a block height based system.
+- **Vote Expiration**: That could be good, even ideal. However, it may be too complex and cause 'disruptions' if larger wallets fail to keep their votes 'active'.
+
+## Backwards Compatibility
+
+The changes are simple but require a fork. Wallets and explorers should be updated to avoid displaying 'unclaimable' rewards. Users should also be informed about their current activity status.
+
+## Test Cases
+
+## Implementation
