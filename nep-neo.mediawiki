@@ -1,0 +1,131 @@
+<pre>
+  NEP: <to be assigned>
+  Title: <NEP title>
+  Author: Da Hongfei and Erik Zhang
+  Type: Meta
+  Status: Draft
+  Created: April 14, 2026
+</pre>
+
+==Abstract==
+
+Neo shall adopt a governance foundation that is more stable, credible, durable, and procedurally legible. This 
+governance foundation shall clarify authority, strengthen community and tokenholder legitimacy in major governance matters, distinguish executive governance from independent oversight, improve transparency and stewardship, reduce reliance on informal founder-centered arrangements, and ensure that Neo's intended governance model is reflected in formal legal and institutional documentation.
+
+==Motivation==
+
+Neo's current governance condition is insufficiently formalized, insufficiently procedurally legible, and too dependent 
+on informal coordination. Where authority, oversight, stewardship, and community authorization are not clearly defined, institutional credibility weakens, disputes become harder to resolve, and governance continuity becomes more fragile.
+
+A durable governance order requires more than good-faith actors. It requires defined structures, reviewable procedures, 
+clearer boundaries between executive action and oversight, and stronger institutional treatment of transparency, stewardship, and legitimacy. Neo therefore requires a governance foundation that can be formalized, reviewed, and executed in practice.
+
+==Specification==
+
+===Governance Foundation===
+
+This section outlines the foundational requirements for governance. Subsequent sections must align on all adopted 
+statements below.
+
+# Structural Governance Reform
+
+## Neo shall adopt structural governance reform rather than relying on ad hoc fixes or informal coordination.
+
+# Durable Governance Order
+
+## Neo shall maintain a governance framework intended to be stable, credible, and sustainable over the long term.
+
+# Community and Tokenholder Authorization====
+
+## Community and tokenholder authorization shall play a meaningful role in Neo governance, especially in matters of major public significance.
+
+# Clear and Verifiable Governance Processes
+
+## Neo governance shall rely on clear, defined, and verifiable processes, including on-chain mechanisms where appropriate.
+
+# Separation of Executive Governance and Independent Oversight
+
+## Neo Foundation governance shall clearly distinguish between executive decision-making and independent oversight.
+
+# Board and Supervisor Structure
+
+## Neo's governance structure shall include both a Board and a separate Supervisor or equivalent oversight function as formal institutional components.
+
+# Defined Governance Roles and Procedures
+
+## Governance roles, responsibilities, and procedures shall be formally defined so that authority, execution, and oversight are understandable, reviewable, and enforceable.
+
+# Transparency Obligations
+
+## Transparency regarding finances, governance decisions, and important institutional matters shall be improved and treated as an ongoing institutional obligation.
+
+# Stewardship of Public-Mission Assets and Resources
+
+## Assets and resources associated with Neo's public mission shall be subject to clearer institutional stewardship, controls, and accountability.
+
+# Reduced Dependence on Informal Founder-Centered Arrangements
+
+## Neo governance shall become less dependent on informal or founder-centered arrangements.
+
+# Legal and Institutional Embedding
+
+## Neo's intended governance model shall be reflected in formal legal and institutional documentation so that it is durable and executable in practice.
+
+===Structural Direction===
+
+To implement this governance foundation:
+
+* Neo shall maintain a formal governance structure rather than relying on informal personal coordination.
+* The Foundation's governance model shall distinguish executive action from oversight review.
+* Major governance matters shall follow defined procedures rather than ad hoc discretion.
+* Transparency and reporting shall be treated as ongoing institutional obligations.
+* Stewardship of assets and resources tied to Neo's public mission shall be formalized through clearer control and review mechanisms.
+
+===Operational Mandate===
+
+====Legal Structure and Constitutional Design====
+TBD
+====Tokenholder Authority and Voting Model====
+TBD
+====Board Composition and Supervisor Design====
+TBD
+====Transition Rules and Founder Role Boundaries====
+TBD
+====Public Asset Stewardship, Attribution, and Control====
+TBD
+====Accountability, Historical Review, and Enforcement Scope====
+TBD
+====Tokenomics and Redistribution Measures====
+TBD
+===Expected Outcome===
+
+If adopted, this proposal will provide a governance baseline for Neo that:
+
+* affirms the need for structural governance reform;
+* gives community and tokenholder legitimacy a defined role in major governance matters;
+* formalizes the separation between executive and oversight functions;
+* reinforces transparency and accountability as institutional obligations; and
+* provides a clear foundation for resolving remaining governance design questions through dedicated follow-on work.
+
+===Conclusion===
+
+This proposal establishes the governance foundation that Neo should adopt as the basis for its next governance order. 
+It is intended to create a durable, reviewable, and more legitimate institutional structure while enabling unresolved 
+design questions to be addressed directly through subsequent governance work.
+
+==Rationale==
+
+This proposal establishes a governance foundation before specifying every downstream institutional detail. That 
+approach is necessary because Neo first needs a common constitutional direction: governance should be structurally 
+reformed, major authority should be more procedurally defined, executive and oversight functions should be clearly 
+separated, and public-mission assets and decisions should be handled through stronger stewardship and accountability 
+rules.
+
+This proposal therefore focuses on first-order governance principles that should anchor all subsequent legal, 
+procedural, and operational design work. More specific institutional choices may be developed in dedicated 
+follow-on work, but they should be designed within this adopted governance foundation rather than in the 
+absence of one.
+
+==Implementation==
+
+TBD
