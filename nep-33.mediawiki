@@ -1,0 +1,110 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Enable Fee Payment with Unclaimed GAS at HF_Faun
+  Author: Jimmy <jimmy@r3e.network>
+  Type: Standard
+  Status: Draft
+  Created: 2025-02-14
+  Requires (*optional):
+  Replaces (*optional):
+</pre>
+
+==Abstract==
+
+This NEP proposes a protocol change activated at HF_Faun that allows
+transaction fees to be paid using a sender's unclaimed GAS (accrued from NEO
+holdings) when their claimed GAS balance is insufficient. Today, fee
+verification and block persistence only consider the GAS token balance, which
+blocks NEO-only accounts from sending transactions without first performing a
+separate claim or receiving GAS. Under this proposal, nodes evaluate fee
+sufficiency as the sum of claimed GAS plus the sender's unclaimed GAS for the
+current block interval. During OnPersist, if a sender lacks claimed GAS to
+cover fees, the protocol auto-claims the sender's unclaimed GAS for that block
+interval and mints it to the sender before burning the system and network
+fees. This makes fee payment seamless for NEO holders while preserving
+existing fee semantics and avoiding new transaction types. The change is
+guarded by the HF_Faun hardfork to ensure deterministic behavior and backward
+compatibility across the network.
+
+==Motivation==
+
+The existing protocol requires senders to hold enough claimed GAS to pay
+system and network fees. NEO holders often have unclaimed GAS accrued but
+cannot use it unless they submit an explicit claim or receive GAS from another
+account. This adds friction, complicates UX, and makes fee payment unavailable
+to accounts that only hold NEO. As GAS accrues as a function of NEO balance
+and time, it is intuitive that this value should be usable for fees without
+requiring separate transactions. The current specification is inadequate
+because it treats unclaimed GAS as unusable for fees despite being a
+deterministic, spendable entitlement. This NEP addresses that gap by enabling
+fee payment from unclaimed GAS under a hardfork, improving usability without
+changing fee calculation rules or introducing new transaction formats.
+
+==Specification==
+
+Activation: HF_Faun.
+
+Definitions:
+
+- claimed_gas(sender) := GAS token balance of sender.
+- unclaimed_gas(sender, end) := NEO.unclaimedGas(sender, end), where end =
+  current_index + 1.
+
+Verification (mempool/consensus precheck):
+
+- When HF_Faun is active, fee sufficiency MUST be evaluated using
+  available = claimed_gas(sender) + unclaimed_gas(sender, current_index + 1).
+- Transactions that fail this check MUST be rejected with insufficient funds.
+
+OnPersist fee processing:
+
+- For each transaction tx in the persisting block, if HF_Faun is active and
+  claimed_gas(tx.sender) < tx.system_fee + tx.network_fee:
+  1. Compute claim = unclaimed_gas(tx.sender, persisting_index).
+  2. Update the sender's NEO account state as if a full claim for that
+     interval occurred
+     (advance balance_height to persisting_index and update voting accrual
+     state).
+  3. If claim > 0, mint claim GAS to tx.sender.
+- Burn tx.system_fee + tx.network_fee from tx.sender as usual.
+
+Notes:
+
+- The claim is all-or-nothing for the current interval; partial claiming is
+  not defined.
+- No new transaction format or attribute is introduced.
+
+==Rationale==
+
+Auto-claiming at OnPersist ensures that verification and persistence remain
+consistent and prevents block failures when unclaimed GAS is counted in fee
+checks. Using the full unclaimed amount avoids introducing partial-claim
+accounting, which would require new NEO account state fields or transaction
+semantics. An alternative design requiring explicit claim transactions
+preserves current rules but keeps the UX burden and does not address the key
+problem. Another alternative--allowing fees to directly reduce unclaimed GAS
+without minting--would complicate reward accounting and diverge from the
+existing mint/burn model. The chosen design minimizes changes, preserves
+existing fee computation and distribution, and is safely gated by HF_Faun.
+
+==Backwards Compatibility==
+
+This is a consensus change. Nodes that do not activate HF_Faun will continue
+to require sufficient claimed GAS and will reject transactions that depend on
+unclaimed GAS. Therefore, activation MUST be coordinated via the hardfork
+mechanism. Pre-Faun behavior is unchanged.
+
+==Test Cases==
+
+Consensus-impacting tests (examples):
+
+- Neo.UnitTests.SmartContract.Native.UT_GasToken.Check_OnPersist_AutoClaimUnclaimedGasForFees
+- Neo.UnitTests.Ledger.UT_TransactionVerificationContext.TestTransactionSenderFeeWithUnclaimedGas
+
+These verify unclaimed GAS fee sufficiency at verification time and correct
+auto-claiming during OnPersist.
+
+==Implementation==
+
+A reference implementation is available in PR #4395 (branch hf-faun-auto-
+claim-gas) for the NEO reference client.
