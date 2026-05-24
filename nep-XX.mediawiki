@@ -1,0 +1,164 @@
+<pre>
+  NEP: XX
+  Title: Offline Message Signing and Verification Standard
+  Author: Adrian Fjellberg (atlazor), Alvaro Jara (ajara87)
+  Type: Standard
+  Status: Draft
+  Created: 2025-12-08
+</pre>
+
+==Abstract==
+
+This NEP specifies how the command `sign message` constructs and signs an offline message. It standardizes (1) the exact payload format (including an anti-transaction prefix/suffix and a random salt), (2) the use of the network magic as a domain separator via `GetSignData`, and (3) the minimum set of values that implementations expose so that signatures can be reproduced and verified by other tools.
+
+==Motivation==
+
+Neo users, node operators and external systems need to prove key ownership or authorize off-chain actions by signing messages instead of transactions. Without a standard, each implementation can invent its own payload and signing rules, making verification brittle and opening the door to cross-network replay.
+
+The goals of this NEP are:
+
+* Ensure that “message signatures” cannot be interpreted as valid transactions.
+* Bind signatures to a specific Neo network via the existing `networkMagic`.
+* Make it clear what fields a wallet or CLI should output (payload, keys, signatures, salt) so that other tools can verify them.
+
+==Specification==
+
+===Context and inputs===
+
+The standard applies to the CLI command:
+
+<pre>
+wallet sign message &lt;message&gt;
+</pre>
+
+A conforming implementation MUST:
+
+* Have a wallet open and unlocked with a password.
+* Use the active protocol settings’ `Network` value as `networkMagic`.
+* Sign with all accounts in the current wallet that have a private key (`HasKey == true`).
+
+Inputs:
+
+* `message`: arbitrary text provided as the command argument. It is encoded using UTF-8.
+* `networkMagic`: 32-bit unsigned integer taken from the node’s settings (e.g. `NeoSystem.Settings.Network`).
+* `accounts`: all wallet accounts with private keys.
+
+If no wallet is open, the command MUST fail. If the password is empty, the command MUST cancel. If the password is incorrect, the command MUST fail without producing signatures.
+
+===Payload construction===
+
+For each invocation of `sign message`, the implementation constructs a single `payload` as follows:
+
+1. Generate a 16-byte random salt:
+
+* `saltBytes = new byte[16]`
+* Fill using a cryptographically secure RNG (e.g. `RandomNumberGenerator.Fill(saltBytes)`).
+* `saltHex = ToHexString(saltBytes).ToLowerInvariant()` (32 hex characters, lowercase, no `0x`).
+
+2. Build the message bytes:
+
+* `paramString = saltHex + message`
+* `paramBytes = UTF8(paramString)`
+
+3. Write the payload with a binary writer:
+
+<pre>
+payload =
+  0x01 0x00 0x01 0xF0
+  || VarBytes(paramBytes)
+  || 0x00 0x00
+</pre>
+
+where:
+
+* `VarBytes(paramBytes)` is Neo’s standard encoding:
+  * `VarInt(len(paramBytes))` in little-endian, then
+  * the raw `paramBytes`.
+
+The 4-byte prefix `0x01 0x00 0x01 0xF0` and 2-byte suffix `0x00 0x00` are chosen specifically so that `payload` is not a valid Neo transaction, even if deserialized by transaction code.
+
+The CLI reference implementation prints the payload as:
+
+* `Signed Payload: <newline><payloadHex>`
+
+where `payloadHex` is `payload.ToHexString()` (lowercase hex, no prefix).
+
+===Signing data and domain separation===
+
+The signing data follows the existing Neo `GetSignData` pattern.
+
+Given `payload` as above and `networkMagic`:
+
+1. Compute:
+
+* `hash = Crypto.Hash256(payload)` (double SHA-256 of `payload`).
+
+2. Build the sign data using `GetSignData` for a message hash:
+
+<pre>
+signData = GetSignData(hash, networkMagic)
+</pre>
+
+this is equivalent to:
+
+<pre>
+var buffer = new byte[4 + UInt256.Length];
+BinaryPrimitives.WriteUInt32LittleEndian(buffer, networkMagic);
+hash.Serialize(buffer.AsSpan(sizeof(uint)));
+signData = buffer;
+</pre>
+
+That is:
+
+* 4 bytes: `networkMagic` in little-endian.
+* Followed by 32 bytes: the serialized `hash` (`UInt256`).
+
+This ensures that the same `payload` signed on different networks will produce different `signData` and therefore different signatures.
+
+===Signature generation===
+
+For each account `account` in the current wallet such that `account.HasKey` is `true`:
+
+1. Obtain the key: `key = account.GetKey()`.
+2. Compute the signature:
+
+<pre>
+signature = Crypto.Sign(signData, key.PrivateKey, ECCurve.Secp256r1);
+</pre>
+
+This uses the existing Neo `Crypto.Sign` function over the `secp256r1` curve.
+
+For each such account, the CLI reference implementation prints:
+
+* `Address: <account.Address>`
+* `PublicKey: <compressedPublicKeyHex>`
+* `Signature: <signatureHex>`
+* `Salt: <saltHex>`
+
+Where:
+
+* `compressedPublicKeyHex = key.PublicKey.EncodePoint(true).ToHexString()` (33-byte compressed key, hex).
+* `signatureHex = signature.ToHexString()` (signature bytes as hex).
+* `saltHex` is the same value used in payload construction for this command invocation.
+
+All signatures corresponding to the same `payload` and `signData` share the same `saltHex` and `payloadHex`.
+
+==Rationale==
+
+* **Anti-transaction wrapper**: The `010001f0` prefix and `0000` suffix wrap the user message in a structure that cannot be parsed as a valid transaction. This avoids users accidentally signing something that could later be replayed as a transaction.
+* **Random salt**: Prepending a 16-byte, lowercase hex `salt` to the message ensures that signing the same `message` twice does not produce an identical payload. This reduces correlation across signatures and allows tools to embed additional randomness without changing the user-visible message.
+* **Network magic**: Reusing `networkMagic` in the signing data (via `GetSignData`) binds signatures to a specific network. A signature created on testnet cannot be reused on mainnet for the same payload.
+* **Existing primitives**: The design intentionally reuses `Crypto.Hash256`, `GetSignData(UInt256, uint)` and `Crypto.Sign(..., ECCurve.Secp256r1)` from the core Neo libraries. This minimizes new code and leverages already tested logic.
+* **Minimal output**: The CLI prints exactly the values needed for verification (`payloadHex`, curve, addresses, public keys, signatures, salt) and nothing more. Other implementations can extend the output, but this NEP keeps the required surface small and aligned with the current `neo-cli` behavior.
+
+==Backwards Compatibility==
+
+This NEP:
+
+* Introduces a new wallet command behavior (`sign message`) but does not modify any consensus rules.
+* Does not change transaction formats or how blocks are validated.
+* Does not affect smart contracts or on-chain data.
+
+Nodes and wallets that do not implement this NEP continue to function as before. Tools that previously used ad-hoc message formats MAY continue to do so, but SHOULD clearly distinguish them from the standard described here.
+
+Since the payload is never used as a transaction, there is no on-chain migration or compatibility risk.
