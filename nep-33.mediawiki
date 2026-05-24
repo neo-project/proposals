@@ -1,0 +1,276 @@
+<pre>
+  NEP: 33
+  Title: Application Authentication URI Scheme
+  Author: Erik Zhang <erik@neo.org>
+  Type: Standard
+  Status: Accepted
+  Created: 2026-03-28
+  Requires: 20
+</pre>
+
+==Abstract==
+
+This NEP defines a URI-based transport mechanism for application-to-application authentication on NEO.
+
+It allows a requesting application to invoke a wallet application via a custom URI scheme, submit a NEP-20 authentication challenge payload, and receive the authentication result through a callback URI.
+
+This specification is intended exclusively for one-time authentication flows and MUST NOT be used for transaction signing, smart contract invocation, asset transfers, or session-based authorization.
+
+==Motivation==
+
+NEP-20 defines a generic authentication scheme based on digital signatures.
+
+In native environments such as mobile and desktop operating systems, applications typically authenticate users by invoking external wallet applications via URI schemes.
+
+Without a standardized approach, wallets and applications implement incompatible invocation and callback formats, leading to fragmentation.
+
+This NEP standardizes:
+
+* how an application invokes a wallet for authentication;
+* how NEP-20 payloads are transported;
+* how authentication results are returned;
+* how failures are represented using JSON-RPC error objects.
+
+==Specification==
+
+===Overview===
+
+The authentication flow involves:
+
+# the requesting application;
+# the wallet application;
+# the operating system routing URI invocations.
+
+This specification defines only the transport layer. Authentication semantics are defined by NEP-20.
+
+===Terminology===
+
+====Global authentication scheme====
+
+A standardized URI scheme (<code>neoauth</code>) used to invoke compatible wallet applications.
+
+====Host====
+
+The host component identifies the target wallet namespace.
+
+The reserved host <code>wallet</code> indicates a generic invocation target. In this case, wallet selection is delegated to the operating system or the user.
+
+A wallet-specific host MAY be used to target a particular wallet implementation.
+
+====dApp identifier====
+
+A string identifying the requesting application.
+
+This value MUST be stable and unique within the application's ecosystem.
+
+===Request URI===
+
+The requesting application invokes a wallet using:
+
+<pre>
+neoauth://wallet/authenticate?payload=<url_encoded_payload>&dapp=<dapp_identifier>
+</pre>
+
+====Parameters====
+
+=====payload=====
+
+A URL-encoded JSON string containing a NEP-20 challenge payload.
+
+The decoded payload MUST conform to NEP-20.
+
+Example:
+
+<pre>
+{
+  "action": "Authentication",
+  "grant_type": "Signature",
+  "allowed_algorithms": ["ECDSA-P256"],
+  "domain": "mygame.example",
+  "networks": [860833102],
+  "nonce": "13458238842203010919",
+  "timestamp": 1774665600
+}
+</pre>
+
+=====dapp=====
+
+The identifier of the requesting application.
+
+===Callback URI===
+
+After processing, the wallet invokes:
+
+====Success====
+
+<pre>
+dapp://<dapp_identifier>/auth?result=<url_encoded_result>
+</pre>
+
+====Failure====
+
+<pre>
+dapp://<dapp_identifier>/auth?error=<url_encoded_error>
+</pre>
+
+The wallet MUST construct the callback URI using the <code>dapp</code> parameter from the request URI.
+
+The <code>callback</code> field defined in NEP-20 MUST be ignored in this transport mode.
+
+The callback URI MUST contain exactly one of <code>result</code> or <code>error</code>.
+
+===Successful Result===
+
+The <code>result</code> parameter is a URL-encoded JSON string.
+
+The decoded JSON MUST be the NEP-20 authentication response payload.
+
+Example:
+
+<pre>
+{
+  "algorithm": "ECDSA-P256",
+  "network": 860833102,
+  "pubkey": "0355912bc4e61c9715c5912397ea53a5ac6c103c4893fbd9c2a9f3be13b7a3e29d",
+  "address": "NfMFWYxaUUQy9SYo6AhRiGmRxfPxe9Edj7",
+  "nonce": "13458238842203010919",
+  "timestamp": 1774665601,
+  "signature": "BAS7Ljufj3vrhOrTAi21D/5Cf62n4r64Suf/do8dq/OCMHiLJl+hLJeMFZwTajVjhcpFLz6FuSEp13vvEqWf1w=="
+}
+</pre>
+
+The requesting application or its backend MUST verify this payload according to NEP-20.
+
+===Error Result===
+
+The <code>error</code> parameter is a URL-encoded JSON string.
+
+The decoded JSON MUST follow the JSON-RPC error object format:
+
+<pre>
+{
+  "code": -32000,
+  "message": "User cancelled the authentication request.",
+  "data": null
+}
+</pre>
+
+The <code>data</code> field is optional.
+
+===Processing Rules===
+
+====Requesting application====
+
+The requesting application:
+
+# constructs a NEP-20 challenge payload;
+# URL-encodes it;
+# invokes the request URI;
+# waits for callback;
+# if <code>result</code> is returned, verifies it according to NEP-20;
+# if <code>error</code> is returned, treats authentication as failed.
+
+The requesting application MUST NOT treat the callback URI itself as proof of authentication.
+
+====Wallet application====
+
+The wallet MUST:
+
+# validate the request URI format;
+# decode and validate the payload;
+# present authentication details to the user, including the domain;
+# require explicit user approval;
+# if approved:
+## generate NEP-20 response payload;
+## invoke callback with <code>result</code>;
+# if rejected or failed:
+## invoke callback with <code>error</code>.
+
+If callback invocation is not possible, the wallet may report the failure locally, but this does not constitute a valid protocol response.
+
+===Examples===
+
+====Request====
+
+<pre>
+neoauth://wallet/authenticate?payload=%7B%22action%22%3A%22Authentication%22%2C%22grant_type%22%3A%22Signature%22%2C%22allowed_algorithms%22%3A%5B%22ECDSA-P256%22%5D%2C%22domain%22%3A%22mygame.example%22%2C%22networks%22%3A%5B860833102%5D%2C%22nonce%22%3A%2213458238842203010919%22%2C%22timestamp%22%3A1774665600%7D&dapp=mygame
+</pre>
+
+====Success====
+
+<pre>
+dapp://mygame/auth?result=%7B%22algorithm%22%3A%22ECDSA-P256%22%2C%22network%22%3A860833102%2C%22pubkey%22%3A%220355912bc4e61c9715c5912397ea53a5ac6c103c4893fbd9c2a9f3be13b7a3e29d%22%2C%22address%22%3A%22NfMFWYxaUUQy9SYo6AhRiGmRxfPxe9Edj7%22%2C%22nonce%22%3A%2213458238842203010919%22%2C%22timestamp%22%3A1774665601%2C%22signature%22%3A%22BAS7Ljufj3vrhOrTAi21D%2F5Cf62n4r64Suf%2Fdo8dq%2FOCMHiLJl%2BhLJeMFZwTajVjhcpFLz6FuSEp13vvEqWf1w%3D%3D%22%7D
+</pre>
+
+====Failure====
+
+<pre>
+dapp://mygame/auth?error=%7B%22code%22%3A-32001%2C%22message%22%3A%22User%20cancelled%22%7D
+</pre>
+
+==Security Considerations==
+
+===Trust Model===
+
+This specification uses custom URI schemes, which are not secure transport channels.
+
+It does not guarantee confidentiality, integrity, or application identity.
+
+Security relies entirely on NEP-20 signature verification.
+
+===Authentication Security===
+
+Authentication MUST be established exclusively through NEP-20 verification.
+
+The callback URI MUST NOT be trusted as proof of authentication.
+
+===Scope Limitation===
+
+This specification MUST NOT be used for:
+
+* transaction signing;
+* asset transfers;
+* smart contract invocation;
+* session-based authorization.
+
+===Callback Interception===
+
+Callback URIs may be intercepted.
+
+Applications MUST treat callback data as publicly observable.
+
+===Request Forgery===
+
+Wallets MUST NOT trust request origin and MUST require explicit user approval.
+
+===Phishing===
+
+Wallets MUST clearly display the domain field.
+
+===Replay Protection===
+
+Nonces MUST be unique and single-use.
+
+Expiration SHOULD be enforced (recommended: 5 minutes).
+
+===Data Exposure===
+
+Payloads MUST NOT contain secrets.
+
+===Wallet Identity===
+
+The host component is not a secure identity guarantee.
+
+==Compatibility==
+
+Fully compatible with NEP-20.
+
+==Rationale==
+
+This design:
+
+* reuses NEP-20;
+* avoids redefining authentication formats;
+* introduces a global authentication entry point;
+* allows wallet selection to be delegated to the operating system;
+* keeps scope minimal and focused.
