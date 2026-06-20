@@ -1,0 +1,75 @@
+NEP: <to be assigned>
+Title: Binary Serialization for CompoundType and Complex StackItem in NeoVM
+Author: cschuchardt88@gmail.com
+Discussions-To: https://github.com/neo-project/proposals/issues/234
+Status: Draft
+Type: Standard
+Created: 2026-06-20
+Requires:
+
+== Abstract ==
+
+This NEP proposes adding native binary serialization and deserialization support for all <code>StackItem</code> types in NeoVM, with full support for <code>CompoundType</code> (<code>Array</code>, <code>Map</code>, <code>Struct</code>) and other complex VM objects.
+
+While JSON serialization is already available, binary serialization provides a compact, deterministic, and high-performance alternative that is essential for state snapshots, tooling, testing, cross-process communication, and efficient host applications.
+
+== Motivation ==
+
+Primitives in NeoVM (<code>ByteString</code>, <code>Integer</code>, etc.) already expose easy binary representations via <code>GetSpan()</code> and <code>Memory</code>. However, <code>CompoundType</code> and nested complex objects have no equivalent native binary format.
+
+This creates several problems:
+* Every consumer (Neo core, Neo Express, debuggers, indexers, testing frameworks, custom hosts) must implement its own recursive serializer.
+* JSON is convenient but verbose, slow for large structures, and less suitable for deterministic storage or high-performance scenarios.
+* Certain operations on <code>CompoundType</code> currently throw <code>InvalidCastException</code> (e.g. behaviors related to <code>CAT</code> or slicing), making it difficult to support flexible and complete serialization.
+
+A working high-quality implementation already exists and performs well. Adding this capability to the official <code>neo-project/neo-vm</code> would eliminate duplication and provide a canonical, limit-aware, deterministic binary format.
+
+== Specification ==
+
+Add the following methods to the <code>StackItem</code> base class (with proper overrides in <code>CompoundType</code>, <code>Array</code>, <code>Map</code>, <code>Struct</code>, etc.):
+
+* <code>byte[] ToBinary(ExecutionEngineLimits? limits = null)</code>
+* <code>ReadOnlyMemory<byte> ToBinaryMemory(ExecutionEngineLimits? limits = null)</code>
+* <code>static StackItem FromBinary(ReadOnlySpan<byte> data, ExecutionEngineLimits? limits = null, IReferenceCounter? referenceCounter = null)</code>
+
+A streaming variant using <code>BinaryWriter</code> / <code>BinaryReader</code> is also recommended for very large objects.
+
+The binary format must be:
+* Versioned (with a clear header)
+* Deterministic
+* Length-prefixed and recursive for nested compounds
+* Respect <code>ExecutionEngineLimits</code> (depth, size, etc.)
+* Handle <code>Null</code>, reference counting, immutability flags, and all current <code>StackItemType</code> values
+* Include type discriminators
+
+The format should be documented in detail (similar to how NEF or storage serialization is documented) so that other language implementations can interoperate.
+
+== Rationale ==
+
+Binary serialization is a natural extension of the existing primitive binary access patterns. It closes a clear gap in the VM object model without affecting existing JSON support or contract execution semantics.
+
+Design decisions:
+* Keep it in the core VM so all hosts benefit.
+* Make limits enforcement mandatory to preserve determinism and safety.
+* Support both convenience methods and streaming APIs.
+* Prioritize simplicity and performance while remaining extensible.
+
+Alternative considered: Relying solely on external libraries or JSON — rejected because it leads to fragmentation and performance issues.
+
+== Backwards Compatibility ==
+
+This change is fully backwards compatible. It only adds new methods and does not modify existing behavior, opcodes, or JSON serialization. No changes to smart contract execution or storage are required.
+
+== Test Cases ==
+
+* Round-trip serialization/deserialization of deeply nested <code>Array</code> and <code>Map</code> structures.
+* Serialization with various <code>ExecutionEngineLimits</code> settings.
+* Handling of <code>Null</code>, empty compounds, large byte strings inside compounds.
+* Performance benchmarks comparing binary vs JSON.
+* Interoperability test between C# implementation and any future reference implementations.
+
+== Implementation ==
+
+A reference implementation already exists and works correctly in https://github.com/Rapid-Loop/neo-platform. The goal is to upstream a clean version into the official <code>neo-project/neo-vm</code> repository, along with comprehensive unit tests.
+
+Once accepted, the feature can be exposed through <code>Neo.VM</code> NuGet package for all consumers.
