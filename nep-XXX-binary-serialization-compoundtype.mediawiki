@@ -1,0 +1,148 @@
+NEP: <to be assigned>
+Title: Binary Serialization for CompoundType and Complex StackItem in NeoVM
+Author: cschuchardt88@gmail.com
+Discussions-To: https://github.com/neo-project/proposals/issues/234
+Status: Draft
+Type: Standard
+Created: 2026-06-20
+Requires:
+
+== Abstract ==
+
+This NEP defines a canonical, deterministic, versioned binary serialization format for all <code>StackItem</code> types in NeoVM, with full native support for <code>CompoundType</code> (<code>Array</code>, <code>Map</code>, <code>Struct</code>) and other complex objects.
+
+It reuses the existing <code>StackItemType</code> byte values as type tags and adds <code>ToBinary()</code> / <code>FromBinary()</code> methods to the public API.
+
+== Motivation ==
+
+JSON serialization already exists, but binary is needed for performance, compactness, determinism, and tooling.
+
+The current lack of native binary support for compounds forces duplication and makes operations like <code>CAT</code> or slicing on compounds throw <code>InvalidCastException</code>.
+
+A standardized format aligned with the existing type system solves this cleanly.
+
+== Specification ==
+
+=== API Additions ===
+
+Add to <code>Neo.VM.Types.StackItem</code>:
+
+```csharp
+public byte[] ToBinary(ExecutionEngineLimits? limits = null);
+public ReadOnlyMemory<byte> ToBinaryMemory(ExecutionEngineLimits? limits = null);
+
+public static StackItem FromBinary(
+    ReadOnlySpan<byte> data,
+    ExecutionEngineLimits? limits = null,
+    IReferenceCounter? referenceCounter = null);
+```
+
+Streaming variants with <code>BinaryWriter</code>/<code>BinaryReader</code> are recommended for large objects.
+
+=== Binary Format Specification (Version 1) ===
+
+All multi-byte integers are **big-endian**.
+
+==== Overall Header ====
+
+```
+[Version: uint8 = 0x01] [Root Item Payload]
+```
+
+==== Item Encoding ====
+
+Every item starts with its **StackItemType** byte (from <code>Neo.VM.Types.StackItemType</code>):
+
+```csharp
+public enum StackItemType : byte
+{
+    Any = 0x00,
+    Pointer = 0x10,
+    Boolean = 0x20,
+    Integer = 0x21,
+    ByteString = 0x28,
+    Buffer = 0x30,
+    Array = 0x40,
+    Struct = 0x41,
+    Map = 0x48,
+    InteropInterface = 0x60,
+}
+```
+
+**Detailed Payloads**:
+
+**Null / Any (0x00)** — No additional data (treated as Null for serialization).
+
+**Pointer (0x10)** — Not serializable (throw on attempt) or serialize as a special marker (TBD — recommended to disallow).
+
+**Boolean (0x20)**  
+`[0x20] [Value: uint8]` — 0 = false, 1 = true.
+
+**Integer (0x21)**  
+`[0x21] [Length: uint8 (0-32)] [Data: Length bytes]`  
+- Minimal big-endian two's complement representation.
+- Zero = length 0 (no data bytes).
+- No leading zero bytes (except for zero).
+
+**ByteString (0x28)**  
+`[0x28] [Length: uint32] [Data: Length bytes]`
+
+**Buffer (0x30)**  
+Same as ByteString: `[0x30] [Length: uint32] [Data: Length bytes]`
+
+**Array (0x40)**  
+`[0x40] [Count: uint32] [Item 0] ... [Item Count-1]` (recursive)
+
+**Struct (0x41)**  
+Same as Array: `[0x41] [Count: uint32] [Item 0] ...`
+
+**Map (0x48)**  
+`[0x48] [Count: uint32] { [Key Item] [Value Item] } × Count`
+
+**Map Determinism**:
+- Pairs **must** be serialized sorted by the **serialized binary form of the key** (lexicographical byte order).
+- This guarantees the same map always produces identical output.
+
+**InteropInterface (0x60)** — Not serializable (throw exception).
+
+==== Limits & Validation (Mandatory) ====
+
+Deserialization **must** enforce `ExecutionEngineLimits`:
+- Total size
+- Nesting depth (recommended: configurable, default 128+)
+- Number of items created
+- Integer size ≤ 32 bytes
+
+Reject malformed input immediately (invalid type, length overrun, etc.).
+
+== Rationale ==
+
+Reusing `StackItemType` bytes ensures consistency with the existing VM type system and simplifies implementation.
+
+The format is:
+- **Simple & fast** to parse
+- **Deterministic** (especially maps)
+- **Safe** (strict limits and early validation)
+- **Extensible** (version byte + reserved types)
+
+This design mirrors successful patterns in other Neo implementations while making it official and canonical.
+
+== Backwards Compatibility ==
+
+Fully additive. No impact on existing code, JSON serialization, or VM execution.
+
+== Test Cases ==
+
+- All primitive types round-trip
+- Deeply nested compounds
+- Map key ordering determinism
+- Limit exhaustion cases
+- Malformed data rejection
+- Performance benchmarks (binary vs JSON)
+- Cross-language compatibility tests
+
+== Implementation ==
+
+Reference implementation exists in https://github.com/Rapid-Loop/neo-platform. The official version should live in `neo-project/neo-vm` with full tests and documentation of this wire format.
+
+This NEP serves as the authoritative specification for the binary format.
