@@ -1,0 +1,121 @@
+NEP: [To be assigned]
+  Title: Contract Owner Standard
+  Author: Christopher Schuchardt
+  Type: Standard
+  Status: Draft
+  Created: 2026-06-21
+  Requires: NEP-15 (NeoContract Manifest), NEP-17 (Token Standard)
+  Replaces: (none)
+
+==Abstract==
+
+This NEP proposes a standardized `Owner` interface for smart contracts on Neo N3/N4. It defines public methods for retrieving the current contract owner, transferring ownership, and emitting notification events on ownership changes. This enables dApps, explorers, wallets, and other off-chain tools to reliably verify contract ownership and react to ownership transfers in a consistent, interoperable way.
+
+==Motivation==
+
+Many Neo smart contracts implement ad-hoc ownership logic for administrative functions (e.g., `Update`, minting, configuration). Without a standard:
+
+* dApps cannot uniformly query or monitor contract ownership.
+* Tools and indexers must parse custom storage or methods per contract.
+* Ownership transfer events are inconsistent, complicating event-driven applications.
+
+A standardized interface promotes interoperability, security best practices (e.g., `Runtime.CheckWitness`), and easier auditing, aligning with Neo's contract standards like NEP-17 and NEP-22 (Contract Update).
+
+==Specification==
+
+Contracts implementing this standard **MUST** include the following in their C# (or equivalent) implementation. The storage key, initial value, and event naming follow established conventions for compatibility.
+
+===Storage and Constants===
+```
+private const byte Prefix_Owner = 0x02;  // Recommended prefix (0x02)
+
+[InitialValue("NUuJw4C4XJFzxAvSZnFTfsNoWZytmQKXQP", Neo.SmartContract.ContractParameterType.Hash160)]
+private static readonly UInt160 InitialOwner = default;
+```
+
+===Core Methods===
+```
+[Safe]
+public static UInt160 GetOwner()
+{
+    var currentOwner = Storage.Get(new[] { Prefix_Owner });
+    return currentOwner != null ? (UInt160)currentOwner : InitialOwner;
+}
+
+private static bool IsOwner() => Runtime.CheckWitness(GetOwner());
+```
+
+* `GetOwner()`: Public, read-only method returning the current owner's `UInt160` (or initial owner if unset).
+* `IsOwner()`: Internal helper for authorization (recommended but not strictly public).
+
+===Ownership Transfer===
+```
+public delegate void OnSetOwnerDelegate(UInt160 newOwner);
+
+[DisplayName("SetOwner")]  // NOTE: event name must be "SetOwner"
+public static event OnSetOwnerDelegate OnSetOwner;
+
+public static void SetOwner(UInt160 newOwner)
+{
+    if (!IsOwner()) throw new InvalidOperationException("No Authorization!");
+    if (newOwner != null && newOwner.IsValid)
+    {
+        Storage.Put(new[] { Prefix_Owner }, newOwner);
+        OnSetOwner(newOwner);  // Notification event
+    }
+}
+```
+
+* `SetOwner(UInt160 newOwner)`: Restricted to current owner. Updates storage and fires the event.
+* Event `SetOwner`: Emitted on successful transfer (follows Neo's event pattern for notifications).
+
+===Manifest and ABI Considerations (NEP-15)===
+* Include the methods and events in the contract manifest.
+* `GetOwner` should be marked `[Safe]`.
+* Support for multi-owner or additional roles (e.g., Minter) can extend this but must not break the core `Owner` interface.
+
+===Recommended Usage in Contracts===
+* Call `SetOwner` during initialization if needed.
+* Use `IsOwner()` for admin-gated functions (`Update`, privileged mint/burn, etc.).
+* For tokens, integrate with NEP-17 as seen in examples.
+
+==Rationale==
+
+This design mirrors proven patterns in the Neo ecosystem:
+* Consistent storage prefix and initial value handling.
+* `Runtime.CheckWitness` for security.
+* Event emission for observability (critical for dApps).
+
+Alternatives considered:
+* Pure manifest-based ownership (less flexible for runtime changes).
+* On-chain multi-sig or DAO ownership (valuable extension but out of scope for core standard).
+
+This standard is lightweight, backwards-compatible with existing contracts that adopt it, and enhances ecosystem tooling without protocol changes.
+
+==Backwards Compatibility==
+
+No breaking changes to the Neo VM, consensus, or existing contracts. Legacy contracts without this interface remain unaffected. Adopting contracts gain new public methods/events but can maintain internal logic.
+
+New contracts should implement this for standardization. Tools can gracefully degrade if `GetOwner` is absent.
+
+==Test Cases==
+
+Implementations should test:
+# Initial owner retrieval.
+# Successful `SetOwner` by authorized caller + event emission.
+# Unauthorized `SetOwner` rejection.
+# Storage persistence across invocations.
+# Integration with `ContractManagement.Update` and NEP-17 methods.
+
+Example test vectors can be added in a reference implementation.
+
+==Implementation==
+
+* Reference: Existing neo-examples, NEP-11 and NEP-17 templates.
+* Compiler templates (Neo.SmartContract.Template) should include this by default.
+* SDKs, explorers, and dAPI should add support for querying `GetOwner` and listening to `SetOwner` events.
+* Pull request to update documentation and examples in neo-project repositories.
+
+==Example(s)==
+
+* C# (NEP-17) - https://github.com/cschuchardt88/neo-examples-csharp/blob/master/src/ExampleCoin/ExampleCoin.cs#L29-L66
