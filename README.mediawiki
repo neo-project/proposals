@@ -81,8 +81,8 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Standard
 | Accepted
 |-
-| [https://github.com/neo-project/proposals/pull/145 21]
-| Dapi for N3
+| [[nep-21.mediawiki|21]]
+| dAPI for N3
 | Erik Zhang
 | Standard
 | Accepted
@@ -151,6 +151,12 @@ First review [[nep-1.mediawiki|NEP-1]]. Then clone the repository and add your N
 | Unified Neo chain dump format
 | Ekaterina Pavlova, Roman Khimov
 | Informational
+| Accepted
+|-
+| [https://github.com/neo-project/proposals/pull/222 33]
+| Application Authentication URI Scheme
+| Erik Zhang
+| Standard
 | Accepted
 |-
 | 
