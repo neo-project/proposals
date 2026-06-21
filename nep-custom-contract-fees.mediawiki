@@ -1,0 +1,150 @@
+{{NEP
+| number = TBD
+| title = Custom Contract Fees Mechanism (GAS only, N4-aligned)
+| author = Chris Schuchardt (revised per community feedback)
+| type = Standard
+| status = Draft
+| created = 2025-10-27 (revised: 2026-06-21)
+}}
+
+== Abstract ==
+
+This NEP introduces a standardized mechanism for smart contracts to declare '''custom execution fees in GAS''' (in addition to standard network gas). These fees are paid by the caller to the contract owner (or designated beneficiary) upon successful invocation. The fee structure is declared in the contract's ABI using a new <code>fee</code> metadata field, supported by updated DevPack tooling and enforced '''transparently''' by the Neo VM at runtime.
+
+This proposal is aligned with and targeted for '''Neo N4'''.
+
+== Motivation ==
+
+Many dApps require micro-transactions, subscription models, or usage-based billing directly within smart contracts. While GAS covers network costs, there is no native way to charge contract-level fees in GAS.
+
+'''Per reviewer consensus (shargon, erikzhang, ixje, vncoelho):'''
+* Restricted to '''GAS only''' for simplicity, transparency, and to strengthen GAS utility.
+* Contracts that use their own tokens do not need this API.
+* Dynamic fees must support '''internal''' (same-contract) calculation.
+* Enforcement must be fully transparent to the calling transaction (no extra manual transfers or visible syscalls).
+
+This enables pay-per-use contracts, premium features, decentralized SaaS, and fair compensation for maintainers.
+
+== Specification ==
+
+=== 1. ABI Extension: Fee Declaration ===
+
+New optional <code>fee</code> object added to method definitions in the ABI.
+
+<pre>
+{
+  "methods": [
+    {
+      "name": "queryData",
+      "parameters": [],
+      "returnType": "String",
+      "offset": 123,
+      "safe": true,
+      "fee": {
+        "amount": 100000000,
+        "beneficiary": "NM7g6DAeN3Nx8iK53GqY7fpeyqX5bUq5fJ",
+        "mode": "fixed" | "dynamic",
+        "dynamicScriptHash": "0x..."
+      }
+    }
+  ]
+}
+</pre>
+
+==== Field Details ====
+
+{| class="wikitable"
+! Field
+! Type
+! Required
+! Description
+|-
+| <code>amount</code>
+| integer
+| Yes
+| Fee in GAS smallest units (8 decimals)
+|-
+| <code>beneficiary</code>
+| string
+| No
+| Recipient address. Defaults to contract owner (manifest)
+|-
+| <code>mode</code>
+| string
+| Yes
+| <code>"fixed"</code> or <code>"dynamic"</code>
+|-
+| <code>dynamicScriptHash</code>
+| string
+| No
+| External calculator. Omit or match self → '''internal''' <code>CalculateFee</code> on current contract
+|}
+
+=== 2. Dynamic Fee Computation ===
+
+For <code>mode: "dynamic"</code>, implement:
+
+<pre>
+public BigInteger CalculateFee(string methodName, object[] args);
+</pre>
+
+* '''Must be safe''' (VM enforces gas limit, e.g. 100k gas).
+* If <code>dynamicScriptHash</code> differs from target contract → VM calls external.
+* If omitted or matches target → VM calls '''internal''' <code>CalculateFee</code> on the current contract (full private storage access).
+
+=== 3. C# Decorators (DevPack) ===
+
+<pre>
+[Fee(Amount = 50000000)]                                    // 0.5 GAS, fixed
+public static string QueryData(string key) { ... }
+
+[Fee(Amount = 100000000, Mode = FeeMode.Dynamic)]           // internal dynamic
+public static UInt160 GetReport(uint userId) { ... }
+
+[Fee(Amount = 25000000, Mode = FeeMode.Dynamic, Calculator = "0xb2a4...")]
+public static string ComplexOp(...) { ... }
+</pre>
+
+=== 4. Runtime Enforcement (Transparent – No Extra Syscalls) ===
+
+'''Flow''' (completely transparent to caller script):
+
+# Standard <code>contract.method(args)</code> invocation.
+# VM reads ABI <code>fee</code>.
+# Deducts GAS (fixed or via <code>CalculateFee</code>).
+# Transfers to beneficiary.
+# Executes method.
+# On revert → refunds custom fee (network GAS consumed normally).
+
+No manual pre/post transfers required. No visible extra syscalls. Handled internally by VM (N4 scope).
+
+=== 5. Owner & Beneficiary ===
+
+Defaults to manifest owner; per-method override supported.
+
+== Security Considerations ==
+
+* Dynamic calculator gas-capped + safe requirement.
+* ABI is part of signed manifest.
+* Refund on revert ensures fairness.
+* GAS-only design avoids divisibility issues and leverages mature mechanics.
+
+== Backwards Compatibility ==
+
+* No <code>fee</code> in ABI → no change.
+* Old DevPack → ignores new field.
+* Fully N3 compatible; '''primary target is Neo N4''' (“It’s part of N4”).
+
+== Rationale ==
+
+* '''GAS only''': Strong reviewer consensus.
+* '''Internal dynamic support''': Directly requested and endorsed.
+* '''Transparent VM enforcement''': No extra burden on transaction scripts.
+* Future native DEX / LP scenarios left open for later N4+ work.
+
+== Test Cases & Implementation ==
+
+* Fixed / internal-dynamic / external-dynamic paths
+* Beneficiary defaults + overrides
+* Revert refund semantics
+* DevPack + VM integration (N4 milestone)
