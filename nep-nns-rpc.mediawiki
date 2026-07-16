@@ -1,0 +1,93 @@
+<pre>
+  NEP: [To be assigned]
+  Title: Neo Name Service (NNS) JSON-RPC Methods
+  Author: Christopher Schuchardt
+  Type: Standard
+  Status: Draft
+  Created: 2026-07-16
+  Requires: 23
+</pre>
+
+==Abstract==
+
+This NEP proposes a standardized set of JSON-RPC methods for interacting with the Neo Name Service (NNS) contract (`NameService`). These methods expose key functionalities from the non-native `NameService` contract, with all RPC method names prefixed by `nns_` (e.g., `nns_getname`, `nns_resolve`). This naming convention avoids collisions with existing RPC methods and clearly namespaces NNS-specific functionality.
+
+The methods use parameters and logic derived directly from the contract methods in https://github.com/neo-project/non-native-contracts/tree/master/src/NameService, with responses and error handling aligned to NEP-23.
+
+==Motivation==
+
+The NNS contract is central to human-readable naming on Neo. Without dedicated RPC methods, clients rely on generic contract calls (`invokefunction`/`invokescript`), leading to inefficiency, higher gas costs for simple queries, and inconsistent error handling.
+
+Prefixing with `nns_` ensures:
+* Clear separation from core RPC methods.
+* Easy discoverability and future extensibility.
+* Consistency with other Neo standards (e.g., NEP-17 patterns) while following NEP-1 guidelines.
+
+==Specification==
+
+All new methods follow JSON-RPC 2.0. **Every method name is prefixed with `nns_`**. Parameters mirror contract signatures (with JSON-friendly adaptations). Error handling follows NEP-23 exactly.
+
+===Proposed Methods (with `nns_` prefix)===
+
+1. '''nns_getname'''
+   * '''Description:''' Retrieves detailed state for a domain name.
+   * '''Parameters:'''
+     ** `name`: string (e.g., "example.neo")
+   * '''Returns:''' Object `{ name: string, expiration: ulong, owner: string (UInt160 hex), admin: string|null }`
+   * '''Errors:''' `-102` (unknown/expired), `-608`, etc. per NEP-23.
+
+2. '''nns_isavailable'''
+   * '''Description:''' Checks domain availability.
+   * '''Parameters:''' `name`: string.
+   * '''Returns:''' boolean.
+   * '''Errors:''' `-32602` (invalid params/format).
+
+3. '''nns_getrecord'''
+   * '''Description:''' Retrieves a specific record.
+   * '''Parameters:''' `name`: string, `type`: string|int (e.g., "A", "CNAME", or enum value matching `RecordType`).
+   * '''Returns:''' string (data) or null.
+   * '''Errors:''' As above.
+
+4. '''nns_getallrecords'''
+   * '''Description:''' Returns all records for a name.
+   * '''Parameters:''' `name`: string.
+   * '''Returns:''' Array of `{ type: string|int, data: string }`.
+   * '''Errors:''' NEP-23 codes for invalid/expired names.
+
+5. '''nns_resolve'''
+   * '''Description:''' Resolves a name to record value (with CNAME following, max depth ~2).
+   * '''Parameters:''' `name`: string, `type`: string|int.
+   * '''Returns:''' string or null.
+   * '''Errors:''' Redirect limits or validation failures.
+
+Additional methods (e.g., `nns_roots`, `nns_getprice`, `nns_properties`) follow the same `nns_` prefix and contract-derived naming.
+
+'''Batch support:''' Usable via standard JSON-RPC batching. Nodes MAY implement internal optimizations (caching, indexing) for these methods.
+
+Full schemas, request/response examples, and implementation details will be refined based on contract logic (expiration checks, `RecordType` enum, fragment validation, etc.).
+
+==Rationale==
+
+* **`nns_` prefix:** Explicitly requested; prevents namespace pollution and aligns with common practices for domain-specific extensions.
+* **Contract alignment:** Method names and parameters stay faithful to `NameService.cs` (e.g., `GetRecord` → `nns_getrecord`).
+* **NEP-23 compliance:** Ensures uniform error handling across implementations.
+
+Alternatives (no prefix, different naming) were considered but rejected per specification.
+
+==Backwards Compatibility==
+
+Fully additive. No impact on existing RPC methods. Nodes without support return standard "method not found" errors. Legacy clients continue using contract invocation.
+
+==Test Cases==
+
+* `nns_getname` / `nns_resolve` on registered vs. expired names.
+* `nns_resolve` with/without CNAME chains.
+* Error paths (invalid formats, unauthorized where applicable).
+* Cross-verification with direct `invokefunction` calls.
+
+==Implementation==
+
+* Integrate into Neo node RPC layer (`neo-project/neo` and `neo-project/neo-node`).
+* Reference `NameService.cs` implementation for logic.
+* Update SDKs, documentation, and explorers.
+* Pull requests to relevant `neo-project` repositories.
