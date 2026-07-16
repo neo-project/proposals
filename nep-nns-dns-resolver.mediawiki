@@ -1,0 +1,49 @@
+{{NEP
+| number = TBD
+| title = Neo Name Service (NNS) Native DNS Resolver
+| author = Christopher Schuchardt
+| type = Standard
+| status = Draft
+| created = 2026-07-16
+}}
+
+Discussions-To: https://github.com/neo-project/neo/issues/2933
+
+== Abstract ==
+
+This NEP proposes '''NeoDNS''', a robust, native integration layer for the Neo Name Service (NNS) that brings the ''.neo'' TLD directly into the Neo network stack. It enables seamless DNS resolution on local systems, browsers, and dApps by querying the NNS smart contract, while leveraging and extending community tools like the [https://github.com/EdgeDLT/nurl nurl browser extension].
+
+== Motivation ==
+
+NNS provides excellent decentralized naming, but lacks native operating system and browser-level integration. Tools like nurl show demand for ''.neo'' resolution, yet a network-native solution is needed for broad adoption.
+
+'''NeoDNS''' delivers the best solution by making ''.neo'' a first-class, natively resolvable TLD across the Neo ecosystem.
+
+== Specification ==
+
+=== NNS Contract Enhancements ===
+* Add standardized DNS record types (A, AAAA, CNAME, TXT, etc.).
+* Introduce verifiable resolution methods with cryptographic proofs.
+
+=== NeoDNS Core Resolver ===
+* Cross-platform local daemon.
+* Queries NNS contract via RPC/full node.
+* Supports caching and fallback.
+
+=== Browser Integration ===
+* DNS-over-HTTPS (DoH) support.
+* Enhanced extension layer building on nurl.
+
+== Rationale ==
+
+Combines practicality of existing tools with deep network integration. Follows patterns from all NEPs in the proposals repository.
+
+== Backwards Compatibility ==
+
+Fully compatible. Existing NNS domains and tools remain unchanged.
+
+== Test Cases ==
+
+* Local and DoH resolution of ''.neo'' domains.
+* Interoperability testing.
+* Proof verification.
