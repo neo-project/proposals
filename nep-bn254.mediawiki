@@ -19,46 +19,41 @@ Neo currently lacks built-in support for bilinear pairings, which prevents contr
 
 ==Specification==
 
-* Add BN254 methods to <code>CryptoLib</code> gated behind <code>Hardfork.HF_Faun</code>.
-* Add typed point methods:
-** <code>bn254Serialize(InteropInterface point) -> ByteArray</code> serializes a BN254 G1 or G2 point.
-** <code>bn254Deserialize(ByteArray data) -> InteropInterface</code> deserializes a 64-byte G1 or 128-byte G2 point.
-** <code>bn254Add(InteropInterface x, InteropInterface y) -> InteropInterface</code> adds two G1 points.
-** <code>bn254Equal(InteropInterface x, InteropInterface y) -> Boolean</code> compares two G1 points or two G2 points.
-** <code>bn254Mul(InteropInterface point, ByteArray scalar) -> InteropInterface</code> multiplies a G1 point by a scalar in Fr.
-** <code>bn254Pairing(Array pairs) -> ByteArray</code> evaluates a sequence of <code>[G1, G2]</code> point pairs and returns a success word.
-* Add raw Ethereum-compatible methods:
-** <code>bn254_add(ByteArray input) -> ByteArray</code> performs G1 addition using the Ethereum precompile byte layout.
-** <code>bn254_mul(ByteArray input) -> ByteArray</code> performs G1 scalar multiplication using the Ethereum precompile byte layout.
-** <code>bn254_pairing(ByteArray input) -> ByteArray</code> evaluates pairing checks using the Ethereum precompile byte layout.
-* Raw method inputs follow Ethereum's BN254 ABI:
+* Add BN254 methods to <code>CryptoLib</code> gated behind <code>Hardfork.HF_Gorgon</code>.
+* Add typed point methods that follow the existing BLS12-381 <code>CryptoLib</code> interface shape:
+** <code>bn254Serialize(InteropInterface point) -> ByteArray</code> serializes a BN254 G1, G2, or GT value.
+** <code>bn254Deserialize(ByteArray data) -> InteropInterface</code> deserializes a 64-byte G1 point, 128-byte G2 point, or 384-byte GT value.
+** <code>bn254Add(InteropInterface x, InteropInterface y) -> InteropInterface</code> adds two G1 points or composes two GT values.
+** <code>bn254Equal(InteropInterface x, InteropInterface y) -> Boolean</code> compares two G1, G2, or GT values of the same type.
+** <code>bn254Mul(InteropInterface point, ByteArray scalar) -> InteropInterface</code> multiplies a G1 point by a 32-byte big-endian scalar.
+** <code>bn254Pairing(InteropInterface g1, InteropInterface g2) -> InteropInterface</code> evaluates a single pairing over a G1 point and a G2 point and returns a GT value.
+* Serialized inputs use Ethereum-compatible BN254 byte layouts:
 ** G1 points are 64 big-endian bytes (<code>x || y</code>). Points at infinity are represented as all zeros.
+** G2 points are 128 big-endian bytes (<code>x_imag || x_real || y_imag || y_real</code>). Points at infinity are represented as all zeros.
 ** Scalars are 32 big-endian bytes modulo Fr.
-** Pairing inputs are concatenations of 192-byte elements (<code>G1 || G2</code>), where each G2 coordinate uses the Fp2 representation <code>imag || real</code>.
-* Raw method outputs mirror Ethereum precompile behavior:
-** Addition and multiplication return the resulting G1 point encoded as 64 bytes, or all zeros on invalid point data.
-** Pairing returns 32 bytes with the least significant byte set to 1 on success, or all zeros on failure.
+** GT values are 384 bytes containing twelve 32-byte big-endian Fp12 coefficients.
 * Validation rules:
 ** Reject inputs with incorrect lengths via <code>ArgumentException</code> before invoking the native implementation.
 ** Deserialize affine points, verify they lie on the curve and in the correct subgroup, and treat the point at infinity as neutral.
 ** Treat tuples containing an infinite point as neutral factors within pairing.
 * Resource accounting follows the reference implementation:
-** <code>bn254Serialize</code>, <code>bn254Deserialize</code>, <code>bn254Add</code>, and <code>bn254_add</code> use <code>2^19</code> as the <code>CpuFee</code>.
+** <code>bn254Serialize</code>, <code>bn254Deserialize</code>, and <code>bn254Add</code> use <code>2^19</code> as the <code>CpuFee</code>.
 ** <code>bn254Equal</code> uses <code>2^5</code> as the <code>CpuFee</code>.
-** <code>bn254Mul</code>, <code>bn254Pairing</code>, <code>bn254_mul</code>, and <code>bn254_pairing</code> use <code>2^21</code> as the <code>CpuFee</code>.
+** <code>bn254Mul</code> uses <code>2^21</code> as the <code>CpuFee</code>.
+** <code>bn254Pairing</code> uses <code>2^23</code> as the <code>CpuFee</code>.
 
 ==Rationale==
 
-BN254 is chosen for compatibility with a large ecosystem of tooling and because the Nethermind MCL bindings provide a performant, audited implementation. Exposing the primitives through <code>CryptoLib</code> maintains Neo's existing contract interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Neo already exposes BLS12-381 primitives; BN254 complements that work by matching the curve targeted by Groth16, PLONK, and other widely deployed zk-SNARK tooling, ensuring high compatibility with existing artifacts.
+BN254 is chosen for compatibility with a large ecosystem of zero-knowledge tooling. Exposing the primitives through <code>CryptoLib</code> maintains Neo's existing opaque-point interface pattern and allows other runtimes to reuse the functionality. The Ethereum-style encoding minimizes friction for developers porting circuits and allows reuse of publicly available test vectors. Neo already exposes BLS12-381 primitives; BN254 complements that work by matching the curve targeted by Groth16, PLONK, and other widely deployed zk-SNARK tooling, ensuring high compatibility with existing artifacts.
 
 ==Backwards Compatibility==
 
-The new syscalls are consensus-affecting and therefore activate only after the <code>HF_Faun</code> protocol upgrade. Nodes that do not implement the primitives will diverge once contracts start invoking them. No existing contracts are affected because the methods are new additions and do not alter previous behavior.
+The new syscalls are consensus-affecting and therefore activate only after the <code>HF_Gorgon</code> protocol upgrade. Nodes that do not implement the primitives will diverge once contracts start invoking them. No existing contracts are affected because the methods are new additions and do not alter previous behavior.
 
 ==Test Cases==
 
-Reference unit tests exercise typed addition, multiplication, equality, serialization, identity handling, and raw precompile-compatible addition, multiplication, and pairing vectors sourced from Ethereum test fixtures, covering positive, negative, and malformed inputs. Additional integration tests validating Groth16 verifier contracts are recommended before finalization.
+Reference unit tests exercise typed addition, multiplication, equality, serialization, pairing, identity handling, subgroup checks, non-canonical coordinate rejection, and Ethereum precompile-compatible vectors, covering positive, negative, and malformed inputs. Additional integration tests validating Groth16 verifier contracts are recommended before finalization.
 
 ==Implementation==
 
-A reference implementation is available in the Neo core repository pull request [https://github.com/neo-project/neo/pull/4185 neo-project/neo#4185], which wires the Nethermind.MclBindings library into the native runtime and exposes the BN254 contract methods listed above.
+A reference implementation is available in the Neo core repository pull request [https://github.com/neo-project/neo/pull/4185 neo-project/neo#4185], which implements BN254 arithmetic in managed code and exposes the BN254 contract methods listed above.
