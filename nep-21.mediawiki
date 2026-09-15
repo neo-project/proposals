@@ -550,6 +550,62 @@ export interface IDapiProvider {
 }
 </pre>
 
+===Message signing===
+
+The dApp supplies the original message. The wallet or the signing library it uses MUST construct the selected wrapper in the trusted signing path, even if the input already contains a prefix. Wrapping MUST NOT be bypassed, and modes MUST NOT be switched automatically.
+
+====Ordinary signing====
+
+When <code>isLedgerCompatible</code> is <code>false</code> or omitted:
+
+<pre>
+PREFIX = UTF8("Neo N3 Signed Message / NEP-21 / v1\n")
+P = PREFIX || UInt64LE(byteLength(messageBytes)) || messageBytes
+signature = ECDSA_P256_SignDigest(privateKey, SHA256(P))
+payload = Base64(P)
+</pre>
+
+The fixed prefix is added by the wallet or the signing library it uses and is 36 bytes long. The length field is an eight-byte unsigned little-endian integer. SHA-256 MUST be applied to <code>P</code> exactly once before ECDSA signing; a signing interface that hashes internally SHOULD receive <code>P</code> directly.
+
+====Ledger-compatible signing====
+
+When <code>isLedgerCompatible</code> is <code>true</code>, the unsigned serialized data of a Neo N3 transaction is used as a container for message signing. Software accounts and Ledger accounts use the same transaction fields and serialization rules:
+
+{| class="wikitable"
+! Transaction field !! Value
+|-
+| <code>version</code> || <code>0</code>
+|-
+| <code>nonce</code> || <code>0</code>
+|-
+| <code>systemFee</code> || <code>0</code>
+|-
+| <code>networkFee</code> || <code>0</code>
+|-
+| <code>validUntilBlock</code> || <code>0</code>
+|-
+| <code>signers</code> || Exactly one signer with <code>account = UInt160.Zero</code> and <code>scopes = None</code>
+|-
+| <code>attributes</code> || Empty array
+|-
+| <code>script</code> || Original message bytes, excluding the length field
+|}
+
+Construct the signing data as follows:
+
+# Serialize the unsigned portion of the transaction above according to the standard Neo N3 binary serialization rules to obtain the byte sequence <code>T</code>. Exclude the <code>witnesses</code> array and its length. Serialize <code>script</code> as <code>NeoVarInt(message byte length) || original message bytes</code>, with the length added once by the serializer; do not add the ordinary signing prefix or VM push instructions.
+# Compute <code>SHA256(T)</code> and prepend <code>networkMagic = 0</code> encoded as a four-byte little-endian integer to obtain the 36-byte signing data <code>S</code>. The digest byte order MUST NOT be reversed.
+# Sign <code>SHA256(S)</code> using ECDSA-P256. A signing interface that hashes internally MUST receive <code>S</code> directly.
+# Return <code>payload = Base64(S)</code> and encode the signature as specified below.
+
+The wallet MUST strictly use the transaction fields above and always use <code>networkMagic = 0</code>, independently of the current network. It MUST NOT execute or broadcast the transaction. The signer with a zero account is used only in the message signing container; the returned account and public key still identify the actual signer.
+
+====Verification====
+
+Both modes return the signature as standard Base64 encoding of <code>r || s</code>. Each of <code>r</code> and <code>s</code> is a 32-byte big-endian integer, retaining leading zeros where necessary. The decoded signature is 64 bytes long.
+
+The verifier MUST reconstruct the signing data from the expected original message and selected mode, compare it byte for byte with the decoded <code>payload</code>, then verify the signature using SHA-256 and ECDSA-P256 and check the authorization relationship between the expected account and public key.
+
 ===Errors===
 
 <pre>
