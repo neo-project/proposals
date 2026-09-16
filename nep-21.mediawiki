@@ -512,7 +512,8 @@ export interface IDapiProvider {
     // Signs the message with the specified account.
     // The algorithm used is ECDsa with SHA256.
     // If `account` is omitted, the wallet should automatically select an account or prompt the user to select one.
-    // Possible errors: INVALID, NOTFOUND, TIMEOUT, CANCELED.
+    // Only single-signature accounts are supported. See the `Message signing` section for details.
+    // Possible errors: UNSUPPORTED, INVALID, NOTFOUND, TIMEOUT, CANCELED.
     signMessage(message: string | Base64Encoded, account?: UInt160, options?: SignOptions): Promise<SignedMessage>;
 
     // Relays a transaction and returns the hash of it.
@@ -554,6 +555,15 @@ export interface IDapiProvider {
 
 The dApp supplies the original message. The wallet or the signing library it uses MUST construct the selected wrapper in the trusted signing path, even if the input already contains a prefix. Wrapping MUST NOT be bypassed, and modes MUST NOT be switched automatically.
 
+====Message bytes====
+
+Both modes wrap the byte sequence <code>messageBytes</code>, which is derived from the <code>message</code> argument as follows:
+
+* When <code>isBase64Encoded</code> is <code>false</code> or omitted, <code>messageBytes</code> is the UTF-8 encoding of <code>message</code>. The wallet MUST NOT prepend a byte order mark, apply Unicode normalization, trim whitespace or append a terminator. A <code>message</code> that is not a well-formed Unicode string, such as one containing an unpaired surrogate, MUST be rejected with <code>INVALID</code> instead of being encoded with replacement characters.
+* When <code>isBase64Encoded</code> is <code>true</code>, <code>messageBytes</code> is the result of decoding <code>message</code> as standard Base64 with the alphabet and padding defined in Section 4 of RFC 4648. The URL-safe alphabet, embedded whitespace, line breaks and omitted padding MUST NOT be accepted. A <code>message</code> that is not valid Base64 MUST be rejected with <code>INVALID</code>; the wallet MUST NOT sign a partially decoded or otherwise repaired value.
+
+<code>messageBytes</code> MAY be empty, in which case the encoded length is zero. <code>isBase64Encoded</code> only selects this derivation and is never part of the signed data, so a verifier reconstructs <code>messageBytes</code> from the expected original message with the same rules.
+
 ====Ordinary signing====
 
 When <code>isLedgerCompatible</code> is <code>false</code> or omitted:
@@ -588,23 +598,29 @@ When <code>isLedgerCompatible</code> is <code>true</code>, the unsigned serializ
 |-
 | <code>attributes</code> || Empty array
 |-
-| <code>script</code> || Original message bytes, excluding the length field
+| <code>script</code> || <code>messageBytes</code>, excluding the length field
 |}
 
 Construct the signing data as follows:
 
-# Serialize the unsigned portion of the transaction above according to the standard Neo N3 binary serialization rules to obtain the byte sequence <code>T</code>. Exclude the <code>witnesses</code> array and its length. Serialize <code>script</code> as <code>NeoVarInt(message byte length) || original message bytes</code>, with the length added once by the serializer; do not add the ordinary signing prefix or VM push instructions.
+# Serialize the unsigned portion of the transaction above according to the standard Neo N3 binary serialization rules to obtain the byte sequence <code>T</code>. Exclude the <code>witnesses</code> array and its length. Serialize <code>script</code> as <code>NeoVarInt(byteLength(messageBytes)) || messageBytes</code>, with the length added once by the serializer; do not add the ordinary signing prefix or VM push instructions.
 # Compute <code>SHA256(T)</code> and prepend <code>networkMagic = 0</code> encoded as a four-byte little-endian integer to obtain the 36-byte signing data <code>S</code>. The digest byte order MUST NOT be reversed.
 # Sign <code>SHA256(S)</code> using ECDSA-P256. A signing interface that hashes internally MUST receive <code>S</code> directly.
 # Return <code>payload = Base64(S)</code> and encode the signature as specified below.
 
 The wallet MUST strictly use the transaction fields above and always use <code>networkMagic = 0</code>, independently of the current network. It MUST NOT execute or broadcast the transaction. The signer with a zero account is used only in the message signing container; the returned account and public key still identify the actual signer.
 
+====Accounts====
+
+A response carries exactly one signature, so <code>signMessage</code> is defined for single-signature accounts only. A wallet MUST reject a request for a multi-signature account or a deployed contract account with <code>UNSUPPORTED</code>, and MUST fail with <code>NOTFOUND</code> when it holds no private key for the requested account. Authorization of an account that is not a single-signature account is established by a witness on a transaction and is outside the scope of this method.
+
 ====Verification====
 
 Both modes return the signature as standard Base64 encoding of <code>r || s</code>. Each of <code>r</code> and <code>s</code> is a 32-byte big-endian integer, retaining leading zeros where necessary. The decoded signature is 64 bytes long.
 
-The verifier MUST reconstruct the signing data from the expected original message and selected mode, compare it byte for byte with the decoded <code>payload</code>, then verify the signature using SHA-256 and ECDSA-P256 and check the authorization relationship between the expected account and public key.
+The verifier MUST reconstruct the signing data from the expected original message and the selected mode, compare it byte for byte with the decoded <code>payload</code>, and then verify the signature over that data using SHA-256 and ECDSA-P256 with the returned <code>pubkey</code>. The fields of the returned <code>SignedMessage</code> are untrusted input and MUST NOT be used in place of the expected message, mode or account.
+
+A valid signature only proves possession of the private key of <code>pubkey</code>. To bind the signature to an account, the verifier MUST derive the account of <code>pubkey</code>, that is the hash of the standard single-signature verification script of that public key, and MUST require the derived account to equal the expected account. A response whose <code>account</code> field differs from the derived account MUST be rejected.
 
 ===Errors===
 
