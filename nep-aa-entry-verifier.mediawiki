@@ -1,0 +1,205 @@
+<pre>
+  NEP: <to be assigned>
+  Title: Abstract Account Protocol Foundation
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP defines the deployment-independent protocol foundation for Neo N3 Abstract Accounts: account identity, operation data, replay protection, and the separation between authorization and policy-gated execution.
+It revises the earlier entry-contract and custom-verifier draft in [https://github.com/neo-project/proposals/pull/221 PR #221].
+A separate proposal, currently discussed in [https://github.com/neo-project/proposals/issues/242 issue #242], may implement this foundation as a node-native <code>AccountManagement</code> contract.
+This foundation does not introduce that native contract, select its address, or define its governance.
+
+==Motivation==
+
+The verification script alone is not enough for interoperability.
+Wallets, relayers, and external tools also need to know which contract method performs verification and which contract method is the canonical runtime entrypoint for executing application calls.
+
+At the same time, Abstract Account systems need an extension point for custom authorization logic such as passkeys, EVM signatures, TEE attestations, or social recovery.
+That extension point should be standardized without letting custom verifiers bypass the entry contract's policy checks.
+
+===Relationship to other proposals===
+
+Standard witnesses already permit contract-based accounts. This proposal addresses interoperability between implementations, not an inability of Neo N3 to authenticate such accounts.
+The [https://github.com/neo-project/proposals/pull/218 contract-based verification-script draft (#218)] defines the generic witness script layer. Its method names, argument counts and invocation data remain generic; this AA profile MUST NOT narrow that draft to one fixed <code>verify</code> call.
+The closed metadata and transferable-account drafts (#220 and #219) are not prerequisites for this foundation. Issue and PR numbers are discussion identifiers, not assigned NEP numbers.
+
+==Specification==
+
+===Conventions and identity===
+
+The terms MUST, MUST NOT, SHOULD and MAY are normative requirements of this draft.
+An AA service may be implemented by an ordinary deployed contract or a separately specified native contract. Here, <code>core</code> means that service's callable contract identity on one Neo N3 network.
+
+* <code>accountId</code> is a non-zero 20-byte value, exposed as <code>Hash160</code> in the Neo contract ABI. It identifies account state within one core, not necessarily an address holding assets.
+* An account's full identity is <code>(networkMagic, coreHash, accountId)</code>.
+* <code>accountAddress</code> is an address derived from a verification script. It MUST NOT be assumed equal to <code>accountId</code> or <code>coreHash</code>.
+* ABI <code>Hash160</code> parameters use Neo's standard UInt160 conversion. Textual display hex and raw VM bytes MUST NOT be interchanged without the specified conversion.
+* Timestamps below are Unix milliseconds, interpreted against the executing block's <code>Runtime.Time</code>, not a relay's wall clock.
+
+The implementing profile MUST specify account registration, the mapping from accountId to accountAddress, and byte-for-byte address derivation vectors. This foundation does not select a registration hash formula or a verification-script byte sequence.
+Changing any bytes of an address's verification script, including call flags, changes its address; a profile MUST describe this as an address migration, not a transparent interface upgrade.
+
+===UserOperation===
+
+The ABI representation of <code>UserOperation</code> is an Array of exactly six items in the following order. Field labels are descriptive and are not serialized map keys.
+
+{| class="wikitable"
+! Index !! Field !! ABI value !! Meaning
+|-
+| 0 || targetContract || Hash160 || Non-zero target contract hash
+|-
+| 1 || method || String || Non-empty UTF-8 target ABI method name
+|-
+| 2 || args || Array || Ordered target method arguments
+|-
+| 3 || nonce || Integer || Unsigned 256-bit two-dimensional nonce
+|-
+| 4 || deadline || Integer || Non-negative expiry timestamp in milliseconds
+|-
+| 5 || signature || ByteArray || Verifier-specific authorization bytes
+|}
+
+The core MUST reject invalid field shapes or numeric ranges before target execution. A zero-length signature is permitted only when the configured authorization scheme permits it, such as native-witness authorization; it is not authorization by itself.
+A signing profile MUST define supported argument types, recursive serialization, maximum lengths and nesting, and reject unsupported values. JSON stringification or EVM ABI encoding MUST NOT silently substitute for that serialization.
+
+===Execution entrypoints===
+
+<pre>
+executeUserOp(accountId: Hash160, op: Array) -> Any
+executeUserOps(accountId: Hash160, ops: Array) -> Array
+</pre>
+
+Both methods are application-phase, non-safe ABI methods. The batch method takes a non-empty Array of UserOperation arrays for one account.
+The core MUST look up an existing account and use its configured verifier, hook and any explicitly specified recovery state. Caller-supplied module identities MUST NOT replace these bindings.
+
+For each operation, the core MUST:
+
+# Reject same-account reentrant execution and establish a same-account execution guard before calling any external module.
+# Validate operation shape, account availability and any execution restrictions imposed by the profile's active recovery or custody state.
+# Reject if <code>Runtime.Time &gt; deadline</code> or if the nonce is not the account's next nonce for that channel.
+# Validate authorization through the configured verifier, or through the profile's explicitly configured native-witness fallback. Missing or unsuccessful authorization MUST reject execution.
+# Consume the nonce after successful authorization and before hooks or target execution.
+# Call the configured hook's <code>preExecute</code>, if a hook is installed.
+# Establish a narrowly scoped application authorization context for this account and the authorized target, then invoke the target method with exactly the supplied arguments.
+# Call the configured hook's <code>postExecute</code>, if installed, and the configured verifier's <code>postExecute</code>, if installed.
+# Emit <code>UserOpExecuted(accountId, targetContract, method, nonce)</code> and return the target result.
+# Remove all temporary execution, authorization and module contexts on completion; failure MUST NOT leave durable authorization state.
+
+Invalid authorization, module failure or target VM failure MUST fail the invocation, not produce an apparently successful operation. Implementations MUST preserve Neo application-state atomicity: a failed invocation or batch commits neither target state nor consumed nonces. This does not refund transaction fees or imply that a failed transaction was never included in a block.
+A target returning Boolean <code>false</code> is not intrinsically a VM fault. The result is forwarded to the post-execution callbacks and the caller. A policy requiring business-level success MUST explicitly reject results that fail its criterion.
+A batch executes in order and is all-or-nothing. A profile MUST define a finite batch bound and resource limits.
+
+===Replay protection===
+
+<pre>
+0 <= nonce < 2^256
+channel  = nonce >> 64             // 0 <= channel < 2^192
+sequence = nonce & (2^64 - 1)       // 0 <= sequence < 2^64
+</pre>
+
+Each account and channel has an independent next-sequence cursor, initially zero. Only a sequence equal to that cursor is acceptable.
+Consumption advances the cursor once. After consuming sequence <code>2^64 - 1</code>, the channel is exhausted and MUST NOT wrap to zero. A fresh channel starts at zero regardless of other channels.
+The storage representation of this state is implementation-specific; C# <code>BigInteger.ToByteArray()</code> is not a portable storage specification for all clients.
+Network and core binding in the authorization scheme are required in addition to nonce state.
+
+===Verifier interface and authorization commitment===
+
+<pre>
+validateSignature(accountId: Hash160, op: Array) -> Boolean
+postExecute(accountId: Hash160, op: Array, result: Any) -> Void
+</pre>
+
+The core MUST call <code>validateSignature</code> with <code>CallFlags.ReadOnly</code>. The method MUST have a Boolean ABI result; false, a missing method, a wrong result type, or a VM failure rejects authorization.
+An installed verifier MUST implement <code>postExecute</code>; a verifier without accounting needs MAY implement it as a no-op. Its post-execution failure MUST fail the invocation.
+
+For off-chain signatures, the signing profile MUST authenticate at least the protocol/signing-profile version, network magic, core hash, accountId, target contract, method, exact argument commitment, nonce and deadline. It MUST specify the digest, field encodings and signature encoding with positive test vectors. Signature bytes are not part of the message signed by that signature.
+Signature algorithms and signing profiles are extensions; this foundation does not declare EIP-712 to be Neo's mandatory native signing format.
+For native-witness authorization, the verifier MUST rely on Neo's actual transaction witness checks and their scopes, not on a caller-supplied list of alleged signer hashes.
+
+===Hook interface and module authority===
+
+<pre>
+preExecute(accountId: Hash160, op: Array) -> Void
+postExecute(accountId: Hash160, op: Array, result: Any) -> Void
+</pre>
+
+A hook may maintain policy state. Hook calls and verifier post-execution calls use application-phase permissions appropriate to their state updates; they are not read-only validation calls.
+Each stateful callback MUST authenticate the calling core and an account-specific active context for the bound module and callback phase. Configuring a module MUST use a distinct configuration context. Merely being called by the core, without the correct account and phase, is insufficient authority.
+The application authorization context MUST NOT confer authority on arbitrary descendants of the target. Any nested-call authorization profile MUST explicitly define its scope.
+
+Execution authority, configuration authority, recovery authority, custody authority and service-upgrade authority are separate concepts. A profile MUST state who holds each authority and which transitions, delays and cancellation rules apply. This foundation neither requires a single owner nor grants an ordinary-contract admin authority over a native service.
+
+===Witness bridge===
+
+An AA profile MAY expose a witness-facing method such as <code>verify(accountId: Hash160) -&gt; Boolean</code>. This does not require all scripts conforming to #218 to use that method or signature.
+The profile MUST separately define witness validation in the Verification trigger and operation execution in the Application trigger. Verification MUST NOT depend on temporary state that will only be established by future application execution.
+Successful witness validation does not replace UserOperation authorization, nonce checks or hook policies. Application-phase authorization queries MUST reject when there is no matching active execution context.
+A profile claiming #218 compatibility MUST follow its ReadOnly script shape. Existing scripts using different flags retain their existing addresses and MUST NOT be described as byte-compatible with that profile.
+Fee-payer and relay authority are distinct from AA execution authority. Sponsored wrappers require their own specified witness and invocation rules; support MUST NOT be inferred from support for the unsponsored entrypoint.
+
+===Events===
+
+<pre>
+UserOpExecuted(accountId: Hash160, targetContract: Hash160,
+               method: String, nonce: Integer)
+</pre>
+
+For profiles exposing module lifecycle notifications, <code>moduleType</code> MUST be the String <code>"verifier"</code> or <code>"hook"</code>, not an integer. Their event ABI, binding changes and cancellation semantics MUST be specified by that profile.
+Only events from successful application execution represent committed state changes.
+
+===Requirements on the proposed native AccountManagement profile===
+
+The new proposal builds on this foundation; it does not merge or replace the generic witness-script draft. Before acceptance as an implementable native-contract specification, it MUST define:
+
+* Native contract identity and address, consensus activation and supported ABI versions.
+* Account creation, address derivation, module binding, recovery and custody state transitions.
+* Canonical signing profiles and bounds for arrays, strings, nesting, signatures and batches.
+* Storage/state migration, deterministic execution and cross-client conformance vectors.
+* GAS charging and resource accounting, including failure and sponsorship behavior.
+* Native governance and upgrade rules, without copying ordinary-contract NEF-update or deployment-sender-admin assumptions.
+* Migration of existing deployed AA accounts, including address and asset compatibility.
+
+These are obligations for the new proposal, not claims that native implementation is already complete. Metadata, ownership-token transfer, marketplaces and paymasters remain separately specified extensions.
+
+==Rationale==
+
+The foundation separates three concerns: generic contract-based witness scripts, a shared AA execution protocol, and a native implementation of that protocol.
+This directly addresses the earlier question of why ordinary witnesses are insufficient: they remain sufficient for authentication, but do not by themselves give independent wallets and AA implementations a common operation layout, nonce model or callback lifecycle.
+The choice to add a native contract requires a separate justification concerning protocol-level benefits and costs, rather than a claim that contract accounts cannot exist today.
+
+==Backwards Compatibility==
+
+This revises an unaccepted draft, not an assigned or Final NEP.
+The earlier <code>executeUnifiedByAddress</code>, verifier <code>verify</code> and <code>verifyMetaTx</code> interfaces are no longer the mandatory interfaces of this foundation.
+Legacy implementations can continue operating. Adapters MUST specify identifier conversion, authorization and policy preservation; renaming methods alone does not establish conformance.
+This document does not activate a consensus change. A new native contract implementing it requires the activation and migration plan defined by its own proposal.
+
+==Test Cases==
+
+A conforming implementation and its selected profiles MUST supply reproducible vectors covering:
+
+* Operation field order, supported argument types, serialization and address byte order.
+* Independent nonce channels, accepted next sequence, exhaustion and expiry boundaries.
+* Valid authorization and rejection of invalid or mismatched authorization domains.
+* Native witness scopes and distinct Verification/Application trigger behavior.
+* Hook and verifier callback order, permitted caller contexts and state rollback.
+* Target Boolean false versus VM fault, batch atomicity and same-account reentrancy rejection.
+* Migration behavior and native activation boundaries, where applicable.
+
+Such vectors are release requirements; this draft's list is not itself an executed conformance suite.
+
+==Implementation==
+
+[https://github.com/r3e-network/neo-os-aa/tree/afe483af74d09bfc428573b8f50cefd8057c10f1 neo-os-aa at afe483a] provides implementation experience for <code>executeUserOp</code>, two-dimensional nonces, verifier/hook callbacks and recovery.
+It is an ordinary deployed-contract implementation, not an implementation of a node-native <code>AccountManagement</code> contract or proof of full conformance with this revised foundation.
+Known areas requiring explicit alignment include address-script call flags, argument/signing profiles and numeric boundary behavior.
+
+==Revision provenance==
+
+This local revision preserves the original draft's creation date and leaves its author field unassigned pending author confirmation. It revises the proposal file from [https://github.com/neo-project/proposals/pull/221 PR #221] as a foundation for [https://github.com/neo-project/proposals/issues/242 the newer native-contract proposal].
+It neither reopens #221 nor changes #218, #219 or #220.
