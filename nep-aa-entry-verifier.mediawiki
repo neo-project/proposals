@@ -1,0 +1,254 @@
+<pre>
+  NEP: <to be assigned>
+  Title: SmartAccount Protocol Foundation
+  Author: <to be completed>
+  Type: Standard
+  Status: Draft
+  Created: 2026-03-19
+</pre>
+
+==Abstract==
+
+This NEP specifies a deployment-independent protocol foundation for Neo N3 SmartAccounts. It defines account identity, UserOperation encoding, replay protection, authorization and policy callbacks, execution ordering, failure semantics, witness integration, and resource-accounting requirements for untrusted authorization modules.
+
+This document revises the earlier entry-contract and custom-verifier draft in [https://github.com/neo-project/proposals/pull/221 PR #221]. It is a protocol foundation, not a proposal to activate a particular native contract. A separate proposal, currently discussed in [https://github.com/neo-project/proposals/issues/242 issue #242], may define a node-native <code>AccountManagement</code> service that conforms to this foundation.
+
+==Motivation==
+
+Neo N3 already supports contract-based accounts through verification scripts and witnesses. The purpose of this proposal is interoperability: wallets, relayers, applications, verifiers, hooks, and indexers need a common operation format and lifecycle without relying on implementation-specific entrypoints.
+
+A SmartAccount protocol must also separate authorization from policy. A verifier answers whether an operation is authorized by the account's configured authorization scheme. A hook applies account policy before and after the target call. Neither component may replace the account's configured bindings, bypass replay protection, or create an unbounded resource-consumption path.
+
+This foundation is intentionally independent of deployment topology. It can be implemented by an ordinary deployed contract or by a separately specified native service. A native implementation requires additional consensus, identity, fee, governance, and migration rules; those rules are not implied by this foundation.
+
+===Relationship to other proposals===
+
+The [https://github.com/neo-project/proposals/pull/218 contract-based verification-script draft (#218)] defines a generic witness-script layer. This proposal does not narrow that layer to a fixed method name, argument count, or invocation-script format.
+
+The closed transferable-account and metadata drafts (#219 and #220) describe optional extensions and are not prerequisites for this foundation. The earlier meta-transaction discussion (#165) is historical input, but this proposal specifies Neo N3 witness and invocation semantics directly. Issue and pull-request numbers are discussion identifiers and are not assigned NEP numbers.
+
+==Specification==
+
+===Conventions and identity===
+
+The terms MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are normative requirements of this draft. Unless a profile states otherwise, all integers are non-negative integers, all timestamps are Unix milliseconds, and all timestamps are evaluated against the executing block's <code>Runtime.Time</code>, not a relayer's wall clock.
+
+The term <code>core</code> means the callable SmartAccount service identity that owns account state and executes UserOperations on one Neo N3 network. The term does not select a deployment mechanism or a native contract address.
+
+* <code>accountId</code> is a non-zero 20-byte identifier exposed as <code>Hash160</code> in the Neo contract ABI. It identifies account state within one core and is not itself an asset-holding address.
+* An account's protocol identity is <code>(networkMagic, coreHash, accountId)</code>. An authorization profile MUST bind signatures or witnesses to this identity where replay across networks or cores would otherwise be possible.
+* <code>accountAddress</code> is an address derived from a verification script. It MUST NOT be assumed equal to <code>accountId</code> or <code>coreHash</code>.
+* ABI <code>Hash160</code> values MUST use Neo's standard UInt160 conversion. Raw VM bytes, textual display hexadecimal, and address strings MUST NOT be interchanged without an explicit conversion rule.
+
+A profile MUST specify account registration, the mapping from <code>accountId</code> to <code>accountAddress</code>, and byte-for-byte address derivation vectors. This foundation does not select a registration hash formula or a verification-script byte sequence.
+
+Changing any byte of a verification script, including call flags, changes the derived address. A profile MUST describe such a change as an address migration and MUST NOT describe it as a transparent interface upgrade.
+
+===UserOperation===
+
+The ABI representation of <code>UserOperation</code> is an Array of exactly six items in the following order. Field labels are descriptive and are not serialized map keys.
+
+{| class="wikitable"
+! Index !! Field !! ABI value !! Meaning
+|-
+| 0 || targetContract || Hash160 || Non-zero target contract hash
+|-
+| 1 || method || String || Non-empty UTF-8 target ABI method name
+|-
+| 2 || args || Array || Ordered target method arguments
+|-
+| 3 || nonce || Integer || Unsigned 256-bit two-dimensional nonce
+|-
+| 4 || deadline || Integer || Non-negative expiry timestamp in milliseconds
+|-
+| 5 || signature || ByteArray || Authorization data interpreted by the configured verifier
+|}
+
+The core MUST reject invalid field shapes and numeric ranges before target execution. <code>targetContract</code> MUST be non-zero. <code>method</code> MUST be a non-empty UTF-8 string of at most 128 bytes. <code>args</code> MUST contain at most 64 items and its canonical serialization MUST be at most 4096 bytes. <code>signature</code> MUST be at most 1024 bytes. <code>nonce</code> and <code>deadline</code> MUST each be in the unsigned 256-bit range.
+
+A zero-length signature is permitted only when the configured authorization scheme explicitly permits it, such as a native-witness scheme. A zero-length signature is not authorization by itself.
+
+A signing and serialization profile MUST define supported argument types, recursive serialization, maximum lengths and nesting, and rejection behavior for unsupported values. JSON stringification and EVM ABI encoding MUST NOT silently substitute for the profile's canonical serialization.
+
+===Authorization commitment===
+
+For authorization schemes using off-chain signatures or proofs, the signed or proven message MUST commit to at least the following fields:
+
+* protocol and signing-profile version;
+* network magic and core identity;
+* account identifier;
+* target contract and method;
+* the exact canonical encoding of <code>args</code>;
+* nonce and deadline.
+
+The profile MUST specify the digest, domain separation, field encodings, and signature or proof encoding, and MUST publish positive and negative test vectors. The <code>signature</code> field is authorization material and MUST NOT be included as an input to its own authorization commitment.
+
+Signature algorithms and proof systems are profile extensions. This foundation does not require EIP-712 or any other external signing format.
+
+===Execution entrypoints===
+
+<pre>
+executeUserOp(accountId: Hash160, op: Array) -> Any
+executeUserOps(accountId: Hash160, ops: Array) -> Array
+</pre>
+
+Both methods are application-phase, non-safe ABI methods. <code>executeUserOps</code> MUST receive a non-empty Array of UserOperation arrays for one account and MUST reject more than 32 operations in one invocation.
+
+The core MUST load the account's configured verifier, hook, recovery state, and other policy state from canonical account state. Caller-supplied module identities MUST NOT replace those bindings.
+
+For each operation, the core MUST perform the following steps in order:
+
+# Reject same-account reentrant execution and establish a same-account execution guard before calling any external module.
+# Validate operation shape, account availability, and restrictions imposed by active recovery or custody state.
+# Reject the operation if <code>Runtime.Time > deadline</code> or if the nonce is not the account's next nonce for its channel.
+# Validate authorization through the configured verifier or through an explicitly specified native-witness fallback. Missing or unsuccessful authorization MUST reject execution.
+# Consume the nonce after successful authorization and before any hook or target execution.
+# Invoke the configured hook's <code>preExecute</code>, if a hook is installed.
+# Establish a narrowly scoped application-authorization context for the account and authorized target, then invoke the target method with exactly the supplied arguments.
+# Invoke the configured hook's <code>postExecute</code>, if a hook is installed, and the configured verifier's <code>postExecute</code>.
+# Emit <code>UserOpExecuted(accountId, targetContract, method, nonce)</code> and return the target result.
+# Remove all temporary execution, authorization, and module contexts. Failure MUST NOT leave durable authorization state.
+
+Invalid authorization, module failure, or target VM failure MUST fail the invocation rather than produce an apparently successful operation. Implementations MUST preserve Neo application-state atomicity: a failed invocation or batch commits neither target state nor consumed nonce. This does not refund transaction fees or imply that a failed transaction was never included in a block.
+
+A target returning Boolean <code>false</code> is not intrinsically a VM fault. The result is forwarded to the post-execution callbacks and the caller. A policy that requires business-level success MUST explicitly reject a result that fails its criterion.
+
+A batch executes operations in order and is all-or-nothing. A profile MAY impose a lower batch bound, but MUST publish the bound and all applicable resource limits.
+
+===Replay protection===
+
+<pre>
+0 <= nonce < 2^256
+channel  = nonce >> 64             // 0 <= channel < 2^192
+sequence = nonce & (2^64 - 1)       // 0 <= sequence < 2^64
+</pre>
+
+Each account and channel has an independent next-sequence cursor, initially zero. Only a sequence equal to that cursor is acceptable. Consumption advances the cursor exactly once.
+
+After sequence <code>2^64 - 1</code> is consumed, the channel is exhausted and MUST NOT wrap to zero. A new channel starts at zero independently of all other channels. The storage representation is implementation-specific; a language-specific integer serialization MUST NOT be treated as the portable protocol encoding.
+
+Nonce state alone is not a sufficient authorization domain. The applicable profile MUST also bind authorization to the network and core identity.
+
+===Verifier interface===
+
+<pre>
+validateSignature(accountId: Hash160, op: Array) -> Boolean
+postExecute(accountId: Hash160, op: Array, result: Any) -> Void
+</pre>
+
+An installed verifier MUST implement both methods. A verifier that does not need post-execution accounting MAY implement <code>postExecute</code> as a no-op, but the method MUST exist and MUST have the declared ABI shape.
+
+The core MUST call <code>validateSignature</code> with <code>CallFlags.ReadOnly</code>. The method MUST return a Boolean ABI value. A false result, missing method, wrong result type, or VM failure MUST reject authorization.
+
+The core MUST call <code>postExecute</code> after the target call when a verifier is installed. A post-execution failure MUST fail the invocation and roll back application state.
+
+Verifier configuration and core binding are outside this interface, but a profile MUST define who may configure a verifier, how a core is authorized, how bindings are rotated or revoked, and which delays and cancellation rules apply.
+
+For native-witness authorization, the verifier MUST rely on Neo's actual transaction-witness checks and scopes. A caller-supplied list of alleged signer hashes MUST NOT be treated as proof of authorization.
+
+===Module resource accounting===
+
+Every verifier callback MUST execute inside a platform-enforced child resource budget that is independent of the enclosing transaction budget. A transaction-wide gas limit, a pre-call estimate, or a verifier-supplied <code>Runtime.GasLeft</code>/<code>BurnGas</code> convention is not an equivalent bound.
+
+The child budget MUST apply to both <code>validateSignature</code> and <code>postExecute</code>. Ordinary nested calls and nested bounded calls MUST remain subject to every active ancestor budget. A fee whitelist MUST NOT bypass the child budget. An implementation MUST also impose a finite, documented resource bound on each hook callback; an external module MUST NOT have an unbounded execution path.
+
+If a child or ancestor budget is exhausted, the callback MUST fault. The enclosing application invocation MUST retain Neo application-state atomicity, including rollback of nonce, target, hook, verifier, and notification state. Budget exhaustion MUST NOT be converted into a Boolean authorization failure that permits execution, nor into a successful empty result.
+
+The applicable profile MUST publish the resource unit, default and maximum values, accounting scope, activation boundary, nesting rules, and exhaustion semantics. This foundation does not select a syscall name, fee schedule, hardfork name, or implementation-specific gas constant.
+
+===Hook interface and module authority===
+
+<pre>
+preExecute(accountId: Hash160, op: Array) -> Void
+postExecute(accountId: Hash160, op: Array, result: Any) -> Void
+</pre>
+
+A hook MAY maintain policy state. Hook calls and verifier post-execution calls use application-phase permissions appropriate to their state updates; they are not read-only validation calls.
+
+Each stateful callback MUST authenticate the calling core and an account-specific active context for the bound module and callback phase. Configuration MUST use a distinct configuration context. Merely being called by the core, without the correct account and phase, is insufficient authority.
+
+The application-authorization context MUST NOT confer authority on arbitrary descendants of the target. Any nested-call authorization profile MUST explicitly define its scope and termination conditions.
+
+Execution authority, configuration authority, recovery authority, custody authority, and service-upgrade authority are separate concepts. A profile MUST state who holds each authority and which transitions, delays, and cancellation rules apply. This foundation neither requires a single owner nor grants an ordinary-contract administrator authority over a native service.
+
+===Witness bridge===
+
+A SmartAccount profile MAY expose a witness-facing method such as <code>verify(accountId: Hash160) -> Boolean</code>. This does not require every script conforming to #218 to use that method or signature.
+
+The profile MUST separately define witness validation in the Verification trigger and UserOperation execution in the Application trigger. Verification MUST NOT depend on temporary state that will only be established by a future application execution.
+
+Successful witness validation does not replace UserOperation authorization, nonce checks, or hook policies. Application-phase authorization queries MUST reject when there is no matching active execution context.
+
+A profile claiming compatibility with #218 MUST follow that profile's witness-script shape and call flags. Existing scripts using different flags retain their existing addresses and MUST NOT be described as byte-compatible with the profile.
+
+Fee-payer and relay authority are distinct from SmartAccount execution authority. Sponsored wrappers require their own witness and invocation rules; support MUST NOT be inferred from support for the unsponsored entrypoint.
+
+===Events===
+
+<pre>
+UserOpExecuted(accountId: Hash160, targetContract: Hash160,
+               method: String, nonce: Integer)
+</pre>
+
+A profile exposing module lifecycle notifications MUST use the string identifiers <code>"verifier"</code> and <code>"hook"</code> for module type. Integer aliases MUST NOT be used as the canonical event representation. The profile MUST specify the event ABI, binding changes, pending changes, cancellation, and removal semantics.
+
+Only events from successful application execution represent committed state changes.
+
+===Requirements for a native SmartAccount profile===
+
+A native SmartAccount proposal MUST build on this foundation without merging or replacing the generic witness-script proposal. Before it can be accepted as an implementable native-contract specification, it MUST define:
+
+* native contract identity, address derivation, consensus activation, and supported ABI versions;
+* account creation, account identity, address derivation, module binding, recovery, and custody state transitions;
+* canonical signing and serialization profiles, including bounds for arrays, strings, nesting, signatures, and batches;
+* verifier and hook resource accounting, GAS charging, failure behavior, and sponsorship behavior;
+* native governance, authorization, upgrade, and emergency rules without copying ordinary-contract deployment or NEF-update assumptions;
+* deterministic storage and state migration rules, including cross-client conformance vectors;
+* compatibility and migration of existing deployed SmartAccounts, addresses, and assets;
+* the distinction between consensus activation, contract deployment, and application-level configuration.
+
+Metadata, ownership-token transfer, marketplaces, and paymasters remain separately specified extensions unless a native profile explicitly incorporates them.
+
+==Rationale==
+
+The foundation separates three concerns: the generic contract-based witness layer, a shared SmartAccount operation and callback protocol, and a possible native implementation of that protocol.
+
+Ordinary witnesses remain sufficient for authentication. They do not, by themselves, standardize the operation layout, nonce model, verifier and hook lifecycle, callback authority, or resource boundary needed for interoperable SmartAccount execution.
+
+The native-contract choice therefore requires a separate justification concerning protocol-level benefits, consensus impact, governance, and migration cost. It cannot be justified by claiming that contract-based accounts are impossible under the current Neo N3 model.
+
+==Backwards Compatibility==
+
+This document revises an unaccepted draft and does not modify an assigned or Final NEP.
+
+The earlier <code>executeUnifiedByAddress</code>, verifier <code>verify</code>, and <code>verifyMetaTx</code> interfaces are not mandatory interfaces of this foundation. Legacy implementations MAY continue operating. An adapter MUST specify identifier conversion, authorization-domain binding, serialization, and policy preservation; renaming methods alone does not establish conformance.
+
+This document does not activate a consensus change. A native service implementing it requires the activation, governance, resource, and migration plan defined by its own proposal.
+
+==Test Cases==
+
+A conforming implementation and each selected profile MUST publish reproducible vectors covering:
+
+* operation field order, supported argument types, canonical serialization, and address byte order;
+* independent nonce channels, accepted next sequence, exhaustion, and deadline boundaries;
+* valid authorization and rejection of invalid or mismatched authorization domains;
+* native witness scopes and distinct Verification/Application trigger behavior;
+* verifier and hook callback order, permitted caller contexts, resource limits, and state rollback;
+* verifier child-budget exhaustion, ancestor inheritance, fee-whitelist charging, and pre-activation rejection;
+* target Boolean false versus VM fault, batch atomicity, and same-account reentrancy rejection;
+* module rotation, revocation, recovery, cancellation, and custody transitions;
+* native activation and migration behavior, where applicable.
+
+The vectors are conformance requirements for a claimed profile. This list is not itself an executed test suite or a proof of protocol correctness.
+
+==Implementation==
+
+This NEP specifies protocol behavior and does not prescribe source language, contract layout, bytecode, deployment topology, or a particular NeoVM syscall. An implementation is conforming only if it satisfies every applicable normative requirement, publishes its profile parameters and resource semantics, and passes the required conformance vectors.
+
+An ordinary deployed contract and a node-native service MAY both implement this foundation, but an ordinary deployed contract MUST NOT be described as a node-native SmartAccount service without the corresponding consensus and activation specification.
+
+==Revision provenance==
+
+This revision preserves the draft's creation date and leaves the author field unassigned pending author confirmation. It revises the proposal file from [https://github.com/neo-project/proposals/pull/221 PR #221] as a foundation for [https://github.com/neo-project/proposals/issues/242 the native SmartAccount proposal].
+
+It neither reopens #221 nor changes the scope of #218, #219, or #220.
