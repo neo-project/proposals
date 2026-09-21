@@ -1,6 +1,6 @@
 <pre>
   NEP: <to be assigned>
-  Title: Abstract Account Protocol Foundation
+  Title: SmartAccount Protocol Foundation
   Author: <to be completed>
   Type: Standard
   Status: Draft
@@ -9,7 +9,7 @@
 
 ==Abstract==
 
-This NEP specifies a deployment-independent protocol foundation for Neo N3 Abstract Accounts. It defines account identity, UserOperation encoding, replay protection, authorization and policy callbacks, execution ordering, failure semantics, witness integration, and resource-accounting requirements for untrusted authorization modules.
+This NEP specifies a deployment-independent protocol foundation for Neo N3 SmartAccounts. It defines account identity, UserOperation encoding, replay protection, authorization and policy callbacks, execution ordering, failure semantics, witness integration, and resource-accounting requirements for untrusted authorization modules.
 
 This document revises the earlier entry-contract and custom-verifier draft in [https://github.com/neo-project/proposals/pull/221 PR #221]. It is a protocol foundation, not a proposal to activate a particular native contract. A separate proposal, currently discussed in [https://github.com/neo-project/proposals/issues/242 issue #242], may define a node-native <code>AccountManagement</code> service that conforms to this foundation.
 
@@ -17,7 +17,7 @@ This document revises the earlier entry-contract and custom-verifier draft in [h
 
 Neo N3 already supports contract-based accounts through verification scripts and witnesses. The purpose of this proposal is interoperability: wallets, relayers, applications, verifiers, hooks, and indexers need a common operation format and lifecycle without relying on implementation-specific entrypoints.
 
-An Abstract Account protocol must also separate authorization from policy. A verifier answers whether an operation is authorized by the account's configured authorization scheme. A hook applies account policy before and after the target call. Neither component may replace the account's configured bindings, bypass replay protection, or create an unbounded resource-consumption path.
+A SmartAccount protocol must also separate authorization from policy. A verifier answers whether an operation is authorized by the account's configured authorization scheme. A hook applies account policy before and after the target call. Neither component may replace the account's configured bindings, bypass replay protection, or create an unbounded resource-consumption path.
 
 This foundation is intentionally independent of deployment topology. It can be implemented by an ordinary deployed contract or by a separately specified native service. A native implementation requires additional consensus, identity, fee, governance, and migration rules; those rules are not implied by this foundation.
 
@@ -33,7 +33,7 @@ The closed transferable-account and metadata drafts (#219 and #220) describe opt
 
 The terms MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are normative requirements of this draft. Unless a profile states otherwise, all integers are non-negative integers, all timestamps are Unix milliseconds, and all timestamps are evaluated against the executing block's <code>Runtime.Time</code>, not a relayer's wall clock.
 
-The term <code>core</code> means the callable AA service identity that owns account state and executes UserOperations on one Neo N3 network. The term does not select a deployment mechanism or a native contract address.
+The term <code>core</code> means the callable SmartAccount service identity that owns account state and executes UserOperations on one Neo N3 network. The term does not select a deployment mechanism or a native contract address.
 
 * <code>accountId</code> is a non-zero 20-byte identifier exposed as <code>Hash160</code> in the Neo contract ABI. It identifies account state within one core and is not itself an asset-holding address.
 * An account's protocol identity is <code>(networkMagic, coreHash, accountId)</code>. An authorization profile MUST bind signatures or witnesses to this identity where replay across networks or cores would otherwise be possible.
@@ -173,7 +173,7 @@ Execution authority, configuration authority, recovery authority, custody author
 
 ===Witness bridge===
 
-An AA profile MAY expose a witness-facing method such as <code>verify(accountId: Hash160) -> Boolean</code>. This does not require every script conforming to #218 to use that method or signature.
+A SmartAccount profile MAY expose a witness-facing method such as <code>verify(accountId: Hash160) -> Boolean</code>. This does not require every script conforming to #218 to use that method or signature.
 
 The profile MUST separately define witness validation in the Verification trigger and UserOperation execution in the Application trigger. Verification MUST NOT depend on temporary state that will only be established by a future application execution.
 
@@ -181,7 +181,7 @@ Successful witness validation does not replace UserOperation authorization, nonc
 
 A profile claiming compatibility with #218 MUST follow that profile's witness-script shape and call flags. Existing scripts using different flags retain their existing addresses and MUST NOT be described as byte-compatible with the profile.
 
-Fee-payer and relay authority are distinct from AA execution authority. Sponsored wrappers require their own witness and invocation rules; support MUST NOT be inferred from support for the unsponsored entrypoint.
+Fee-payer and relay authority are distinct from SmartAccount execution authority. Sponsored wrappers require their own witness and invocation rules; support MUST NOT be inferred from support for the unsponsored entrypoint.
 
 ===Events===
 
@@ -194,9 +194,9 @@ A profile exposing module lifecycle notifications MUST use the string identifier
 
 Only events from successful application execution represent committed state changes.
 
-===Requirements for a native AccountManagement profile===
+===Requirements for a native SmartAccount profile===
 
-A native AccountManagement proposal MUST build on this foundation without merging or replacing the generic witness-script proposal. Before it can be accepted as an implementable native-contract specification, it MUST define:
+A native SmartAccount proposal MUST build on this foundation without merging or replacing the generic witness-script proposal. Before it can be accepted as an implementable native-contract specification, it MUST define:
 
 * native contract identity, address derivation, consensus activation, and supported ABI versions;
 * account creation, account identity, address derivation, module binding, recovery, and custody state transitions;
@@ -204,16 +204,16 @@ A native AccountManagement proposal MUST build on this foundation without mergin
 * verifier and hook resource accounting, GAS charging, failure behavior, and sponsorship behavior;
 * native governance, authorization, upgrade, and emergency rules without copying ordinary-contract deployment or NEF-update assumptions;
 * deterministic storage and state migration rules, including cross-client conformance vectors;
-* compatibility and migration of existing deployed AA accounts, addresses, and assets;
+* compatibility and migration of existing deployed SmartAccounts, addresses, and assets;
 * the distinction between consensus activation, contract deployment, and application-level configuration.
 
 Metadata, ownership-token transfer, marketplaces, and paymasters remain separately specified extensions unless a native profile explicitly incorporates them.
 
 ==Rationale==
 
-The foundation separates three concerns: the generic contract-based witness layer, a shared AA operation and callback protocol, and a possible native implementation of that protocol.
+The foundation separates three concerns: the generic contract-based witness layer, a shared SmartAccount operation and callback protocol, and a possible native implementation of that protocol.
 
-Ordinary witnesses remain sufficient for authentication. They do not, by themselves, standardize the operation layout, nonce model, verifier and hook lifecycle, callback authority, or resource boundary needed for interoperable AA execution.
+Ordinary witnesses remain sufficient for authentication. They do not, by themselves, standardize the operation layout, nonce model, verifier and hook lifecycle, callback authority, or resource boundary needed for interoperable SmartAccount execution.
 
 The native-contract choice therefore requires a separate justification concerning protocol-level benefits, consensus impact, governance, and migration cost. It cannot be justified by claiming that contract-based accounts are impossible under the current Neo N3 model.
 
@@ -245,10 +245,10 @@ The vectors are conformance requirements for a claimed profile. This list is not
 
 This NEP specifies protocol behavior and does not prescribe source language, contract layout, bytecode, deployment topology, or a particular NeoVM syscall. An implementation is conforming only if it satisfies every applicable normative requirement, publishes its profile parameters and resource semantics, and passes the required conformance vectors.
 
-An ordinary deployed contract and a node-native service MAY both implement this foundation, but an ordinary deployed contract MUST NOT be described as a node-native AccountManagement service without the corresponding consensus and activation specification.
+An ordinary deployed contract and a node-native service MAY both implement this foundation, but an ordinary deployed contract MUST NOT be described as a node-native SmartAccount service without the corresponding consensus and activation specification.
 
 ==Revision provenance==
 
-This revision preserves the draft's creation date and leaves the author field unassigned pending author confirmation. It revises the proposal file from [https://github.com/neo-project/proposals/pull/221 PR #221] as a foundation for [https://github.com/neo-project/proposals/issues/242 the native AccountManagement proposal].
+This revision preserves the draft's creation date and leaves the author field unassigned pending author confirmation. It revises the proposal file from [https://github.com/neo-project/proposals/pull/221 PR #221] as a foundation for [https://github.com/neo-project/proposals/issues/242 the native SmartAccount proposal].
 
 It neither reopens #221 nor changes the scope of #218, #219, or #220.
