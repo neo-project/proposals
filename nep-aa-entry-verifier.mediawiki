@@ -57,14 +57,14 @@ The ABI representation of <code>UserOperation</code> is an Array of exactly six 
 |-
 | 2 || args || Array || Ordered target method arguments
 |-
-| 3 || nonce || Integer || Unsigned 256-bit two-dimensional nonce
+| 3 || nonce || Integer || Non-negative NeoVM Integer with a two-dimensional nonce
 |-
 | 4 || deadline || Integer || Non-negative expiry timestamp in milliseconds
 |-
 | 5 || signature || ByteArray || Authorization data interpreted by the configured verifier
 |}
 
-The core MUST reject invalid field shapes and numeric ranges before target execution. <code>targetContract</code> MUST be non-zero. <code>method</code> MUST be a non-empty UTF-8 string of at most 128 bytes. <code>args</code> MUST contain at most 64 items and its canonical serialization MUST be at most 4096 bytes. <code>signature</code> MUST be at most 1024 bytes. <code>nonce</code> and <code>deadline</code> MUST each be in the unsigned 256-bit range.
+The core MUST reject invalid field shapes and numeric ranges before target execution. <code>targetContract</code> MUST be non-zero. <code>method</code> MUST be a non-empty UTF-8 string of at most 128 bytes. <code>args</code> MUST contain at most 64 items and its canonical serialization MUST be at most 4096 bytes. <code>signature</code> MUST be at most 1024 bytes. <code>nonce</code> and <code>deadline</code> MUST each be non-negative and strictly less than <code>2^255</code>. NeoVM Integers use signed 256-bit representation; the upper half of an unsigned 256-bit value requires 33 bytes and is not representable by this ABI. An implementation MUST NOT truncate, wrap, or reinterpret a negative Integer as an unsigned value.
 
 A zero-length signature is permitted only when the configured authorization scheme explicitly permits it, such as a native-witness scheme. A zero-length signature is not authorization by itself.
 
@@ -79,11 +79,14 @@ For authorization schemes using off-chain signatures or proofs, the signed or pr
 * account identifier;
 * target contract and method;
 * the exact canonical encoding of <code>args</code>;
-* nonce and deadline.
+* nonce and deadline;
+* the applicable authorization-state version, including revocation or recovery epochs and configuration revisions defined by the profile.
 
 The profile MUST specify the digest, domain separation, field encodings, and signature or proof encoding, and MUST publish positive and negative test vectors. The <code>signature</code> field is authorization material and MUST NOT be included as an input to its own authorization commitment.
 
 Signature algorithms and proof systems are profile extensions. This foundation does not require EIP-712 or any other external signing format.
+
+A profile supporting authorization changes MUST define how previously signed operations are invalidated. Restoring a former key or module configuration MUST NOT revive an authorization that a recovery or revocation transition invalidated. Nonce freshness alone does not satisfy this requirement when an unused operation survives the transition.
 
 ===Execution entrypoints===
 
@@ -91,6 +94,10 @@ Signature algorithms and proof systems are profile extensions. This foundation d
 executeUserOp(accountId: Hash160, op: Array) -> Any
 executeUserOps(accountId: Hash160, ops: Array) -> Array
 </pre>
+
+These forms describe the account and operation payload. A profile MAY require additional explicit authorization-state commitment arguments and MUST publish its exact ABI, argument order, types, and rejection rules. When such arguments are required, the shorter forms MUST be rejected rather than supplied with default or current-state values. The six-field UserOperation representation is unchanged.
+
+For transaction-witness authorization, the exact signed transaction script MUST commit to the profile's expected authorization state. Application MUST compare that commitment with current account state before invoking authorization callbacks. If a profile also performs SmartAccount authorization in Verification, that phase MUST independently check the same commitment; its success MUST NOT replace Application's checks. Binding a state version only inside an off-chain operation digest is insufficient for a verifier that authorizes through transaction witnesses. A batch MUST bind the same expected account state for all of its operations.
 
 Both methods are application-phase, non-safe ABI methods. <code>executeUserOps</code> MUST receive a non-empty Array of UserOperation arrays for one account and MUST reject more than 32 operations in one invocation.
 
@@ -105,7 +112,7 @@ For each operation, the core MUST perform the following steps in order:
 # Consume the nonce after successful authorization and before any hook or target execution.
 # Invoke the configured hook's <code>preExecute</code>, if a hook is installed.
 # Establish a narrowly scoped application-authorization context for the account and authorized target, then invoke the target method with exactly the supplied arguments.
-# Invoke the configured hook's <code>postExecute</code>, if a hook is installed, and the configured verifier's <code>postExecute</code>.
+# Invoke the configured hook's <code>postExecute</code>, if a hook is installed, and the configured verifier's profile-selected scalar or composite post-execution callback.
 # Emit <code>UserOpExecuted(accountId, targetContract, method, nonce)</code> and return the target result.
 # Remove all temporary execution, authorization, and module contexts. Failure MUST NOT leave durable authorization state.
 
@@ -118,8 +125,8 @@ A batch executes operations in order and is all-or-nothing. A profile MAY impose
 ===Replay protection===
 
 <pre>
-0 <= nonce < 2^256
-channel  = nonce >> 64             // 0 <= channel < 2^192
+0 <= nonce < 2^255
+channel  = nonce >> 64             // 0 <= channel < 2^191
 sequence = nonce & (2^64 - 1)       // 0 <= sequence < 2^64
 </pre>
 
@@ -129,28 +136,38 @@ After sequence <code>2^64 - 1</code> is consumed, the channel is exhausted and M
 
 Nonce state alone is not a sufficient authorization domain. The applicable profile MUST also bind authorization to the network and core identity.
 
-===Verifier interface===
+===Scalar verifier interface===
 
 <pre>
 validateSignature(accountId: Hash160, op: Array) -> Boolean
 postExecute(accountId: Hash160, op: Array, result: Any) -> Void
 </pre>
 
-An installed verifier MUST implement both methods. A verifier that does not need post-execution accounting MAY implement <code>postExecute</code> as a no-op, but the method MUST exist and MUST have the declared ABI shape.
+An installed verifier MUST implement the scalar interface above unless its admitted profile selects the composite interface described in the next section. A scalar verifier that does not need post-execution accounting MAY implement <code>postExecute</code> as a no-op, but both scalar methods MUST exist and MUST have the declared ABI shape.
 
-The core MUST call <code>validateSignature</code> with <code>CallFlags.ReadOnly</code>. The method MUST return a Boolean ABI value. A false result, missing method, wrong result type, or VM failure MUST reject authorization.
+For a scalar verifier, the core MUST call <code>validateSignature</code> with <code>CallFlags.ReadOnly</code>. The method MUST return a Boolean ABI value. A false result, missing method, wrong result type, or VM failure MUST reject authorization.
 
-The core MUST call <code>postExecute</code> after the target call when a verifier is installed. A post-execution failure MUST fail the invocation and roll back application state.
+For a scalar verifier, the core MUST call <code>postExecute</code> after the target call. A post-execution failure MUST fail the invocation and roll back application state.
 
 Verifier configuration and core binding are outside this interface, but a profile MUST define who may configure a verifier, how a core is authorized, how bindings are rotated or revoked, and which delays and cancellation rules apply.
 
 For native-witness authorization, the verifier MUST rely on Neo's actual transaction-witness checks and scopes. A caller-supplied list of alleged signer hashes MUST NOT be treated as proof of authorization.
 
+===Composite verifier profiles===
+
+A profile MAY define a separately versioned composite verifier callback ABI instead of the scalar verifier callbacks above. The profile MUST explicitly identify that ABI during module admission; a Boolean-only verifier MUST NOT be interpreted as a composite result, or vice versa. Composite validation MUST use <code>CallFlags.ReadOnly</code>, and a false approval, missing method, malformed result, or VM failure MUST reject authorization. Composite post-execution failure MUST fail the invocation and roll back application state. Ordinary leaf verifiers retain the declared scalar interface.
+
+A composite profile MAY return a structured authorization receipt identifying the children that approved the current operation. The core MUST validate the receipt's exact VM types and bounds, reject duplicate or unregistered child identities, and retain an independent copy local to that operation. Any post-execution child authority MUST be limited to the approved subset of the account's active, code-pinned child registry. Returning a receipt MUST NOT itself confer target, configuration, or recovery authority.
+
+The receipt MUST NOT be stored as durable authorization, reused for another operation, reused across batch members, or transferred from Verification into Application. Application MUST perform its own validation. The core MUST discard the receipt and all associated grants when the operation finishes or fails. Callback arguments, target results, and receipt data MUST be isolated from mutations by other callbacks.
+
+The profile MUST specify deterministic quorum selection, which approving children run post-execution policy and accounting, and how policy changes between validation and post-execution are detected. Avoiding repeated cryptographic verification MUST NOT bypass current policy checks or allow signer-domain changes to invalidate quorum independence. Resource limits cover receipt construction, copying, child calls, and post-execution checks. Structural roster limits do not guarantee that every combination fits the callback budget; supported configurations and their admission rules MUST be explicit and accompanied by measured boundary vectors.
+
 ===Module resource accounting===
 
 Every verifier callback MUST execute inside a platform-enforced child resource budget that is independent of the enclosing transaction budget. A transaction-wide gas limit, a pre-call estimate, or a verifier-supplied <code>Runtime.GasLeft</code>/<code>BurnGas</code> convention is not an equivalent bound.
 
-The child budget MUST apply to both <code>validateSignature</code> and <code>postExecute</code>. Ordinary nested calls and nested bounded calls MUST remain subject to every active ancestor budget. A fee whitelist MUST NOT bypass the child budget. An implementation MUST also impose a finite, documented resource bound on each hook callback; an external module MUST NOT have an unbounded execution path.
+The child budget MUST apply to both <code>validateSignature</code> and <code>postExecute</code>, or to their profile-selected composite counterparts. Ordinary nested calls and nested bounded calls MUST remain subject to every active ancestor budget. A fee whitelist MUST NOT bypass the child budget. An implementation MUST also impose a finite, documented resource bound on each hook callback; an external module MUST NOT have an unbounded execution path.
 
 If a child or ancestor budget is exhausted, the callback MUST fault. The enclosing application invocation MUST retain Neo application-state atomicity, including rollback of nonce, target, hook, verifier, and notification state. Budget exhaustion MUST NOT be converted into a Boolean authorization failure that permits execution, nor into a successful empty result.
 
@@ -232,11 +249,13 @@ A conforming implementation and each selected profile MUST publish reproducible 
 * operation field order, supported argument types, canonical serialization, and address byte order;
 * independent nonce channels, accepted next sequence, exhaustion, and deadline boundaries;
 * valid authorization and rejection of invalid or mismatched authorization domains;
+* rejection of an unchanged, previously valid signed transaction after authorization-state changes, including recovery followed by restoration of former keys;
 * native witness scopes and distinct Verification/Application trigger behavior;
 * verifier and hook callback order, permitted caller contexts, resource limits, and state rollback;
 * verifier child-budget exhaustion, ancestor inheritance, fee-whitelist charging, and pre-activation rejection;
 * target Boolean false versus VM fault, batch atomicity, and same-account reentrancy rejection;
 * module rotation, revocation, recovery, cancellation, and custody transitions;
+* composite receipt validation, quorum selection, policy drift, callback-data isolation, per-operation lifetime, and supported configuration cost boundaries, where applicable;
 * native activation and migration behavior, where applicable.
 
 The vectors are conformance requirements for a claimed profile. This list is not itself an executed test suite or a proof of protocol correctness.
